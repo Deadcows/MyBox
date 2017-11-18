@@ -1,9 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-/// <summary>
-/// Use to display inspector property conditionally based on some other property value
-/// </summary>
 [AttributeUsage(AttributeTargets.Field)]
 public class ConditionalFieldAttribute : PropertyAttribute
 {

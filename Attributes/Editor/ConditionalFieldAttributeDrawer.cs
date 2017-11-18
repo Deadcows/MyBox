@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using DeadcowBox;
+using UnityEngine;
 using UnityEditor;
+using UnityQuery;
 
 [CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
 public class ConditionalFieldAttributeDrawer : PropertyDrawer
@@ -31,7 +33,7 @@ public class ConditionalFieldAttributeDrawer : PropertyDrawer
 
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
-		if (!string.IsNullOrEmpty(PropertyToCheck))
+		if (!PropertyToCheck.IsNullOrEmpty())
 		{
 			var conditionProperty = property.serializedObject.FindProperty(PropertyToCheck);
 			if (conditionProperty != null)
