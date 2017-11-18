@@ -8,7 +8,6 @@ using UnityQuery;
 public class JsonDataEditor : EditorWindow
 {
 
-
 	[MenuItem("Tools/Settings Editor", false, 50)]
 	private static void Initialize()
 	{
@@ -16,16 +15,13 @@ public class JsonDataEditor : EditorWindow
 		window.Show();
 	}
 
-
 	private void OnEnable()
 	{
 		hideFlags = HideFlags.HideAndDontSave;
 		if (!SettingsLoaded) LoadSettings();
-		
 	}
 	
-
-
+	
 	#region Load Settings
 
 	private bool SettingsLoaded => !_settings.IsNullOrEmpty();
@@ -71,7 +67,7 @@ public class JsonDataEditor : EditorWindow
 	#endregion
 
 
-	private bool IsChanged => _settings.Any(s => s.Changed);
+	private bool IsChanged => _settings != null && _settings.Any(s => s.Changed);
 
 	[SerializeField] private SettingsData[] _settings;
 	[SerializeField] private bool[] _foldout;
@@ -86,16 +82,7 @@ public class JsonDataEditor : EditorWindow
 
 		DrawSettingsInspectors();
 
-		MyGUI.Separator(MyGUI.Brown);
-		using (new EditorGUILayout.HorizontalScope())
-		{
-			_newSettingsFile = EditorGUILayout.TextField(_newSettingsFile);
-			if (GUILayout.Button("Create Setting File", EditorStyles.toolbarButton))
-			{
-				CreateNewSettingsFile(_newSettingsFile);
-				_newSettingsFile = string.Empty;
-			}
-		}
+		DrawCreateSettingsFileButton();
 	}
 
 	#region Save Load Buttons
@@ -168,6 +155,24 @@ public class JsonDataEditor : EditorWindow
 		}
 	}
 
+	#endregion
+
+
+	#region Create Settings File
+
+	private void DrawCreateSettingsFileButton()
+	{
+		using (new EditorGUILayout.HorizontalScope())
+		{
+			_newSettingsFile = EditorGUILayout.TextField(_newSettingsFile);
+			if (GUILayout.Button("Create Setting File", EditorStyles.toolbarButton))
+			{
+				CreateNewSettingsFile(_newSettingsFile);
+				_newSettingsFile = string.Empty;
+			}
+		}
+	}
+	
 	#endregion
 
 

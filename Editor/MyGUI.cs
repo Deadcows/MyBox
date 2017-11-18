@@ -74,24 +74,15 @@ public static class MyGUI
 
 	public static void Separator()
 	{
-		Separator(Color.gray);
-	}
+		var color = GUI.color;
 
-	public static void Separator(Color separatorColor)
-	{
 		EditorGUILayout.Space();
-		var rect = EditorGUILayout.GetControlRect();
-		Handles.BeginGUI();
-		var color = Handles.color;
-		Handles.color = separatorColor;
-		Handles.DrawLine(rect.min, rect.min.OffsetX(rect.width));
-		Handles.color = Color.white.WithAlphaSetTo(0.4f);
-		var minPlus = rect.min.OffsetY(1);
-		var minMinus = rect.min.OffsetY(-1);
-		Handles.DrawLine(minPlus, minPlus.OffsetX(rect.width));
-		Handles.DrawLine(minMinus, minMinus.OffsetX(rect.width));
-		Handles.color = color;
-		Handles.EndGUI();
+		var spaceRect = EditorGUILayout.GetControlRect();
+		var separatorRect = new Rect(spaceRect.position.OffsetY(spaceRect.height / 2), new Vector2(spaceRect.width, 1));
+
+		GUI.color = Color.white;
+		GUI.Box(separatorRect, GUIContent.none);
+		GUI.color = color;
 	}
 
 	public static void DrawLine(Color color, bool withSpace = false)
