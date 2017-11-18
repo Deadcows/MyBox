@@ -41,7 +41,7 @@ public class JsonDataEditor : EditorWindow
 			_settings[i] = CreateInstance<SettingsData>();
 			_settings[i].Initialize(SettingsFiles[i]);
 		}
-		asdasd foldout to settings
+
 		_foldout = _settings.Select(c => true).ToArray();
 		GUI.FocusControl(string.Empty);
 	}
