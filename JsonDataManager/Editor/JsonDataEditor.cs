@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -31,24 +32,45 @@ public class JsonDataEditor : EditorWindow
 
 	private void LoadSettings()
 	{
-		_settings = new SettingsData[SettingsFiles.Length];
-		for (var i = 0; i < SettingsFiles.Length; i++)
-		{
-			_settings[i] = CreateInstance<SettingsData>();
-			_settings[i].Initialize(SettingsFiles[i]);
-		}
-
+		_settings = GetValidSettingsData();
 		_foldout = _settings.Select(c => true).ToArray();
 		GUI.FocusControl(string.Empty);
 	}
-	
+
+	private SettingsData[] GetValidSettingsData()
+	{
+		var settings = new List<SettingsData>();
+		var settingsPaths = SettingsFiles;
+		var hideAttributeType = typeof(HideInJsonEditorAttribute);
+
+		for (var i = 0; i < settingsPaths.Length; i++)
+		{
+			var path = settingsPaths[i];
+			var typeName = Path.GetFileNameWithoutExtension(settingsPaths[i]);
+			if (string.IsNullOrEmpty(typeName)) continue;
+			var settingsType = GetTypeByName(typeName);
+			if (settingsType == null) continue;
+			if (Attribute.IsDefined(settingsType, hideAttributeType)) continue;
+
+			var settingsData = CreateInstance<SettingsData>();
+			settingsData.Initialize(path);
+			settings.Add(settingsData);
+		}
+
+		return settings.ToArray();
+	}
+
+	private Type GetTypeByName(string typeName)
+	{
+		return (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+			from type in assembly.GetTypes()
+			where type.Name == typeName
+			select type).SingleOrDefault();
+	}
 
 	private void CreateNewSettingsFile(string typeName)
 	{
-		var targetType = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-						  from type in assembly.GetTypes()
-						  where type.Name == typeName
-						  select type).SingleOrDefault();
+		var targetType = GetTypeByName(typeName);
 		if (targetType == null || !targetType.IsSubclassOf(typeof(ScriptableObject))) return;
 
 		bool exists = SettingsFiles.Any(f => f.Contains(typeName));
@@ -78,11 +100,22 @@ public class JsonDataEditor : EditorWindow
 
 	private void OnGUI()
 	{
+		CheckData();
+
 		DrawSaveLoadButtons();
 
 		DrawSettingsInspectors();
 
 		DrawCreateSettingsFileButton();
+	}
+
+	private void CheckData()
+	{
+		if (_settings.IsNullOrEmpty() ||
+		    _settings.Any(s => s == null))
+		{
+			LoadSettings();
+		}
 	}
 
 	#region Save Load Buttons
