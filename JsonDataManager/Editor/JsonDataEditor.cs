@@ -183,7 +183,7 @@ public class JsonDataEditor : EditorWindow
 					settings.DrawInspector();
 				}
 
-				MyGUI.Separator();
+				MyGUI.DrawLine(MyGUI.Gray, true);
 			}
 		}
 	}
