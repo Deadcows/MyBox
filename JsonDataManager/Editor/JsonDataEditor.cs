@@ -33,7 +33,6 @@ public class JsonDataEditor : EditorWindow
 	private void LoadSettings()
 	{
 		_settings = GetValidSettingsData();
-		_foldout = _settings.Select(c => true).ToArray();
 		GUI.FocusControl(string.Empty);
 	}
 
@@ -92,7 +91,6 @@ public class JsonDataEditor : EditorWindow
 	private bool IsChanged => _settings != null && _settings.Any(s => s.Changed);
 
 	[SerializeField] private SettingsData[] _settings;
-	[SerializeField] private bool[] _foldout;
 
 	private Vector2 _scroll;
 	private string _newSettingsFile;
@@ -134,13 +132,13 @@ public class JsonDataEditor : EditorWindow
 			if (dirty) GUI.color = Color.green;
 			if (GUILayout.Button("Save Changes", EditorStyles.toolbarButton)) SaveChanges();
 			GUI.color = color;
+			GUI.enabled = true;
 			EditorGUILayout.Space();
-			if (GUILayout.Button("Reset Changes", EditorStyles.toolbarButton)) ResetChanges();
+			if (GUILayout.Button("Reload Settings", EditorStyles.toolbarButton)) ResetChanges();
 			EditorGUILayout.Space();
 		}
 		EditorGUILayout.Space();
 
-		GUI.enabled = true;
 	}
 
 	private void SaveChanges()
@@ -176,9 +174,9 @@ public class JsonDataEditor : EditorWindow
 			{
 				var settings = _settings[i];
 				
-				_foldout[i] = EditorGUILayout.Foldout(_foldout[i], settings.Name);
+				settings.Foldout = EditorGUILayout.Foldout(settings.Foldout, settings.Name);
 
-				if (_foldout[i])
+				if (settings.Foldout)
 				{
 					settings.DrawInspector();
 				}
@@ -218,12 +216,27 @@ public class JsonDataEditor : EditorWindow
 
 		public bool Changed => _changed;
 
+		public bool Foldout
+		{
+			get { return _foldout; }
+			set
+			{
+				if (_foldout == value) return;
+				EditorPrefs.SetBool(FoldStateKey, value);
+				_foldout = value;
+			}
+		}
+		private string FoldStateKey => $"JsonDataEditor_{_name}_foldState";
+
+
 		[SerializeField] private bool _changed;
 		
 		[SerializeField] private string _name;
 		[SerializeField] private ScriptableObject _so;
 		[SerializeField] private Editor _editor;
 		[SerializeField] private string _filePath;
+
+		[SerializeField] private bool _foldout;
 
 
 		private void OnEnable()
@@ -242,7 +255,8 @@ public class JsonDataEditor : EditorWindow
 		{
 			_filePath = path;
 			_name = Path.GetFileNameWithoutExtension(path);
-			
+			_foldout = EditorPrefs.GetBool(FoldStateKey, false);
+
 			LoadFromFile();
 		}
 
@@ -280,7 +294,6 @@ public class JsonDataEditor : EditorWindow
 			return obj;
 		}
 		
-
 	}
 
 	#endregion
