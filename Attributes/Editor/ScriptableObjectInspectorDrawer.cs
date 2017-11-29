@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using DeadcowBox;
 using UnityEditor;
 
 [CustomPropertyDrawer(typeof(ScriptableObjectInspectorAttribute))]
@@ -33,7 +32,7 @@ public class ScriptableObjectInspectorDrawer : PropertyDrawer
 		position.y += EditorGUI.GetPropertyHeight(property);
 
 		if (_folded) return;
-		
+
 		if (e != null)
 		{
 			position.x += 20;
@@ -46,7 +45,7 @@ public class ScriptableObjectInspectorDrawer : PropertyDrawer
 
 			var prop = so.GetIterator();
 			prop.NextVisible(true);
-            while (prop.NextVisible(true))
+			while (prop.NextVisible(true))
 			{
 				position.height = EditorGUI.GetPropertyHeight(prop);
 				EditorGUI.PropertyField(position, prop);
