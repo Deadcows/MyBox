@@ -66,7 +66,6 @@ public static class MyInput
 	#endregion
 
 
-
 	/// <summary>
 	/// Convert KeyCode to read-friendly format
 	/// </summary>

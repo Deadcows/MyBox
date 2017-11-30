@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public static class ExtensionsColor
+public static class MyColorExtensions
 {
 
 	public static Color WithAlphaSetTo(this Color color, float a)
@@ -21,7 +21,7 @@ public static class ExtensionsColor
 
 	public static string ToHex(this Color color)
 	{
-		return string.Format("#{0:X2}{1:X2}{2:X2}", (int)(color.r * 255), (int)(color.g * 255), (int)(color.b * 255));
+		return $"#{(int) (color.r * 255):X2}{(int) (color.g * 255):X2}{(int) (color.b * 255):X2}";
 	}
 
 }

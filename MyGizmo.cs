@@ -3,7 +3,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-public class MyGizmo
+public static class MyGizmo
 {
 
 	public static void DrawString(string text, Vector3 worldPos, Color? colour = null)
@@ -37,10 +37,12 @@ public class MyGizmo
 
 	public static void DebugCross(Vector3 position, float size)
 	{
+#if UNITY_EDITOR
 		var halfSize = size / 2;
 		Debug.DrawLine(position.OffsetY(-halfSize), position.OffsetY(halfSize), Color.green, .2f);
 		Debug.DrawLine(position.OffsetX(-halfSize), position.OffsetX(halfSize), Color.red, .2f);
 		Debug.DrawLine(position.OffsetZ(-halfSize), position.OffsetZ(halfSize), Color.blue, .2f);
+#endif
 	}
 
 }

@@ -27,16 +27,15 @@ public class DefinedValuesAttributeDrawer : PropertyDrawer
 
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
-		if (_validateValue == null && _setValue == null)
-			SetUp(property);
-
-
+		if (_validateValue == null && _setValue == null) SetUp(property);
+		
 		if (_validateValue == null && _setValue == null)
 		{
 			base.OnGUI(position, property, label);
 			return;
 		}
 
+		if (_validateValue == null) return;
 
 		int selectedIndex = 0;
 		for (int i = 0; i < List.Length; i++)
@@ -85,16 +84,7 @@ public class DefinedValuesAttributeDrawer : PropertyDrawer
 
 	}
 
-	private DefinedValuesAttribute DefinedValuesAttribute
-	{
-		get { return (DefinedValuesAttribute)attribute; }
-	}
+	private DefinedValuesAttribute DefinedValuesAttribute => (DefinedValuesAttribute)attribute;
 
-	private Type VariableType
-	{
-		get
-		{
-			return DefinedValuesAttribute.ValuesArray[0].GetType();
-		}
-	}
+	private Type VariableType => DefinedValuesAttribute.ValuesArray[0].GetType();
 }

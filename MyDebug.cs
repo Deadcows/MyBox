@@ -22,7 +22,7 @@ public static class MyDebug
 		if (mesh == null) return;
 		var renderer = mesh.GetComponent<MeshRenderer>();
 		var bounds = renderer.bounds;
-		//var transform = mesh.transform;
+
 		Vector3 v3Center = bounds.center;
 		Vector3 v3Extents = bounds.extents;
 
@@ -34,15 +34,6 @@ public static class MyDebug
 		var v3BackTopRight = new Vector3(v3Center.x + v3Extents.x, v3Center.y + v3Extents.y, v3Center.z + v3Extents.z);  // Back top right corner
 		var v3BackBottomLeft = new Vector3(v3Center.x - v3Extents.x, v3Center.y - v3Extents.y, v3Center.z + v3Extents.z);  // Back bottom left corner
 		var v3BackBottomRight = new Vector3(v3Center.x + v3Extents.x, v3Center.y - v3Extents.y, v3Center.z + v3Extents.z);  // Back bottom right corner
-
-		//v3FrontTopLeft = transform.TransformPoint(v3FrontTopLeft);
-		//v3FrontTopRight = transform.TransformPoint(v3FrontTopRight);
-		//v3FrontBottomLeft = transform.TransformPoint(v3FrontBottomLeft);
-		//v3FrontBottomRight = transform.TransformPoint(v3FrontBottomRight);
-		//v3BackTopLeft = transform.TransformPoint(v3BackTopLeft);
-		//v3BackTopRight = transform.TransformPoint(v3BackTopRight);
-		//v3BackBottomLeft = transform.TransformPoint(v3BackBottomLeft);
-		//v3BackBottomRight = transform.TransformPoint(v3BackBottomRight);
 
 		Debug.DrawLine(v3FrontTopLeft, v3FrontTopRight, color);
 		Debug.DrawLine(v3FrontTopRight, v3FrontBottomRight, color);

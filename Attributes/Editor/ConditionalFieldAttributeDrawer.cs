@@ -1,25 +1,15 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using UnityQuery;
 
 [CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
 public class ConditionalFieldAttributeDrawer : PropertyDrawer
 {
 
-	private ConditionalFieldAttribute Attribute
-	{
-		get { return _attribute ?? (_attribute = attribute as ConditionalFieldAttribute); }
-	}
+	private ConditionalFieldAttribute Attribute => _attribute ?? (_attribute = attribute as ConditionalFieldAttribute);
 
-	private string PropertyToCheck
-	{
-		get { return Attribute != null ? _attribute.PropertyToCheck : null; }
-	}
+	private string PropertyToCheck => Attribute != null ? _attribute.PropertyToCheck : null;
 
-	private object CompareValue
-	{
-		get { return Attribute != null ? _attribute.CompareValue : null; }
-	}
+	private object CompareValue => Attribute != null ? _attribute.CompareValue : null;
 
 
 	private ConditionalFieldAttribute _attribute;
@@ -38,7 +28,7 @@ public class ConditionalFieldAttributeDrawer : PropertyDrawer
 			if (conditionProperty != null)
 			{
 				bool isBoolMatch = conditionProperty.propertyType == SerializedPropertyType.Boolean && conditionProperty.boolValue;
-				string compareStringValue = CompareValue == null ? "NULL" : CompareValue.ToString().ToUpper();
+				string compareStringValue = CompareValue?.ToString().ToUpper() ?? "NULL";
 				if (isBoolMatch && compareStringValue == "FALSE") isBoolMatch = false;
 
 				string conditionPropertyStringValue = conditionProperty.AsStringValue().ToUpper();

@@ -1,12 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 
 public static class Extensions
@@ -17,76 +11,14 @@ public static class Extensions
 		return elements[Random.Range(0, elements.Count - 1)];
 	}
 
-    //TODO: To EditorExtensions
-#if UNITY_EDITOR
-	/// <summary>
-	/// Get Prefab path in Asset Database
-	/// </summary>
-	/// <returns>Null if not a prefab</returns>
-	public static string PrefabPath(this GameObject gameObject, bool withAssetName = true)
+	public static bool IsNullOrEmpty<T>(this IEnumerable<T> sequence)
 	{
-		if (gameObject == null) return null;
-		UnityEngine.Object currentBackgroundPrefab = PrefabUtility.GetPrefabParent(gameObject);
-		return currentBackgroundPrefab != null ?
-			!withAssetName ? Path.GetDirectoryName(AssetDatabase.GetAssetPath(currentBackgroundPrefab)) : AssetDatabase.GetAssetPath(currentBackgroundPrefab)
-			: null;
+		if (sequence == null) return true;
+
+		return !sequence.Any();
 	}
 
-	public static string AsStringValue(this SerializedProperty property)
-	{
-		switch (property.propertyType)
-		{
-			case SerializedPropertyType.String:
-				return property.stringValue;
-
-			case SerializedPropertyType.Character:
-			case SerializedPropertyType.Integer:
-				if (property.type == "char")
-				{
-					return System.Convert.ToChar(property.intValue).ToString();
-				}
-				return property.intValue.ToString();
-
-			case SerializedPropertyType.ObjectReference:
-				return property.objectReferenceValue != null ? property.objectReferenceValue.ToString() : "null";
-
-			case SerializedPropertyType.Boolean:
-				return property.boolValue.ToString();
-
-			case SerializedPropertyType.Enum:
-				return property.enumNames[property.enumValueIndex];
-
-			default:
-				return string.Empty;
-		}
-	}
-
-	public static void SetEditorIcon(this GameObject gameObject, bool textIcon, int iconIndex)
-	{
-		GUIContent[] icons = textIcon ? GetTextures("sv_label_", string.Empty, 0, 8) :
-			GetTextures("sv_icon_dot", "_pix16_gizmo", 0, 16);
-
-		var egu = typeof(EditorGUIUtility);
-		var flags = BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.NonPublic;
-		var args = new object[] { gameObject, icons[iconIndex].image };
-		var setIcon = egu.GetMethod("SetIconForObject", flags, null, new[] { typeof(UnityEngine.Object), typeof(Texture2D) }, null);
-		setIcon.Invoke(null, args);
-	}
-
-	private static GUIContent[] GetTextures(string baseName, string postFix, int startIndex, int count)
-	{
-		GUIContent[] array = new GUIContent[count];
-		for (int i = 0; i < count; i++)
-		{
-			array[i] = EditorGUIUtility.IconContent(baseName + (startIndex + i) + postFix);
-		}
-		return array;
-	}
-
-#endif
-
-
-	private static void Swap<T>(ref T a, ref T b)
+	public static void Swap<T>(ref T a, ref T b)
 	{
 		T x = a;
 		a = b;
@@ -124,10 +56,9 @@ public static class Extensions
 		if (num < min || num > max) return num;
 
 		float mid = (max - min) / 2;
-		if (num > min)
-			return num + mid < max ? min : max;
-		else
-			return num - mid > min ? max : min;
+
+		if (num > min) return num + mid < max ? min : max;
+		return num - mid > min ? max : min;
 	}
 
 	/// <summary>
@@ -175,8 +106,7 @@ public static class Extensions
 	/// </summary>
 	public static RaycastHit2D[] OneHitPerInstance(this RaycastHit2D[] hits)
 	{
-		if (hits == null) return null;
-		return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
+		return hits?.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
 	}
 
 	/// <summary>
@@ -184,8 +114,7 @@ public static class Extensions
 	/// </summary>
 	public static Collider2D[] OneHitPerInstance(this Collider2D[] hits)
 	{
-		if (hits == null) return null;
-		return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
+		return hits?.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
 	}
 
 	/// <summary>
@@ -193,8 +122,7 @@ public static class Extensions
 	/// </summary>
 	public static List<Collider2D> OneHitPerInstanceList(this Collider2D[] hits)
 	{
-		if (hits == null) return null;
-		return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToList();
+		return hits?.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToList();
 	}
 
     public static void SetBodyState(this Rigidbody body, bool state)

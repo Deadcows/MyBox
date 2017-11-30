@@ -5,12 +5,8 @@ using UnityEditor;
 public class DisplayInspectorAttributeDrawer : PropertyDrawer
 {
 
-	private DisplayInspectorAttribute Instance
-	{
-		get { return _instance ?? (_instance = attribute as DisplayInspectorAttribute); }
-	}
+	private DisplayInspectorAttribute Instance => _instance ?? (_instance = attribute as DisplayInspectorAttribute);
 	private DisplayInspectorAttribute _instance;
-
 
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{

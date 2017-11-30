@@ -8,6 +8,6 @@ public class DefinedValuesAttribute : PropertyAttribute
 	public object[] ValuesArray;
 	public DefinedValuesAttribute(params object[] definedValues)
 	{
-		this.ValuesArray = definedValues;
+		ValuesArray = definedValues;
 	}
 }

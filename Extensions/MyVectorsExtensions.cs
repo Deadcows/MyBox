@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public static class ExtensionsVectors
+public static class MyVectorsExtensions
 {
 	
 	#region Set X/Y/Z
@@ -165,6 +165,8 @@ public static class ExtensionsVectors
 	#endregion
 
 
+	#region Invert
+
 	public static Vector2 InvertX(this Vector2 vector)
 	{
 		return new Vector2(-vector.x, vector.y);
@@ -175,6 +177,10 @@ public static class ExtensionsVectors
 		return new Vector2(vector.x, -vector.y);
 	}
 
+	#endregion
+
+
+	#region Convert
 
 	public static Vector2 ToVector2(this Vector3 vector)
 	{
@@ -186,6 +192,10 @@ public static class ExtensionsVectors
 		return new Vector3(vector.x, vector.y);
 	}
 
+	#endregion
+
+
+	#region Round To Int
 
 	public static void RoundPositionToInt(this Transform transform)
 	{
@@ -200,5 +210,33 @@ public static class ExtensionsVectors
 	{
 		return new Vector3(Mathf.Round(vector.x), Mathf.Round(vector.y), Mathf.Round(vector.z));
 	}
-	
+
+	#endregion
+
+
+	public static Vector3 AverageVector(this Vector3[] vectors)
+	{
+		if (vectors.IsNullOrEmpty()) return Vector3.zero;
+
+		float x = 0f, y = 0f, z = 0f;
+		for (var i = 0; i < vectors.Length; i++)
+		{
+			x += vectors[i].x;
+			y += vectors[i].y;
+			z += vectors[i].z;
+		}
+		return new Vector3(x / vectors.Length, y / vectors.Length, z / vectors.Length);
+	}
+
+	/// <summary>
+	/// Snap to grid of snapValue
+	/// </summary>
+	public static Vector3 SnapValue(Vector3 val, float snapValue)
+	{
+		return new Vector3(
+			MyMath.Snap(val.x, snapValue),
+			MyMath.Snap(val.y, snapValue),
+			MyMath.Snap(val.z, snapValue));
+	}
+
 }
