@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 
 public static class MyHandles
 {
@@ -27,4 +28,25 @@ public static class MyHandles
 		Handles.DrawLine(position, position + right * headLength);
 		Handles.DrawLine(position, position + left * headLength);
 	}
+
+	/// <summary>
+	/// Draw arrowed gizmo in scene view to vizualize path
+	/// </summary>
+	/// <param name="path">Path to vizualize</param>
+	/// <param name="screenSpaceSize">Size of dotted line</param>
+	public static void VizualizePath(NavMeshPath path, float screenSpaceSize = 3)
+	{
+		var coreners = path.corners;
+		for (var i = 1; i < coreners.Length; i++)
+		{
+			DrawDirectionalDottedLine(coreners[i - 1], coreners[i], screenSpaceSize);
+		}
+	}
+
+	public static void DrawFlyPath(Vector3 pointA, Vector3 pointB, float height = 3)
+	{
+		var color = Handles.color;
+		Handles.DrawBezier(pointA, pointB, pointA.OffsetY(height), pointB.OffsetY(height), color, null, 3);
+	}
+
 }

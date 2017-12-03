@@ -5,20 +5,6 @@ public static class MyNavMeshPathExtensions
 {
 
 	/// <summary>
-	/// Draw arrowed gizmo in scene view to vizualize path
-	/// </summary>
-	/// <param name="path">Path to vizualize</param>
-	/// <param name="screenSpaceSize">Size of dotted line</param>
-	public static void VizualizePath(this NavMeshPath path, float screenSpaceSize = 3)
-	{
-		var coreners = path.corners;
-		for (var i = 1; i < coreners.Length; i++)
-		{
-			MyHandles.DrawDirectionalDottedLine(coreners[i-1], coreners[i], screenSpaceSize);
-		}
-	}
-
-	/// <summary>
 	/// Get length of path (combining all corners)
 	/// </summary>
 	/// <param name="path">Path to calculate</param>
