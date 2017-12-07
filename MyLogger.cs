@@ -8,7 +8,7 @@ public class MyLogger
 
 	public static bool Disabled;
 
-	public static int SessionMark { get; private set; }
+	public static int SessionMark { get; }
 
 	public static string Version
 	{
@@ -25,11 +25,9 @@ public class MyLogger
 		SessionMark = UnityEngine.Random.Range(1000000000, int.MaxValue);
 
 		AppDomain.CurrentDomain.UnhandledException += (sender, args) => LogIt(args.ExceptionObject as Exception);
-
 		Application.logMessageReceived += (condition, trace, type) =>
 		{
-			LogIt(string.Format("Console Log ({0}): {1}{2}{3}",
-				type, condition, Environment.NewLine, trace));
+			LogIt($"Console Log ({type}): {condition}{Environment.NewLine}{trace}");
 		};
 	}
 

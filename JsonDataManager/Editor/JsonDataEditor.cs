@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityQuery;
 
 public class JsonDataEditor : EditorWindow
 {
@@ -247,7 +246,7 @@ public class JsonDataEditor : EditorWindow
 		public void DrawInspector()
 		{
 			EditorGUI.BeginChangeCheck();
-			_editor.DrawDefaultInspector();
+			_editor.OnInspectorGUI();
 			if (EditorGUI.EndChangeCheck()) _changed = true;
 		}
 		

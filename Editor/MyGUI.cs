@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
 using Object = UnityEngine.Object;
 
 /// <summary>
@@ -460,5 +462,102 @@ public static class MyGUI
 		EditorGUILayout.EndVertical();
 		return newArray;
 	}
-	
+
+
+	public static FieldInfo GetFieldInfo(this SerializedProperty property)
+	{
+		var targetObject = property.serializedObject.targetObject;
+		var targetType = targetObject.GetType();
+		return targetType.GetField(property.propertyPath);
+	}
+
+	public static bool IsAttributeDefined<T>(this SerializedProperty property) where T : Attribute
+	{
+		var fieldInfo = property.GetFieldInfo();
+		if (fieldInfo == null) return false;
+		return Attribute.IsDefined(fieldInfo, typeof(T));
+	}
+
+
+	public class ReordableCollection
+	{
+
+		public bool IsExpanded
+		{
+			get { return _property.isExpanded; }
+			set { _property.isExpanded = value; }
+		}
+
+		public void Draw()
+		{
+			if (!_property.isExpanded) DrawHeader();
+			else _list.DoLayoutList();
+		}
+		
+
+		private ReorderableList _list;
+		private SerializedProperty _property;
+
+		public ReordableCollection(SerializedProperty property)
+		{
+			_property = property;
+			CreateList(property);
+		}
+
+		~ReordableCollection()
+		{
+			_property = null;
+			_list = null;
+		}
+
+		private void DrawHeader()
+		{
+			EditorGUILayout.BeginHorizontal();
+			_property.isExpanded = EditorGUILayout.ToggleLeft($"{_property.displayName}[]", _property.isExpanded, EditorStyles.boldLabel);
+			EditorGUILayout.LabelField($"size: {_property.arraySize}");
+			EditorGUILayout.EndHorizontal();
+		}
+
+		private void CreateList(SerializedProperty property)
+		{
+			_list = new ReorderableList(property.serializedObject, property, true, true, true, true);
+			_list.onChangedCallback += list => Apply();
+			//_list.onAddCallback += list => Apply();
+			//_list.onRemoveCallback += list => Apply();
+
+
+			_list.drawHeaderCallback += DrawElementHeader;
+			_list.onCanRemoveCallback += (list) => _list.count > 0;
+			_list.drawElementCallback += DrawElement;
+			_list.elementHeightCallback += (idx) => Mathf.Max(EditorGUIUtility.singleLineHeight, EditorGUI.GetPropertyHeight(_property.GetArrayElementAtIndex(idx), GUIContent.none, true)) + 4.0f;
+		}
+
+		private void DrawElementHeader(Rect rect)
+		{
+			_property.isExpanded = EditorGUI.ToggleLeft(rect, _property.displayName, _property.isExpanded, EditorStyles.boldLabel);
+		}
+
+		private void DrawElement(Rect rect, int index, bool active, bool focused)
+		{
+			EditorGUI.BeginChangeCheck();
+			var newRect = rect;
+			newRect.x += 20;
+			if (_property.GetArrayElementAtIndex(index).propertyType == SerializedPropertyType.Generic)
+			{
+				EditorGUI.LabelField(newRect, _property.GetArrayElementAtIndex(index).displayName);
+			}
+
+			rect.height = EditorGUI.GetPropertyHeight(_property.GetArrayElementAtIndex(index), GUIContent.none, true);
+			rect.y += 1;
+			EditorGUI.PropertyField(rect, _property.GetArrayElementAtIndex(index), GUIContent.none, true);
+			_list.elementHeight = rect.height + 4.0f;
+			if (EditorGUI.EndChangeCheck()) Apply();
+		}
+
+		private void Apply()
+		{
+			_property.serializedObject.ApplyModifiedProperties();
+		}
+	}
+
 }
