@@ -349,15 +349,13 @@ public static class MyGUI
 					{
 						foreach (Object dragged in DragAndDrop.objectReferences)
 						{
-							var validObject = dragged as T;
-							if (validObject == null) validObject = AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GetAssetPath(dragged));
+							var validObject = dragged as T ?? AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GetAssetPath(dragged));
 
 							if (validObject != null) result.Add(validObject);
 						}
 					}
 
-					if (result.Count > 0)
-						return result.OrderBy(o => o.name).ToArray();
+					if (result.Count > 0) return result.OrderBy(o => o.name).ToArray();
 					return null;
 				}
 				break;
@@ -494,7 +492,6 @@ public static class MyGUI
 			else _list.DoLayoutList();
 		}
 		
-
 		private ReorderableList _list;
 		private SerializedProperty _property;
 
@@ -522,14 +519,11 @@ public static class MyGUI
 		{
 			_list = new ReorderableList(property.serializedObject, property, true, true, true, true);
 			_list.onChangedCallback += list => Apply();
-			//_list.onAddCallback += list => Apply();
-			//_list.onRemoveCallback += list => Apply();
-
 
 			_list.drawHeaderCallback += DrawElementHeader;
 			_list.onCanRemoveCallback += (list) => _list.count > 0;
 			_list.drawElementCallback += DrawElement;
-			_list.elementHeightCallback += (idx) => Mathf.Max(EditorGUIUtility.singleLineHeight, EditorGUI.GetPropertyHeight(_property.GetArrayElementAtIndex(idx), GUIContent.none, true)) + 4.0f;
+			_list.elementHeightCallback += GetElementHeight;
 		}
 
 		private void DrawElementHeader(Rect rect)
@@ -539,19 +533,27 @@ public static class MyGUI
 
 		private void DrawElement(Rect rect, int index, bool active, bool focused)
 		{
+			var element = _property.GetArrayElementAtIndex(index);
 			EditorGUI.BeginChangeCheck();
 			var newRect = rect;
 			newRect.x += 20;
-			if (_property.GetArrayElementAtIndex(index).propertyType == SerializedPropertyType.Generic)
-			{
-				EditorGUI.LabelField(newRect, _property.GetArrayElementAtIndex(index).displayName);
-			}
 
-			rect.height = EditorGUI.GetPropertyHeight(_property.GetArrayElementAtIndex(index), GUIContent.none, true);
+			if (element.propertyType == SerializedPropertyType.Generic) EditorGUI.LabelField(newRect, element.displayName);
+
+			rect.height = GetElementHeight(index);
 			rect.y += 1;
+
 			EditorGUI.PropertyField(rect, _property.GetArrayElementAtIndex(index), GUIContent.none, true);
+
 			_list.elementHeight = rect.height + 4.0f;
 			if (EditorGUI.EndChangeCheck()) Apply();
+		}
+
+		private float GetElementHeight(int index)
+		{
+			var element = _property.GetArrayElementAtIndex(index);
+			var height = EditorGUI.GetPropertyHeight(element, GUIContent.none, true);
+			return Mathf.Max(EditorGUIUtility.singleLineHeight, height + 4.0f);
 		}
 
 		private void Apply()
