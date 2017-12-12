@@ -280,7 +280,7 @@ public class JsonDataEditor : EditorWindow
 			_so = LoadObject(_filePath);
 			_editor = Editor.CreateEditor(_so);
 
-			_so.hideFlags = HideFlags.HideAndDontSave;
+			_so.hideFlags = HideFlags.DontSave;
 			_editor.hideFlags = HideFlags.HideAndDontSave;
 		}
 
