@@ -5,22 +5,24 @@ using UnityEngine;
 // http://answers.unity3d.com/questions/463207/how-do-you-make-a-custom-handle-respond-to-the-mou.html
 public class DraggableHandler
 {
-	// internal state for DragHandle()
-	static readonly int s_DragHandleHash = "DragHandleHash".GetHashCode();
-	static Vector2 s_DragHandleMouseStart;
-	static Vector2 s_DragHandleMouseCurrent;
-	static Vector3 s_DragHandleWorldStart;
-	static float s_DragHandleClickTime;
-	static int s_DragHandleClickID;
-	static readonly float s_DragHandleDoubleClickInterval = 0.5f;
-	static bool s_DragHandleHasMoved;
 
-	// externally accessible to get the ID of the most resently processed DragHandle
-	public static int lastDragHandleID;
+	public static int LastDragHandleId;
+
+
+	private static readonly int DragHandleHash = "DragHandleHash".GetHashCode();
+	private const float DragHandleDoubleClickInterval = 0.5f;
+
+	private static Vector2 _dragHandleMouseStart;
+	private static Vector2 _dragHandleMouseCurrent;
+	private static Vector3 _dragHandleWorldStart;
+	private static float _dragHandleClickTime;
+	private static int _dragHandleClickId;
+	private static bool _dragHandleHasMoved;
+	
 
 	public enum DragHandleResult
 	{
-		none = 0,
+		None = 0,
 
 		LMBPress,
 		LMBClick,
@@ -37,13 +39,13 @@ public class DraggableHandler
 
 	public static Vector3 DraggableHandle(Vector3 position, float handleSize, Quaternion rotation, Handles.CapFunction capFunc, Color colorSelected, out DragHandleResult result)
 	{
-		int id = GUIUtility.GetControlID(s_DragHandleHash, FocusType.Passive);
-		lastDragHandleID = id;
+		int id = GUIUtility.GetControlID(DragHandleHash, FocusType.Passive);
+		LastDragHandleId = id;
 
 		Vector3 screenPosition = Handles.matrix.MultiplyPoint(position);
 		Matrix4x4 cachedMatrix = Handles.matrix;
 
-		result = DragHandleResult.none;
+		result = DragHandleResult.None;
 
 		switch (Event.current.GetTypeForControl(id))
 		{
@@ -51,9 +53,9 @@ public class DraggableHandler
 				if (HandleUtility.nearestControl == id && (Event.current.button == 0 || Event.current.button == 1))
 				{
 					GUIUtility.hotControl = id;
-					s_DragHandleMouseCurrent = s_DragHandleMouseStart = Event.current.mousePosition;
-					s_DragHandleWorldStart = position;
-					s_DragHandleHasMoved = false;
+					_dragHandleMouseCurrent = _dragHandleMouseStart = Event.current.mousePosition;
+					_dragHandleWorldStart = position;
+					_dragHandleHasMoved = false;
 
 					Event.current.Use();
 					EditorGUIUtility.SetWantsMouseJumping(1);
@@ -77,13 +79,13 @@ public class DraggableHandler
 					else if (Event.current.button == 1)
 						result = DragHandleResult.RMBRelease;
 
-					if (Event.current.mousePosition == s_DragHandleMouseStart)
+					if (Event.current.mousePosition == _dragHandleMouseStart)
 					{
-						bool doubleClick = (s_DragHandleClickID == id) &&
-							(Time.realtimeSinceStartup - s_DragHandleClickTime < s_DragHandleDoubleClickInterval);
+						bool doubleClick = (_dragHandleClickId == id) &&
+							(Time.realtimeSinceStartup - _dragHandleClickTime < DragHandleDoubleClickInterval);
 
-						s_DragHandleClickID = id;
-						s_DragHandleClickTime = Time.realtimeSinceStartup;
+						_dragHandleClickId = id;
+						_dragHandleClickTime = Time.realtimeSinceStartup;
 
 						if (Event.current.button == 0)
 							result = doubleClick ? DragHandleResult.LMBDoubleClick : DragHandleResult.LMBClick;
@@ -96,24 +98,24 @@ public class DraggableHandler
 			case EventType.MouseDrag:
 				if (GUIUtility.hotControl == id)
 				{
-					s_DragHandleMouseCurrent += new Vector2(Event.current.delta.x, -Event.current.delta.y);
-					Vector3 position2 = Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(s_DragHandleWorldStart))
-						+ (Vector3)(s_DragHandleMouseCurrent - s_DragHandleMouseStart);
+					_dragHandleMouseCurrent += new Vector2(Event.current.delta.x, -Event.current.delta.y);
+					Vector3 position2 = Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(_dragHandleWorldStart))
+						+ (Vector3)(_dragHandleMouseCurrent - _dragHandleMouseStart);
 					position = Handles.matrix.inverse.MultiplyPoint(Camera.current.ScreenToWorldPoint(position2));
 
 					if (Camera.current.transform.forward == Vector3.forward || Camera.current.transform.forward == -Vector3.forward)
-						position.z = s_DragHandleWorldStart.z;
+						position.z = _dragHandleWorldStart.z;
 					if (Camera.current.transform.forward == Vector3.up || Camera.current.transform.forward == -Vector3.up)
-						position.y = s_DragHandleWorldStart.y;
+						position.y = _dragHandleWorldStart.y;
 					if (Camera.current.transform.forward == Vector3.right || Camera.current.transform.forward == -Vector3.right)
-						position.x = s_DragHandleWorldStart.x;
+						position.x = _dragHandleWorldStart.x;
 
 					if (Event.current.button == 0)
 						result = DragHandleResult.LMBDrag;
 					else if (Event.current.button == 1)
 						result = DragHandleResult.RMBDrag;
 
-					s_DragHandleHasMoved = true;
+					_dragHandleHasMoved = true;
 
 					GUI.changed = true;
 					Event.current.Use();
@@ -122,7 +124,7 @@ public class DraggableHandler
 
 			case EventType.Repaint:
 				Color currentColour = Handles.color;
-				if (id == GUIUtility.hotControl && s_DragHandleHasMoved)
+				if (id == GUIUtility.hotControl && _dragHandleHasMoved)
 					Handles.color = colorSelected;
 
 				Handles.matrix = Matrix4x4.identity;
@@ -140,5 +142,23 @@ public class DraggableHandler
 		}
 
 		return position;
+	}
+}
+
+public static class DraggableHandlerExtensions
+{
+	public static bool IsMousePress(this DraggableHandler.DragHandleResult result)
+	{
+		return result == DraggableHandler.DragHandleResult.LMBPress || result == DraggableHandler.DragHandleResult.RMBPress;
+	}
+
+	public static bool IsMouseRelease(this DraggableHandler.DragHandleResult result)
+	{
+		return result == DraggableHandler.DragHandleResult.LMBRelease || result == DraggableHandler.DragHandleResult.RMBRelease;
+	}
+
+	public static bool IsMouseDrag(this DraggableHandler.DragHandleResult result)
+	{
+		return result == DraggableHandler.DragHandleResult.LMBDrag || result == DraggableHandler.DragHandleResult.RMBDrag;
 	}
 }

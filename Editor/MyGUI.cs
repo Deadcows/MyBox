@@ -366,6 +366,10 @@ public static class MyGUI
 
 	#endregion
 
+	public static void SpaceInPixels(int pixels)
+	{
+		EditorGUILayout.LabelField("", GUILayout.Width(pixels));
+	}
 
 	/// <summary>
 	/// Creates a filepath textfield with a browse button. Opens the open file panel.
@@ -477,9 +481,10 @@ public static class MyGUI
 	}
 
 
+	#region Reordable Collection
+
 	public class ReordableCollection
 	{
-
 		public bool IsExpanded
 		{
 			get { return _property.isExpanded; }
@@ -561,5 +566,7 @@ public static class MyGUI
 			_property.serializedObject.ApplyModifiedProperties();
 		}
 	}
+
+	#endregion
 
 }
