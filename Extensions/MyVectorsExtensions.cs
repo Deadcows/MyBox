@@ -195,6 +195,32 @@ public static class MyVectorsExtensions
 	#endregion
 
 
+	#region Snap
+
+	/// <summary>
+	/// Snap to grid of snapValue
+	/// </summary>
+	public static Vector3 SnapValue(this Vector3 val, float snapValue)
+	{
+		return new Vector3(
+			MyMath.Snap(val.x, snapValue),
+			MyMath.Snap(val.y, snapValue),
+			MyMath.Snap(val.z, snapValue));
+	}
+
+	/// <summary>
+	/// Snap to grid of snapValue
+	/// </summary>
+	public static Vector2 SnapValue(this Vector2 val, float snapValue)
+	{
+		return new Vector2(
+			MyMath.Snap(val.x, snapValue),
+			MyMath.Snap(val.y, snapValue));
+	}
+
+	#endregion
+
+
 	#region Round To Int
 
 	public static void RoundPositionToInt(this Transform transform)
@@ -226,17 +252,6 @@ public static class MyVectorsExtensions
 			z += vectors[i].z;
 		}
 		return new Vector3(x / vectors.Length, y / vectors.Length, z / vectors.Length);
-	}
-
-	/// <summary>
-	/// Snap to grid of snapValue
-	/// </summary>
-	public static Vector3 SnapValue(Vector3 val, float snapValue)
-	{
-		return new Vector3(
-			MyMath.Snap(val.x, snapValue),
-			MyMath.Snap(val.y, snapValue),
-			MyMath.Snap(val.z, snapValue));
 	}
 
 }
