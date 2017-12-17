@@ -366,11 +366,6 @@ public static class MyGUI
 
 	#endregion
 
-	public static void SpaceInPixels(int pixels)
-	{
-		EditorGUILayout.LabelField("", GUILayout.Width(pixels));
-	}
-
 	/// <summary>
 	/// Creates a filepath textfield with a browse button. Opens the open file panel.
 	/// </summary>
