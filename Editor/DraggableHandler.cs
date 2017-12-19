@@ -37,47 +37,50 @@ public class DraggableHandler
 		RMBRelease,
 	};
 
-	public static Vector3 DraggableHandle(Vector3 position, float handleSize, Quaternion rotation, Handles.CapFunction capFunc, Color colorSelected, out DragHandleResult result)
+	public static Vector3 DraggableHandle(Vector3 position, out DragHandleResult result)
 	{
+		return DraggableHandle(position, .5f, Quaternion.identity, Handles.SphereHandleCap, Color.green, out result);
+	}
+
+	public static Vector3 DraggableHandle(Vector3 position, float handleSize, Quaternion rotation, Handles.CapFunction capFunc, Color colorSelected, out DragHandleResult result, bool allowRightButton = false)
+	{
+		result = DragHandleResult.None;
+
 		int id = GUIUtility.GetControlID(DragHandleHash, FocusType.Passive);
 		LastDragHandleId = id;
 
 		Vector3 screenPosition = Handles.matrix.MultiplyPoint(position);
 		Matrix4x4 cachedMatrix = Handles.matrix;
 
-		result = DragHandleResult.None;
+		bool leftMouseUsed = Event.current.button == 0;
+		bool rightMouseUsed = Event.current.button == 1;
+		bool validControl = leftMouseUsed || (rightMouseUsed && allowRightButton);
 
 		switch (Event.current.GetTypeForControl(id))
 		{
 			case EventType.MouseDown:
-				if (HandleUtility.nearestControl == id && (Event.current.button == 0 || Event.current.button == 1))
+				if (HandleUtility.nearestControl == id && validControl)
 				{
 					GUIUtility.hotControl = id;
-					_dragHandleMouseCurrent = _dragHandleMouseStart = Event.current.mousePosition;
-					_dragHandleWorldStart = position;
-					_dragHandleHasMoved = false;
-
 					Event.current.Use();
 					EditorGUIUtility.SetWantsMouseJumping(1);
 
-					if (Event.current.button == 0)
-						result = DragHandleResult.LMBPress;
-					else if (Event.current.button == 1)
-						result = DragHandleResult.RMBPress;
+					result = leftMouseUsed ? DragHandleResult.LMBPress : DragHandleResult.RMBPress;
+
+					_dragHandleMouseCurrent = _dragHandleMouseStart = Event.current.mousePosition;
+					_dragHandleWorldStart = position;
+					_dragHandleHasMoved = false;
 				}
 				break;
 
 			case EventType.MouseUp:
-				if (GUIUtility.hotControl == id && (Event.current.button == 0 || Event.current.button == 1))
+				if (GUIUtility.hotControl == id && validControl)
 				{
 					GUIUtility.hotControl = 0;
 					Event.current.Use();
 					EditorGUIUtility.SetWantsMouseJumping(0);
 
-					if (Event.current.button == 0)
-						result = DragHandleResult.LMBRelease;
-					else if (Event.current.button == 1)
-						result = DragHandleResult.RMBRelease;
+					result = leftMouseUsed ? DragHandleResult.LMBRelease : DragHandleResult.RMBRelease;
 
 					if (Event.current.mousePosition == _dragHandleMouseStart)
 					{
@@ -87,16 +90,14 @@ public class DraggableHandler
 						_dragHandleClickId = id;
 						_dragHandleClickTime = Time.realtimeSinceStartup;
 
-						if (Event.current.button == 0)
-							result = doubleClick ? DragHandleResult.LMBDoubleClick : DragHandleResult.LMBClick;
-						else if (Event.current.button == 1)
-							result = doubleClick ? DragHandleResult.RMBDoubleClick : DragHandleResult.RMBClick;
+						if (!doubleClick) result = leftMouseUsed ? DragHandleResult.LMBClick : DragHandleResult.RMBClick;
+						else result = leftMouseUsed ? DragHandleResult.LMBDoubleClick : DragHandleResult.RMBDoubleClick;
 					}
 				}
 				break;
 
 			case EventType.MouseDrag:
-				if (GUIUtility.hotControl == id)
+				if (GUIUtility.hotControl == id && validControl)
 				{
 					_dragHandleMouseCurrent += new Vector2(Event.current.delta.x, -Event.current.delta.y);
 					Vector3 position2 = Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(_dragHandleWorldStart))
@@ -110,10 +111,7 @@ public class DraggableHandler
 					if (Camera.current.transform.forward == Vector3.right || Camera.current.transform.forward == -Vector3.right)
 						position.x = _dragHandleWorldStart.x;
 
-					if (Event.current.button == 0)
-						result = DragHandleResult.LMBDrag;
-					else if (Event.current.button == 1)
-						result = DragHandleResult.RMBDrag;
+					result = leftMouseUsed ? DragHandleResult.LMBDrag : DragHandleResult.RMBDrag;
 
 					_dragHandleHasMoved = true;
 
