@@ -47,6 +47,22 @@ public static class MyInput
 		return false;
 	}
 
+	public static int GetNumberDown(KeyCode key)
+	{
+		if (key == KeyCode.Alpha0 || key == KeyCode.Keypad0) return 0;
+		if (key == KeyCode.Alpha1 || key == KeyCode.Keypad1) return 1;
+		if (key == KeyCode.Alpha2 || key == KeyCode.Keypad2) return 2;
+		if (key == KeyCode.Alpha3 || key == KeyCode.Keypad3) return 3;
+		if (key == KeyCode.Alpha4 || key == KeyCode.Keypad4) return 4;
+		if (key == KeyCode.Alpha5 || key == KeyCode.Keypad5) return 5;
+		if (key == KeyCode.Alpha6 || key == KeyCode.Keypad6) return 6;
+		if (key == KeyCode.Alpha7 || key == KeyCode.Keypad7) return 7;
+		if (key == KeyCode.Alpha8 || key == KeyCode.Keypad8) return 8;
+		if (key == KeyCode.Alpha9 || key == KeyCode.Keypad9) return 9;
+
+		return -1;
+	}
+
 	public static int GetNumberDown()
 	{
 		if (Input.GetKeyDown(KeyCode.Alpha0) || Input.GetKeyDown(KeyCode.Keypad0)) return 0;
