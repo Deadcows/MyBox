@@ -10,4 +10,6 @@ public bool WanderAround;
 public AIState NextState = AIState.None;
 [ConditionalField("NextState", AIState.Idle)] public float IdleTime = 5;
 ```
-![ConditionalField Example](https://deadcow.ru/MyBox/ConditionalField.gif "Logo Title Text 1")
+![ConditionalField Example][ConditionalField]
+[ConditionalField]: http://deadcow.ru/MyBox/ConditionalField.gif "ConditionalField Example"
+
