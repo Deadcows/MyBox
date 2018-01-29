@@ -15,6 +15,16 @@ public static class MyVectorsExtensions
 		transform.position = transform.position.SetXY(x, y);
 	}
 
+	public static Vector3 SetXZ(this Vector3 vector, float x, float z)
+	{
+		return new Vector3(x, vector.y, z);
+	}
+
+	public static void SetXZ(this Transform transform, float x, float z)
+	{
+		transform.position = transform.position.SetXZ(x, z);
+	}
+
 
 	public static Vector3 SetX(this Vector3 vector, float x)
 	{
