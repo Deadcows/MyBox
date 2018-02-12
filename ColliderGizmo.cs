@@ -1,113 +1,114 @@
 ﻿using UnityEngine;
 
 
-public enum CCGPresets
+
+
+public class ColliderGizmo : MonoBehaviour
 {
-	Custom,
-	Red,
-	Blue,
-	Green,
-	Purple,
-	Yellow,
-	Aqua, 
-	White,
-	Lilac,
-	DirtySand
-};
+	public enum Presets
+	{
+		Custom,
+		Red,
+		Blue,
+		Green,
+		Purple,
+		Yellow,
+		Aqua,
+		White,
+		Lilac,
+		DirtySand
+	}
 
+	public Presets Preset;
 
-public class CrucialColliderGizmo : MonoBehaviour
-{
+	public Color CustomWireColor;
+	public Color CustomFillColor;
+	public Color CustomCenterColor;
 
-	public CCGPresets selectedPreset;
+	public float Alpha = 1.0f;
+	public Color WireColor = new Color(.6f, .6f, 1f, .5f);
+	public Color FillColor = new Color(.6f, .7f, 1f, .1f);
+	public Color CenterColor = new Color(.6f, .7f, 1f, .7f);
 
-	public Color savedCustomWireColor;
-	public Color savedCustomFillColor;
-	public Color savedCustomCenterColor;
+	public bool DrawFill = true;
+	public bool DrawWire = true;
+	public bool DrawCenter;
 
-	public float overallAlpha = 1.0f;
-	public Color wireColor = new Color(.6f, .6f, 1f, .5f);
-	public Color fillColor = new Color(.6f, .7f, 1f, .1f);
-	public Color centerColor = new Color(.6f, .7f, 1f, .7f);
-
-	public bool drawFill = true;
-	public bool drawWire = true;
-
-	public bool drawCenter;
-	public float centerMarkerRadius = 1.0f;
-
-	public float collider2D_ZDepth = 2.0f;
-
-	public bool includeChildColliders;
+	/// <summary>
+	/// The radius of the center marker on your collider(s)
+	/// </summary>
+	public float CenterMarkerRadius = 1.0f;
+	
+	public bool IncludeChildColliders;
 
 
 	#region Change Preset
 
-	public void ChangePreset(CCGPresets preset)
+	public void ChangePreset(Presets preset)
 	{
-		selectedPreset = preset;
+		Preset = preset;
 
-		switch (selectedPreset)
+		switch (Preset)
 		{
-			case CCGPresets.Red:
-				wireColor = new Color32(143, 0, 21, 202);
-				fillColor = new Color32(218, 0, 0, 37);
-				centerColor = new Color32(135, 36, 36, 172);
+			case Presets.Red:
+				WireColor = new Color32(143, 0, 21, 202);
+				FillColor = new Color32(218, 0, 0, 37);
+				CenterColor = new Color32(135, 36, 36, 172);
 				break;
 
-			case CCGPresets.Blue:
-				wireColor = new Color32(0, 116, 214, 202);
-				fillColor = new Color32(0, 110, 218, 37);
-				centerColor = new Color32(57, 160, 221, 172);
+			case Presets.Blue:
+				WireColor = new Color32(0, 116, 214, 202);
+				FillColor = new Color32(0, 110, 218, 37);
+				CenterColor = new Color32(57, 160, 221, 172);
 				break;
 
-			case CCGPresets.Green:
-				wireColor = new Color32(153, 255, 187, 128);
-				fillColor = new Color32(153, 255, 187, 62);
-				centerColor = new Color32(153, 255, 187, 172);
+			case Presets.Green:
+				WireColor = new Color32(153, 255, 187, 128);
+				FillColor = new Color32(153, 255, 187, 62);
+				CenterColor = new Color32(153, 255, 187, 172);
 				break;
 
-			case CCGPresets.Purple:
-				wireColor = new Color32(138, 138, 234, 128);
-				fillColor = new Color32(173, 178, 255, 26);
-				centerColor = new Color32(153, 178, 255, 172);
+			case Presets.Purple:
+				WireColor = new Color32(138, 138, 234, 128);
+				FillColor = new Color32(173, 178, 255, 26);
+				CenterColor = new Color32(153, 178, 255, 172);
 				break;
 
-			case CCGPresets.Yellow:
-				wireColor = new Color32(255, 231, 35, 128);
-				fillColor = new Color32(255, 252, 153, 100);
-				centerColor = new Color32(255, 242, 84, 172);
+			case Presets.Yellow:
+				WireColor = new Color32(255, 231, 35, 128);
+				FillColor = new Color32(255, 252, 153, 100);
+				CenterColor = new Color32(255, 242, 84, 172);
 				break;
 
-			case CCGPresets.DirtySand:
-				wireColor = new Color32(255, 170, 0, 60);
-				fillColor = new Color32(180, 160, 80, 175);
-				centerColor = new Color32(255, 242, 84, 172);
+			case Presets.DirtySand:
+				WireColor = new Color32(255, 170, 0, 60);
+				FillColor = new Color32(180, 160, 80, 175);
+				CenterColor = new Color32(255, 242, 84, 172);
 				break;
 
-			case CCGPresets.Aqua:
-				wireColor = new Color32(255, 255, 255, 120);
-				fillColor = new Color32(0, 230, 255, 140);
-				centerColor = new Color32(255, 255, 255, 120);
+			case Presets.Aqua:
+				WireColor = new Color32(255, 255, 255, 120);
+				FillColor = new Color32(0, 230, 255, 140);
+				CenterColor = new Color32(255, 255, 255, 120);
 				break;
 
-			case CCGPresets.White:
-				wireColor = new Color32(255, 255, 255, 130);
-				fillColor = new Color32(255, 255, 255, 130);
-				centerColor = new Color32(255, 255, 255, 130);
+			case Presets.White:
+				WireColor = new Color32(255, 255, 255, 130);
+				FillColor = new Color32(255, 255, 255, 130);
+				CenterColor = new Color32(255, 255, 255, 130);
 				break;
 
-			case CCGPresets.Lilac:
-				wireColor = new Color32(255, 255, 255, 255);
-				fillColor = new Color32(160, 190, 255, 140);
-				centerColor = new Color32(255, 255, 255, 130);
+			case Presets.Lilac:
+				WireColor = new Color32(255, 255, 255, 255);
+				FillColor = new Color32(160, 190, 255, 140);
+				CenterColor = new Color32(255, 255, 255, 130);
 				break;
 
 
-			case CCGPresets.Custom:
-				wireColor = savedCustomWireColor;
-				fillColor = savedCustomFillColor;
-				centerColor = savedCustomCenterColor;
+			case Presets.Custom:
+				WireColor = CustomWireColor;
+				FillColor = CustomFillColor;
+				CenterColor = CustomCenterColor;
 				break;
 		}
 	}
@@ -121,7 +122,7 @@ public class CrucialColliderGizmo : MonoBehaviour
 
 		DrawColliders(gameObject);
 
-		if (includeChildColliders)
+		if (IncludeChildColliders)
 		{
 			Transform[] allTransforms = gameObject.GetComponentsInChildren<Transform>();
 			for (int i = 0; i < allTransforms.Length; i++)
@@ -136,11 +137,11 @@ public class CrucialColliderGizmo : MonoBehaviour
 
 	#region Drawers
 
-	void DrawCollider(bool wired, EdgeCollider2D edgeCollider, Vector3 position, Vector3 scale, Transform targetTran)
+	private void DrawCollider(bool wired, EdgeCollider2D edgeCollider, Vector3 position, Vector3 scale, Transform targetTran)
 	{
 		if (!edgeCollider) return;
 
-		Gizmos.color = wireColor;
+		Gizmos.color = WireColor;
 		Vector3 prev = Vector2.zero;
 		bool first = true;
 		for (int i = 0; i < edgeCollider.points.Length; i++)
@@ -161,7 +162,7 @@ public class CrucialColliderGizmo : MonoBehaviour
 		}
 	}
 
-	void DrawCollider(bool wired, BoxCollider2D boxCollider, Transform targetTran)
+	private void DrawCollider(bool wired, BoxCollider2D boxCollider, Transform targetTran)
 	{
 		if (!boxCollider) return;
 
@@ -170,7 +171,7 @@ public class CrucialColliderGizmo : MonoBehaviour
 		Gizmos.matrix = Matrix4x4.identity;
 	}
 
-	void DrawCollider(bool wired, BoxCollider boxCollider, Transform targetTran)
+	private void DrawCollider(bool wired, BoxCollider boxCollider, Transform targetTran)
 	{
 		if (!boxCollider) return;
 
@@ -179,7 +180,7 @@ public class CrucialColliderGizmo : MonoBehaviour
 		Gizmos.matrix = Matrix4x4.identity;
 	}
 
-	void DrawCollider(bool wired, CircleCollider2D circleCollider, Vector3 position, Vector3 scale)
+	private void DrawCollider(bool wired, CircleCollider2D circleCollider, Vector3 position, Vector3 scale)
 	{
 		if (!circleCollider) return;
 
@@ -187,7 +188,7 @@ public class CrucialColliderGizmo : MonoBehaviour
 			circleCollider.radius * Mathf.Max(scale.x, scale.y));
 	}
 
-	void DrawCollider(bool wired, SphereCollider sphereCollider, Vector3 position, Vector3 scale)
+	private void DrawCollider(bool wired, SphereCollider sphereCollider, Vector3 position, Vector3 scale)
 	{
 		if (!sphereCollider) return;
 
@@ -195,10 +196,8 @@ public class CrucialColliderGizmo : MonoBehaviour
 			sphereCollider.radius * Mathf.Max(scale.x, scale.y, scale.z));
 	}
 
-	#endregion
 
-
-	void DrawColliders(GameObject hostGameObject)
+	private void DrawColliders(GameObject hostGameObject)
 	{
 
 		Vector3 position = hostGameObject.transform.position;
@@ -247,8 +246,8 @@ public class CrucialColliderGizmo : MonoBehaviour
 		}
 
 
-		Gizmos.color = new Color(wireColor.r, wireColor.g, wireColor.b, wireColor.a * overallAlpha);
-		if (drawWire)
+		Gizmos.color = new Color(WireColor.r, WireColor.g, WireColor.b, WireColor.a * Alpha);
+		if (DrawWire)
 		{
 			DrawCollider(true, collEdge, position, trueScale, hostGameObject.transform);
 			DrawCollider(true, collBox2d, hostGameObject.transform);
@@ -257,8 +256,8 @@ public class CrucialColliderGizmo : MonoBehaviour
 			DrawCollider(true, collSphere, position, trueScale);
 		}
 
-		Gizmos.color = new Color(fillColor.r, fillColor.g, fillColor.b, fillColor.a * overallAlpha);
-		if (drawFill)
+		Gizmos.color = new Color(FillColor.r, FillColor.g, FillColor.b, FillColor.a * Alpha);
+		if (DrawFill)
 		{
 			DrawCollider(false, collEdge, position, trueScale, hostGameObject.transform);
 			DrawCollider(false, collBox2d, hostGameObject.transform);
@@ -267,10 +266,10 @@ public class CrucialColliderGizmo : MonoBehaviour
 			DrawCollider(false, collSphere, position, trueScale);
 		}
 
-		if (drawCenter)
+		if (DrawCenter)
 		{
-			Gizmos.color = new Color(centerColor.r, centerColor.g, centerColor.b, centerColor.a * overallAlpha);
-			Gizmos.DrawSphere(hostGameObject.transform.position, centerMarkerRadius);
+			Gizmos.color = new Color(CenterColor.r, CenterColor.g, CenterColor.b, CenterColor.a * Alpha);
+			Gizmos.DrawSphere(hostGameObject.transform.position, CenterMarkerRadius);
 		}
 	}
 
@@ -288,5 +287,7 @@ public class CrucialColliderGizmo : MonoBehaviour
 		else
 			Gizmos.DrawSphere(position, radius);
 	}
+
+	#endregion
 
 }
