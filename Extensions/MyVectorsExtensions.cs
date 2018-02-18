@@ -2,7 +2,7 @@
 
 public static class MyVectorsExtensions
 {
-	
+
 	#region Set X/Y/Z
 
 	public static Vector3 SetXY(this Vector3 vector, float x, float y)
@@ -62,7 +62,7 @@ public static class MyVectorsExtensions
 	{
 		return new Vector3(vector.x, vector.y, z);
 	}
-	
+
 	public static void SetZ(this Transform transform, float z)
 	{
 		transform.position = transform.position.SetZ(z);
@@ -125,7 +125,7 @@ public static class MyVectorsExtensions
 		transform.position = transform.position.OffsetY(y);
 	}
 
-	
+
 	public static Vector3 OffsetZ(this Vector3 vector, float z)
 	{
 		return new Vector3(vector.x, vector.y, vector.z + z);
@@ -249,6 +249,14 @@ public static class MyVectorsExtensions
 
 	#endregion
 
+
+	public static Vector3 MinimumTreshold(this Vector3 vector, float min)
+	{
+		var x = Mathf.Abs(vector.x) >= min ? vector.x : 0;
+		var y = Mathf.Abs(vector.y) >= min ? vector.y : 0;
+		var z = Mathf.Abs(vector.z) >= min ? vector.z : 0;
+		return new Vector3(x, y, z);
+	}
 
 	public static Vector3 AverageVector(this Vector3[] vectors)
 	{
