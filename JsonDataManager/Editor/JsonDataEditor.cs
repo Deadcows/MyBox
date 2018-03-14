@@ -26,7 +26,7 @@ public class JsonDataEditor : EditorWindow
 
 	private bool SettingsLoaded => !_settings.IsNullOrEmpty();
 
-	private string SettingsFolder => Application.dataPath + "/" + JsonDataManager.SettingsFolder;
+	private string SettingsFolder => Application.dataPath + "/" + JsonDataManager.EditorSettingsFolder;
 	private string[] SettingsFiles => Directory.GetFiles(SettingsFolder).Where(f => f.EndsWith(".json")).ToArray();
 
 	private void LoadSettings()
