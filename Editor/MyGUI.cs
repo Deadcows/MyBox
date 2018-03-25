@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 /// </summary>
 public static class MyGUI
 {
-	
+
 	// Color Presets
 
 	public static Color Red => new Color(.8f, .6f, .6f);
@@ -28,7 +28,7 @@ public static class MyGUI
 
 	public static Color Brown => new Color(.7f, .5f, .2f, .6f);
 
-	
+
 	// Characters Presets
 
 	public static string ArrowUp => "▲";
@@ -44,7 +44,7 @@ public static class MyGUI
 	public static string ArrowRightLight => "→";
 
 	public static string Cross => "×";
-	
+
 
 
 	#region Editor Styles
@@ -491,7 +491,9 @@ public static class MyGUI
 			if (!_property.isExpanded) DrawHeader();
 			else _list.DoLayoutList();
 		}
-		
+
+		public Action<SerializedProperty, Rect, int> CustomDrawer;
+
 		private ReorderableList _list;
 		private SerializedProperty _property;
 
@@ -543,7 +545,10 @@ public static class MyGUI
 			rect.height = GetElementHeight(index);
 			rect.y += 1;
 
-			EditorGUI.PropertyField(rect, _property.GetArrayElementAtIndex(index), GUIContent.none, true);
+			var property = _property.GetArrayElementAtIndex(index);
+
+			if (CustomDrawer != null) CustomDrawer(property, rect, index);
+			else EditorGUI.PropertyField(rect, property, GUIContent.none, true);
 
 			_list.elementHeight = rect.height + 4.0f;
 			if (EditorGUI.EndChangeCheck()) Apply();
