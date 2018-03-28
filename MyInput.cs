@@ -81,7 +81,7 @@ public static class MyInput
 
 	#endregion
 
-
+	
 	/// <summary>
 	/// Convert KeyCode to read-friendly format
 	/// </summary>
@@ -100,5 +100,74 @@ public static class MyInput
 				return Regex.Replace(key.ToString(), "(\\B[A-Z])", " $1");
 		}
 	}
-	
+
+	public static bool AnyKeyDown(KeyCode key1, KeyCode key2)
+	{
+		return Input.GetKeyDown(key1) || Input.GetKeyDown(key2);
+	}
+
+	public static bool AnyKeyDown(KeyCode key1, KeyCode key2, KeyCode key3)
+	{
+		return AnyKeyDown(key1, key2) || Input.GetKeyDown(key3);
+	}
+
+
+	public static bool IsLeft()
+	{
+		return AnyKeyDown(KeyCode.A, KeyCode.LeftArrow, KeyCode.Keypad4);
+	}
+	public static bool IsRight()
+	{
+		return AnyKeyDown(KeyCode.D, KeyCode.RightArrow, KeyCode.Keypad6);
+	}
+	public static bool IsUp()
+	{
+		return AnyKeyDown(KeyCode.W, KeyCode.UpArrow, KeyCode.Keypad8);
+	}
+	public static bool IsDown()
+	{
+		return AnyKeyDown(KeyCode.S, KeyCode.DownArrow, KeyCode.Keypad2);
+	}
+
+	public static int KeypadDirection()
+	{
+		if (IsLeft()) return 4;
+		if (IsRight()) return 6;
+		if (IsUp()) return 8;
+		if (IsDown()) return 2;
+
+		if (Input.GetKeyDown(KeyCode.Keypad1)) return 1;
+		if (Input.GetKeyDown(KeyCode.Keypad3)) return 3;
+		if (Input.GetKeyDown(KeyCode.Keypad7)) return 7;
+		if (Input.GetKeyDown(KeyCode.Keypad9)) return 9;
+
+		return 0;
+	}
+
+	public static int KeypadX()
+	{
+		if (IsLeft()) return -1;
+		if (IsRight()) return 1;
+		if (Input.GetKeyDown(KeyCode.Keypad1)) return -1;
+		if (Input.GetKeyDown(KeyCode.Keypad7)) return -1;
+		if (Input.GetKeyDown(KeyCode.Keypad3)) return 1;
+		if (Input.GetKeyDown(KeyCode.Keypad9)) return 1;
+
+		return 0;
+	}
+
+	public static int KeypadY()
+	{
+		if (IsUp()) return 1;
+		if (IsDown()) return -1;
+		if (Input.GetKeyDown(KeyCode.Keypad1)) return -1;
+		if (Input.GetKeyDown(KeyCode.Keypad3)) return -1;
+
+		if (Input.GetKeyDown(KeyCode.Keypad7)) return 1;
+		if (Input.GetKeyDown(KeyCode.Keypad9)) return 1;
+
+		return 0;
+	}
+
+
 }
