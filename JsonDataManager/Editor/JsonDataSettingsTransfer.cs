@@ -1,8 +1,11 @@
 ﻿using System.IO;
 using System.Linq;
-using UnityEditor.Build;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
+#if UNITY_2018_1_OR_NEWER
+using UnityEditor.Build.Reporting;
+#endif
+using UnityEditor.Build;
+using UnityEditor;
 
 public class JsonDataSettingsTransfer : IPostprocessBuild
 {
