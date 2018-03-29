@@ -1,41 +1,53 @@
 ﻿using System.IO;
 using System.Linq;
-using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 public class JsonDataSettingsTransfer : IPostprocessBuild
 {
-    public int callbackOrder => 0;
+	public int callbackOrder => 0;
 
-    public void OnPostprocessBuild(BuildTarget target, string path)
-    {
-        var buildPath = BuildSettingsPath(path);
-        var editorPath = AssetSettingsPath();
+#if UNITY_2018_1_OR_NEWER
+	public void OnPostprocessBuild(BuildReport report)
+	{
+		OnBuild(report.summary.outputPath);
+	}
+#else
+	public void OnPostprocessBuild(BuildTarget target, string path)
+	{
+		OnBuild(path);
+	}
+#endif
 
-        var settings = SettingsFilenames(editorPath);
-        Directory.CreateDirectory(buildPath);
-        foreach (var setting in settings)
-        {
-            var filename = Path.GetFileName(setting);
-            var newFilepath = Path.Combine(buildPath, filename);
-            File.Copy(setting, newFilepath);
-        }
+	private void OnBuild(string path)
+	{
+		var buildPath = BuildSettingsPath(path);
+		var editorPath = AssetSettingsPath();
 
-        Debug.Log($"JsonDataSettingsTransfer moved {settings.Length} settings files to {buildPath}");
-    }
+		var settings = SettingsFilenames(editorPath);
+		Directory.CreateDirectory(buildPath);
+		foreach (var setting in settings)
+		{
+			var filename = Path.GetFileName(setting);
+			var newFilepath = Path.Combine(buildPath, filename);
+			File.Copy(setting, newFilepath);
+		}
 
-    private string BuildSettingsPath(string exePath)
-    {
-        var basePath = Path.GetDirectoryName(exePath);
-        var gameFolder = Path.GetFileNameWithoutExtension(exePath) + "_Data";
-        var fullPath = Path.Combine(basePath, gameFolder);
-        var settingsPath = Path.Combine(fullPath, JsonDataManager.BuildSettingsFolder);
+		Debug.Log($"JsonDataSettingsTransfer moved {settings.Length} settings files to {buildPath}");
+	}
 
-        return settingsPath;
-    }
+	private string BuildSettingsPath(string exePath)
+	{
+		var basePath = Path.GetDirectoryName(exePath);
+		var gameFolder = Path.GetFileNameWithoutExtension(exePath) + "_Data";
+		var fullPath = Path.Combine(basePath, gameFolder);
+		var settingsPath = Path.Combine(fullPath, JsonDataManager.BuildSettingsFolder);
 
-    private string AssetSettingsPath() => Path.Combine(Application.dataPath, JsonDataManager.EditorSettingsFolder);
+		return settingsPath;
+	}
 
-    private string[] SettingsFilenames(string path) => Directory.GetFiles(path).Where(p => p.EndsWith(".json")).ToArray();
+	private string AssetSettingsPath() => Path.Combine(Application.dataPath, JsonDataManager.EditorSettingsFolder);
+
+	private string[] SettingsFilenames(string path) => Directory.GetFiles(path).Where(p => p.EndsWith(".json")).ToArray();
 }
