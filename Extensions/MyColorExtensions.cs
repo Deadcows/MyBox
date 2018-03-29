@@ -24,4 +24,12 @@ public static class MyColorExtensions
 		return $"#{(int) (color.r * 255):X2}{(int) (color.g * 255):X2}{(int) (color.b * 255):X2}";
 	}
 
+	public static Color BrightnessOffset(this Color color, float offset)
+	{
+		return new Color(
+			color.r + offset,
+			color.g + offset,
+			color.b + offset,
+			color.a);
+	}
 }
