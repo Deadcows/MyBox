@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -6,10 +7,10 @@ using UnityEditor;
 
 public static class MyScriptableObject
 {
-	
+
 	public static T[] LoadAssetsFromResources<T>() where T : ScriptableObject
 	{
-		return Resources.LoadAll("", typeof (T)).Cast<T>().ToArray();
+		return Resources.LoadAll("", typeof(T)).Cast<T>().ToArray();
 	}
 
 
@@ -38,5 +39,17 @@ public static class MyScriptableObject
 
 #endif
 	}
-	
+
+	public static string GetScriptAssetsPath(ScriptableObject so)
+	{
+		MonoScript ms = MonoScript.FromScriptableObject(so);
+		return AssetDatabase.GetAssetPath(ms);
+	}
+
+	public static string GetScriptFullDirectory(ScriptableObject so)
+	{
+		var assetsPath = GetScriptAssetsPath(so);
+		return new FileInfo(assetsPath).DirectoryName;
+	}
+
 }

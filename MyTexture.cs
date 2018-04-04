@@ -69,4 +69,19 @@ public static class MyTexture
 		return result;
 	}
 
+	public static Texture2D WithSolidColor(this Texture2D original, Color color)
+	{
+		var target = new Texture2D(original.width, original.height);
+		for (int i = 0; i < target.width; i++)
+		{
+			for (int j = 0; j < target.height; j++)
+			{
+				target.SetPixel(i, j, color);
+			}
+		}
+		target.Apply();
+
+		return target;
+	}
+
 }
