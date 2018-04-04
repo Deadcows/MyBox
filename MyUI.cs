@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -86,8 +85,17 @@ public static class MyUI
 	public static IEnumerator FadeCanvas(CanvasGroup canvas, bool fadeIn, float speed,
 		bool changeStateOnFade = true)
 	{
-		canvas.DOKill();
-		yield return canvas.DOFade(fadeIn ? 1 : 0, speed).WaitForCompletion();
+		float elapsed;
+		float fadeTo = fadeIn ? 1 : 0;
+
+		while (elapsed <= speed) 
+		{ 
+			elapsed += Time.deltaTime;
+			canvas.alpha = fadeTo * (speed / elapsed);
+
+			yield return null;
+		}
+
 		if (changeStateOnFade)
 		{
 			canvas.interactable = fadeIn;
