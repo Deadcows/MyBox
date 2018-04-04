@@ -85,7 +85,7 @@ public static class MyUI
 	public static IEnumerator FadeCanvas(CanvasGroup canvas, bool fadeIn, float speed,
 		bool changeStateOnFade = true)
 	{
-		float elapsed;
+		float elapsed = 0;
 		float fadeTo = fadeIn ? 1 : 0;
 
 		while (elapsed <= speed) 
