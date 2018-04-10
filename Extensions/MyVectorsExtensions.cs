@@ -99,6 +99,14 @@ public static class MyVectorsExtensions
 		return new Vector3(vector.x + x, vector.y, vector.z);
 	}
 
+
+
+	public static Vector2 OffsetXY(this Vector2 vector, float x, float y)
+	{
+		return new Vector2(vector.x + x, vector.y + y);
+	}
+	
+
 	public static Vector2 OffsetX(this Vector2 vector, float x)
 	{
 		return new Vector2(vector.x + x, vector.y);
