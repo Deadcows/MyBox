@@ -26,6 +26,10 @@ public static class MyScriptableObject
 
 		var instance = ScriptableObject.CreateInstance<T>();
 
+		var fullPath = Path.GetFullPath(path);
+		var directory = Path.GetDirectoryName(fullPath);
+		if (directory != null) Directory.CreateDirectory(directory);
+
 		AssetDatabase.CreateAsset(instance, AssetDatabase.GenerateUniqueAssetPath(path));
 
 		AssetDatabase.SaveAssets();
