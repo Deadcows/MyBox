@@ -33,7 +33,15 @@ public static class Extensions
 		return desiredIndex;
 	}
 
+	public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
+	{
+		return gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
+	}
 
+	public static T GetOrAddComponent<T>(this Component component) where T : Component
+	{
+		return component.GetComponent<T>() ?? component.gameObject.AddComponent<T>();
+	}
 
 	// Toggle layers lock
 
