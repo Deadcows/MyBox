@@ -86,18 +86,15 @@ public class GLDraw
 
 	public static void CreateMaterial()
 	{
-		if (LineMaterial != null)
-			return;
-
-		LineMaterial = new Material("Shader \"Lines/Colored Blended\" {" +
-									"SubShader { Pass { " +
-									"    Blend SrcAlpha OneMinusSrcAlpha " +
-									"    ZWrite Off Cull Off Fog { Mode Off } " +
-									"    BindChannels {" +
-									"      Bind \"vertex\", vertex Bind \"color\", color }" +
-									"} } }");
+		if (LineMaterial != null) return;
+		
+		Shader shader = Shader.Find("Hidden/Internal-Colored");
+		LineMaterial = new Material(shader);
 		LineMaterial.hideFlags = HideFlags.HideAndDontSave;
-		LineMaterial.shader.hideFlags = HideFlags.HideAndDontSave;
+		LineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+		LineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+		LineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+		LineMaterial.SetInt("_ZWrite", 0);
 	}
 
 	public static void DrawLine(Vector2 start, Vector2 end, Color color, float width)
