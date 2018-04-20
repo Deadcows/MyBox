@@ -493,14 +493,15 @@ public static class MyGUI
 		}
 
 		public Action<SerializedProperty, Rect, int> CustomDrawer;
+		public Func<int, bool> CustomRemove;
 
 		private ReorderableList _list;
 		private SerializedProperty _property;
 
-		public ReordableCollection(SerializedProperty property)
+		public ReordableCollection(SerializedProperty property, bool withAddButton = true, bool withRemoveButton = true)
 		{
 			_property = property;
-			CreateList(property);
+			CreateList(property, withAddButton, withRemoveButton);
 		}
 
 		~ReordableCollection()
@@ -517,11 +518,11 @@ public static class MyGUI
 			EditorGUILayout.EndHorizontal();
 		}
 
-		private void CreateList(SerializedProperty property)
+		private void CreateList(SerializedProperty property, bool withAddButton, bool withRemoveButton)
 		{
-			_list = new ReorderableList(property.serializedObject, property, true, true, true, true);
+			_list = new ReorderableList(property.serializedObject, property, true, true, withAddButton, withRemoveButton);
 			_list.onChangedCallback += list => Apply();
-
+			_list.onRemoveCallback += RemoveElement;
 			_list.drawHeaderCallback += DrawElementHeader;
 			_list.onCanRemoveCallback += (list) => _list.count > 0;
 			_list.drawElementCallback += DrawElement;
@@ -531,6 +532,12 @@ public static class MyGUI
 		private void DrawElementHeader(Rect rect)
 		{
 			_property.isExpanded = EditorGUI.ToggleLeft(rect, _property.displayName, _property.isExpanded, EditorStyles.boldLabel);
+		}
+
+		private void RemoveElement(ReorderableList list)
+		{
+			if (CustomRemove == null || !CustomRemove(list.index))
+				ReorderableList.defaultBehaviours.DoRemoveButton(list);
 		}
 
 		private void DrawElement(Rect rect, int index, bool active, bool focused)

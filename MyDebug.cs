@@ -11,7 +11,7 @@ public static class MyDebug
 		sb.Append(typeof (T).Name + " (" + toLog.Length + ")\n");
 		for (var i = 0; i < toLog.Length; i++)
 		{
-			sb.Append("\n" + i + ": " + toLog[i].ToString());
+			sb.Append("\n" + i + ": " + toLog[i]);
 		}
 		Debug.Log(sb.ToString());
 	}
