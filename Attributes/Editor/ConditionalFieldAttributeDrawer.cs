@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEditor;
 
 [CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
@@ -24,7 +25,7 @@ public class ConditionalFieldAttributeDrawer : PropertyDrawer
 	{
 		if (!PropertyToCheck.IsNullOrEmpty())
 		{
-			var conditionProperty = property.serializedObject.FindProperty(PropertyToCheck);
+			var conditionProperty = FindPropertyRelative(property, PropertyToCheck);
 			if (conditionProperty != null)
 			{
 				bool isBoolMatch = conditionProperty.propertyType == SerializedPropertyType.Boolean && conditionProperty.boolValue;
@@ -43,7 +44,35 @@ public class ConditionalFieldAttributeDrawer : PropertyDrawer
 		}
 
 		_toShow = true;
-		EditorGUI.PropertyField(position, property, label);
+		EditorGUI.PropertyField(position, property, label, true);
 	}
 
+	private SerializedProperty FindPropertyRelative(SerializedProperty property, string toGet)
+	{
+		if (property.depth == 0) return property.serializedObject.FindProperty(toGet);
+
+		var path = property.propertyPath.Replace(".Array.data[", "[");
+		var elements = path.Split('.');
+		SerializedProperty parent = null;
+		for (int i = 0; i < elements.Length - 1; i++)
+		{
+			var element = elements[i];
+			int index = -1;
+			if (element.Contains("["))
+			{
+				index = Convert.ToInt32(element.Substring(element.IndexOf("[", StringComparison.Ordinal)).Replace("[", "").Replace("]", ""));
+				element = element.Substring(0, element.IndexOf("[", StringComparison.Ordinal));
+			}
+			
+			parent = i == 0 ? 
+				property.serializedObject.FindProperty(element) : 
+				parent.FindPropertyRelative(element);
+
+			if (index >= 0) parent = parent.GetArrayElementAtIndex(index);
+		}
+
+
+		return parent.FindPropertyRelative(toGet);
+	}
+	
 }
