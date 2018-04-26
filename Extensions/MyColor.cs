@@ -1,8 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public static class MyColorExtensions
+public static class MyColor
 {
+
+	public static Color RandomBright => new Color(Random.Range(.4f, 1), Random.Range(.4f, 1), Random.Range(.4f, 1));
+
+	public static Color RandomDim => new Color(Random.Range(.4f, .6f), Random.Range(.4f, .8f), Random.Range(.4f, .8f));
+
 
 	public static Color WithAlphaSetTo(this Color color, float a)
 	{
