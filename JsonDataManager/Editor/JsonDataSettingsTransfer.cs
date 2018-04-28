@@ -1,9 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using UnityEngine;
-#if UNITY_2018_1_OR_NEWER
-using UnityEditor.Build.Reporting;
-#endif
 using UnityEditor.Build;
 using UnityEditor;
 
@@ -11,17 +8,11 @@ public class JsonDataSettingsTransfer : IPostprocessBuild
 {
 	public int callbackOrder => 0;
 
-#if UNITY_2018_1_OR_NEWER
-	public void OnPostprocessBuild(BuildReport report)
-	{
-		OnBuild(report.summary.outputPath);
-	}
-#else
+
 	public void OnPostprocessBuild(BuildTarget target, string path)
 	{
 		OnBuild(path);
 	}
-#endif
 
 	private void OnBuild(string path)
 	{
