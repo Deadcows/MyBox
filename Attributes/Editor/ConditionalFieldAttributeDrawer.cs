@@ -21,6 +21,7 @@ public class ConditionalFieldAttributeDrawer : PropertyDrawer
 		return _toShow ? EditorGUI.GetPropertyHeight(property) : 0;
 	}
 
+	// TODO: Skip array fields
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
 		if (!PropertyToCheck.IsNullOrEmpty())
@@ -54,6 +55,8 @@ public class ConditionalFieldAttributeDrawer : PropertyDrawer
 		var path = property.propertyPath.Replace(".Array.data[", "[");
 		var elements = path.Split('.');
 		SerializedProperty parent = null;
+
+		
 		for (int i = 0; i < elements.Length - 1; i++)
 		{
 			var element = elements[i];
@@ -70,7 +73,6 @@ public class ConditionalFieldAttributeDrawer : PropertyDrawer
 
 			if (index >= 0) parent = parent.GetArrayElementAtIndex(index);
 		}
-
 
 		return parent.FindPropertyRelative(toGet);
 	}

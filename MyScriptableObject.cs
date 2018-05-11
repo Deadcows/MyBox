@@ -13,6 +13,23 @@ public static class MyScriptableObject
 		return Resources.LoadAll("", typeof(T)).Cast<T>().ToArray();
 	}
 
+#if UNITY_EDITOR
+
+	public static T[] LoadAssets<T>() where T : ScriptableObject
+	{
+		string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
+		T[] a = new T[guids.Length];
+		for (int i = 0; i < guids.Length; i++)
+		{
+			string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+			a[i] = AssetDatabase.LoadAssetAtPath<T>(path);
+		}
+
+		return a;
+	}
+
+#endif
+
 
 	public static T CreateAsset<T>(string name, string folder = "Assets") where T : ScriptableObject
 	{
