@@ -13,6 +13,7 @@ public static class MyScriptableObject
 		return Resources.LoadAll("", typeof(T)).Cast<T>().ToArray();
 	}
 
+
 #if UNITY_EDITOR
 
 	public static T[] LoadAssets<T>() where T : ScriptableObject
@@ -28,12 +29,20 @@ public static class MyScriptableObject
 		return a;
 	}
 
-#endif
+	public static string GetScriptAssetsPath(ScriptableObject so)
+	{
+		MonoScript ms = MonoScript.FromScriptableObject(so);
+		return AssetDatabase.GetAssetPath(ms);
+	}
 
+	public static string GetScriptFullDirectory(ScriptableObject so)
+	{
+		var assetsPath = GetScriptAssetsPath(so);
+		return new FileInfo(assetsPath).DirectoryName;
+	}
 
 	public static T CreateAsset<T>(string name, string folder = "Assets") where T : ScriptableObject
 	{
-#if UNITY_EDITOR
 		if (string.IsNullOrEmpty(name))
 		{
 			Debug.LogError("ScriptableObjectUtility caused: Create Asset failed because Name is empty");
@@ -54,23 +63,9 @@ public static class MyScriptableObject
 		Debug.Log("Scriptable object asset created at " + path);
 
 		return instance;
-#else
+	}
 
-		return null;
 
 #endif
-	}
-
-	public static string GetScriptAssetsPath(ScriptableObject so)
-	{
-		MonoScript ms = MonoScript.FromScriptableObject(so);
-		return AssetDatabase.GetAssetPath(ms);
-	}
-
-	public static string GetScriptFullDirectory(ScriptableObject so)
-	{
-		var assetsPath = GetScriptAssetsPath(so);
-		return new FileInfo(assetsPath).DirectoryName;
-	}
 
 }
