@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityQuery;
 
 public class MyBundleUtility : EditorWindow
 {
@@ -70,7 +69,6 @@ public class MyBundleUtility : EditorWindow
 
 
 	[MenuItem("Assets/Build Tool", priority = 3)]
-	// ReSharper disable once UnusedMember.Local
 	private static void CreateWindow()
 	{
 		GetWindow<MyBundleUtility>().Show();

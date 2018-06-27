@@ -16,7 +16,7 @@ public static class MyEditor
 		var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
 		var methodInfo = type.GetMethod("SetExpandedRecursive");
 
-		EditorApplication.ExecuteMenuItem("Window/Hierarchy");
+		EditorApplication.ExecuteMenuItem("Window/General/Hierarchy");
 		var window = EditorWindow.focusedWindow;
 
 		methodInfo.Invoke(window, new object[] { go.GetInstanceID(), expand });

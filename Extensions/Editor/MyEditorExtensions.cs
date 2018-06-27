@@ -13,7 +13,8 @@ public static class MyEditorExtensions
 	public static string PrefabPath(this GameObject gameObject, bool withAssetName = true)
 	{
 		if (gameObject == null) return null;
-		Object prefabParent = PrefabUtility.GetPrefabParent(gameObject);
+
+		Object prefabParent = PrefabUtility.GetCorrespondingObjectFromSource(gameObject);
 		if (prefabParent == null) return null;
 		var assetPath = AssetDatabase.GetAssetPath(prefabParent);
 

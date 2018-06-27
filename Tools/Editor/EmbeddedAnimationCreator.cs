@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
-using UnityQuery;
 
 public class EmbeddedAnimationCreator : EditorWindow
 {

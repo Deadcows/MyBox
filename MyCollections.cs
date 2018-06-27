@@ -1,4 +1,7 @@
-﻿public static class MyCollections
+﻿using UnityEngine;
+using System.Linq;
+
+public static class MyCollections
 {
 
 	public static T[] RemoveAt<T>(this T[] array, int index)
@@ -28,4 +31,12 @@
 		}
 		return newArray;
 	}
+
+	public static I[] FindObjectsOfInterface<I>() where I : class
+	{
+		var monoBehaviours = Object.FindObjectsOfType<Transform>();
+
+		return monoBehaviours.Select(behaviour => behaviour.GetComponent(typeof(I))).OfType<I>().ToArray();
+	}
+
 }
