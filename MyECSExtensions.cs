@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using System;
+using Unity.Entities;
 
 public static class MyECSExtensions
 {
@@ -38,12 +39,16 @@ public static class MyECSExtensions
 /// </summary>
 public struct Bool
 {
-	public bool Value
+	private byte _value;
+
+	public static implicit operator Bool(bool b)
 	{
-		get => BlitableValue == 1;
-		set => BlitableValue = (byte)(value ? 1 : 0);
+		return new Bool { _value = Convert.ToByte(b) };
 	}
 
-	public byte BlitableValue;
+	public static implicit operator bool(Bool b)
+	{
+		return b._value == 1;
+	}
 }
 
