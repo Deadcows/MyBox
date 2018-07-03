@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Mathematics;
+using UnityEngine;
 
 public static class MyVectorsExtensions
 {
@@ -257,6 +258,23 @@ public static class MyVectorsExtensions
 
 	#endregion
 
+
+	#region Vector2/3 to float2/3 calculations
+
+	public static Vector3 AddToVector(this Vector3 a, float3 b)
+	{
+		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+	}
+	
+	public static Vector3 AddToVector(this float3 a,  Vector3 b)
+	{
+		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+	}
+	
+
+	#endregion
+	
+	
 
 	public static Vector3 MinimumTreshold(this Vector3 vector, float min)
 	{

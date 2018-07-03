@@ -32,6 +32,22 @@ public static class MyECSExtensions
 		Manager.AddComponentData(entity, componentData);
 	}
 
+	
+	public static void ReplaceComponentData<T>(this EntityCommandBuffer commandBuffer, Entity entity, T component) where T : struct, IComponentData
+	{
+		var entityManager = World.Active.GetExistingManager<EntityManager>();
+		if(entityManager.HasComponent<T>(entity))
+			commandBuffer.SetComponent(entity, component);
+		else
+			commandBuffer.AddComponent(entity, component);
+	}
+	public static void ReplaceComponentData<T>(this EntityCommandBuffer commandBuffer, Entity entity) where T : struct, IComponentData
+	{
+		var entityManager = World.Active.GetExistingManager<EntityManager>();
+		if(entityManager.HasComponent<T>(entity))
+			commandBuffer.RemoveComponent<T>(entity);
+	}
+	
 }
 
 /// <summary>
