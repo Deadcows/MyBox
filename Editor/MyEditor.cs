@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 
 public static class MyEditor
 {
-
 	/// <summary>
 	/// Fold/Unfold GameObject with all childs in hierarchy
 	/// </summary>
@@ -19,15 +18,18 @@ public static class MyEditor
 		EditorApplication.ExecuteMenuItem("Window/General/Hierarchy");
 		var window = EditorWindow.focusedWindow;
 
-		methodInfo.Invoke(window, new object[] { go.GetInstanceID(), expand });
+		methodInfo.Invoke(window, new object[] {go.GetInstanceID(), expand});
 	}
 
 	public static void FoldSceneHierarchy()
 	{
-		var roots = GetSceneRoots();
-		for (var i = 0; i < roots.Length; i++)
+		for (var i = 0; i < SceneManager.sceneCount; i++)
 		{
-			FoldInHierarchy(roots[i], false);
+			var roots = GetSceneRoots(i);
+			for (var o = 0; o < roots.Length; o++)
+			{
+				FoldInHierarchy(roots[o], false);
+			}
 		}
 	}
 
@@ -43,9 +45,9 @@ public static class MyEditor
 	/// <summary>
 	/// Get all root objects on scene
 	/// </summary>
-	public static GameObject[] GetSceneRoots()
+	public static GameObject[] GetSceneRoots(int scene = 0)
 	{
-		return SceneManager.GetActiveScene().GetRootGameObjects();
+		return SceneManager.GetSceneAt(scene).GetRootGameObjects();
 	}
 
 	/// <summary>
@@ -58,7 +60,9 @@ public static class MyEditor
 		EditorApplication.ExecuteMenuItem("Window/Hierarchy");
 		Selection.activeGameObject = objectToRename;
 	}
+
 	private static double _renameTimestamp;
+
 	private static void ObjectRename()
 	{
 		if (EditorApplication.timeSinceStartup >= _renameTimestamp)
@@ -73,7 +77,7 @@ public static class MyEditor
 
 
 	public static void ApplyPrefab(GameObject instance)
-	{  
+	{
 		var instanceRoot = PrefabUtility.FindRootGameObjectWithSameParentPrefab(instance);
 		var targetPrefab = PrefabUtility.GetPrefabParent(instanceRoot);
 
@@ -84,10 +88,10 @@ public static class MyEditor
 		}
 
 		PrefabUtility.ReplacePrefab(
-				instanceRoot,
-				targetPrefab,
-				ReplacePrefabOptions.ConnectToPrefab
-				);
+			instanceRoot,
+			targetPrefab,
+			ReplacePrefabOptions.ConnectToPrefab
+		);
 	}
 
 	#region Animation Asset Creation
@@ -131,6 +135,7 @@ public static class MyEditor
 
 					clipName = clipName.TrimEnd('+');
 				}
+
 				var clipPath = AssetDatabase.GenerateUniqueAssetPath(path + clipName + ".anim");
 				AssetDatabase.CreateAsset(clip, clipPath);
 
@@ -148,5 +153,4 @@ public static class MyEditor
 	}
 
 	#endregion
-
 }

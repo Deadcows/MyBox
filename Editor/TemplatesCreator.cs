@@ -13,7 +13,7 @@ public static class TemplatesCreator
 			"#pragma warning disable 649\n" +
 			"\tprivate struct Group\n" +
 			"\t{\n" +
-				"\t\tpublic int Length;\n" +
+				"\t\tpublic readonly int Length;\n" +
 			"\t}\n" +
 			"\t[Inject] private Group _group;\n" +
 			"#pragma warning restore 649\n" +

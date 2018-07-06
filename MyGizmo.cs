@@ -1,11 +1,13 @@
-﻿#if UNITY_EDITOR
+﻿
+using System;
+using MyBox.Utility;
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine;
 
 public static class MyGizmo
 {
-
 	public static void DrawString(string text, Vector3 worldPos, Color? colour = null)
 	{
 #if UNITY_EDITOR
@@ -23,17 +25,21 @@ public static class MyGizmo
 #endif
 	}
 
-	public static void DrawArrowRay(Vector3 position, Vector3 direction, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f)
+	public static void DrawArrowRay(Vector3 position, Vector3 direction, float arrowHeadLength = 0.25f,
+		float arrowHeadAngle = 20.0f)
 	{
 #if UNITY_EDITOR
 		Gizmos.DrawRay(position, direction);
 
-		Vector3 right = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 + arrowHeadAngle, 0) * new Vector3(0, 0, 1);
-		Vector3 left = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 - arrowHeadAngle, 0) * new Vector3(0, 0, 1);
+		Vector3 right = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 + arrowHeadAngle, 0) *
+		                new Vector3(0, 0, 1);
+		Vector3 left = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 - arrowHeadAngle, 0) *
+		               new Vector3(0, 0, 1);
 		Gizmos.DrawRay(position + direction, right * arrowHeadLength);
 		Gizmos.DrawRay(position + direction, left * arrowHeadLength);
 #endif
 	}
+
 
 	public static void DebugCross(Vector3 position, float size)
 	{
@@ -45,4 +51,21 @@ public static class MyGizmo
 #endif
 	}
 
+
+	public static void OnDrawGizmos(Action action)
+	{
+		Handler.DrawGizmos += action;
+	}
+
+	private static MyGizmoHandler Handler => _handler != null ? _handler : (_handler = CreateHandler());
+	private static MyGizmoHandler _handler;
+
+	private static MyGizmoHandler CreateHandler()
+	{
+		var go = new GameObject("Gizmo Handler");
+		go.hideFlags = HideFlags.DontSave;
+
+		return go.AddComponent<MyGizmoHandler>();
+	}
+	
 }
