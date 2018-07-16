@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Linq;
+using Object = UnityEngine.Object;
 
 public static class MyCollections
 {
@@ -37,6 +39,13 @@ public static class MyCollections
 		var monoBehaviours = Object.FindObjectsOfType<Transform>();
 
 		return monoBehaviours.Select(behaviour => behaviour.GetComponent(typeof(I))).OfType<I>().ToArray();
+	}
+
+	public static Tuple<Component, I>[] FindObjectsOfInterfaceAsComponents<I>() where I : class
+	{
+		return Object.FindObjectsOfType<Component>()
+			.Where(c => c is I)
+			.Select(c => new Tuple<Component, I>(c, c as I)).ToArray();
 	}
 
 }

@@ -79,7 +79,7 @@ public static class MyEditor
 	public static void ApplyPrefab(GameObject instance)
 	{
 		var instanceRoot = PrefabUtility.FindRootGameObjectWithSameParentPrefab(instance);
-		var targetPrefab = PrefabUtility.GetPrefabParent(instanceRoot);
+		var targetPrefab = PrefabUtility.GetCorrespondingObjectFromSource(instanceRoot);
 
 		if (instanceRoot == null || targetPrefab == null)
 		{
