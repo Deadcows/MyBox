@@ -2,11 +2,6 @@
 
 namespace BovineLabs.Toolkit.Reactive
 {
-    public struct ReactiveChanged : IComponentData
-    {
-        
-    }
-
     public struct ReactiveCompare<T> : IComponentData, IReactiveCompare<T>
         where T : struct, IComponentData
     {
