@@ -1,4 +1,5 @@
 ﻿using Unity.Entities;
+using UnityEngine;
 
 public static class MyECSExtensions
 {
@@ -12,7 +13,25 @@ public static class MyECSExtensions
 	{
 		return Manager.HasComponent<T>(entity);
 	}
-
+	
+	/// <summary>
+	/// EntityManager.GetComponentData(entity);
+	/// </summary>
+	public static T GetComponent<T>(this Entity entity) where T : struct, IComponentData
+	{
+		return Manager.GetComponentData<T>(entity);
+	}
+	
+	/// <summary>
+	/// EntityManager.GetComponentData(entity);
+	/// </summary>
+	public static T GetComponentObject<T>(this Entity entity) where T : Component
+	{
+		return Manager.GetComponentObject<T>(entity);
+	}
+	
+	
+	
 	/// <summary>
 	/// EntityManager.SetComponentData(entity, componentData);
 	/// </summary>
