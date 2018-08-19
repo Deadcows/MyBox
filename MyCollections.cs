@@ -41,11 +41,11 @@ public static class MyCollections
 		return monoBehaviours.Select(behaviour => behaviour.GetComponent(typeof(I))).OfType<I>().ToArray();
 	}
 
-	public static Tuple<Component, I>[] FindObjectsOfInterfaceAsComponents<I>() where I : class
+	public static (Component Component, I Interface)[] FindObjectsOfInterfaceAsComponents<I>() where I : class
 	{
 		return Object.FindObjectsOfType<Component>()
 			.Where(c => c is I)
-			.Select(c => new Tuple<Component, I>(c, c as I)).ToArray();
+			.Select(c => (Component: c, Interface: c as I)).ToArray();
 	}
 
 }
