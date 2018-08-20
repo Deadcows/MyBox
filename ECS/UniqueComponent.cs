@@ -17,6 +17,7 @@ public struct UniqueComponent<T> where T : Component
 	}
 
 	public Entity EntityInstance => Entities[0];
+	public bool IsSet => Entities.Length > 0;
 }
 
 public struct UniqueTransformComponent<T> where T : Component
@@ -44,6 +45,7 @@ public struct UniqueTransformComponent<T> where T : Component
 	}
 
 	public Entity EntityInstance => Entities[0];
+	public bool IsSet => Entities.Length > 0;
 }
 
 
@@ -62,6 +64,7 @@ public struct UniqueComponentData<T> where T : struct, IComponentData
 	}
 
 	public Entity EntityInstance => Entities[0];
+	public bool IsSet => Entities.Length > 0;
 }
 
 public struct UniqueTransformComponentData<T> where T : struct, IComponentData
@@ -89,4 +92,5 @@ public struct UniqueTransformComponentData<T> where T : struct, IComponentData
 	}
 
 	public Entity EntityInstance => Entities[0];
+	public bool IsSet => Entities.Length > 0;
 }

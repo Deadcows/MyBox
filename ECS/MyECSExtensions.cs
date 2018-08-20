@@ -30,8 +30,6 @@ public static class MyECSExtensions
 		return Manager.GetComponentObject<T>(entity);
 	}
 	
-	
-	
 	/// <summary>
 	/// EntityManager.SetComponentData(entity, componentData);
 	/// </summary>
@@ -43,27 +41,31 @@ public static class MyECSExtensions
 	/// <summary>
 	/// EntityManager.AddComponentData(entity, componentData);
 	/// </summary>
-	public static void AddComponentData<T>(this Entity entity, T componentData) where T : struct, IComponentData
+	public static void AddComponent<T>(this Entity entity, T componentData) where T : struct, IComponentData
 	{
 		Manager.AddComponentData(entity, componentData);
 	}
 
-
-	public static void ReplaceComponentData<T>(this EntityCommandBuffer commandBuffer, Entity entity, T component)
+	
+	/// <summary>
+	/// Add Component with default (empty) values:
+	/// commandBuffer.AddComponent(entity, new T());
+	/// </summary>
+	/// <param name="commandBuffer"></param>
+	/// <param name="entity"></param>
+	/// <typeparam name="T"></typeparam>
+	public static void AddComponent<T>(this EntityCommandBuffer commandBuffer, Entity entity) where T : struct, IComponentData
+	{
+		commandBuffer.AddComponent(entity, new T());
+	}
+	
+	public static void ReplaceComponent<T>(this EntityCommandBuffer commandBuffer, Entity entity, T component)
 		where T : struct, IComponentData
 	{
-		var entityManager = World.Active.GetExistingManager<EntityManager>();
-		if (entityManager.HasComponent<T>(entity))
+		if (Manager.HasComponent<T>(entity))
 			commandBuffer.SetComponent(entity, component);
 		else
 			commandBuffer.AddComponent(entity, component);
 	}
 
-	public static void ReplaceComponentData<T>(this EntityCommandBuffer commandBuffer, Entity entity)
-		where T : struct, IComponentData
-	{
-		var entityManager = World.Active.GetExistingManager<EntityManager>();
-		if (entityManager.HasComponent<T>(entity))
-			commandBuffer.RemoveComponent<T>(entity);
-	}
 }
