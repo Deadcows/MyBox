@@ -6,12 +6,12 @@ using UnityEditor;
 using Object = UnityEngine.Object;
 
 [InitializeOnLoad]
-public class MustBeAssignedAttributeChecker {
-
+public class MustBeAssignedAttributeChecker
+{
 	static MustBeAssignedAttributeChecker()
 	{
 		EditorApplication.update += CheckOnce;
-    }
+	}
 
 	private static void CheckOnce()
 	{
@@ -28,7 +28,7 @@ public class MustBeAssignedAttributeChecker {
 		MonoBehaviour[] scripts = Object.FindObjectsOfType<MonoBehaviour>();
 		AssertComponents(scripts);
 	}
-	
+
 
 	private static void AssertComponents(MonoBehaviour[] components)
 	{
@@ -42,14 +42,25 @@ public class MustBeAssignedAttributeChecker {
 			{
 				object propValue = field.GetValue(script);
 
-				if (field.FieldType.IsValueType)
+				// Value Type with default value
+				if (field.FieldType.IsValueType && Activator.CreateInstance(field.FieldType).Equals(propValue))
 				{
-					Debug.Assert(!Activator.CreateInstance(field.FieldType).Equals(propValue),
-						myType.Name + " caused: " + field.Name + " is Value Type with default value", script);
+					Debug.LogError($"{myType.Name} caused: {field.Name} is Value Type with default value", script.gameObject);
+					continue;
 				}
 
-				else Debug.Assert(!(propValue == null || propValue.Equals(null)), 
-					myType.Name + " caused: " + field.Name + " is not assigned", script);
+				// Null reference type
+				if (propValue == null || propValue.Equals(null))
+				{
+					Debug.LogError($"{myType.Name} caused: {field.Name} is not assigned (null value)", script.gameObject);
+					continue;
+				}
+
+				// Empty string
+				if (field.FieldType == typeof(string) && (string) propValue == string.Empty)
+				{
+					Debug.LogError($"{myType.Name} caused: {field.Name} is not assigned (empty string)", script.gameObject);
+				}
 			}
 		}
 	}
