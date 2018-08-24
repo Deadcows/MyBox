@@ -19,16 +19,18 @@ public class Unique : MonoBehaviour, ISerializationCallbackReceiver
 	/// </summary>
 	[SerializeField, HideInInspector] private int _instanceID;
 
+	
 	private void Awake()
 	{
 		if (Application.isPlaying) return;
 		if (_instanceID == GetInstanceID()) return;
 		
+		// object duplication = cached id not mach current id and cached != 0
 		if (_instanceID == 0) _instanceID = GetInstanceID();
 		else
 		{
 			_instanceID = GetInstanceID();
-			if (_instanceID < 0) GUID = string.Empty;
+			if (_instanceID != 0) GUID = string.Empty;
 		}
 	}
 	
@@ -36,12 +38,12 @@ public class Unique : MonoBehaviour, ISerializationCallbackReceiver
 	{
 		if (Application.isPlaying) return;
 		if (!GUID.IsNullOrEmpty()) return;
-
+		
 		GUID = !_cachedGuid.IsNullOrEmpty() ? _cachedGuid : Guid.NewGuid().ToString();
-
+		
+		_cachedGuid = GUID;
 		UnityEditor.EditorUtility.SetDirty(this);
 		UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
-		_cachedGuid = GUID;
 	}
 
 #endif

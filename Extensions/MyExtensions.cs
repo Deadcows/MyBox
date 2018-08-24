@@ -141,7 +141,6 @@ public static class MyExtensions
 	{
 #if UNITY_EDITOR
 		return UnityEditor.PrefabUtility.GetPrefabType(go) == UnityEditor.PrefabType.Prefab;
-
 #else
 		return false;
 #endif
