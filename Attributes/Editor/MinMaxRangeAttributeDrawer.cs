@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+﻿// ---------------------------------------------------------------------------- 
+// Author: Richard Fine
+// Source: https://bitbucket.org/richardfine/scriptableobjectdemo
+// ----------------------------------------------------------------------------
+
+using UnityEngine;
 using UnityEditor;
 
 [CustomPropertyDrawer(typeof(RangedFloat), true)]
-public class RangedFloatDrawer : PropertyDrawer
+public class MinMaxRangeAttributeDrawer : PropertyDrawer
 {
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 	{
