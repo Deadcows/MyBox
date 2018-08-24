@@ -23,15 +23,12 @@ public class Unique : MonoBehaviour, ISerializationCallbackReceiver
 	private void Awake()
 	{
 		if (Application.isPlaying) return;
-		if (_instanceID == GetInstanceID()) return;
+		var actualId = GetInstanceID();
+		if (_instanceID == actualId) return;
 		
 		// object duplication = cached id not mach current id and cached != 0
-		if (_instanceID == 0) _instanceID = GetInstanceID();
-		else
-		{
-			_instanceID = GetInstanceID();
-			if (_instanceID != 0) GUID = string.Empty;
-		}
+		if (_instanceID != 0) GUID = string.Empty;
+		_instanceID = actualId;
 	}
 	
 	private void Update()
