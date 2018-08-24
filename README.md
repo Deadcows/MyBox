@@ -88,7 +88,9 @@ public class RandomisedHealth : MonoBehaviour
 
 ### MustBeAssigned:
 Previously I used a lot of Debug.Assert() in Awake to ensure that all desired values are assigned through inspector.
-Now I just use MustBeAssigned. This one also works with value types and show error message in Console if value is null or default.
+Now I just use MustBeAssigned. 
+
+It triggers on value types with default values, null refs, empty arrays and strings
 ```c#
 [MustBeAssigned]
 public MonoBehaviour MyScript;
