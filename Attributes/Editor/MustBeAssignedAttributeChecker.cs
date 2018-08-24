@@ -41,7 +41,7 @@ public class MustBeAssignedAttributeChecker
 			foreach (FieldInfo field in fields)
 			{
 				object propValue = field.GetValue(script);
-
+				
 				// Value Type with default value
 				if (field.FieldType.IsValueType && Activator.CreateInstance(field.FieldType).Equals(propValue))
 				{
@@ -60,6 +60,13 @@ public class MustBeAssignedAttributeChecker
 				if (field.FieldType == typeof(string) && (string) propValue == string.Empty)
 				{
 					Debug.LogError($"{myType.Name} caused: {field.Name} is not assigned (empty string)", script.gameObject);
+					continue;
+				}
+
+				// Empty Array
+				if (propValue is Array arr && arr.Length == 0)
+				{
+					Debug.LogError($"{myType.Name} caused: {field.Name} is not assigned (empty array)", script.gameObject);
 				}
 			}
 		}
