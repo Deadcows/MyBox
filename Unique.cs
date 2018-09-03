@@ -32,11 +32,7 @@ public class Unique : MonoBehaviour, ISerializationCallbackReceiver
 		if (_instanceID == actualId) return;
 		
 		// object duplication = cached id not mach current id and cached != 0
-		if (_instanceID != 0)
-		{
-			Debug.Log("Clearing out " + _instanceID);
-			GUID = string.Empty;
-		}
+		if (_instanceID != 0) GUID = string.Empty;
 		_instanceID = actualId;
 	}
 	
