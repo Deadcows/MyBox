@@ -20,14 +20,23 @@ public class Unique : MonoBehaviour, ISerializationCallbackReceiver
 	[SerializeField, HideInInspector] private int _instanceID;
 
 	
+	
 	private void Awake()
 	{
 		if (Application.isPlaying) return;
 		var actualId = GetInstanceID();
+		
+		// if you'll start editor or reload scene, framecount will be zero. 
+		// We may cache newly assigned ID here
+		if (Time.frameCount == 0)_instanceID = actualId;
 		if (_instanceID == actualId) return;
 		
 		// object duplication = cached id not mach current id and cached != 0
-		if (_instanceID != 0) GUID = string.Empty;
+		if (_instanceID != 0)
+		{
+			Debug.Log("Clearing out " + _instanceID);
+			GUID = string.Empty;
+		}
 		_instanceID = actualId;
 	}
 	
