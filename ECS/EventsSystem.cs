@@ -1,5 +1,4 @@
 using Unity.Entities;
-using UnityEngine.Experimental.PlayerLoop;
 
 
 public struct Event<T> where T : struct, IComponentData
@@ -19,7 +18,7 @@ public struct SharedDataEvent<T> where T : struct, ISharedComponentData
 }
 
 
-[UpdateInGroup(typeof(PreUpdate)), AlwaysUpdateSystem]
+[AlwaysUpdateSystem]
 public class EventsSystem : ComponentSystem
 {
 	private ComponentGroup _firedEvents;
