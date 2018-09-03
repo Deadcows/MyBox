@@ -3,29 +3,7 @@ using UnityEngine;
 
 public static class MyVectorsExtensions
 {
-
 	#region Set X/Y/Z
-
-	public static Vector3 SetXY(this Vector3 vector, float x, float y)
-	{
-		return new Vector3(x, y, vector.z);
-	}
-
-	public static void SetXY(this Transform transform, float x, float y)
-	{
-		transform.position = transform.position.SetXY(x, y);
-	}
-
-	public static Vector3 SetXZ(this Vector3 vector, float x, float z)
-	{
-		return new Vector3(x, vector.y, z);
-	}
-
-	public static void SetXZ(this Transform transform, float x, float z)
-	{
-		transform.position = transform.position.SetXZ(x, z);
-	}
-
 
 	public static Vector3 SetX(this Vector3 vector, float x)
 	{
@@ -69,44 +47,48 @@ public static class MyVectorsExtensions
 		transform.position = transform.position.SetZ(z);
 	}
 
+
+	public static Vector3 SetXY(this Vector3 vector, float x, float y)
+	{
+		return new Vector3(x, y, vector.z);
+	}
+
+	public static void SetXY(this Transform transform, float x, float y)
+	{
+		transform.position = transform.position.SetXY(x, y);
+	}
+
+
+	public static Vector3 SetXZ(this Vector3 vector, float x, float z)
+	{
+		return new Vector3(x, vector.y, z);
+	}
+
+	public static void SetXZ(this Transform transform, float x, float z)
+	{
+		transform.position = transform.position.SetXZ(x, z);
+	}
+
+
+	public static Vector3 SetYZ(this Vector3 vector, float y, float z)
+	{
+		return new Vector3(vector.x, y, z);
+	}
+
+	public static void SetYZ(this Transform transform, float y, float z)
+	{
+		transform.position = transform.position.SetYZ(y, z);
+	}
+
 	#endregion
 
 
 	#region Offset X/Y/Z
 
-	public static Vector3 OffsetXY(this Vector3 vector, float x, float y)
-	{
-		return new Vector3(vector.x + x, vector.y + y, vector.z);
-	}
-
-	public static void OffsetXY(this Transform transform, float x, float y)
-	{
-		transform.position = transform.position.OffsetXY(x, y);
-	}
-
-	public static Vector3 OffsetXZ(this Vector3 vector, float x, float z)
-	{
-		return new Vector3(vector.x + x, vector.y, vector.z + z);
-	}
-
-	public static void OffsetXZ(this Transform transform, float x, float z)
-	{
-		transform.position = transform.position.OffsetXZ(x, z);
-	}
-
-
 	public static Vector3 OffsetX(this Vector3 vector, float x)
 	{
 		return new Vector3(vector.x + x, vector.y, vector.z);
 	}
-
-
-
-	public static Vector2 OffsetXY(this Vector2 vector, float x, float y)
-	{
-		return new Vector2(vector.x + x, vector.y + y);
-	}
-	
 
 	public static Vector2 OffsetX(this Vector2 vector, float x)
 	{
@@ -143,6 +125,44 @@ public static class MyVectorsExtensions
 	public static void OffsetZ(this Transform transform, float z)
 	{
 		transform.position = transform.position.OffsetZ(z);
+	}
+
+
+	public static Vector3 OffsetXY(this Vector3 vector, float x, float y)
+	{
+		return new Vector3(vector.x + x, vector.y + y, vector.z);
+	}
+
+	public static void OffsetXY(this Transform transform, float x, float y)
+	{
+		transform.position = transform.position.OffsetXY(x, y);
+	}
+
+	public static Vector2 OffsetXY(this Vector2 vector, float x, float y)
+	{
+		return new Vector2(vector.x + x, vector.y + y);
+	}
+
+
+	public static Vector3 OffsetXZ(this Vector3 vector, float x, float z)
+	{
+		return new Vector3(vector.x + x, vector.y, vector.z + z);
+	}
+
+	public static void OffsetXZ(this Transform transform, float x, float z)
+	{
+		transform.position = transform.position.OffsetXZ(x, z);
+	}
+
+
+	public static Vector3 OffsetYZ(this Vector3 vector, float y, float z)
+	{
+		return new Vector3(vector.x, vector.y + y, vector.z + z);
+	}
+
+	public static void OffsetYZ(this Transform transform, float y, float z)
+	{
+		transform.position = transform.position.OffsetYZ(y, z);
 	}
 
 	#endregion
@@ -237,21 +257,26 @@ public static class MyVectorsExtensions
 			MyMath.Snap(val.y, snapValue));
 	}
 
-	#endregion
-
-
-	#region Round To Int
-
-	public static void RoundPositionToInt(this Transform transform)
+	/// <summary>
+	/// Snap position to grid of snapValue
+	/// </summary>
+	public static void SnapPosition(this Transform transform, float snapValue)
 	{
-		transform.position = transform.position.RoundToInt();
+		transform.position = transform.position.SnapValue(snapValue);
 	}
 
-	public static Vector2 RoundToInt(this Vector2 vector)
+	/// <summary>
+	/// Snap to one unit grid
+	/// </summary>
+	public static Vector2 SnapToOne(this Vector2 vector)
 	{
 		return new Vector2(Mathf.Round(vector.x), Mathf.Round(vector.y));
 	}
-	public static Vector3 RoundToInt(this Vector3 vector)
+
+	/// <summary>
+	/// Snap to one unit grid
+	/// </summary>
+	public static Vector3 SnapToOne(this Vector3 vector)
 	{
 		return new Vector3(Mathf.Round(vector.x), Mathf.Round(vector.y), Mathf.Round(vector.z));
 	}
@@ -265,25 +290,17 @@ public static class MyVectorsExtensions
 	{
 		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 	}
-	
-	public static Vector3 AddToVector(this float3 a,  Vector3 b)
+
+	public static Vector3 AddToVector(this float3 a, Vector3 b)
 	{
 		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 	}
-	
 
 	#endregion
-	
-	
 
-	public static Vector3 MinimumTreshold(this Vector3 vector, float min)
-	{
-		var x = Mathf.Abs(vector.x) >= min ? vector.x : 0;
-		var y = Mathf.Abs(vector.y) >= min ? vector.y : 0;
-		var z = Mathf.Abs(vector.z) >= min ? vector.z : 0;
-		return new Vector3(x, y, z);
-	}
-
+	
+	#region Average
+	
 	public static Vector3 AverageVector(this Vector3[] vectors)
 	{
 		if (vectors.IsNullOrEmpty()) return Vector3.zero;
@@ -295,7 +312,23 @@ public static class MyVectorsExtensions
 			y += vectors[i].y;
 			z += vectors[i].z;
 		}
+
 		return new Vector3(x / vectors.Length, y / vectors.Length, z / vectors.Length);
 	}
 
+	public static Vector2 AverageVector(this Vector2[] vectors)
+	{
+		if (vectors.IsNullOrEmpty()) return Vector2.zero;
+
+		float x = 0f, y = 0f;
+		for (var i = 0; i < vectors.Length; i++)
+		{
+			x += vectors[i].x;
+			y += vectors[i].y;
+		}
+
+		return new Vector2(x / vectors.Length, y / vectors.Length);
+	}
+	
+	#endregion
 }
