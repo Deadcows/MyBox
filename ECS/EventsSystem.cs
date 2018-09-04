@@ -5,7 +5,8 @@ public struct Event<T> where T : struct, IComponentData
 {
 	[Unity.Collections.ReadOnly] public ComponentDataArray<T> Data;
 	[Unity.Collections.ReadOnly] public ComponentDataArray<EventsSystem.EventActiveComponent> EventActive;
-
+	public EntityArray Entity;
+	
 	public bool Fired => Data.Length > 0;
 }
 
@@ -13,6 +14,7 @@ public struct SharedDataEvent<T> where T : struct, ISharedComponentData
 {
 	[Unity.Collections.ReadOnly] public SharedComponentDataArray<T> Data;
 	[Unity.Collections.ReadOnly] public ComponentDataArray<EventsSystem.EventActiveComponent> EventActive;
+	public EntityArray Entity;
 
 	public bool Fired => Data.Length > 0;
 }
@@ -75,11 +77,12 @@ public static class EventsSystemExtension
 		buffer.AddComponent(new EventsSystem.EventComponent());
 	}
 
-	public static void AddEvent<T>(this EntityManager manager, T eventComponent) where T : struct, IComponentData
+	public static Entity AddEvent<T>(this EntityManager manager, T eventComponent) where T : struct, IComponentData
 	{
 		var eventEntity = manager.CreateEntity();
 		manager.AddComponentData(eventEntity, eventComponent);
 		manager.AddComponent(eventEntity, ComponentType.Create<EventsSystem.EventComponent>());
+		return eventEntity;
 	}
 
 	public static void AddSharedEvent<T>(this EntityCommandBuffer buffer, T eventComponent) where T : struct, ISharedComponentData
@@ -89,10 +92,11 @@ public static class EventsSystemExtension
 		buffer.AddComponent(new EventsSystem.EventComponent());
 	}
 
-	public static void AddSharedEvent<T>(this EntityManager manager, T eventComponent) where T : struct, ISharedComponentData
+	public static Entity AddSharedEvent<T>(this EntityManager manager, T eventComponent) where T : struct, ISharedComponentData
 	{
 		var eventEntity = manager.CreateEntity();
 		manager.AddSharedComponentData(eventEntity, eventComponent);
 		manager.AddComponent(eventEntity, ComponentType.Create<EventsSystem.EventComponent>());
+		return eventEntity;
 	}
 }
