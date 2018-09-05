@@ -6,6 +6,9 @@ Most of this stuff was made for specific cases and may or may not work for you. 
 ## [Entity Component System](ECS/)
 ECS Tools, Helper Systems and Extentions
 
+## [Tools](Tools/)
+Tools such as Logger and TimeTest
+
 ## [Attributes](Attributes/)
 ### ConditionalField:
 ```c#
