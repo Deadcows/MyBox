@@ -1,4 +1,4 @@
-﻿public static class ExtensionsString
+﻿public static class MyString
 {
 
 	public static string ToCamelCase(this string camelCaseString)
@@ -12,7 +12,7 @@
 	/// </summary>
 	public static string Colored(this string message, Colors color)
 	{
-		return string.Format("<color={0}>{1}</color>", color, message);
+		return $"<color={color}>{message}</color>";
 	}
 
 	/// <summary>
@@ -20,7 +20,7 @@
 	/// </summary>
 	public static string Colored(this string message, string colorCode)
 	{
-		return string.Format("<color={0}>{1}</color>", colorCode, message);
+		return $"<color={colorCode}>{message}</color>";
 	}
 
 	/// <summary>
@@ -28,7 +28,7 @@
 	/// </summary>
 	public static string Sized(this string message, int size)
 	{
-		return string.Format("<size={0}>{1}</size>", size, message);
+		return $"<size={size}>{message}</size>";
 	}
 
 	/// <summary>
@@ -36,7 +36,7 @@
 	/// </summary>
 	public static string Bold(this string message)
 	{
-		return string.Format("<b>{0}</b>", message);
+		return $"<b>{message}</b>";
 	}
 
 	/// <summary>
@@ -44,7 +44,7 @@
 	/// </summary>
 	public static string Italics(this string message)
 	{
-		return string.Format("<i>{0}</i>", message);
+		return $"<i>{message}</i>";
 	}
 }
 

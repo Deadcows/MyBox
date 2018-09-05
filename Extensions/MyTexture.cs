@@ -6,23 +6,26 @@ public static class MyTexture
 	{
 		int sourceWidth = source.width;
 		int sourceHeight = source.height;
-		float sourceAspect = (float)sourceWidth / sourceHeight;
-		float targetAspect = (float)targetWidth / targetHeight;
+		float sourceAspect = (float) sourceWidth / sourceHeight;
+		float targetAspect = (float) targetWidth / targetHeight;
 
 		int xOffset = 0;
 		int yOffset = 0;
 		float factor;
 
 		if (sourceAspect > targetAspect)
-		{ // crop width
-			factor = (float)targetHeight / sourceHeight;
-			xOffset = (int)((sourceWidth - sourceHeight * targetAspect) * 0.5f);
+		{
+			// crop width
+			factor = (float) targetHeight / sourceHeight;
+			xOffset = (int) ((sourceWidth - sourceHeight * targetAspect) * 0.5f);
 		}
 		else
-		{ // crop height
-			factor = (float)targetWidth / sourceWidth;
-			yOffset = (int)((sourceHeight - sourceWidth / targetAspect) * 0.5f);
+		{
+			// crop height
+			factor = (float) targetWidth / sourceWidth;
+			yOffset = (int) ((sourceHeight - sourceWidth / targetAspect) * 0.5f);
 		}
+
 		var data = source.GetPixels32();
 		var data2 = new Color32[targetWidth * targetHeight];
 		for (int y = 0; y < targetHeight; y++)
@@ -79,9 +82,9 @@ public static class MyTexture
 				target.SetPixel(i, j, color);
 			}
 		}
+
 		target.Apply();
 
 		return target;
 	}
-
 }
