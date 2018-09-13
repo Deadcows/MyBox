@@ -16,13 +16,22 @@ public static class MyDebug
 		Debug.Log(sb.ToString());
 	}
 
-
-	public static void DrawDebugBounds(this MeshFilter mesh, Color color)
+	
+	public static void DrawDebugBounds(MeshFilter mesh, Color color)
 	{
 		if (mesh == null) return;
 		var renderer = mesh.GetComponent<MeshRenderer>();
+		DrawDebugBounds(renderer, color);
+	}
+	
+	public static void DrawDebugBounds(MeshRenderer renderer, Color color)
+	{
 		var bounds = renderer.bounds;
-
+		DrawDebugBounds(bounds, color);
+	}
+	
+	public static void DrawDebugBounds(Bounds bounds, Color color)
+	{
 		Vector3 v3Center = bounds.center;
 		Vector3 v3Extents = bounds.extents;
 
@@ -50,4 +59,5 @@ public static class MyDebug
 		Debug.DrawLine(v3FrontBottomRight, v3BackBottomRight, color);
 		Debug.DrawLine(v3FrontBottomLeft, v3BackBottomLeft, color);
 	}
+	
 }
