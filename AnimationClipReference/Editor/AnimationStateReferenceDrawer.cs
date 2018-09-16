@@ -15,7 +15,7 @@ public class AnimationStateReferenceDrawer : PropertyDrawer
 
         if (_animator == null)
         {
-            EditorGUI.LabelField(position, _animatorNotFound, label);
+            EditorGUI.LabelField(position, label, _animatorNotFound);
             return;
         }
 
