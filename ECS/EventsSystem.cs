@@ -26,7 +26,7 @@ public class EventsSystem : ComponentSystem
 	private ComponentGroup _firedEvents;
 	private ComponentGroup _firedActiveEvents;
 
-	protected override void OnCreateManager(int capacity)
+	protected override void OnCreateManager()
 	{
 		_firedEvents = GetComponentGroup(ComponentType.Create<EventComponent>(), ComponentType.Subtractive<EventActiveComponent>());
 		_firedActiveEvents = GetComponentGroup(ComponentType.Create<EventComponent>(), ComponentType.Create<EventActiveComponent>());
