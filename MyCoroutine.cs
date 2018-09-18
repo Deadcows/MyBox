@@ -50,7 +50,7 @@ public static class MyCoroutine
 
 	#endregion
 
-
+	
 	/// <summary>
 	/// Invoke Action on Delay
 	/// </summary>
@@ -59,8 +59,7 @@ public static class MyCoroutine
 		if (unscaled) yield return new WaitForUnscaledSeconds(waitSeconds);
 		else yield return new WaitForSeconds(waitSeconds);
 
-		if (action != null)
-			action.Invoke();
+		action?.Invoke();
 	}
 
 	/// <summary>
@@ -74,30 +73,35 @@ public static class MyCoroutine
 	/// <summary>
 	/// Invoke Action next frame
 	/// </summary>
-	public static IEnumerator SkipFrame(Action action)
+	public static IEnumerator DelayedAction(Action action)
 	{
 		yield return null;
 
-		if (action != null)
-			action.Invoke();
+		action?.Invoke();
 	}
 
 	/// <summary>
 	/// Invoke Action next frame
 	/// </summary>
-	public static Coroutine SkipFrame(this MonoBehaviour invoker, Action action)
+	public static Coroutine DelayedAction(this MonoBehaviour invoker, Action action)
 	{
-		return invoker.StartCoroutine(SkipFrame(action));
+		return invoker.StartCoroutine(DelayedAction(action));
 	}
 
 
+	/// <summary>
+	/// Set GO as selected next frame (EventSystem.current.SetSelectedGameObject)
+	/// </summary>
 	public static IEnumerator DelayedUiSelection(GameObject objectToSelect)
 	{
 		yield return null;
 		EventSystem.current.SetSelectedGameObject(null);
 		EventSystem.current.SetSelectedGameObject(objectToSelect);
 	}
-
+	
+	/// <summary>
+	/// Set GO as selected next frame (EventSystem.current.SetSelectedGameObject)
+	/// </summary>
 	public static Coroutine DelayedUiSelection(this MonoBehaviour invoker, GameObject objectToSelect)
 	{
 		return invoker.StartCoroutine(DelayedUiSelection(objectToSelect));
