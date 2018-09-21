@@ -8,6 +8,9 @@ using UnityEditor;
 public static class MyScriptableObject
 {
 
+	/// <summary>
+	/// Load all SO of type from Resources
+	/// </summary>
 	public static T[] LoadAssetsFromResources<T>() where T : ScriptableObject
 	{
 		return Resources.LoadAll("", typeof(T)).Cast<T>().ToArray();
@@ -16,6 +19,11 @@ public static class MyScriptableObject
 
 #if UNITY_EDITOR
 
+	/// <summary>
+	/// Load all SO of type from Assets
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
 	public static T[] LoadAssets<T>() where T : ScriptableObject
 	{
 		string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
@@ -29,12 +37,18 @@ public static class MyScriptableObject
 		return a;
 	}
 
+	/// <summary>
+	/// Get path to script file location
+	/// </summary>
 	public static string GetScriptAssetsPath(ScriptableObject so)
 	{
 		MonoScript ms = MonoScript.FromScriptableObject(so);
 		return AssetDatabase.GetAssetPath(ms);
 	}
-
+	
+	/// <summary>
+	/// Get fill path to script file location
+	/// </summary>
 	public static string GetScriptFullDirectory(ScriptableObject so)
 	{
 		var assetsPath = GetScriptAssetsPath(so);
