@@ -30,6 +30,8 @@ public static class MyEditor
 	{
 		for (var i = 0; i < SceneManager.sceneCount; i++)
 		{
+			var scene = SceneManager.GetSceneAt(i);
+			if (!scene.isLoaded) continue;
 			var roots = SceneManager.GetSceneAt(i).GetRootGameObjects();
 			for (var o = 0; o < roots.Length; o++)
 			{

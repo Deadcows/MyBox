@@ -84,6 +84,12 @@ public static class MyVectorsExtensions
 
 
 	#region Offset X/Y/Z
+	
+	public static Vector3 Offset(this Vector3 vector, Vector2 offset)
+	{
+		return new Vector3(vector.x + offset.x, vector.y + offset.y, vector.z);
+	}
+	
 
 	public static Vector3 OffsetX(this Vector3 vector, float x)
 	{
