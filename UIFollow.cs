@@ -14,7 +14,7 @@ namespace MyBox
 		private Camera Camera => _camera ? _camera : (_camera = Camera.main);
 		private Camera _camera;
 
-		private void Update()
+		private void LateUpdate()
 		{
 			if (ToFollow == null) return;
 
