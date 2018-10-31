@@ -8,7 +8,7 @@ public static class MyNavMeshPathExtensions
 	/// Get length of path (combining all corners)
 	/// </summary>
 	/// <param name="path">Path to calculate</param>
-	/// <returns>Lenght in Units</returns>
+	/// <returns>Length in Units</returns>
 	public static float GetLength(this NavMeshPath path)
 	{
 		var corners = path.corners;
@@ -32,6 +32,35 @@ public static class MyNavMeshPathExtensions
 		float time = length / speed;
 		time += path.corners.Length * .5f; // slowdown on corners offset
 		return time;
+	}
+
+	/// <summary>
+	/// Get point on path
+	/// </summary>
+	/// <param name="path">Path to calculate</param>
+	/// <param name="rate">Percent on path, from 0 to 1</param>
+	public static Vector3 GetPointOnPath(this NavMeshPath path, float rate)
+	{
+		rate = Mathf.Clamp01(rate);
+		var length = path.GetLength();
+		float elapsedRate = 0;
+		for (var i = 1; i < path.corners.Length; i++)
+		{
+			var from = path.corners[i - 1];
+			var to = path.corners[i];
+			var pieceLength = Vector3.Distance(from, to);
+			var pieceRate = pieceLength / length;
+			elapsedRate += pieceRate;
+
+			if (rate <= elapsedRate)
+			{
+				var rateOffset = elapsedRate - rate;
+				var rateOnPiece = 1 - rateOffset / pieceRate;
+				return Vector3.Lerp(from, to, rateOnPiece);
+			}
+		}
+
+		return path.corners[path.corners.Length - 1];
 	}
 
 }
