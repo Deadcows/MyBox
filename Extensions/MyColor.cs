@@ -7,6 +7,8 @@ public static class MyColor
 	public static Color RandomBright => new Color(Random.Range(.4f, 1), Random.Range(.4f, 1), Random.Range(.4f, 1));
 
 	public static Color RandomDim => new Color(Random.Range(.4f, .6f), Random.Range(.4f, .8f), Random.Range(.4f, .8f));
+	
+	public static Color RandomColor => new Color(Random.Range(.1f, .9f), Random.Range(.1f, .9f), Random.Range(.1f, .9f));
 
 
 	public static Color WithAlphaSetTo(this Color color, float a)

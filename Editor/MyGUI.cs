@@ -69,6 +69,14 @@ public static class MyGUI
 			return style;
 		}
 	}
+	
+	public static GUIStyle MiniButton(int index, Array collection)
+	{
+		if (collection.Length == 1) return EditorStyles.miniButton;
+		if (index == 0) return EditorStyles.miniButtonLeft;
+		if (index == collection.Length - 1) return EditorStyles.miniButtonRight;
+		return EditorStyles.miniButtonMid;
+	}
 
 	#endregion
 
