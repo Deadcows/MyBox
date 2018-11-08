@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using MyBox;
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
@@ -46,6 +47,8 @@ public static class MyGUI
 
 	public static string Cross => "×";
 
+	
+
 
 
 	#region Editor Styles
@@ -76,6 +79,18 @@ public static class MyGUI
 		if (index == 0) return EditorStyles.miniButtonLeft;
 		if (index == collection.Length - 1) return EditorStyles.miniButtonRight;
 		return EditorStyles.miniButtonMid;
+	}
+
+	public static GUIStyle ImageBasedButtonStyle
+	{
+		get
+		{
+			var style = new GUIStyle(MyGUI.ResizableToolbarButtonStyle);
+			style.border = new RectOffset();
+			style.margin = new RectOffset();
+			style.padding = new RectOffset();
+			return style;
+		}
 	}
 
 	#endregion
@@ -121,6 +136,7 @@ public static class MyGUI
 		rect.height = h;
 		return rect;
 	}
+
 
 	public static void DrawColouredRect(Rect rect, Color color)
 	{
@@ -335,94 +351,174 @@ public static class MyGUI
 	#region Drop Area
 
 	/// <summary>
-	/// Drag'n'Drop Area to catch objects of specific type
+	/// Drag-and-Drop Area to catch objects of specific type
 	/// </summary>
 	/// <typeparam name="T">Asset type to catch</typeparam>
-	/// <param name="areaText">Lable to display</param>
+	/// <param name="areaText">Label to display</param>
 	/// <param name="height">Height of the Drop Area</param>
 	/// <param name="allowExternal">Allow to drag external files and import as unity assets</param>
 	/// <param name="externalImportFolder">Path relative to Assets folder</param>
-	/// <returns>Received objects. Null if none catched</returns>
+	/// <returns>Received objects. Null if none received</returns>
 	public static T[] DropArea<T>(string areaText, float height, bool allowExternal = false,
 		string externalImportFolder = null) where T : Object
 	{
 		Event currentEvent = Event.current;
-		Rect drop_area = GUILayoutUtility.GetRect(0.0f, height, GUILayout.ExpandWidth(true));
+		Rect dropArea = GUILayoutUtility.GetRect(0.0f, height, GUILayout.ExpandWidth(true));
 		var style = new GUIStyle(GUI.skin.box);
 		style.alignment = TextAnchor.MiddleCenter;
-		GUI.Box(drop_area, areaText, style);
+		GUI.Box(dropArea, areaText, style);
 
-		switch (currentEvent.type)
+		bool dragEvent = currentEvent.type == EventType.DragUpdated || currentEvent.type == EventType.DragPerform;
+		if (!dragEvent) return null;
+		bool overDropArea = dropArea.Contains(currentEvent.mousePosition);
+		if (!overDropArea) return null;
+		
+		DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+		if (currentEvent.type != EventType.DragPerform) return null;
+		
+		DragAndDrop.AcceptDrag();
+		Event.current.Use();
+
+		List<T> result = new List<T>();
+
+		bool anyExternal = DragAndDrop.paths.Length > 0 && DragAndDrop.paths.Length > DragAndDrop.objectReferences.Length;
+		if (allowExternal && anyExternal)
 		{
-			case EventType.DragUpdated:
-			case EventType.DragPerform:
-				if (!drop_area.Contains(currentEvent.mousePosition))
-					return null;
+			var folderToLoad = "/";
+			if (!string.IsNullOrEmpty(externalImportFolder))
+			{
+				folderToLoad = "/" + externalImportFolder.Replace("Assets/", "").Trim('/', '\\') + "/";
+			}
+			List<string> importedFiles = new List<string>();
 
-				DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-				if (currentEvent.type == EventType.DragPerform)
+			foreach (string externalPath in DragAndDrop.paths)
+			{
+				if (externalPath.Length == 0) continue;
+				try
 				{
-					DragAndDrop.AcceptDrag();
-					Event.current.Use();
-
-					List<T> result = new List<T>();
-
-					if (allowExternal && DragAndDrop.paths.Length > 0 && DragAndDrop.paths.Length > DragAndDrop.objectReferences.Length)
-					{
-						var folderToLoad = "/";
-						if (!string.IsNullOrEmpty(externalImportFolder))
-						{
-							folderToLoad = "/" + externalImportFolder.Replace("Assets/", "").Trim('/', '\\') + "/";
-						}
-						List<string> importedFiles = new List<string>();
-
-						foreach (string externalPath in DragAndDrop.paths)
-						{
-							if (externalPath.Length == 0) continue;
-							try
-							{
-								var filename = Path.GetFileName(externalPath);
-								var relativePath = folderToLoad + filename;
-								Directory.CreateDirectory(Application.dataPath + folderToLoad);
-								FileUtil.CopyFileOrDirectory(externalPath, Application.dataPath + relativePath);
-								importedFiles.Add("Assets" + relativePath);
-							}
-							catch (Exception ex)
-							{
-								Debug.LogException(ex);
-							}
-						}
-						AssetDatabase.Refresh();
-
-						foreach (var importedFile in importedFiles)
-						{
-							var asset = AssetDatabase.LoadAssetAtPath<T>(importedFile);
-							if (asset != null)
-							{
-								result.Add(asset);
-								Debug.Log("Asset imported at path: " + importedFile);
-							}
-							else AssetDatabase.DeleteAsset(importedFile);
-						}
-					}
-					else
-					{
-						foreach (Object dragged in DragAndDrop.objectReferences)
-						{
-							var validObject = dragged as T ?? AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GetAssetPath(dragged));
-
-							if (validObject != null) result.Add(validObject);
-						}
-					}
-
-					if (result.Count > 0) return result.OrderBy(o => o.name).ToArray();
-					return null;
+					var filename = Path.GetFileName(externalPath);
+					var relativePath = folderToLoad + filename;
+					Directory.CreateDirectory(Application.dataPath + folderToLoad);
+					FileUtil.CopyFileOrDirectory(externalPath, Application.dataPath + relativePath);
+					importedFiles.Add("Assets" + relativePath);
 				}
-				break;
+				catch (Exception ex)
+				{
+					Debug.LogException(ex);
+				}
+			}
+			AssetDatabase.Refresh();
+
+			foreach (var importedFile in importedFiles)
+			{
+				var asset = AssetDatabase.LoadAssetAtPath<T>(importedFile);
+				if (asset != null)
+				{
+					result.Add(asset);
+					Debug.Log("Asset imported at path: " + importedFile);
+				}
+				else AssetDatabase.DeleteAsset(importedFile);
+			}
 		}
-		return null;
+		else
+		{
+			foreach (Object dragged in DragAndDrop.objectReferences)
+			{
+				var validObject = dragged as T ?? AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GetAssetPath(dragged));
+
+				if (validObject != null) result.Add(validObject);
+			}
+		}
+
+		return result.Count > 0 ? result.OrderBy(o => o.name).ToArray() : null;
 	}
 
+
+	/// <summary>
+	/// Drag-and-Drop Area to get paths of received objects
+	/// </summary>
+	/// <param name="areaText">Label to display</param>
+	/// <param name="height">Height of the Drop Area</param>
+	/// <returns>Received paths</returns>
+	public static string[] DropAreaPaths(string areaText, float height)
+	{
+		Event currentEvent = Event.current;
+		Rect dropArea = GUILayoutUtility.GetRect(0.0f, height, GUILayout.ExpandWidth(true));
+		var style = new GUIStyle(GUI.skin.box);
+		style.alignment = TextAnchor.MiddleCenter;
+		GUI.Box(dropArea, areaText, style);
+
+		bool dragEvent = currentEvent.type == EventType.DragUpdated || currentEvent.type == EventType.DragPerform;
+		if (!dragEvent) return null;
+		bool overDropArea = dropArea.Contains(currentEvent.mousePosition);
+		if (!overDropArea) return null;
+		
+		DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+		if (currentEvent.type != EventType.DragPerform) return null;
+		
+		DragAndDrop.AcceptDrag();
+		Event.current.Use();
+
+		return DragAndDrop.paths;
+		/*
+		List<string> paths = new List<string>();
+
+		bool anyExternal = DragAndDrop.paths.Length > 0 && DragAndDrop.paths.Length > DragAndDrop.objectReferences.Length;
+		if (allowExternal && anyExternal)
+		{
+			var folderToLoad = "/";
+			if (!string.IsNullOrEmpty(externalImportFolder))
+			{
+				folderToLoad = "/" + externalImportFolder.Replace("Assets/", "").Trim('/', '\\') + "/";
+			}
+			List<string> importedFiles = new List<string>();
+
+			foreach (string externalPath in DragAndDrop.paths)
+			{
+				if (externalPath.Length == 0) continue;
+				try
+				{
+					var filename = Path.GetFileName(externalPath);
+					var relativePath = folderToLoad + filename;
+					Directory.CreateDirectory(Application.dataPath + folderToLoad);
+					FileUtil.CopyFileOrDirectory(externalPath, Application.dataPath + relativePath);
+					importedFiles.Add("Assets" + relativePath);
+				}
+				catch (Exception ex)
+				{
+					Debug.LogException(ex);
+				}
+			}
+			AssetDatabase.Refresh();
+
+			foreach (var importedFile in importedFiles)
+			{
+				var asset = AssetDatabase.LoadAssetAtPath<T>(importedFile);
+				if (asset != null)
+				{
+					paths.Add(asset);
+					Debug.Log("Asset imported at path: " + importedFile);
+				}
+				else AssetDatabase.DeleteAsset(importedFile);
+			}
+		}
+		else
+		{
+			foreach (Object dragged in DragAndDrop.objectReferences)
+			{
+				var validObject = dragged as T ?? AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GetAssetPath(dragged));
+
+				if (validObject != null) paths.Add(validObject);
+			}
+		}
+
+		return paths.Count > 0 ? paths.OrderBy(o => o.name).ToArray() : null;
+		*/
+	}
+
+	
+	
+	
 
 	#endregion
 
@@ -635,5 +731,10 @@ public static class MyGUI
 	}
 
 	#endregion
+
+	public static Texture2D ReloadIcon16 => StringImageConverter.ConvertFromString(ReloadIconData, 16, 16);
+	public static Texture2D ReloadIcon32 => StringImageConverter.ConvertFromString(ReloadIconData, 32, 32);
+	public static Texture2D ReloadIcon64 => StringImageConverter.ConvertFromString(ReloadIconData, 64, 64);
+	private const string ReloadIconData = "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAArlBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeyFOlAAAAOXRSTlMA5ODTwwz7gEAF6PHbvRYQ9ZdGJAnOnhz318mqo3ZsWVEhGOy3cTUuE4t7XlQrrmZjSzuykqiGMigneNQWAAAEbUlEQVR42uzX2XaiQBSF4QMyKzggiKgMiopGNMZM+/1frG+6e7ksBLEq5sbvBfjhVFFAT09PT09Pj2ZGJIaafhlxNNN1fbs8JG+FQzfpTkD80uPSt+Ueziy80/vrF9VZK7CIkxtNOii3UN53KlVILEAmHvkhk1BF6/QNk66YBQAkul+xkVEvUA6j0vFPAa4Aw9dwI2nm0qXvEFwBbz6akJcXgzhK4AlQP3toSDnSmZkGngCjheZ6fn62+/+ThN1+vdbu7945gSfgW8HdNkMiKkLwBLxY4JAVtLPAEdDdg491AjgCRgq48QSkHn41YOQBvxkwauEHSBzXf3CAjzq9Tmhnme1J2k8EvFZfe+xHAzdX1eFQ7TrrRM8sTWzAKsB1rY2hMhOLPyyBAeoYV2WxSaXWfVlYwBTXKDFd5+ptMQExrrCWat1nW1tAQCqhlDZ1qc7QFhAwQanFjmoVSsAfMECpzopqHSUBa2DooYw3olpb1JLuXYGhc8uPn4gAs4US45TqOBmEBOxQom1QnSKEmAAbJV7rB2dBTMBbAJZCdT6FnYY+WNoXVVMnEBXgdMDSqdoqhLCAGCx5TpVeFhAX0AdrSVXcPpqQmk9gnFOVSJIFBhwbPwDK89R42ZzGmpAAHQypSzcYzr8TfT8ONL4Acw/GB93MVItk++FZvbsDHBmMHTWVDpZ9Re7dE7AGY5HTXVLj8J612g0DYjBOxMFZJdtpuLg9YAvGlnh13cHMV/5VWE1fQwkJoc6NqG/LbQRUhd0E2poE6q4inaoo7JqZ0yO1cCnM6ZHYk8BW6ZFkXNqb9Eh/2rXTJTWBKArAB1AWQVTcF1xw1DKacRmXnPd/sfxMKt0INEhVpvgegOpLF7e4p1scK6YOXvl2b8ATw4A6csn/FbRQpprsf7BMX/zXqIsyDSgIUCaLghBlOlAwRZm2FGh1lGgojrimjdLII64OyiOfC3yUKKDIgrK9ZfeQyVCnwOjlKMf1PkO7hfRmFJ2QhZj2jLzBaesjnRNFhgMlyxH/GA/m1yGSRRqLmg1ahlDJ3fqltAftHRRYanFbMKKoCZFS3Nb3kchQWbjI71NxM8+UcLfI6E6JxgrJejoltC4ymZNUbesHyujCCrI/w40AKJ8XjLd56+cD6dgmZdwNRPE3hvL09A7lbj5SeNYoFyCt1Zpy/QCJrDblZg5SW5iM0UnopcsmY3gtZDBjHO02RKxgajLOAlm0PMbSH7u6NLNdNtuM1UE21zbjmc3QjvC3Xnf5MPjCpIeMznxtPN2fLvb2+bwGx83to8GXtG7eMU3OdNdum8ncK7Kr11iYI1REfRYkhJquwULcICj1Jtce6pw982ockcvcZC7GDjkFBnOYRsgtmlGVG6IQc51KajYK0p0yu3WIAh08ZjT4iUL5mwbTM2sXFG74w2A6bm3p4B2cw+eaicYdG++zDb9cvqDPDhHey9md72PKtJtWsEIZHH+3sGbNieHpmqbp3rg/+ehsLqs6KpVKpVL5D/0GR6Q1W4O7GC4AAAAASUVORK5CYII=";
 
 }
