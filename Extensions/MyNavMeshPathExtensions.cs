@@ -30,7 +30,7 @@ public static class MyNavMeshPathExtensions
 	{
 		var length = path.GetLength();
 		float time = length / speed;
-		time += path.corners.Length * .5f; // slowdown on corners offset
+		time += (path.corners.Length - 1) * .5f; // slowdown on corners offset
 		return time;
 	}
 
