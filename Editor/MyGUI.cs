@@ -15,7 +15,6 @@ using Object = UnityEngine.Object;
 /// </summary>
 public static class MyGUI
 {
-
 	// Color Presets
 
 	public static Color Red => new Color(.8f, .6f, .6f);
@@ -47,9 +46,6 @@ public static class MyGUI
 
 	public static string Cross => "×";
 
-	
-
-
 
 	#region Editor Styles
 
@@ -72,7 +68,7 @@ public static class MyGUI
 			return style;
 		}
 	}
-	
+
 	public static GUIStyle MiniButton(int index, Array collection)
 	{
 		if (collection.Length == 1) return EditorStyles.miniButton;
@@ -234,6 +230,7 @@ public static class MyGUI
 		{
 			property.GetArrayElementAtIndex(i).objectReferenceValue = newElements[i];
 		}
+
 		property.serializedObject.ApplyModifiedProperties();
 	}
 
@@ -284,9 +281,9 @@ public static class MyGUI
 		{
 			return property.NewElement();
 		}
+
 		return null;
 	}
-
 
 
 	public static bool RemoveElementButton()
@@ -304,12 +301,12 @@ public static class MyGUI
 		var path = prop.propertyPath.Replace(".Array.data[", "[");
 		object obj = prop.serializedObject.targetObject;
 		var elements = path.Split('.');
-		foreach(var element in elements.Take(elements.Length-1))
+		foreach (var element in elements.Take(elements.Length - 1))
 		{
-			if(element.Contains("["))
+			if (element.Contains("["))
 			{
 				var elementName = element.Substring(0, element.IndexOf("["));
-				var index = Convert.ToInt32(element.Substring(element.IndexOf("[")).Replace("[","").Replace("]",""));
+				var index = Convert.ToInt32(element.Substring(element.IndexOf("[")).Replace("[", "").Replace("]", ""));
 				obj = GetValueAt(obj, elementName, index);
 			}
 			else
@@ -317,34 +314,35 @@ public static class MyGUI
 				obj = GetValue(obj, element);
 			}
 		}
+
 		return obj;
-		
+
 		object GetValue(object source, string name)
 		{
-			if(source == null)
+			if (source == null)
 				return null;
 			var type = source.GetType();
 			var f = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-			if(f == null)
+			if (f == null)
 			{
 				var p = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-				if(p == null)
+				if (p == null)
 					return null;
 				return p.GetValue(source, null);
 			}
+
 			return f.GetValue(source);
 		}
-		
+
 		object GetValueAt(object source, string name, int index)
 		{
 			var enumerable = GetValue(source, name) as IEnumerable;
 			var enm = enumerable.GetEnumerator();
-			while(index-- >= 0)
+			while (index-- >= 0)
 				enm.MoveNext();
 			return enm.Current;
 		}
 	}
- 
 
 	#endregion
 
@@ -372,10 +370,10 @@ public static class MyGUI
 		if (!dragEvent) return null;
 		bool overDropArea = dropArea.Contains(currentEvent.mousePosition);
 		if (!overDropArea) return null;
-		
+
 		DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
 		if (currentEvent.type != EventType.DragPerform) return null;
-		
+
 		DragAndDrop.AcceptDrag();
 		Event.current.Use();
 
@@ -389,6 +387,7 @@ public static class MyGUI
 			{
 				folderToLoad = "/" + externalImportFolder.Replace("Assets/", "").Trim('/', '\\') + "/";
 			}
+
 			List<string> importedFiles = new List<string>();
 
 			foreach (string externalPath in DragAndDrop.paths)
@@ -407,6 +406,7 @@ public static class MyGUI
 					Debug.LogException(ex);
 				}
 			}
+
 			AssetDatabase.Refresh();
 
 			foreach (var importedFile in importedFiles)
@@ -452,10 +452,10 @@ public static class MyGUI
 		if (!dragEvent) return null;
 		bool overDropArea = dropArea.Contains(currentEvent.mousePosition);
 		if (!overDropArea) return null;
-		
+
 		DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
 		if (currentEvent.type != EventType.DragPerform) return null;
-		
+
 		DragAndDrop.AcceptDrag();
 		Event.current.Use();
 
@@ -516,10 +516,6 @@ public static class MyGUI
 		*/
 	}
 
-	
-	
-	
-
 	#endregion
 
 	/// <summary>
@@ -534,6 +530,7 @@ public static class MyGUI
 		{
 			filepath = EditorUtility.OpenFilePanel(name, path, extension);
 		}
+
 		EditorGUILayout.EndHorizontal();
 		return filepath;
 	}
@@ -549,6 +546,7 @@ public static class MyGUI
 		{
 			filepath = EditorUtility.SaveFolderPanel(name, path, "Folder");
 		}
+
 		EditorGUILayout.EndHorizontal();
 		return filepath;
 	}
@@ -576,10 +574,12 @@ public static class MyGUI
 			{
 				break;
 			}
+
 			selectedIndex++;
 		}
+
 		selectedIndex = GUILayout.Toolbar(selectedIndex, toolbar);
-		return (Enum)values.GetValue(selectedIndex);
+		return (Enum) values.GetValue(selectedIndex);
 	}
 
 
@@ -609,9 +609,11 @@ public static class MyGUI
 					entry = array[i];
 				newArray[i] = EditorGUILayout.TextField("Element " + i, entry);
 			}
+
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.EndHorizontal();
 		}
+
 		EditorGUILayout.EndVertical();
 		return newArray;
 	}
@@ -739,8 +741,13 @@ public static class MyGUI
 	public static Texture2D IconEye32 => StringImageConverter.ConvertFromString(IconEye, 32, 32);
 	public static Texture2D IconEyeCrossed16 => StringImageConverter.ConvertFromString(IconEyeCrossed, 16, 16);
 	public static Texture2D IconEyeCrossed32 => StringImageConverter.ConvertFromString(IconEyeCrossed, 32, 32);
-	
-	private const string IconReload = "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAArlBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeyFOlAAAAOXRSTlMA5ODTwwz7gEAF6PHbvRYQ9ZdGJAnOnhz318mqo3ZsWVEhGOy3cTUuE4t7XlQrrmZjSzuykqiGMigneNQWAAAEbUlEQVR42uzX2XaiQBSF4QMyKzggiKgMiopGNMZM+/1frG+6e7ksBLEq5sbvBfjhVFFAT09PT09Pj2ZGJIaafhlxNNN1fbs8JG+FQzfpTkD80uPSt+Ueziy80/vrF9VZK7CIkxtNOii3UN53KlVILEAmHvkhk1BF6/QNk66YBQAkul+xkVEvUA6j0vFPAa4Aw9dwI2nm0qXvEFwBbz6akJcXgzhK4AlQP3toSDnSmZkGngCjheZ6fn62+/+ThN1+vdbu7945gSfgW8HdNkMiKkLwBLxY4JAVtLPAEdDdg491AjgCRgq48QSkHn41YOQBvxkwauEHSBzXf3CAjzq9Tmhnme1J2k8EvFZfe+xHAzdX1eFQ7TrrRM8sTWzAKsB1rY2hMhOLPyyBAeoYV2WxSaXWfVlYwBTXKDFd5+ptMQExrrCWat1nW1tAQCqhlDZ1qc7QFhAwQanFjmoVSsAfMECpzopqHSUBa2DooYw3olpb1JLuXYGhc8uPn4gAs4US45TqOBmEBOxQom1QnSKEmAAbJV7rB2dBTMBbAJZCdT6FnYY+WNoXVVMnEBXgdMDSqdoqhLCAGCx5TpVeFhAX0AdrSVXcPpqQmk9gnFOVSJIFBhwbPwDK89R42ZzGmpAAHQypSzcYzr8TfT8ONL4Acw/GB93MVItk++FZvbsDHBmMHTWVDpZ9Re7dE7AGY5HTXVLj8J612g0DYjBOxMFZJdtpuLg9YAvGlnh13cHMV/5VWE1fQwkJoc6NqG/LbQRUhd0E2poE6q4inaoo7JqZ0yO1cCnM6ZHYk8BW6ZFkXNqb9Eh/2rXTJTWBKArAB1AWQVTcF1xw1DKacRmXnPd/sfxMKt0INEhVpvgegOpLF7e4p1scK6YOXvl2b8ATw4A6csn/FbRQpprsf7BMX/zXqIsyDSgIUCaLghBlOlAwRZm2FGh1lGgojrimjdLII64OyiOfC3yUKKDIgrK9ZfeQyVCnwOjlKMf1PkO7hfRmFJ2QhZj2jLzBaesjnRNFhgMlyxH/GA/m1yGSRRqLmg1ahlDJ3fqltAftHRRYanFbMKKoCZFS3Nb3kchQWbjI71NxM8+UcLfI6E6JxgrJejoltC4ymZNUbesHyujCCrI/w40AKJ8XjLd56+cD6dgmZdwNRPE3hvL09A7lbj5SeNYoFyCt1Zpy/QCJrDblZg5SW5iM0UnopcsmY3gtZDBjHO02RKxgajLOAlm0PMbSH7u6NLNdNtuM1UE21zbjmc3QjvC3Xnf5MPjCpIeMznxtPN2fLvb2+bwGx83to8GXtG7eMU3OdNdum8ncK7Kr11iYI1REfRYkhJquwULcICj1Jtce6pw982ockcvcZC7GDjkFBnOYRsgtmlGVG6IQc51KajYK0p0yu3WIAh08ZjT4iUL5mwbTM2sXFG74w2A6bm3p4B2cw+eaicYdG++zDb9cvqDPDhHey9md72PKtJtWsEIZHH+3sGbNieHpmqbp3rg/+ehsLqs6KpVKpVL5D/0GR6Q1W4O7GC4AAAAASUVORK5CYII=";
-	private const string IconEye = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAllBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6C80qAAAAMXRSTlMA/AQdmFkx8dyRhYBwSCEW6cG7s653X0A2LPTf2NTHmpRMGRMG0c3Jw39osKWgiTwpnSU/9gAAAQRJREFUOMvlkVdyhDAQRDVIZDaQc/Cy2bHvfzljSYUpihvs+1GrZrrno9nLYRSBiMMwFkFhbIyt/oiZo7DW4wgAtR9eGvifFwIQl4vx+YuAW3ZgmjHrAPLmQ6cbcM2l3JvZXor8CnTasa9BqUoSmOiVMyU4XPpr2MrOBCRC/XIbzpRhdLAtHQUFcfUvbNwN5oF2TGFCYzLFjuCzx/9Ctl54A1JmhKiK7RPfFaLpOTiwdUYPyaD9FZrxT3AH5BuyDUEADVKfPaA5qdXDHWhVCDdNruwNEI5zjx4Bl4AzDQ9agB7LTssYE07i+r6b1Jh4/1n1WQ7Lut2SbWA93SSKEvdpsZfjF8DaIuCDeOKkAAAAAElFTkSuQmCC";
-	private const string IconEyeCrossed = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAilBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATAggvAAAALXRSTlMABPkXHfHWyeremYBvMvTPd1lIQAy0r6SRhV5MIffBuytoOjYnEOPDtpSKRBNc009oAAABPklEQVQ4y7WS13LDIBBFF9R7r46KS1xz///3IgEztpUMbz5PK+2eiwTQ5/jemdp+eR/8b02fpRxXzQDrY7gPTcDBRdyzP9ox9KtxrPxw54Cn237ku3ihKjftCQC3my4Ng8YVE/Nr+J0DTm/Ih3DAOQF4x0hhOEBSiPIr60MLbkFFsigGyZceeCplHyvDfnVTDs8UvgdL6iT7SGR2YcEzFsuBFakoSLg6haOFC6MOPCdJBkVGkpwjoOA50G8HdkBKbER8/H+JQ4xJfaTMiCwIbsqPYf+shemBB2wJSKR/Y+KXO8A21EZdljovG6CZs8yUug2MwpfTHHABRy1uhjZE6pO5wsK5boOgrT0s1Cd642HhBbed6Z2TjSGM9m09TXW7j2iL6QB+qbnjDXA1NHc0j9ez13Cwk4J0lNGJ0cf4BX2sKFr3AYx/AAAAAElFTkSuQmCC";
+
+	private const string IconReload =
+		"iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAArlBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeyFOlAAAAOXRSTlMA5ODTwwz7gEAF6PHbvRYQ9ZdGJAnOnhz318mqo3ZsWVEhGOy3cTUuE4t7XlQrrmZjSzuykqiGMigneNQWAAAEbUlEQVR42uzX2XaiQBSF4QMyKzggiKgMiopGNMZM+/1frG+6e7ksBLEq5sbvBfjhVFFAT09PT09Pj2ZGJIaafhlxNNN1fbs8JG+FQzfpTkD80uPSt+Ueziy80/vrF9VZK7CIkxtNOii3UN53KlVILEAmHvkhk1BF6/QNk66YBQAkul+xkVEvUA6j0vFPAa4Aw9dwI2nm0qXvEFwBbz6akJcXgzhK4AlQP3toSDnSmZkGngCjheZ6fn62+/+ThN1+vdbu7945gSfgW8HdNkMiKkLwBLxY4JAVtLPAEdDdg491AjgCRgq48QSkHn41YOQBvxkwauEHSBzXf3CAjzq9Tmhnme1J2k8EvFZfe+xHAzdX1eFQ7TrrRM8sTWzAKsB1rY2hMhOLPyyBAeoYV2WxSaXWfVlYwBTXKDFd5+ptMQExrrCWat1nW1tAQCqhlDZ1qc7QFhAwQanFjmoVSsAfMECpzopqHSUBa2DooYw3olpb1JLuXYGhc8uPn4gAs4US45TqOBmEBOxQom1QnSKEmAAbJV7rB2dBTMBbAJZCdT6FnYY+WNoXVVMnEBXgdMDSqdoqhLCAGCx5TpVeFhAX0AdrSVXcPpqQmk9gnFOVSJIFBhwbPwDK89R42ZzGmpAAHQypSzcYzr8TfT8ONL4Acw/GB93MVItk++FZvbsDHBmMHTWVDpZ9Re7dE7AGY5HTXVLj8J612g0DYjBOxMFZJdtpuLg9YAvGlnh13cHMV/5VWE1fQwkJoc6NqG/LbQRUhd0E2poE6q4inaoo7JqZ0yO1cCnM6ZHYk8BW6ZFkXNqb9Eh/2rXTJTWBKArAB1AWQVTcF1xw1DKacRmXnPd/sfxMKt0INEhVpvgegOpLF7e4p1scK6YOXvl2b8ATw4A6csn/FbRQpprsf7BMX/zXqIsyDSgIUCaLghBlOlAwRZm2FGh1lGgojrimjdLII64OyiOfC3yUKKDIgrK9ZfeQyVCnwOjlKMf1PkO7hfRmFJ2QhZj2jLzBaesjnRNFhgMlyxH/GA/m1yGSRRqLmg1ahlDJ3fqltAftHRRYanFbMKKoCZFS3Nb3kchQWbjI71NxM8+UcLfI6E6JxgrJejoltC4ymZNUbesHyujCCrI/w40AKJ8XjLd56+cD6dgmZdwNRPE3hvL09A7lbj5SeNYoFyCt1Zpy/QCJrDblZg5SW5iM0UnopcsmY3gtZDBjHO02RKxgajLOAlm0PMbSH7u6NLNdNtuM1UE21zbjmc3QjvC3Xnf5MPjCpIeMznxtPN2fLvb2+bwGx83to8GXtG7eMU3OdNdum8ncK7Kr11iYI1REfRYkhJquwULcICj1Jtce6pw982ockcvcZC7GDjkFBnOYRsgtmlGVG6IQc51KajYK0p0yu3WIAh08ZjT4iUL5mwbTM2sXFG74w2A6bm3p4B2cw+eaicYdG++zDb9cvqDPDhHey9md72PKtJtWsEIZHH+3sGbNieHpmqbp3rg/+ehsLqs6KpVKpVL5D/0GR6Q1W4O7GC4AAAAASUVORK5CYII=";
+
+	private const string IconEye =
+		"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAllBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6C80qAAAAMXRSTlMA/AQdmFkx8dyRhYBwSCEW6cG7s653X0A2LPTf2NTHmpRMGRMG0c3Jw39osKWgiTwpnSU/9gAAAQRJREFUOMvlkVdyhDAQRDVIZDaQc/Cy2bHvfzljSYUpihvs+1GrZrrno9nLYRSBiMMwFkFhbIyt/oiZo7DW4wgAtR9eGvifFwIQl4vx+YuAW3ZgmjHrAPLmQ6cbcM2l3JvZXor8CnTasa9BqUoSmOiVMyU4XPpr2MrOBCRC/XIbzpRhdLAtHQUFcfUvbNwN5oF2TGFCYzLFjuCzx/9Ctl54A1JmhKiK7RPfFaLpOTiwdUYPyaD9FZrxT3AH5BuyDUEADVKfPaA5qdXDHWhVCDdNruwNEI5zjx4Bl4AzDQ9agB7LTssYE07i+r6b1Jh4/1n1WQ7Lut2SbWA93SSKEvdpsZfjF8DaIuCDeOKkAAAAAElFTkSuQmCC";
+
+	private const string IconEyeCrossed =
+		"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAilBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATAggvAAAALXRSTlMABPkXHfHWyeremYBvMvTPd1lIQAy0r6SRhV5MIffBuytoOjYnEOPDtpSKRBNc009oAAABPklEQVQ4y7WS13LDIBBFF9R7r46KS1xz///3IgEztpUMbz5PK+2eiwTQ5/jemdp+eR/8b02fpRxXzQDrY7gPTcDBRdyzP9ox9KtxrPxw54Cn237ku3ihKjftCQC3my4Ng8YVE/Nr+J0DTm/Ih3DAOQF4x0hhOEBSiPIr60MLbkFFsigGyZceeCplHyvDfnVTDs8UvgdL6iT7SGR2YcEzFsuBFakoSLg6haOFC6MOPCdJBkVGkpwjoOA50G8HdkBKbER8/H+JQ4xJfaTMiCwIbsqPYf+shemBB2wJSKR/Y+KXO8A21EZdljovG6CZs8yUug2MwpfTHHABRy1uhjZE6pO5wsK5boOgrT0s1Cd642HhBbed6Z2TjSGM9m09TXW7j2iL6QB+qbnjDXA1NHc0j9ez13Cwk4J0lNGJ0cf4BX2sKFr3AYx/AAAAAElFTkSuQmCC";
 }
