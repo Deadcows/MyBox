@@ -17,12 +17,12 @@ namespace MyBox
 		private void LateUpdate()
 		{
 			if (ToFollow == null) return;
-
+			if (Camera == null) return;
+			
 			Transform.anchorMax = Vector2.zero;
 			Transform.anchorMin = Vector2.zero;
 
 			var followPosition = ToFollow.position.Offset(Offset);
-
 			Vector3 screenspace = Camera.WorldToScreenPoint(followPosition);
 			Transform.anchoredPosition = screenspace;
 		}
