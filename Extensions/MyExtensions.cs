@@ -5,7 +5,6 @@ using UnityEngine;
 
 public static class MyExtensions
 {
-
 	public static T RandomElement<T>(this List<T> elements)
 	{
 		return elements[Random.Range(0, elements.Count - 1)];
@@ -46,7 +45,28 @@ public static class MyExtensions
 		return component.GetComponent<T>() ?? component.gameObject.AddComponent<T>();
 	}
 
-	
+
+	/// <returns>
+	///   Returns -1 if none found
+	/// </returns>
+	public static int IndexOf<T>(this IEnumerable<T> items, T item)
+	{
+		var index = 0;
+
+		foreach (var i in items)
+		{
+			if (Equals(i, item))
+			{
+				return index;
+			}
+
+			++index;
+		}
+
+		return -1;
+	}
+
+
 	/// <summary>
 	/// Clamp value to less than min or more than max
 	/// </summary>
@@ -58,6 +78,7 @@ public static class MyExtensions
 			min = max;
 			max = x;
 		}
+
 		if (num < min || num > max) return num;
 
 		float mid = (max - min) / 2;
@@ -71,7 +92,7 @@ public static class MyExtensions
 	/// </summary>
 	public static int NotInRange(this int num, int min, int max)
 	{
-		return (int)((float)num).NotInRange(min, max);
+		return (int) ((float) num).NotInRange(min, max);
 	}
 
 	/// <summary>
@@ -130,11 +151,11 @@ public static class MyExtensions
 		return hits?.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToList();
 	}
 
-    public static void SetBodyState(this Rigidbody body, bool state)
-    {
-        body.isKinematic = !state;
-        body.detectCollisions = state;
-    }
+	public static void SetBodyState(this Rigidbody body, bool state)
+	{
+		body.isKinematic = !state;
+		body.detectCollisions = state;
+	}
 
 
 	public static bool IsPrefabInstance(this GameObject go)

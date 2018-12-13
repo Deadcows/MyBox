@@ -2,7 +2,6 @@
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
-using UnityQuery;
 
 [CustomPropertyDrawer(typeof(AnimationStateReference))]
 public class AnimationStateReferenceDrawer : PropertyDrawer
@@ -80,5 +79,4 @@ public class AnimationStateReferenceDrawer : PropertyDrawer
     private readonly string[] _defaultState = {"Not Assigned"};
 
     private string[] _states = new string[1];
-    //private (string Name, int Hash)[] _states = new (string Name, int Hash)[0];
 }

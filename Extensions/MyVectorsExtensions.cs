@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class MyVectorsExtensions
 {
@@ -285,21 +284,6 @@ public static class MyVectorsExtensions
 	public static Vector3 SnapToOne(this Vector3 vector)
 	{
 		return new Vector3(Mathf.Round(vector.x), Mathf.Round(vector.y), Mathf.Round(vector.z));
-	}
-
-	#endregion
-
-
-	#region Vector2/3 to float2/3 calculations
-
-	public static Vector3 AddToVector(this Vector3 a, float3 b)
-	{
-		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
-	}
-
-	public static Vector3 AddToVector(this float3 a, Vector3 b)
-	{
-		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 	}
 
 	#endregion
