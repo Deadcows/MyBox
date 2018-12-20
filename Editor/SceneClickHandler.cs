@@ -79,8 +79,11 @@ public class SceneClickHandler
 		RaycastHit hit;
 		if (_useMask ? Physics.Raycast(ray, out hit, _mask.value) : Physics.Raycast(ray, out hit))
 		{
-			Handles.DrawWireCube(hit.point, Vector3.one * .2f);
-
+			var color = Handles.color;
+			Handles.color = Color.white;
+			Handles.DrawWireDisc(hit.point, Vector3.up, .3f);
+			Handles.color = color;
+			
 			if (Handles.Button(Vector3.zero, SceneView.currentDrawingSceneView.rotation, 30, 5000, Handles.RectangleHandleCap))
 				HandleClick(hit.point);
 		}

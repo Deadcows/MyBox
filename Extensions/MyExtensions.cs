@@ -45,6 +45,30 @@ public static class MyExtensions
 		return component.GetComponent<T>() ?? component.gameObject.AddComponent<T>();
 	}
 
+	public static List<Transform> GetObjectsOfLayerInChild(this GameObject gameObject, int layer)
+	{
+		List<Transform> list = new List<Transform>();
+		CheckChilds(gameObject.transform);
+
+		void CheckChilds(Transform transform)
+		{
+			foreach (Transform t in transform)
+			{
+				CheckChilds(t);
+				
+				if (t.gameObject.layer != layer) continue;
+				list.Add(t);
+			}
+		}
+
+		return list;
+	}
+	
+	public static List<Transform> GetObjectsOfLayerInChild(this Component component, int layer)
+	{
+		return component.gameObject.GetObjectsOfLayerInChild(layer);
+	}
+
 
 	/// <returns>
 	///   Returns -1 if none found
