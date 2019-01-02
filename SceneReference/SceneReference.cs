@@ -41,6 +41,8 @@ namespace RoboRyanTron.SceneReference
 
 		[SerializeField] private bool sceneEnabled;
 
+		public bool IsAssigned => !SceneName.IsNullOrEmpty();
+
 		private void ValidateScene()
 		{
 			if (string.IsNullOrEmpty(SceneName))
