@@ -8,14 +8,18 @@ namespace MyBox
 		public Transform ToFollow;
 		public Vector2 Offset;
 
-		private RectTransform Transform => _transform ? _transform : (_transform = transform as RectTransform);
+		[SerializeField] private bool _editTime = true;
+
+		private RectTransform Transform => _transform ? _transform : _transform = transform as RectTransform;
 		private RectTransform _transform;
 
-		private Camera Camera => _camera ? _camera : (_camera = Camera.main);
+		private Camera Camera => _camera ? _camera : _camera = Camera.main;
 		private Camera _camera;
 
 		private void LateUpdate()
 		{
+			if (!_editTime && !Application.isPlaying) return;
+			
 			if (ToFollow == null) return;
 			if (Camera == null) return;
 			
