@@ -1,0 +1,18 @@
+{
+    "name": "MyBox.AnimationClipReference.Editor",
+    "references": [
+        "MyBox.AnimationClipReference",
+        "MyBox.Editor",
+        "MyBox.Extensions"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

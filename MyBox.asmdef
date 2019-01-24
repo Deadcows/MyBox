@@ -1,0 +1,15 @@
+{
+    "name": "MyBox",
+    "references": [
+        "MyBox.Attributes",
+        "MyBox.Extensions"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
