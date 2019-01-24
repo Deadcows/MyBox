@@ -49,7 +49,7 @@ namespace MyBox
 
 			if (_texture != null) EditorGUILayout.LabelField(new GUIContent(_texture), GUILayout.Width(_width), GUILayout.Height(_height));
 
-			if (selected.IsNullOrEmpty()) return;
+			if (selected == null || selected.Length == 0) return;
 
 			string content = Convert.ToBase64String(File.ReadAllBytes(selected[0]));
 			_representation = content;

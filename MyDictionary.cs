@@ -46,7 +46,7 @@ public class MyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 			throw new KeyNotFoundException(key.ToString());
 		}
 
-		set { Insert(key, value, false); }
+		set => Insert(key, value, false);
 	}
 
 	public MyDictionary() : this(0, null) { }
@@ -210,7 +210,6 @@ public class MyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
 		int hash = _comparer.GetHashCode(key) & 2147483647;
 		int index = hash % _buckets.Length;
-		int num1 = 0;
 		for (int i = _buckets[index]; i >= 0; i = _next[i])
 		{
 			if (_hashCodes[i] == hash && _comparer.Equals(_keys[i], key))
@@ -222,7 +221,6 @@ public class MyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 				_version++;
 				return;
 			}
-			num1++;
 		}
 		int num2;
 		if (_freeCount > 0)
@@ -491,7 +489,7 @@ public class MyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		{
 			_dictionary = dictionary;
 			_Version = dictionary._version;
-			Current = default(KeyValuePair<TKey, TValue>);
+			Current = new KeyValuePair<TKey, TValue>();
 			_index = 0;
 		}
 

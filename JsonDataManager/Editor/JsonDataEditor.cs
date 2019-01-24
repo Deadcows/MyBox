@@ -24,7 +24,7 @@ public class JsonDataEditor : EditorWindow
 	
 	#region Load Settings
 
-	private bool SettingsLoaded => !_settings.IsNullOrEmpty();
+	private bool SettingsLoaded => !(_settings == null || _settings.Length == 0);
 
 	private string SettingsFolder => Application.dataPath + "/" + JsonDataManager.EditorSettingsFolder;
 	private string[] SettingsFiles => Directory.GetFiles(SettingsFolder).Where(f => f.EndsWith(".json")).ToArray();
@@ -108,11 +108,8 @@ public class JsonDataEditor : EditorWindow
 
 	private void CheckData()
 	{
-		if (_settings.IsNullOrEmpty() ||
-		    _settings.Any(s => s == null))
-		{
+		if (!SettingsLoaded || _settings.Any(s => s == null)) 
 			LoadSettings();
-		}
 	}
 
 	#region Save Load Buttons

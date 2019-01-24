@@ -9,17 +9,16 @@ public class MyBundleUtility : EditorWindow
 
 	#region Build Bandles
 
-	[MenuItem("Assets/Build Bandles")]
-	// ReSharper disable once UnusedMember.Local
+	[MenuItem("Assets/Build Bundles")]
 	static void BuildAssetBundles()
 	{
 		string winPath = EditorUtility.OpenFolderPanel("Windows Output Folder", "", "");
-		if (winPath.IsNullOrEmpty()) return;
+		if (string.IsNullOrEmpty(winPath)) return;
 		BuildPipeline.BuildAssetBundles(winPath, BuildAssetBundleOptions.UncompressedAssetBundle,
 			BuildTarget.StandaloneWindows);
 
 		string macPath = EditorUtility.OpenFolderPanel("OSX Output Folder", "", "");
-		if (macPath.IsNullOrEmpty()) return;
+		if (string.IsNullOrEmpty(macPath)) return;
 		BuildPipeline.BuildAssetBundles(macPath, BuildAssetBundleOptions.UncompressedAssetBundle,
 			BuildTarget.StandaloneOSX);
 	}
@@ -30,14 +29,12 @@ public class MyBundleUtility : EditorWindow
 	#region Windows Build
 
 	[MenuItem("Assets/Windows Build", priority = 1)]
-	// ReSharper disable once UnusedMember.Local
 	private static void BuildWindows()
 	{
 		WindowsBuild(false);
 	}
 
 	[MenuItem("Assets/Windows Build Light", priority = 2)]
-	// ReSharper disable once UnusedMember.Local
 	private static void BuildWindowsLight()
 	{
 		WindowsBuild(true);
@@ -46,7 +43,7 @@ public class MyBundleUtility : EditorWindow
 	private static void WindowsBuild(bool light)
 	{
 		string buildPath = EditorUtility.OpenFolderPanel("Windows Build Output Folder", "", "");
-		if (buildPath.IsNullOrEmpty()) return;
+		if (string.IsNullOrEmpty(buildPath)) return;
 
 		var exePath = Path.Combine(buildPath, "TheFinalStation.exe");
 		var dlcPath = Path.Combine(buildPath, "TheFinalStation_Data");
@@ -54,7 +51,7 @@ public class MyBundleUtility : EditorWindow
 		PlayerSettings.displayResolutionDialog = ResolutionDialogSetting.HiddenByDefault;
 		var scenesInBuild = EditorBuildSettings.scenes.Select(s => s.path).ToArray();
 
-		// Somplified build, only ldc and aid menu is builded
+		// Simplified build, only dlc and aid menu is built
 		if (light) scenesInBuild = new[] {scenesInBuild.First()};
 
 		BuildPipeline.BuildPlayer(scenesInBuild, exePath, BuildTarget.StandaloneWindows, BuildOptions.None);
@@ -98,7 +95,7 @@ public class MyBundleUtility : EditorWindow
 		if (GUILayout.Button("Build", MyGUI.ResizableToolbarButtonStyle, GUILayout.Height(40)))
 		{
 			string buildPath = EditorUtility.OpenFolderPanel("Build Output Folder", "", "");
-			if (buildPath.IsNullOrEmpty()) return;
+			if (string.IsNullOrEmpty(buildPath)) return;
 			var sep = Path.DirectorySeparatorChar;
 			buildPath += sep;
 

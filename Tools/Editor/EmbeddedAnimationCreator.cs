@@ -31,7 +31,7 @@ public class EmbeddedAnimationCreator : EditorWindow
 
 		EditorGUILayout.BeginHorizontal();
 		_newClipName = EditorGUILayout.TextField("New Clip Name", _newClipName);
-		if (_newClipName.IsNullOrEmpty()) return;
+		if (string.IsNullOrEmpty(_newClipName)) return;
 			
 		if (GUILayout.Button("+", MyGUI.ResizableToolbarButtonStyle, GUILayout.Width(20), GUILayout.Height(20)))
 		{
@@ -56,11 +56,12 @@ public class EmbeddedAnimationCreator : EditorWindow
 
 	private void DrawAnimationClips()
 	{
-		if (_currentAnimator.animationClips.IsNullOrEmpty()) return;
+		var clips = _currentAnimator.animationClips;
+		if (clips == null || clips.Length == 0) return;
 		
-		for (var i = 0; i < _currentAnimator.animationClips.Length; i++)
+		for (var i = 0; i < clips.Length; i++)
 		{
-			EditorGUILayout.LabelField(i + " Clip: " + _currentAnimator.animationClips[i].name);
+			EditorGUILayout.LabelField(i + " Clip: " + clips[i].name);
 		}
 	}
 

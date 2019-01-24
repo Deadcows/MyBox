@@ -81,7 +81,7 @@ public static class MyGUI
 	{
 		get
 		{
-			var style = new GUIStyle(MyGUI.ResizableToolbarButtonStyle);
+			var style = new GUIStyle(ResizableToolbarButtonStyle);
 			style.border = new RectOffset();
 			style.margin = new RectOffset();
 			style.padding = new RectOffset();
@@ -100,7 +100,8 @@ public static class MyGUI
 
 		EditorGUILayout.Space();
 		var spaceRect = EditorGUILayout.GetControlRect();
-		var separatorRect = new Rect(spaceRect.position.OffsetY(spaceRect.height / 2), new Vector2(spaceRect.width, 1));
+		var separatorRectPosition = new Vector2(spaceRect.position.x, spaceRect.position.y + spaceRect.height / 2);
+		var separatorRect = new Rect(separatorRectPosition, new Vector2(spaceRect.width, 1));
 
 		GUI.color = Color.white;
 		GUI.Box(separatorRect, GUIContent.none);
@@ -337,6 +338,8 @@ public static class MyGUI
 		object GetValueAt(object source, string name, int index)
 		{
 			var enumerable = GetValue(source, name) as IEnumerable;
+			if (enumerable == null) return null;
+			
 			var enm = enumerable.GetEnumerator();
 			while (index-- >= 0)
 				enm.MoveNext();
@@ -562,9 +565,9 @@ public static class MyGUI
 
 		for (int i = 0; i < toolbar.Length; i++)
 		{
-			string toolname = toolbar[i];
-			toolname = toolname.Replace("_", " ");
-			toolbar[i] = toolname;
+			string toolName = toolbar[i];
+			toolName = toolName.Replace("_", " ");
+			toolbar[i] = toolName;
 		}
 
 		int selectedIndex = 0;

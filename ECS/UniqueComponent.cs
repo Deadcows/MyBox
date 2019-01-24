@@ -11,7 +11,7 @@ public struct UniqueComponent<T> where T : Component
 	{
 		get
 		{
-			Debug.Assert(Components.Length == 1, $"There is more/less tnan one instance of {typeof(T)}");
+			Debug.Assert(Components.Length == 1, $"There is more/less than one instance of {typeof(T)}");
 			return Components[0];
 		}
 	}
@@ -30,7 +30,7 @@ public struct UniqueTransformComponent<T> where T : Component
 	{
 		get
 		{
-			Debug.Assert(Components.Length == 1, $"There is more/less tnan one instance of {typeof(T)}");
+			Debug.Assert(Components.Length == 1, $"There is more/less than one instance of {typeof(T)}");
 			return Components[0];
 		}
 	}
@@ -39,7 +39,7 @@ public struct UniqueTransformComponent<T> where T : Component
 	{
 		get
 		{
-			Debug.Assert(Components.Length == 1, $"There is more/less tnan one instance of {typeof(T)}");
+			Debug.Assert(Components.Length == 1, $"There is more/less than one instance of {typeof(T)}");
 			return Transform[0];
 		}
 	}
@@ -58,7 +58,7 @@ public struct UniqueComponentData<T> where T : struct, IComponentData
 	{
 		get
 		{
-			Debug.Assert(Components.Length == 1, $"There is more/less tnan one instance of {typeof(T)}");
+			Debug.Assert(Components.Length == 1, $"There is more/less than one instance of {typeof(T)}");
 			return Components[0];
 		}
 	}
@@ -77,7 +77,7 @@ public struct UniqueTransformComponentData<T> where T : struct, IComponentData
 	{
 		get
 		{
-			Debug.Assert(Components.Length == 1, $"There is more/less tnan one instance of {typeof(T)}");
+			Debug.Assert(Components.Length == 1, $"There is more/less than one instance of {typeof(T)}");
 			return Components[0];
 		}
 	}
@@ -86,7 +86,7 @@ public struct UniqueTransformComponentData<T> where T : struct, IComponentData
 	{
 		get
 		{
-			Debug.Assert(Components.Length == 1, $"There is more/less tnan one instance of {typeof(T)}");
+			Debug.Assert(Components.Length == 1, $"There is more/less than one instance of {typeof(T)}");
 			return Transform[0];
 		}
 	}

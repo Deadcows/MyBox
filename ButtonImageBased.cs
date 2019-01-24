@@ -17,8 +17,8 @@ public class ButtonImageBased : MonoBehaviour, ISelectHandler, IDeselectHandler
 
 	public bool AlternativeSpriteset
 	{
-		get { return _alternative; }
-		set { _alternative = value; }
+		get => _alternative;
+		set => _alternative = value;
 	}
 
 	private bool _alternative;

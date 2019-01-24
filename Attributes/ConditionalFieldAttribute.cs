@@ -21,7 +21,7 @@ public class ConditionalFieldAttribute : PropertyAttribute
     // TODO: Skip array fields
     public bool CheckBehaviourPropertyVisible(MonoBehaviour behaviour, string propertyName)
     {
-        if (_propertyToCheck.IsNullOrEmpty()) return true;
+        if (string.IsNullOrEmpty(_propertyToCheck)) return true;
 
         var so = new SerializedObject(behaviour);
         var property = so.FindProperty(propertyName);

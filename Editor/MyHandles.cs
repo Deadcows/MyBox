@@ -30,23 +30,25 @@ public static class MyHandles
 	}
 
 	/// <summary>
-	/// Draw arrowed gizmo in scene view to vizualize path
+	/// Draw arrowed gizmo in scene view to visualize path
 	/// </summary>
-	/// <param name="path">Path to vizualize</param>
+	/// <param name="path">Path to visualize</param>
 	/// <param name="screenSpaceSize">Size of dotted line</param>
-	public static void VizualizePath(NavMeshPath path, float screenSpaceSize = 3)
+	public static void VisualizePath(NavMeshPath path, float screenSpaceSize = 3)
 	{
-		var coreners = path.corners;
-		for (var i = 1; i < coreners.Length; i++)
+		var corners = path.corners;
+		for (var i = 1; i < corners.Length; i++)
 		{
-			DrawDirectionalDottedLine(coreners[i - 1], coreners[i], screenSpaceSize);
+			DrawDirectionalDottedLine(corners[i - 1], corners[i], screenSpaceSize);
 		}
 	}
 
 	public static void DrawFlyPath(Vector3 pointA, Vector3 pointB, float height = 3)
 	{
 		var color = Handles.color;
-		Handles.DrawBezier(pointA, pointB, pointA.OffsetY(height), pointB.OffsetY(height), color, null, 3);
+		var pointAOffset = new Vector3(pointA.x, pointA.y + height, pointA.z);
+		var pointBOffset = new Vector3(pointB.x, pointB.y + height, pointB.z);
+		Handles.DrawBezier(pointA, pointB, pointAOffset, pointBOffset, color, null, 3);
 	}
 
 }
