@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿/*
+using Unity.Entities;
 using UnityEngine;
 
 
@@ -94,3 +95,4 @@ public struct UniqueTransformComponentData<T> where T : struct, IComponentData
 	public Entity EntityInstance => Entities[0];
 	public bool IsSet => Entities.Length > 0;
 }
+*/

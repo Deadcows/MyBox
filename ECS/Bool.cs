@@ -1,7 +1,8 @@
-﻿using System;
+﻿/*
+using System;
 
 /// <summary>
-/// Blitable boolean representation
+/// Blittable boolean representation
 /// </summary>
 public struct Bool
 {
@@ -17,3 +18,4 @@ public struct Bool
 		return b._value == 1;
 	}
 }
+*/

@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿/*
+using Unity.Entities;
 using UnityEngine;
 
 public static class MyECSExtensions
@@ -69,3 +70,4 @@ public static class MyECSExtensions
 	}
 
 }
+*/

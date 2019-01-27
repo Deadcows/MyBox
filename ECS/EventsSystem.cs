@@ -1,3 +1,4 @@
+/*
 using Unity.Entities;
 
 
@@ -100,3 +101,4 @@ public static class EventsSystemExtension
 		return eventEntity;
 	}
 }
+*/
