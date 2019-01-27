@@ -1,4 +1,8 @@
 ## Entity Component System Tools and Extentions
+**ECS Extensions is compatible with "Unity.ECS 0.0.12p19" package.**
+
+**I'll support them for the future but at the moment this extensions were commented out for better compatibility**
+
 
 ### [EventsSystem](https://forum.unity.com/threads/eventssystem-for-one-frame-components.548965/) 
 ComponentSystem with a few extensions methods and helper structures to create end react on Events - one frame components
