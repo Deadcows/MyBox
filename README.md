@@ -1,10 +1,13 @@
 # MyBox
-MyBox is a set of tools and extensions for Unity. 99% of it made by me over the years of work with Unity and during The Final Station development. 
-
+MyBox is a set of tools and extensions for Unity. 99% of it made by me over the years of work with Unity and during **[The Final Station](https://store.steampowered.com/app/435530/The_Final_Station/)** development. <br />
 Most of this stuff was made for specific cases and may or may not work for you. If you want to contribute or report a bug write me to andrew@deadcow.ru
 
+**To use MyBox you need to make sure your project supports C#7 features.**<br />
+**It's better to use Unity 2018.3+ version and "PlayerSettings/Player/Script Runtime Version" must be set to .NET 4.x**
+
 ## [Entity Component System](ECS/)
-ECS Tools, Helper Systems and Extentions
+ECS Tools, Helper Systems and Extentions <br />
+**is not up to date and was commented out for better compatibility :sweat: I'll check it out later**
 
 ## [Tools](Tools/)
 Tools such as Logger and TimeTest
