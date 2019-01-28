@@ -51,7 +51,7 @@ public static class MyCollections
 	public struct ComponentOfInterface<I>
 	{
 		public readonly Component Component;
-		private I Interface;
+		public readonly I Interface;
 
 		public ComponentOfInterface(Component component, I @interface)
 		{

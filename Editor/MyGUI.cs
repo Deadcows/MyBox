@@ -34,17 +34,19 @@ public static class MyGUI
 
     public const string ArrowUp = "▲";
 
-    public const  string ArrowDown = "▼";
+    public const string ArrowDown = "▼";
 
-    public const  string ArrowLeft = "◀";
+    public const string ArrowLeft = "◀";
 
-    public const  string ArrowRight = "▶";
+    public const string ArrowRight = "▶";
 
-    public const  string ArrowLeftLight = "←";
+    public const string ArrowLeftLight = "←";
 
-    public const  string ArrowRightLight = "→";
+    public const string ArrowRightLight = "→";
 
-    public const  string Cross = "×";
+    public const string ArrowTopRightLight = "↘";
+
+    public const string Cross = "×";
 
 
     #region Editor Styles
@@ -53,21 +55,44 @@ public static class MyGUI
     {
         get
         {
-            var style = new GUIStyle(GUI.skin.GetStyle("HelpBox"));
-            style.alignment = TextAnchor.MiddleCenter;
-            return style;
+            if (_helpBoxStyle != null) return _helpBoxStyle;
+            _helpBoxStyle = new GUIStyle(GUI.skin.GetStyle("HelpBox"));
+            _helpBoxStyle.alignment = TextAnchor.MiddleCenter;
+            return _helpBoxStyle;
         }
     }
+
+    private static GUIStyle _helpBoxStyle;
+
 
     public static GUIStyle ResizableToolbarButtonStyle
     {
         get
         {
-            var style = new GUIStyle(EditorStyles.toolbarButton);
-            style.fixedHeight = 0;
-            return style;
+            if (_resizableToolbarButtonStyle != null) return _resizableToolbarButtonStyle;
+            _resizableToolbarButtonStyle = new GUIStyle(EditorStyles.toolbarButton);
+            _resizableToolbarButtonStyle.fixedHeight = 0;
+            return _resizableToolbarButtonStyle;
         }
     }
+
+    private static GUIStyle _resizableToolbarButtonStyle;
+
+
+    public static GUIStyle ImageBasedButtonStyle
+    {
+        get
+        {
+            if (_imageBasedButton != null) return _imageBasedButton;
+            _imageBasedButton = new GUIStyle(ResizableToolbarButtonStyle);
+            _imageBasedButton.border = new RectOffset();
+            _imageBasedButton.margin = new RectOffset();
+            _imageBasedButton.padding = new RectOffset();
+            return _imageBasedButton;
+        }
+    }
+    private static GUIStyle _imageBasedButton;
+    
 
     public static GUIStyle MiniButton(int index, Array collection)
     {
@@ -75,18 +100,6 @@ public static class MyGUI
         if (index == 0) return EditorStyles.miniButtonLeft;
         if (index == collection.Length - 1) return EditorStyles.miniButtonRight;
         return EditorStyles.miniButtonMid;
-    }
-
-    public static GUIStyle ImageBasedButtonStyle
-    {
-        get
-        {
-            var style = new GUIStyle(ResizableToolbarButtonStyle);
-            style.border = new RectOffset();
-            style.margin = new RectOffset();
-            style.padding = new RectOffset();
-            return style;
-        }
     }
 
     #endregion
@@ -327,7 +340,8 @@ public static class MyGUI
         var f = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
         if (f == null)
         {
-            var p = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            var p = type.GetProperty(name,
+                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
             if (p == null)
                 return null;
             return p.GetValue(source, null);
@@ -382,7 +396,8 @@ public static class MyGUI
 
         List<T> result = new List<T>();
 
-        bool anyExternal = DragAndDrop.paths.Length > 0 && DragAndDrop.paths.Length > DragAndDrop.objectReferences.Length;
+        bool anyExternal = DragAndDrop.paths.Length > 0 &&
+                           DragAndDrop.paths.Length > DragAndDrop.objectReferences.Length;
         if (allowExternal && anyExternal)
         {
             var folderToLoad = "/";
@@ -659,7 +674,8 @@ public static class MyGUI
         private ReorderableList _list;
         private SerializedProperty _property;
 
-        public ReorderableCollection(SerializedProperty property, bool withAddButton = true, bool withRemoveButton = true)
+        public ReorderableCollection(SerializedProperty property, bool withAddButton = true,
+            bool withRemoveButton = true)
         {
             _property = property;
             CreateList(property, withAddButton, withRemoveButton);
@@ -674,7 +690,8 @@ public static class MyGUI
         private void DrawHeader()
         {
             EditorGUILayout.BeginHorizontal();
-            _property.isExpanded = EditorGUILayout.ToggleLeft(string.Format("{0}[]", _property.displayName), _property.isExpanded,
+            _property.isExpanded = EditorGUILayout.ToggleLeft(string.Format("{0}[]", _property.displayName),
+                _property.isExpanded,
                 EditorStyles.boldLabel);
             EditorGUILayout.LabelField(string.Format("size: {0}", _property.arraySize));
             EditorGUILayout.EndHorizontal();
@@ -682,7 +699,8 @@ public static class MyGUI
 
         private void CreateList(SerializedProperty property, bool withAddButton, bool withRemoveButton)
         {
-            _list = new ReorderableList(property.serializedObject, property, true, true, withAddButton, withRemoveButton);
+            _list = new ReorderableList(property.serializedObject, property, true, true, withAddButton,
+                withRemoveButton);
             _list.onChangedCallback += list => Apply();
             _list.onRemoveCallback += RemoveElement;
             _list.drawHeaderCallback += DrawElementHeader;
@@ -693,7 +711,8 @@ public static class MyGUI
 
         private void DrawElementHeader(Rect rect)
         {
-            _property.isExpanded = EditorGUI.ToggleLeft(rect, _property.displayName, _property.isExpanded, EditorStyles.boldLabel);
+            _property.isExpanded =
+                EditorGUI.ToggleLeft(rect, _property.displayName, _property.isExpanded, EditorStyles.boldLabel);
         }
 
         private void RemoveElement(ReorderableList list)
@@ -709,7 +728,8 @@ public static class MyGUI
             var newRect = rect;
             newRect.x += 20;
 
-            if (element.propertyType == SerializedPropertyType.Generic) EditorGUI.LabelField(newRect, element.displayName);
+            if (element.propertyType == SerializedPropertyType.Generic)
+                EditorGUI.LabelField(newRect, element.displayName);
 
             rect.height = GetElementHeight(index);
             rect.y += 1;
