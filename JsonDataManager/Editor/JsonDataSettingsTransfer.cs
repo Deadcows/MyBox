@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEditor.Build;
@@ -6,7 +7,10 @@ using UnityEditor;
 
 public class JsonDataSettingsTransfer : IPostprocessBuild
 {
-	public int callbackOrder => 0;
+	public int callbackOrder
+	{
+		get { return 0; }
+	}
 
 
 	public void OnPostprocessBuild(BuildTarget target, string path)
@@ -19,7 +23,7 @@ public class JsonDataSettingsTransfer : IPostprocessBuild
 		var buildPath = BuildSettingsPath(path);
 		var editorPath = AssetSettingsPath();
 
-		var settings = SettingsFilenames(editorPath);
+		var settings = SettingsFileNames(editorPath);
 		Directory.CreateDirectory(buildPath);
 		foreach (var setting in settings)
 		{
@@ -28,7 +32,7 @@ public class JsonDataSettingsTransfer : IPostprocessBuild
 			File.Copy(setting, newFilepath);
 		}
 
-		Debug.Log($"JsonDataSettingsTransfer moved {settings.Length} settings files to {buildPath}");
+		Debug.Log(string.Format("JsonDataSettingsTransfer moved {0} settings files to {1}", settings.Length, buildPath));
 	}
 
 	private string BuildSettingsPath(string exePath)
@@ -41,7 +45,13 @@ public class JsonDataSettingsTransfer : IPostprocessBuild
 		return settingsPath;
 	}
 
-	private string AssetSettingsPath() => Path.Combine(Application.dataPath, JsonDataManager.EditorSettingsFolder);
+	private string AssetSettingsPath()
+	{
+		return Path.Combine(Application.dataPath, JsonDataManager.EditorSettingsFolder);
+	}
 
-	private string[] SettingsFilenames(string path) => Directory.GetFiles(path).Where(p => p.EndsWith(".json")).ToArray();
+	private string[] SettingsFileNames(string path)
+	{
+		return Directory.GetFiles(path).Where(p => p.EndsWith(".json")).ToArray();
+	}
 }

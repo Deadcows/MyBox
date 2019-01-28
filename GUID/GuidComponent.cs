@@ -28,7 +28,10 @@ public class GuidComponent : MonoBehaviour, ISerializationCallbackReceiver
         }
     }
 
-    public string GuidString => Guid.ToString();
+    public string GuidString
+    {
+        get { return Guid.ToString(); }
+    }
 
 
     private Guid guid = Guid.Empty;

@@ -24,10 +24,10 @@ public class JsonDataEditor : EditorWindow
 	
 	#region Load Settings
 
-	private bool SettingsLoaded => !(_settings == null || _settings.Length == 0);
+	private bool SettingsLoaded {get {return !(_settings == null || _settings.Length == 0);}} 
 
-	private string SettingsFolder => Application.dataPath + "/" + JsonDataManager.EditorSettingsFolder;
-	private string[] SettingsFiles => Directory.GetFiles(SettingsFolder).Where(f => f.EndsWith(".json")).ToArray();
+	private string SettingsFolder {get {return Application.dataPath + "/" + JsonDataManager.EditorSettingsFolder;}} 
+	private string[] SettingsFiles {get {return Directory.GetFiles(SettingsFolder).Where(f => f.EndsWith(".json")).ToArray();}}
 
 	private void LoadSettings()
 	{
@@ -87,7 +87,7 @@ public class JsonDataEditor : EditorWindow
 	#endregion
 
 
-	private bool IsChanged => _settings != null && _settings.Any(s => s.Changed);
+	private bool IsChanged {get {return  _settings != null && _settings.Any(s => s.Changed);}}
 
 	[SerializeField] private SettingsData[] _settings;
 
@@ -208,9 +208,9 @@ public class JsonDataEditor : EditorWindow
 	[Serializable]
 	private class SettingsData : ScriptableObject
 	{
-		public string Name => _name;
+		public string Name {get {return _name;}} 
 
-		public bool Changed => _changed;
+		public bool Changed {get {return _changed;}} 
 
 		public bool Foldout
 		{
@@ -222,7 +222,7 @@ public class JsonDataEditor : EditorWindow
 				_foldout = value;
 			}
 		}
-		private string FoldStateKey => $"JsonDataEditor_{_name}_foldState";
+		private string FoldStateKey {get {return string.Format("JsonDataEditor_{0}_foldState", _name);}} 
 
 
 		[SerializeField] private bool _changed;

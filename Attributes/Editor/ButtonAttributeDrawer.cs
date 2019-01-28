@@ -54,9 +54,9 @@ public sealed class ButtonDrawer : PropertyDrawer
 			}
 			catch (AmbiguousMatchException)
 			{
-				var function = $"{type.Name}.{TypedAttribute.Function}";
-				var message = $"{function} : AmbiguousMatchException. " +
-				              $"Unable to determine which overloaded function is called for {function}. " +
+				var function = string.Format("{0}.{1}", type.Name, TypedAttribute.Function);
+				var message = string.Format("{0} : AmbiguousMatchException. ", function) +
+				              string.Format("Unable to determine which overloaded function is called for {0}. ", function) +
 				              "Please delete overloading function";
 
 				Debug.LogError(message, objectReferenceValue);
@@ -64,27 +64,27 @@ public sealed class ButtonDrawer : PropertyDrawer
 			catch (ArgumentException)
 			{
 				var parameters = string.Join(", ", TypedAttribute.Parameters.Select(c => c.ToString()).ToArray());
-				var function = $"{type.Name}.{TypedAttribute.Function}";
-				var message = $"{function} : ArgumentException. " +
-				              $"You can't pass argument {parameters} to the function {function}. " +
+				var function = string.Format("{0}.{1}", type.Name, TypedAttribute.Function);
+				var message = string.Format("{0} : ArgumentException. ", function) +
+				              string.Format("You can't pass argument {0} to the function {1}. ", parameters, function) +
 				              "Please verify the types of the arguments";
 
 				Debug.LogError(message, objectReferenceValue);
 			}
 			catch (NullReferenceException)
 			{
-				var function = $"{type.Name}.{TypedAttribute.Function}";
-				var message = $"{function} : NullReferenceException. " +
-				              $"Undefined function. Please verify if function is defined in {function}";
+				var function = string.Format("{0}.{1}", type.Name, TypedAttribute.Function);
+				var message = string.Format("{0} : NullReferenceException. ", function) +
+				              string.Format("Undefined function. Please verify if function is defined in {0}", function);
 
 				Debug.LogError(message, objectReferenceValue);
 			}
 			catch (TargetParameterCountException)
 			{
 				var parameters = string.Join(", ", TypedAttribute.Parameters.Select(c => c.ToString()).ToArray());
-				var function = $"{type.Name}.{TypedAttribute.Function}";
-				var message = $"{function} : TargetParameterCountException. " +
-				              $"You can't pass argument {parameters} to the function {function}. " +
+				var function = string.Format("{0}.{1}", type.Name, TypedAttribute.Function);
+				var message = string.Format("{0} : TargetParameterCountException. ", function) +
+				              string.Format("You can't pass argument {0} to the function {1}. ", parameters, function) +
 				              "Please verify the number of the parameters given to the function ";
 
 				Debug.LogError(message, objectReferenceValue);
@@ -99,17 +99,16 @@ public sealed class ButtonDrawer : PropertyDrawer
 	{
 		if (TypedAttribute.DisplayVariable) return EditorGUI.GetPropertyHeight(property, label, true) + GetButtonHeight();
 		return GetButtonHeight();
+	}
+	private float GetButtonHeight()
+	{
+		GUIContent content = new GUIContent(TypedAttribute.ButtonName);
 
-		float GetButtonHeight()
-		{
-			GUIContent content = new GUIContent(TypedAttribute.ButtonName);
+		GUIStyle style = GUI.skin.box;
+		style.alignment = TextAnchor.MiddleCenter;
 
-			GUIStyle style = GUI.skin.box;
-			style.alignment = TextAnchor.MiddleCenter;
-
-			// Compute how large the button needs to be.        
-			Vector2 size = style.CalcSize(content);
-			return size.y;
-		}
+		// Compute how large the button needs to be.        
+		Vector2 size = style.CalcSize(content);
+		return size.y;
 	}
 }

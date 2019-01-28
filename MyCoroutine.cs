@@ -59,7 +59,7 @@ public static class MyCoroutine
 		if (unscaled) yield return new WaitForUnscaledSeconds(waitSeconds);
 		else yield return new WaitForSeconds(waitSeconds);
 
-		action?.Invoke();
+		if (action != null) action.Invoke();
 	}
 
 	/// <summary>
@@ -77,7 +77,7 @@ public static class MyCoroutine
 	{
 		yield return null;
 
-		action?.Invoke();
+		if (action != null) action.Invoke();
 	}
 
 	/// <summary>

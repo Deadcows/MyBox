@@ -4,9 +4,16 @@ using UnityEngine;
 [Serializable]
 public class AnimationStateReference
 {
-    public string StateName => _stateName;
-    public bool Assigned => _assigned;
-    
+    public string StateName
+    {
+        get { return _stateName; }
+    }
+
+    public bool Assigned
+    {
+        get { return _assigned; }
+    }
+
     [SerializeField] private string _stateName = String.Empty;
     [SerializeField] private bool _assigned;
 }

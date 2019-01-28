@@ -9,103 +9,107 @@ using UnityEditor;
 /// </summary>
 public class SceneClickHandler
 {
-	/// <param name="onClick">Event called onClick on the scene</param>
-	/// <param name="singleClick">Single click handler will deactivate itself on click</param>
-	/// <param name="cancellable">Cancellable handler will listen for Escape key to set Enabled to false</param>
-	public SceneClickHandler(Action<Vector3> onClick, bool singleClick = false, bool cancellable = true)
-	{
-		_onClick = onClick;
-		
-		SingleClickHandler = singleClick;
-		Cancellable = cancellable;
-		
-		SceneView.onSceneGUIDelegate += OnSceneGUI;
-	}
+    /// <param name="onClick">Event called onClick on the scene</param>
+    /// <param name="singleClick">Single click handler will deactivate itself on click</param>
+    /// <param name="cancellable">Cancellable handler will listen for Escape key to set Enabled to false</param>
+    public SceneClickHandler(Action<Vector3> onClick, bool singleClick = false, bool cancellable = true)
+    {
+        _onClick = onClick;
 
-	~SceneClickHandler()
-	{
-		SceneView.onSceneGUIDelegate -= OnSceneGUI;
-	}
+        SingleClickHandler = singleClick;
+        Cancellable = cancellable;
 
-	
-	public bool Enabled
-	{
-		private get { return _enabled; }
-		set
-		{
-			if (value) FocusSceneView();
-			_enabled = value;
+        SceneView.onSceneGUIDelegate += OnSceneGUI;
+    }
 
-			// We need to focus on SceneView to handle cancellation
-			// (OnSceneGUI not handling keyboard events otherwise)
-			void FocusSceneView()
-			{
-				if (SceneView.sceneViews.Count == 0) return;
-				((SceneView) SceneView.sceneViews[0]).Focus();
-			}
-		}
-	}
-
-	/// <summary>
-	/// Cancellable handler will listen for Escape key to set Enabled to false
-	/// </summary>
-	public bool Cancellable;
-	/// <summary>
-	/// Single click handler will deactivate itself on click
-	/// </summary>
-	public bool SingleClickHandler;
-	
-	public void SetLayerMask(LayerMask mask)
-	{
-		_useMask = true;
-		_mask = mask;
-	}
-	
-	public void ToggleState() => Enabled = !Enabled;
-	
-	
-	private readonly Action<Vector3> _onClick;
-
-	private bool _enabled;
-	private bool _useMask;
-	private LayerMask _mask;
+    ~SceneClickHandler()
+    {
+        SceneView.onSceneGUIDelegate -= OnSceneGUI;
+    }
 
 
-	private void OnSceneGUI(SceneView sceneview)
-	{
-		if (!Enabled) return;
+    public bool Enabled
+    {
+        private get { return _enabled; }
+        set
+        {
+            if (value) FocusSceneView();
+            _enabled = value;
+        }
+    }
 
-		var ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-		RaycastHit hit;
-		if (_useMask ? Physics.Raycast(ray, out hit, _mask.value) : Physics.Raycast(ray, out hit))
-		{
-			var color = Handles.color;
-			Handles.color = Color.white;
-			Handles.DrawWireDisc(hit.point, Vector3.up, .3f);
-			Handles.color = color;
-			
-			if (Handles.Button(Vector3.zero, SceneView.currentDrawingSceneView.rotation, 30, 5000, Handles.RectangleHandleCap))
-				HandleClick(hit.point);
-		}
+    // We need to focus on SceneView to handle cancellation
+    // (OnSceneGUI not handling keyboard events otherwise)
+    private void FocusSceneView()
+    {
+        if (SceneView.sceneViews.Count == 0) return;
+        ((SceneView) SceneView.sceneViews[0]).Focus();
+    }
 
-		if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape) HandleEscape();
+    /// <summary>
+    /// Cancellable handler will listen for Escape key to set Enabled to false
+    /// </summary>
+    public bool Cancellable;
 
-		void HandleClick(Vector3 point)
-		{
-			if (SingleClickHandler) Enabled = false;
+    /// <summary>
+    /// Single click handler will deactivate itself on click
+    /// </summary>
+    public bool SingleClickHandler;
 
-			_onClick(point);
+    public void SetLayerMask(LayerMask mask)
+    {
+        _useMask = true;
+        _mask = mask;
+    }
 
-			Event.current.Use();
-			HandleUtility.Repaint();
-		}
+    public void ToggleState()
+    {
+        Enabled = !Enabled;
+    }
 
-		void HandleEscape()
-		{
-			if (!Cancellable) return;
 
-			Debug.LogWarning("Cancelled");
-			Enabled = false;
-		}
-	}
+    private readonly Action<Vector3> _onClick;
+
+    private bool _enabled;
+    private bool _useMask;
+    private LayerMask _mask;
+
+
+    private void OnSceneGUI(SceneView sceneview)
+    {
+        if (!Enabled) return;
+
+        var ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+        RaycastHit hit;
+        if (_useMask ? Physics.Raycast(ray, out hit, _mask.value) : Physics.Raycast(ray, out hit))
+        {
+            var color = Handles.color;
+            Handles.color = Color.white;
+            Handles.DrawWireDisc(hit.point, Vector3.up, .3f);
+            Handles.color = color;
+
+            if (Handles.Button(Vector3.zero, SceneView.currentDrawingSceneView.rotation, 30, 5000, Handles.RectangleHandleCap))
+                HandleClick(hit.point);
+        }
+
+        if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape) HandleEscape();
+    }
+
+    private void HandleClick(Vector3 point)
+    {
+        if (SingleClickHandler) Enabled = false;
+
+        _onClick(point);
+
+        Event.current.Use();
+        HandleUtility.Repaint();
+    }
+
+    private void HandleEscape()
+    {
+        if (!Cancellable) return;
+
+        Debug.LogWarning("Cancelled");
+        Enabled = false;
+    }
 }

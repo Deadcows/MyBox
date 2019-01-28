@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,8 +12,8 @@ public static class JsonDataManager
 
 	//TODO: Log configs usage? Collect used configs in SettingsFolder and log unused on application exit?
 	//TODO: How to track type/fields rename? (well.. version control system is here for us)
-	//TODO: Заменить менеджер на базовый тип (вместо SO)?
-	//TODO: Добавить отдельный файл для самого DataManager, в котором отслеживать фолдауты или типа того?
+	//TODO: Change this manager to some BaseType (instead of SO)?
+	//TODO: Add some separate file to track settings foldouts? 
 
 	public const string EditorSettingsFolder = "Misc/Configs";
 	public const string BuildSettingsFolder = "Configs";
@@ -20,7 +21,15 @@ public static class JsonDataManager
 
 	private static string GetPath(string type)
 	{
-		return Path.Combine(Application.dataPath, Application.isEditor ? EditorSettingsFolder : BuildSettingsFolder, type + ".json");
+		var settingsFolder = Application.isEditor ? EditorSettingsFolder : BuildSettingsFolder;
+		var sb = new StringBuilder();
+		sb.Append(Application.dataPath);
+		sb.Append(Path.PathSeparator);
+		sb.Append(settingsFolder);
+		sb.Append(Path.PathSeparator);
+		sb.Append(type);
+		sb.Append(".json");
+		return sb.ToString();
 	}
 
 	public static T FromJson<T>(bool directlyFromFile = false) where T : ScriptableObject, new()

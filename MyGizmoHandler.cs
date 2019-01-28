@@ -10,12 +10,12 @@ namespace MyBox.Utility
 
 		private void OnDrawGizmos()
 		{
-			DrawGizmos?.Invoke();
+			if (DrawGizmos != null) DrawGizmos.Invoke();
 		}
 
 		private void OnDrawGizmosSelected()
 		{
-			DrawGizmosSelected?.Invoke();
+			if (DrawGizmosSelected != null) DrawGizmosSelected.Invoke();
 		}
 	}
 }

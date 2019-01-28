@@ -52,7 +52,7 @@ public class MustBeAssignedAttributeChecker
 				// Value Type with default value
 				if (field.FieldType.IsValueType && Activator.CreateInstance(field.FieldType).Equals(propValue))
 				{
-					Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is Value Type with default value",
+					Debug.LogError(string.Format("{0} caused: {1} is Value Type with default value", typeOfScript.Name, field.Name),
 						behaviour.gameObject);
 					continue;
 				}
@@ -60,7 +60,7 @@ public class MustBeAssignedAttributeChecker
 				// Null reference type
 				if (propValue == null || propValue.Equals(null))
 				{
-					Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is not assigned (null value)",
+					Debug.LogError(string.Format("{0} caused: {1} is not assigned (null value)", typeOfScript.Name, field.Name),
 						behaviour.gameObject);
 					continue;
 				}
@@ -68,15 +68,16 @@ public class MustBeAssignedAttributeChecker
 				// Empty string
 				if (field.FieldType == typeof(string) && (string) propValue == string.Empty)
 				{
-					Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is not assigned (empty string)",
+					Debug.LogError(string.Format("{0} caused: {1} is not assigned (empty string)", typeOfScript.Name, field.Name),
 						behaviour.gameObject);
 					continue;
 				}
 
 				// Empty Array
-				if (propValue is Array arr && arr.Length == 0)
+				var arr = propValue as Array;
+				if (arr != null && arr.Length == 0)
 				{
-					Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is not assigned (empty array)",
+					Debug.LogError(string.Format("{0} caused: {1} is not assigned (empty array)", typeOfScript.Name, field.Name),
 						behaviour.gameObject);
 				}
 			}
@@ -85,31 +86,20 @@ public class MustBeAssignedAttributeChecker
 
 	private class ConditionalFieldChecker
 	{
-		private readonly Type _conditionallyVisibleType;
-		private readonly MethodInfo _conditionallyVisibleMethod;
-
-		private const string TypePath = "ConditionalFieldAttribute, Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null";
-		private const string MethodPath = "CheckBehaviourPropertyVisible";
-
-		public ConditionalFieldChecker()
-		{
-			_conditionallyVisibleType = Type.GetType(TypePath);
-			if (_conditionallyVisibleType != null) _conditionallyVisibleMethod = _conditionallyVisibleType.GetMethod(MethodPath);
-		}
-
+		private readonly Type _conditionallyVisibleType = typeof(ConditionalFieldAttribute);
+		
 		public bool IsVisible(FieldInfo field, MonoBehaviour behaviour)
 		{
-			// ConditionalFieldAttribute is in assembly
 			if (_conditionallyVisibleType == null) return true;
-			// ConditionalFieldAttribute is defined for this field
-			if (!field.IsDefined(_conditionallyVisibleType)) return true;
+			if (!field.IsDefined(_conditionallyVisibleType, false)) return true;
 
 			// Get a specific attribute of this field
-			var conditionalFieldAttribute = field.GetCustomAttribute(_conditionallyVisibleType);
+			var conditionalFieldAttribute = field.GetCustomAttributes(_conditionallyVisibleType, false)
+				.Select(a => a as ConditionalFieldAttribute)
+				.SingleOrDefault();
 
-			var visible = _conditionallyVisibleMethod.Invoke(conditionalFieldAttribute, new object[] {behaviour, field.Name}) as bool?;
-
-			return visible == null || visible.Value;
+			return conditionalFieldAttribute == null || 
+			       conditionalFieldAttribute.CheckBehaviourPropertyVisible(behaviour, field.Name);
 		}
 	}
 }

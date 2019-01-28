@@ -8,7 +8,7 @@ public class AnimationStateReferenceDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        Initialize();
+        Initialize(property);
 
         EditorGUI.BeginProperty(position, label, property);
 
@@ -33,48 +33,49 @@ public class AnimationStateReferenceDrawer : PropertyDrawer
         if (GUI.Button(refreshRect, "↺")) UpdateStates();
 
         EditorGUI.EndProperty();
+    }
 
-
-        void UpdateStates()
+    private void Initialize(SerializedProperty property)
+    {
+        if (_animator == null)
         {
-            _states = _defaultState;
-            if (_animator == null) return;
-            if (_animator.runtimeAnimatorController is AnimatorController controller)
+            var mb = property.GetParent() as MonoBehaviour;
+            if (mb != null)
             {
-                var states = controller.layers.SelectMany(l => l.stateMachine.states).Select(s => (s.state.name)).Distinct();
-                _states = _states.Concat(states).ToArray();
+                _animator = mb.GetComponent<Animator>();
+                UpdateStates();
             }
         }
 
-        void Initialize()
+        if (_stateName == null) _stateName = property.FindPropertyRelative("_stateName");
+        if (_assigned == null) _assigned = property.FindPropertyRelative("_assigned");
+
+        if (_animatorNotFound == null) _animatorNotFound = new GUIContent("Animator not found");
+    }
+
+    private void UpdateStates()
+    {
+        _states = _defaultState;
+        if (_animator == null) return;
+        var controller = _animator.runtimeAnimatorController as AnimatorController;
+        if (controller != null)
         {
-            if (_animator == null)
-            {
-                if (property.GetParent() is MonoBehaviour mb)
-                {
-                    _animator = mb.GetComponent<Animator>();
-                    UpdateStates();
-                }
-            }
-
-            if (_stateName == null) _stateName = property.FindPropertyRelative("_stateName");
-            if (_assigned == null) _assigned = property.FindPropertyRelative("_assigned");
-
-            if (_animatorNotFound == null) _animatorNotFound = new GUIContent("Animator not found");
+            var states = controller.layers.SelectMany(l => l.stateMachine.states).Select(s => (s.state.name)).Distinct();
+            _states = _states.Concat(states).ToArray();
         }
+    }
 
-        int CurrentIndex()
-        {
-            var index = _states.IndexOf(_stateName.stringValue);
-            if (index < 0) index = 0;
-            return index;
-        }
+    private int CurrentIndex()
+    {
+        var index = _states.IndexOf(_stateName.stringValue);
+        if (index < 0) index = 0;
+        return index;
     }
 
     private SerializedProperty _stateName;
     private SerializedProperty _assigned;
     private GUIContent _animatorNotFound;
-    
+
     private Animator _animator;
     private readonly string[] _defaultState = {"Not Assigned"};
 

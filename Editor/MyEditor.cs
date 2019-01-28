@@ -55,16 +55,17 @@ public static class MyEditor
 		EditorApplication.ExecuteMenuItem("Window/Hierarchy");
 		Selection.activeGameObject = objectToRename;
 
-		void ObjectRename()
+		
+	}
+	private static void ObjectRename()
+	{
+		if (EditorApplication.timeSinceStartup >= _renameTimestamp)
 		{
-			if (EditorApplication.timeSinceStartup >= _renameTimestamp)
-			{
-				EditorApplication.update -= ObjectRename;
-				var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
-				var hierarchyWindow = EditorWindow.GetWindow(type);
-				var rename = type.GetMethod("RenameGO", BindingFlags.Instance | BindingFlags.NonPublic);
-				rename.Invoke(hierarchyWindow, null);
-			}
+			EditorApplication.update -= ObjectRename;
+			var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
+			var hierarchyWindow = EditorWindow.GetWindow(type);
+			var rename = type.GetMethod("RenameGO", BindingFlags.Instance | BindingFlags.NonPublic);
+			rename.Invoke(hierarchyWindow, null);
 		}
 	}
 	private static double _renameTimestamp;

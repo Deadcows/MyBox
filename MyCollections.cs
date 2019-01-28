@@ -41,10 +41,22 @@ public static class MyCollections
 		return monoBehaviours.Select(behaviour => behaviour.GetComponent(typeof(I))).OfType<I>().ToArray();
 	}
 
-	public static (Component Component, I Interface)[] FindObjectsOfInterfaceAsComponents<I>() where I : class
+	public static ComponentOfInterface<I>[] FindObjectsOfInterfaceAsComponents<I>() where I : class
 	{
 		return Object.FindObjectsOfType<Component>()
 			.Where(c => c is I)
-			.Select(c => (Component: c, Interface: c as I)).ToArray();
+			.Select(c => new ComponentOfInterface<I>(c, c as I)).ToArray();
+	}
+	
+	public struct ComponentOfInterface<I>
+	{
+		public readonly Component Component;
+		private I Interface;
+
+		public ComponentOfInterface(Component component, I @interface)
+		{
+			Component = component;
+			Interface = @interface;
+		}
 	}
 }

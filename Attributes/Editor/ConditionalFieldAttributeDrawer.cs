@@ -4,20 +4,24 @@ using UnityEditor;
 [CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
 public class ConditionalFieldAttributeDrawer : PropertyDrawer
 {
-	private ConditionalFieldAttribute Attribute => _attribute ?? (_attribute = attribute as ConditionalFieldAttribute);
-	private ConditionalFieldAttribute _attribute;
+    private ConditionalFieldAttribute Attribute
+    {
+        get { return _attribute ?? (_attribute = attribute as ConditionalFieldAttribute); }
+    }
 
-	private bool _toShow = true;
+    private ConditionalFieldAttribute _attribute;
 
-	public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-	{
-		_toShow = Attribute.CheckPropertyVisible(property);
+    private bool _toShow = true;
 
-		return _toShow ? EditorGUI.GetPropertyHeight(property) : 0;
-	}
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        _toShow = Attribute.CheckPropertyVisible(property);
 
-	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-	{
-		if (_toShow) EditorGUI.PropertyField(position, property, label, true);
-	}
+        return _toShow ? EditorGUI.GetPropertyHeight(property) : 0;
+    }
+
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        if (_toShow) EditorGUI.PropertyField(position, property, label, true);
+    }
 }
