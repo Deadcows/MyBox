@@ -7,7 +7,10 @@ public static class MyHandles
 
 	public static void DrawDirectionalDottedLine(Vector3 fromPos, Vector3 toPos, float screenSpaceSize = 3, float arrowDensity = .5f)
 	{
-		Handles.DrawDottedLine(fromPos, toPos, screenSpaceSize);
+		var arrowSize = screenSpaceSize / 4;
+		var dottedSize = screenSpaceSize / 2;
+		
+		Handles.DrawDottedLine(fromPos, toPos, dottedSize);
 
 		var direction = toPos - fromPos;
 		var distance = Vector3.Distance(fromPos, toPos);
@@ -17,7 +20,7 @@ public static class MyHandles
 		{
 			var currentDelta = delta * i;
 			var currentPosition = Vector3.Lerp(fromPos, toPos, currentDelta);
-			DrawTinyArrow(currentPosition, direction);
+			DrawTinyArrow(currentPosition, direction, arrowSize);
 		}
 	}
 
@@ -33,13 +36,31 @@ public static class MyHandles
 	/// Draw arrowed gizmo in scene view to visualize path
 	/// </summary>
 	/// <param name="path">Path to visualize</param>
-	/// <param name="screenSpaceSize">Size of dotted line</param>
-	public static void VisualizePath(NavMeshPath path, float screenSpaceSize = 3)
+	public static void VisualizePath(NavMeshPath path)
 	{
 		var corners = path.corners;
 		for (var i = 1; i < corners.Length; i++)
 		{
-			DrawDirectionalDottedLine(corners[i - 1], corners[i], screenSpaceSize);
+			var cornerA = corners[i - 1];
+			var cornerB = corners[i];
+			var size = HandleUtility.GetHandleSize(new Vector3(cornerA.x, cornerA.y, cornerA.z));
+			DrawDirectionalDottedLine(cornerA, cornerB, size, size);
+		}
+	}
+	
+	
+	/// <summary>
+	/// Draw gizmo lines in scene view to visualize path
+	/// </summary>
+	/// <param name="path">Path to visualize</param>
+	public static void VisualizePathLines(NavMeshPath path)
+	{
+		var corners = path.corners;
+		for (var i = 1; i < corners.Length; i++)
+		{
+			var cornerA = corners[i - 1];
+			var cornerB = corners[i];
+			Handles.DrawLine(cornerA, cornerB);
 		}
 	}
 

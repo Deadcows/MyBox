@@ -1,7 +1,8 @@
 {
     "name": "MyBox.Editor",
     "references": [
-        "MyBox"
+        "MyBox",
+        "MyBox.Tools"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
