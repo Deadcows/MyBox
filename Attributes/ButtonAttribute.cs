@@ -1,34 +1,59 @@
 ﻿using System;
+using System.Reflection;
+using UnityEditor;
+
+#if UNITY_EDITOR
 using UnityEngine;
+#endif
 
 /// <summary>
-/// Example of use : [ButtonAttribute ("MethodName", "ButtonNameInInspector", "TooltipInInspector", true, true, "param1", 10, "param3")]
+/// This attribute can only be applied to fields because its
+/// associated PropertyDrawer only operates on fields (either
+/// public or tagged with the [SerializeField] attribute) in
+/// the target MonoBehaviour.
 /// </summary>
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
-public sealed class ButtonAttribute : PropertyAttribute
+[AttributeUsage(AttributeTargets.Field)]
+public class ButtonAttribute : PropertyAttribute
 {
-	public readonly string Function;
-	public readonly string ButtonName;
-	public readonly object[] Parameters;
+    public readonly string MethodName;
 
-	public readonly bool OnlyInPlayMode;
-	public readonly string Tooltip;
-
-	public readonly bool DisplayVariable;
-
-	/// <summary>
-	/// WARNING : not working with overloaded functions
-	/// </summary>
-	public ButtonAttribute(string function, string name, string tooltip, bool onlyInPlayMode, bool displayVariable, params object[] parameters)
-	{
-		Function = function;
-		ButtonName = name;
-
-		OnlyInPlayMode = onlyInPlayMode;
-		Tooltip = tooltip;
-
-		DisplayVariable = displayVariable;
-
-		Parameters = parameters;
-	}
+    public ButtonAttribute(string MethodName)
+    {
+        this.MethodName = MethodName;
+    }
 }
+
+#if UNITY_EDITOR
+[CustomPropertyDrawer(typeof(ButtonAttribute))]
+public class ButtonAttributeDrawer : PropertyDrawer
+{
+    private MethodInfo _eventMethodInfo;
+    private ButtonAttribute _attribute;
+
+    public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label)
+    {
+        const int offset = 20;
+        var width = position.width - offset * 2;
+
+        Rect buttonRect = new Rect(position.x + offset, position.y, width, position.height);
+        if (GUI.Button(buttonRect, label.text, EditorStyles.toolbarButton)) Invoke(prop.serializedObject.targetObject);
+    }
+
+    private void Invoke(UnityEngine.Object target)
+    {
+        if (_attribute == null) _attribute = (ButtonAttribute) attribute;
+
+        Type eventOwnerType = target.GetType();
+        string eventName = _attribute.MethodName;
+
+        if (_eventMethodInfo == null)
+            _eventMethodInfo = eventOwnerType.GetMethod(eventName,
+                BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+        if (_eventMethodInfo != null) _eventMethodInfo.Invoke(target, null);
+        else
+            Debug.LogWarning(string.Format("InspectorButtonAttribute caused: Unable to find method {0} in {1}",
+                eventName, eventOwnerType));
+    }
+}
+#endif
