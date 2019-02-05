@@ -758,6 +758,18 @@ public static class MyGUI
 
     #endregion
 
+    public static bool EyeButton(bool on)
+    {
+        if (_eyeOpenContent == null) _eyeOpenContent = new GUIContent(IconEye16);
+        if (_eyeClosedContent == null) _eyeClosedContent = new GUIContent(IconEyeCrossed16);
+
+        return GUILayout.Button(on ? _eyeOpenContent : _eyeClosedContent, EditorStyles.toolbarButton, GUILayout.Width(20));
+    }
+
+    private static GUIContent _eyeOpenContent;
+    private static GUIContent _eyeClosedContent;
+    
+
     public static Texture2D IconReload16
     {
         get { return StringImageConverter.ConvertFromString(IconReload, 16, 16); }
