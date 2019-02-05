@@ -1,8 +1,9 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
-namespace EckTechGames
+namespace MyBox.Internal
 {
 	[InitializeOnLoad]
 	public class AutoSaveFeature
@@ -10,21 +11,23 @@ namespace EckTechGames
 		private const string AutoSaveFeatureKey = "MyBox.AutoSaveEnabled";
 		private const string MenuItemName = "Tools/MyBox/AutoSave on Play";
 
-		private static bool _enabled;
+		private static bool IsEnabled
+		{
+			get { return EditorPrefs.GetBool(AutoSaveFeatureKey, true); }
+			set { EditorPrefs.SetBool(AutoSaveFeatureKey, value); }
+		}
 
 		[MenuItem(MenuItemName, priority = 100)]
 		private static void MenuItem()
 		{
-			_enabled = !_enabled;
-
-			EditorPrefs.SetBool(AutoSaveFeatureKey, _enabled);
+			IsEnabled = !IsEnabled;
 		}
 
 		[MenuItem(MenuItemName, true)]
-		private static void MenuItemValidation()
+		private static bool MenuItemValidation()
 		{
-			_enabled = EditorPrefs.GetBool(AutoSaveFeatureKey, true);
-			Menu.SetChecked(MenuItemName, _enabled);
+			Menu.SetChecked(MenuItemName, IsEnabled);
+			return true;
 		}
 
 
@@ -35,7 +38,7 @@ namespace EckTechGames
 
 		private static void AutoSaveWhenPlaymodeStarts(PlayModeStateChange obj)
 		{
-			if (!_enabled) return;
+			if (!IsEnabled) return;
 
 			if (EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isPlaying)
 			{
@@ -50,3 +53,4 @@ namespace EckTechGames
 		}
 	}
 }
+#endif
