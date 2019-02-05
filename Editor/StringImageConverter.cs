@@ -26,7 +26,7 @@ namespace MyBox
 		}
 
 		
-		[MenuItem("Tools/MyBox/String Image Converter", false, 9000)]
+		[MenuItem("Tools/MyBox/String Image Converter", false, 50)]
 		private static void CreateWindow()
 		{
 			GetWindow<StringImageConverter>(false, "String Image Converter").Show();
