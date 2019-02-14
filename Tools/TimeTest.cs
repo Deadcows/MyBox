@@ -122,7 +122,7 @@ namespace MyBox
                 var elapsedVal = _precise ? ms : ms / 1000f;
                 var valMark = _precise ? "ms" : "s";
 
-                StringBuilder.Clear();
+                StringBuilder.Length = 0;
                 StringBuilder.Append("Time Test <color=brown>")
                     .Append(_testTitle)
                     .Append("</color>: ")

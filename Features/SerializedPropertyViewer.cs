@@ -177,7 +177,7 @@ namespace MyBox.Internal
 			var value = AsStringValue(property);
 
 			// This ugly construction is to prevent massive allocations and process selection on all text except <color> tags
-			_descriptionBuilder.Clear();
+			_descriptionBuilder.Length = 0;
 			_descriptionBuilder.Append(property.propertyPath).Append(ProcessSelection(" — Type: "));
 			if (property.isArray) _descriptionBuilder.Append("<color=maroon>").Append(ProcessSelection("[Array]")).Append("</color> ");
 			_descriptionBuilder.Append("<color=blue>").Append(ProcessSelection(property.type)).Append("</color>");
