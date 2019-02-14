@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿// ---------------------------------------------------------------------------- 
+// Author: Kaynn, Yeo Wen Qin
+// https://github.com/Kaynn-Cahya
+// Date:   11/02/2019
+// ----------------------------------------------------------------------------
+
+using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
