@@ -1,7 +1,6 @@
 {
     "name": "MyBox",
     "references": [
-        "MyBox.Attributes",
         "MyBox.Extensions"
     ],
     "optionalUnityReferences": [],
