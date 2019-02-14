@@ -8,109 +8,112 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 #endif
 
-/// <summary>
-/// Apply to reference type property in MonoBehaviour to check if it is null at game start
-/// </summary>
-public class MustBeAssignedAttribute : PropertyAttribute 
+namespace MyBox
 {
-}
+	/// <summary>
+	/// Apply to reference type property in MonoBehaviour to check if it is null at game start
+	/// </summary>
+	public class MustBeAssignedAttribute : PropertyAttribute
+	{
+	}
 
 #if UNITY_EDITOR
-[InitializeOnLoad]
-public class MustBeAssignedAttributeChecker
-{
-	static MustBeAssignedAttributeChecker()
+	[InitializeOnLoad]
+	public class MustBeAssignedAttributeChecker
 	{
-		EditorApplication.update += CheckOnce;
-	}
-
-	private static void CheckOnce()
-	{
-		if (Application.isPlaying)
+		static MustBeAssignedAttributeChecker()
 		{
-			EditorApplication.update -= CheckOnce;
-			CheckComponents();
+			EditorApplication.update += CheckOnce;
 		}
-	}
 
-
-	private static void CheckComponents()
-	{
-		MonoBehaviour[] scripts = Object.FindObjectsOfType<MonoBehaviour>();
-		AssertComponents(scripts);
-	}
-
-
-	private static void AssertComponents(MonoBehaviour[] components)
-	{
-		ConditionalFieldChecker conditionalFieldChecker = new ConditionalFieldChecker();
-
-		foreach (MonoBehaviour behaviour in components)
+		private static void CheckOnce()
 		{
-			Type typeOfScript = behaviour.GetType();
-			FieldInfo[] mustBeAssignedFields = typeOfScript
-				.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-				.Where(field => field.IsDefined(typeof(MustBeAssignedAttribute), false)).ToArray();
-
-			foreach (FieldInfo field in mustBeAssignedFields)
+			if (Application.isPlaying)
 			{
-				object propValue = field.GetValue(behaviour);
+				EditorApplication.update -= CheckOnce;
+				CheckComponents();
+			}
+		}
 
-				// Used to check ConditionalFieldAttribute
-				if (!conditionalFieldChecker.IsVisible(field, behaviour)) continue;
 
-				// Value Type with default value
-				if (field.FieldType.IsValueType && Activator.CreateInstance(field.FieldType).Equals(propValue))
+		private static void CheckComponents()
+		{
+			MonoBehaviour[] scripts = Object.FindObjectsOfType<MonoBehaviour>();
+			AssertComponents(scripts);
+		}
+
+
+		private static void AssertComponents(MonoBehaviour[] components)
+		{
+			ConditionalFieldChecker conditionalFieldChecker = new ConditionalFieldChecker();
+
+			foreach (MonoBehaviour behaviour in components)
+			{
+				Type typeOfScript = behaviour.GetType();
+				FieldInfo[] mustBeAssignedFields = typeOfScript
+					.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+					.Where(field => field.IsDefined(typeof(MustBeAssignedAttribute), false)).ToArray();
+
+				foreach (FieldInfo field in mustBeAssignedFields)
 				{
-					Debug.LogError(string.Format("{0} caused: {1} is Value Type with default value", typeOfScript.Name, field.Name),
-						behaviour.gameObject);
-					continue;
-				}
+					object propValue = field.GetValue(behaviour);
 
-				// Null reference type
-				if (propValue == null || propValue.Equals(null))
-				{
-					Debug.LogError(string.Format("{0} caused: {1} is not assigned (null value)", typeOfScript.Name, field.Name),
-						behaviour.gameObject);
-					continue;
-				}
+					// Used to check ConditionalFieldAttribute
+					if (!conditionalFieldChecker.IsVisible(field, behaviour)) continue;
 
-				// Empty string
-				if (field.FieldType == typeof(string) && (string) propValue == string.Empty)
-				{
-					Debug.LogError(string.Format("{0} caused: {1} is not assigned (empty string)", typeOfScript.Name, field.Name),
-						behaviour.gameObject);
-					continue;
-				}
+					// Value Type with default value
+					if (field.FieldType.IsValueType && Activator.CreateInstance(field.FieldType).Equals(propValue))
+					{
+						Debug.LogError(string.Format("{0} caused: {1} is Value Type with default value", typeOfScript.Name, field.Name),
+							behaviour.gameObject);
+						continue;
+					}
 
-				// Empty Array
-				var arr = propValue as Array;
-				if (arr != null && arr.Length == 0)
-				{
-					Debug.LogError(string.Format("{0} caused: {1} is not assigned (empty array)", typeOfScript.Name, field.Name),
-						behaviour.gameObject);
+					// Null reference type
+					if (propValue == null || propValue.Equals(null))
+					{
+						Debug.LogError(string.Format("{0} caused: {1} is not assigned (null value)", typeOfScript.Name, field.Name),
+							behaviour.gameObject);
+						continue;
+					}
+
+					// Empty string
+					if (field.FieldType == typeof(string) && (string) propValue == string.Empty)
+					{
+						Debug.LogError(string.Format("{0} caused: {1} is not assigned (empty string)", typeOfScript.Name, field.Name),
+							behaviour.gameObject);
+						continue;
+					}
+
+					// Empty Array
+					var arr = propValue as Array;
+					if (arr != null && arr.Length == 0)
+					{
+						Debug.LogError(string.Format("{0} caused: {1} is not assigned (empty array)", typeOfScript.Name, field.Name),
+							behaviour.gameObject);
+					}
 				}
 			}
 		}
-	}
 
-	private class ConditionalFieldChecker
-	{
-		private readonly Type _conditionallyVisibleType = typeof(ConditionalFieldAttribute);
-		
-		public bool IsVisible(FieldInfo field, MonoBehaviour behaviour)
+		private class ConditionalFieldChecker
 		{
-			if (_conditionallyVisibleType == null) return true;
-			if (!field.IsDefined(_conditionallyVisibleType, false)) return true;
+			private readonly Type _conditionallyVisibleType = typeof(ConditionalFieldAttribute);
 
-			// Get a specific attribute of this field
-			var conditionalFieldAttribute = field.GetCustomAttributes(_conditionallyVisibleType, false)
-				.Select(a => a as ConditionalFieldAttribute)
-				.SingleOrDefault();
+			public bool IsVisible(FieldInfo field, MonoBehaviour behaviour)
+			{
+				if (_conditionallyVisibleType == null) return true;
+				if (!field.IsDefined(_conditionallyVisibleType, false)) return true;
 
-			return conditionalFieldAttribute == null || 
-			       conditionalFieldAttribute.CheckBehaviourPropertyVisible(behaviour, field.Name);
+				// Get a specific attribute of this field
+				var conditionalFieldAttribute = field.GetCustomAttributes(_conditionallyVisibleType, false)
+					.Select(a => a as ConditionalFieldAttribute)
+					.SingleOrDefault();
+
+				return conditionalFieldAttribute == null ||
+				       conditionalFieldAttribute.CheckBehaviourPropertyVisible(behaviour, field.Name);
+			}
 		}
 	}
-}
 #endif
+}
