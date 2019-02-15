@@ -251,8 +251,14 @@ namespace MyBox.EditorTools
 			var guiState = GUI.enabled;
 			if (elementAt <= 0) GUI.enabled = false;
 
-			if (GUILayout.Button(MyGUI.ArrowUp, EditorStyles.toolbarButton, GUILayout.Width(18)))
-				property.MoveArrayElement(elementAt, elementAt - 1);
+			if (UpButton())
+			{
+				EditorApplication.delayCall += () =>
+				{
+					property.MoveArrayElement(elementAt, elementAt - 1);
+					property.serializedObject.ApplyModifiedProperties();
+				};
+			}
 
 			GUI.enabled = guiState;
 		}
@@ -266,8 +272,14 @@ namespace MyBox.EditorTools
 			var guiState = GUI.enabled;
 			if (elementAt >= property.arraySize - 1) GUI.enabled = false;
 
-			if (GUILayout.Button(MyGUI.ArrowDown, EditorStyles.toolbarButton, GUILayout.Width(18)))
-				property.MoveArrayElement(elementAt, elementAt + 1);
+			if (DownButton())
+			{
+				EditorApplication.delayCall += () =>
+				{
+					property.MoveArrayElement(elementAt, elementAt + 1);
+					property.serializedObject.ApplyModifiedProperties();
+				};
+			}
 
 			GUI.enabled = guiState;
 		}
@@ -277,7 +289,7 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static SerializedProperty NewArrayElementButton(this SerializedProperty property)
 		{
-			if (GUILayout.Button("+", EditorStyles.toolbarButton, GUILayout.Width(18)))
+			if (PlusButton())
 			{
 				return property.NewElement();
 			}
@@ -293,10 +305,13 @@ namespace MyBox.EditorTools
 			var guiState = GUI.enabled;
 			if (elementAt < 0 || elementAt >= property.arraySize - 1) GUI.enabled = false;
 
-			if (GUILayout.Button(Cross, EditorStyles.toolbarButton, GUILayout.Width(18)))
+			if (CrossButton())
 			{
-				property.DeleteArrayElementAtIndex(elementAt);
-				property.serializedObject.ApplyModifiedProperties();
+				EditorApplication.delayCall += () =>
+				{
+					property.DeleteArrayElementAtIndex(elementAt);
+					property.serializedObject.ApplyModifiedProperties();
+				};
 			}
 
 			GUI.enabled = guiState;
@@ -521,6 +536,35 @@ namespace MyBox.EditorTools
 		}
 
 		#endregion
+		
+		
+		#region Predefined Buttons
+		
+		/// <summary>
+		/// Display Button with ArrowUI
+		/// </summary>
+		public static bool UpButton()
+		{
+			return GUILayout.Button(MyGUI.ArrowUp, EditorStyles.toolbarButton, GUILayout.Width(18));
+		}
+
+		public static bool DownButton()
+		{
+			return GUILayout.Button(MyGUI.ArrowDown, EditorStyles.toolbarButton, GUILayout.Width(18));
+		}
+
+		public static bool PlusButton()
+		{
+			return GUILayout.Button("+", EditorStyles.toolbarButton, GUILayout.Width(18));
+		}
+
+
+		public static bool CrossButton()
+		{
+			return GUILayout.Button(Cross, EditorStyles.toolbarButton, GUILayout.Width(18));
+		}
+		
+		#endregion
 
 
 		/// <summary>
@@ -639,6 +683,8 @@ namespace MyBox.EditorTools
 		{
 			get { return StringImageConverter.ConvertFromString(IconEyeCrossed, 32, 32); }
 		}
+
+		public static GUIStyle ImageBasedButtonStyle { get; set; }
 
 		private const string IconReload =
 			"iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAArlBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeyFOlAAAAOXRSTlMA5ODTwwz7gEAF6PHbvRYQ9ZdGJAnOnhz318mqo3ZsWVEhGOy3cTUuE4t7XlQrrmZjSzuykqiGMigneNQWAAAEbUlEQVR42uzX2XaiQBSF4QMyKzggiKgMiopGNMZM+/1frG+6e7ksBLEq5sbvBfjhVFFAT09PT09Pj2ZGJIaafhlxNNN1fbs8JG+FQzfpTkD80uPSt+Ueziy80/vrF9VZK7CIkxtNOii3UN53KlVILEAmHvkhk1BF6/QNk66YBQAkul+xkVEvUA6j0vFPAa4Aw9dwI2nm0qXvEFwBbz6akJcXgzhK4AlQP3toSDnSmZkGngCjheZ6fn62+/+ThN1+vdbu7945gSfgW8HdNkMiKkLwBLxY4JAVtLPAEdDdg491AjgCRgq48QSkHn41YOQBvxkwauEHSBzXf3CAjzq9Tmhnme1J2k8EvFZfe+xHAzdX1eFQ7TrrRM8sTWzAKsB1rY2hMhOLPyyBAeoYV2WxSaXWfVlYwBTXKDFd5+ptMQExrrCWat1nW1tAQCqhlDZ1qc7QFhAwQanFjmoVSsAfMECpzopqHSUBa2DooYw3olpb1JLuXYGhc8uPn4gAs4US45TqOBmEBOxQom1QnSKEmAAbJV7rB2dBTMBbAJZCdT6FnYY+WNoXVVMnEBXgdMDSqdoqhLCAGCx5TpVeFhAX0AdrSVXcPpqQmk9gnFOVSJIFBhwbPwDK89R42ZzGmpAAHQypSzcYzr8TfT8ONL4Acw/GB93MVItk++FZvbsDHBmMHTWVDpZ9Re7dE7AGY5HTXVLj8J612g0DYjBOxMFZJdtpuLg9YAvGlnh13cHMV/5VWE1fQwkJoc6NqG/LbQRUhd0E2poE6q4inaoo7JqZ0yO1cCnM6ZHYk8BW6ZFkXNqb9Eh/2rXTJTWBKArAB1AWQVTcF1xw1DKacRmXnPd/sfxMKt0INEhVpvgegOpLF7e4p1scK6YOXvl2b8ATw4A6csn/FbRQpprsf7BMX/zXqIsyDSgIUCaLghBlOlAwRZm2FGh1lGgojrimjdLII64OyiOfC3yUKKDIgrK9ZfeQyVCnwOjlKMf1PkO7hfRmFJ2QhZj2jLzBaesjnRNFhgMlyxH/GA/m1yGSRRqLmg1ahlDJ3fqltAftHRRYanFbMKKoCZFS3Nb3kchQWbjI71NxM8+UcLfI6E6JxgrJejoltC4ymZNUbesHyujCCrI/w40AKJ8XjLd56+cD6dgmZdwNRPE3hvL09A7lbj5SeNYoFyCt1Zpy/QCJrDblZg5SW5iM0UnopcsmY3gtZDBjHO02RKxgajLOAlm0PMbSH7u6NLNdNtuM1UE21zbjmc3QjvC3Xnf5MPjCpIeMznxtPN2fLvb2+bwGx83to8GXtG7eMU3OdNdum8ncK7Kr11iYI1REfRYkhJquwULcICj1Jtce6pw982ockcvcZC7GDjkFBnOYRsgtmlGVG6IQc51KajYK0p0yu3WIAh08ZjT4iUL5mwbTM2sXFG74w2A6bm3p4B2cw+eaicYdG++zDb9cvqDPDhHey9md72PKtJtWsEIZHH+3sGbNieHpmqbp3rg/+ehsLqs6KpVKpVL5D/0GR6Q1W4O7GC4AAAAASUVORK5CYII=";
