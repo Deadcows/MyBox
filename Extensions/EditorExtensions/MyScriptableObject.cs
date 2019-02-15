@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
-namespace MyBox.Editor
+namespace MyBox.EditorTools
 {
 	public static class MyScriptableObject
 	{

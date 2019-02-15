@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace MyBox.Editor
+namespace MyBox.EditorTools
 {
 	public static class MyHandles
 	{

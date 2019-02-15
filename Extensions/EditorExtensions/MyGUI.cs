@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace MyBox.Editor
+namespace MyBox.EditorTools
 {
 	public static class MyGUI
 	{

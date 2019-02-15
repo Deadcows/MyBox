@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine.Timeline;
 
-namespace MyBox.Editor
+namespace MyBox.EditorTools
 {
 	public static class MyTimeline
 	{

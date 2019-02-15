@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 
-namespace MyBox.Editor
+namespace MyBox.EditorTools
 {
 	public static class MyEditor
 	{
