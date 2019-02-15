@@ -1,8 +1,9 @@
+#if UNITY_EDITOR
 using System.Linq;
 using UnityEditor;
 using UnityEngine.Timeline;
 
-namespace MyBox
+namespace MyBox.Editor
 {
 	public static class MyTimeline
 	{
@@ -24,3 +25,4 @@ namespace MyBox
 		}
 	}
 }
+#endif
