@@ -1,22 +1,88 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public static class MyMath
+namespace MyBox
 {
-	
-	public static float Snap(float val, float round)
+	public static class MyMath
 	{
-		return round * Mathf.Round(val / round);
-	}
+		/// <summary>
+		/// Swap two reference values
+		/// </summary>
+		public static void Swap<T>(ref T a, ref T b)
+		{
+			T x = a;
+			a = b;
+			b = x;
+		}
 
-	public static bool Approximately(this float value, float compare)
-	{
-		return Mathf.Approximately(value, compare);
-	}
+		/// <summary>
+		/// Snap to grid of "round" size
+		/// </summary>
+		public static float Snap(float val, float round)
+		{
+			return round * Mathf.Round(val / round);
+		}
 
-	public static int SafeLength(this Array array)
-	{
-		if (array == null) return 0;
-		return array.Length;
+		/// <summary>
+		/// Shortcut for Mathf.Approximately
+		/// </summary>
+		public static bool Approximately(this float value, float compare)
+		{
+			return Mathf.Approximately(value, compare);
+		}
+
+		/// <summary>
+		/// Clamp value to less than min or more than max
+		/// </summary>
+		public static float NotInRange(this float num, float min, float max)
+		{
+			if (min > max)
+			{
+				var x = min;
+				min = max;
+				max = x;
+			}
+
+			if (num < min || num > max) return num;
+
+			float mid = (max - min) / 2;
+
+			if (num > min) return num + mid < max ? min : max;
+			return num - mid > min ? max : min;
+		}
+
+		/// <summary>
+		/// Clamp value to less than min or more than max
+		/// </summary>
+		public static int NotInRange(this int num, int min, int max)
+		{
+			return (int) ((float) num).NotInRange(min, max);
+		}
+
+		
+		/// <summary>
+		/// Return point that is closer to num
+		/// </summary>
+		public static float ClosestPoint(this float num, float pointA, float pointB)
+		{
+			if (pointA > pointB)
+			{
+				var x = pointA;
+				pointA = pointB;
+				pointB = x;
+			}
+
+			float middle = (pointB - pointA) / 2;
+			float withOffset = num.NotInRange(pointA, pointB) + middle;
+			return (withOffset >= pointB) ? pointB : pointA;
+		}
+
+		/// <summary>
+		/// Check if pointA closer to num than pointB
+		/// </summary>
+		public static bool ClosestPointIsA(this float num, float pointA, float pointB)
+		{
+			var closestPoint = num.ClosestPoint(pointA, pointB);
+			return Mathf.Approximately(closestPoint, pointA);
+		}
 	}
 }

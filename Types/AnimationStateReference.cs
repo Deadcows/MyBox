@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using MyBox;
 
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Animations;
 #endif
+
 
 [Serializable]
 public class AnimationStateReference
@@ -98,7 +100,8 @@ public class AnimationStateReferenceDrawer : PropertyDrawer
 
     private int CurrentIndex()
     {
-        var index = _states.IndexOf(_stateName.stringValue);
+        
+        var index = _states.IndexOfItem(_stateName.stringValue);
         if (index < 0) index = 0;
         return index;
     }

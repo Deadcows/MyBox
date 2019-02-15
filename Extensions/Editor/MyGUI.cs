@@ -10,9 +10,8 @@ using UnityEditor;
 using UnityEditorInternal;
 using Object = UnityEngine.Object;
 
-/// <summary>
-/// Editor GUI Helpers and Extensions
-/// </summary>
+
+
 public static class MyGUI
 {
     // Color Presets

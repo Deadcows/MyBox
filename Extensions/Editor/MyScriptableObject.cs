@@ -17,13 +17,9 @@ public static class MyScriptableObject
 	}
 
 
-#if UNITY_EDITOR
-
 	/// <summary>
 	/// Load all SO of type from Assets
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <returns></returns>
 	public static T[] LoadAssets<T>() where T : ScriptableObject
 	{
 		string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
@@ -78,8 +74,5 @@ public static class MyScriptableObject
 
 		return instance;
 	}
-
-
-#endif
 
 }

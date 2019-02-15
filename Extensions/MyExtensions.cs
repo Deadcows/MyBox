@@ -2,196 +2,149 @@
 using System.Linq;
 using UnityEngine;
 
-
-public static class MyExtensions
+namespace MyBox
 {
-    public static T RandomElement<T>(this List<T> elements)
-    {
-        return elements[Random.Range(0, elements.Count - 1)];
-    }
-
-    public static bool IsNullOrEmpty<T>(this IEnumerable<T> sequence)
-    {
-        if (sequence == null) return true;
-
-        return !sequence.Any();
-    }
-
-    public static void Swap<T>(ref T a, ref T b)
-    {
-        T x = a;
-        a = b;
-        b = x;
-    }
-
-    /// <summary>
-    /// Get fixed index for looping sequences. Where -1 will result with last element index
-    /// </summary>
-    public static int ValidateIndex<T>(this T[] array, int desiredIndex)
-    {
-        if (array.Length == 0) return 0;
-        if (desiredIndex < 0) return array.Length - 1;
-        if (desiredIndex > array.Length - 1) return 0;
-        return desiredIndex;
-    }
-
-    public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
-    {
-        return gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
-    }
-
-    public static T GetOrAddComponent<T>(this Component component) where T : Component
-    {
-        return component.GetComponent<T>() ?? component.gameObject.AddComponent<T>();
-    }
-
-    public static List<Transform> GetObjectsOfLayerInChild(this GameObject gameObject, int layer)
-    {
-        List<Transform> list = new List<Transform>();
-        CheckChilds(gameObject.transform, layer, list);
-        return list;
-    }
-
-    private static void CheckChilds(Transform transform, int layer, List<Transform> childsCache)
-    {
-        foreach (Transform t in transform)
-        {
-            CheckChilds(t, layer, childsCache);
-
-            if (t.gameObject.layer != layer) continue;
-            childsCache.Add(t);
-        }
-    }
+	public static class MyExtensions
+	{
+		/// <summary>
+		/// Swap two elements in array
+		/// </summary>
+		public static void Swap<T>(this T[] array, int a, int b)
+		{
+			T x = array[a];
+			array[a] = array[b];
+			array[b] = x;
+		}
 
 
-    public static List<Transform> GetObjectsOfLayerInChild(this Component component, int layer)
-    {
-        return component.gameObject.GetObjectsOfLayerInChild(layer);
-    }
+		public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
+		{
+			var toGet = gameObject.GetComponent<T>();
+			if (toGet != null) return toGet;
+			return gameObject.AddComponent<T>();
+		}
+
+		public static T GetOrAddComponent<T>(this Component component) where T : Component
+		{
+			var toGet = component.gameObject.GetComponent<T>();
+			if (toGet != null) return toGet;
+			return component.gameObject.AddComponent<T>();
+		}
+
+		
+		/// <summary>
+		/// Get all components of specified Layer in childs
+		/// </summary>
+		public static List<Transform> GetObjectsOfLayerInChilds(this GameObject gameObject, int layer)
+		{
+			List<Transform> list = new List<Transform>();
+			CheckChildsOfLayer(gameObject.transform, layer, list);
+			return list;
+		}
+
+		/// <summary>
+		/// Get all components of specified Layer in childs
+		/// </summary>
+		public static List<Transform> GetObjectsOfLayerInChilds(this Component component, int layer)
+		{
+			return component.gameObject.GetObjectsOfLayerInChilds(layer);
+		}
+
+		private static void CheckChildsOfLayer(Transform transform, int layer, List<Transform> childsCache)
+		{
+			foreach (Transform t in transform)
+			{
+				CheckChildsOfLayer(t, layer, childsCache);
+
+				if (t.gameObject.layer != layer) continue;
+				childsCache.Add(t);
+			}
+		}
 
 
-    /// <returns>
-    ///   Returns -1 if none found
-    /// </returns>
-    public static int IndexOf<T>(this IEnumerable<T> items, T item)
-    {
-        var index = 0;
+		/// <summary>
+		/// Swap Rigidbody IsKinematic and DetectCollisions
+		/// </summary>
+		/// <param name="body"></param>
+		/// <param name="state"></param>
+		public static void SetBodyState(this Rigidbody body, bool state)
+		{
+			body.isKinematic = !state;
+			body.detectCollisions = state;
+		}
+		
+		
+		/// <summary>
+		/// Find all Components of specified interface
+		/// </summary>
+		public static I[] FindObjectsOfInterface<I>() where I : class
+		{
+			var monoBehaviours = Object.FindObjectsOfType<Transform>();
 
-        foreach (var i in items)
-        {
-            if (Equals(i, item))
-            {
-                return index;
-            }
+			return monoBehaviours.Select(behaviour => behaviour.GetComponent(typeof(I))).OfType<I>().ToArray();
+		}
 
-            ++index;
-        }
+		/// <summary>
+		/// Find all Components of specified interface along with Component itself
+		/// </summary>
+		public static ComponentOfInterface<I>[] FindObjectsOfInterfaceAsComponents<I>() where I : class
+		{
+			return Object.FindObjectsOfType<Component>()
+				.Where(c => c is I)
+				.Select(c => new ComponentOfInterface<I>(c, c as I)).ToArray();
+		}
 
-        return -1;
-    }
+		public struct ComponentOfInterface<I>
+		{
+			public readonly Component Component;
+			public readonly I Interface;
 
+			public ComponentOfInterface(Component component, I @interface)
+			{
+				Component = component;
+				Interface = @interface;
+			}
+		}
+		
 
-    /// <summary>
-    /// Clamp value to less than min or more than max
-    /// </summary>
-    public static float NotInRange(this float num, float min, float max)
-    {
-        if (min > max)
-        {
-            var x = min;
-            min = max;
-            max = x;
-        }
+		#region One Per Instance
 
-        if (num < min || num > max) return num;
+		/// <summary>
+		/// Get components with unique Instance ID
+		/// </summary>
+		public static T[] OnePerInstance<T>(this T[] components) where T : Component
+		{
+			if (components == null || components.Length == 0) return null;
+			return components.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
+		}
 
-        float mid = (max - min) / 2;
+		/// <summary>
+		/// Get hits with unique owner Instance ID
+		/// </summary>
+		public static RaycastHit2D[] OneHitPerInstance(this RaycastHit2D[] hits)
+		{
+			if (hits == null || hits.Length == 0) return null;
+			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
+		}
 
-        if (num > min) return num + mid < max ? min : max;
-        return num - mid > min ? max : min;
-    }
+		/// <summary>
+		/// Get colliders with unique owner Instance ID
+		/// </summary>
+		public static Collider2D[] OneHitPerInstance(this Collider2D[] hits)
+		{
+			if (hits == null || hits.Length == 0) return null;
+			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
+		}
 
-    /// <summary>
-    /// Clamp value to less than min or more than max
-    /// </summary>
-    public static int NotInRange(this int num, int min, int max)
-    {
-        return (int) ((float) num).NotInRange(min, max);
-    }
+		/// <summary>
+		/// Get colliders with unique owner Instance ID
+		/// </summary>
+		public static List<Collider2D> OneHitPerInstanceList(this Collider2D[] hits)
+		{
+			if (hits == null || hits.Length == 0) return null;
+			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToList();
+		}
 
-    /// <summary>
-    /// Return point that is closer to num
-    /// </summary>
-    public static float ClosestPoint(this float num, float pointA, float pointB)
-    {
-        if (pointA > pointB)
-        {
-            var x = pointA;
-            pointA = pointB;
-            pointB = x;
-        }
-
-        float middle = (pointB - pointA) / 2;
-        float withOffset = num.NotInRange(pointA, pointB) + middle;
-        return (withOffset >= pointB) ? pointB : pointA;
-    }
-
-    /// <summary>
-    /// Check if pointA closer to num than pointB
-    /// </summary>
-    public static bool ClosestPointIsA(this float num, float pointA, float pointB)
-    {
-        var closestPoint = num.ClosestPoint(pointA, pointB);
-        return Mathf.Approximately(closestPoint, pointA);
-    }
-
-
-    public static T[] OnePerInstance<T>(this T[] components) where T : Component
-    {
-        if (components == null || components.Length == 0) return null;
-        return components.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
-    }
-
-    /// <summary>
-    /// Removes multiple hits for single gameObject instances
-    /// </summary>
-    public static RaycastHit2D[] OneHitPerInstance(this RaycastHit2D[] hits)
-    {
-        if (hits == null || hits.Length == 0) return null;
-        return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
-    }
-
-    /// <summary>
-    /// Removes multiple hits for single gameObject instances
-    /// </summary>
-    public static Collider2D[] OneHitPerInstance(this Collider2D[] hits)
-    {
-        if (hits == null || hits.Length == 0) return null;
-        return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
-    }
-
-    /// <summary>
-    /// Removes multiple hits for single gameObject instances
-    /// </summary>
-    public static List<Collider2D> OneHitPerInstanceList(this Collider2D[] hits)
-    {
-        if (hits == null || hits.Length == 0) return null;
-        return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToList();
-    }
-
-    public static void SetBodyState(this Rigidbody body, bool state)
-    {
-        body.isKinematic = !state;
-        body.detectCollisions = state;
-    }
-
-
-    public static bool IsPrefabInstance(this GameObject go)
-    {
-#if UNITY_EDITOR
-        return UnityEditor.PrefabUtility.GetPrefabType(go) == UnityEditor.PrefabType.Prefab;
-#else
-		return false;
-#endif
-    }
+		#endregion
+	}
 }
