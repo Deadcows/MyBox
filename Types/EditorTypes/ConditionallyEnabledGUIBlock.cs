@@ -1,18 +1,23 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using UnityEngine;
 
-public class ConditionallyEnabledGUIBlock : IDisposable
+namespace MyBox.EditorTools
 {
-	private readonly bool _originalState;
-
-	public ConditionallyEnabledGUIBlock(bool condition)
+	public class ConditionallyEnabledGUIBlock : IDisposable
 	{
-		_originalState = GUI.enabled;
-		GUI.enabled = condition;
-	}
+		private readonly bool _originalState;
 
-	public void Dispose()
-	{
-		GUI.enabled = _originalState;
+		public ConditionallyEnabledGUIBlock(bool condition)
+		{
+			_originalState = GUI.enabled;
+			GUI.enabled = condition;
+		}
+
+		public void Dispose()
+		{
+			GUI.enabled = _originalState;
+		}
 	}
 }
+#endif

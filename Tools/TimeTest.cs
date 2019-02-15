@@ -98,7 +98,6 @@ namespace MyBox
         #endregion
 
 
-
         private struct TimeTestData
         {
             private readonly string _testTitle;

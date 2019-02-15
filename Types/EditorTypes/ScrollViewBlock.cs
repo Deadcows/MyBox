@@ -1,16 +1,21 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
 using System;
 
-public class ScrollViewBlock : IDisposable
+namespace MyBox.EditorTools
 {
-	public ScrollViewBlock(ref Vector2 scrollPosition, params GUILayoutOption[] options)
+	public class ScrollViewBlock : IDisposable
 	{
-		scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, options);
-	}
+		public ScrollViewBlock(ref Vector2 scrollPosition, params GUILayoutOption[] options)
+		{
+			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, options);
+		}
 
-	public void Dispose()
-	{
-		EditorGUILayout.EndScrollView();
+		public void Dispose()
+		{
+			EditorGUILayout.EndScrollView();
+		}
 	}
 }
+#endif

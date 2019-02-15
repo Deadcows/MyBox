@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
 
-public class WaitForUnscaledSeconds : CustomYieldInstruction
+namespace MyBox
 {
-	private readonly float _waitTime;
-
-	public override bool keepWaiting
+	public class WaitForUnscaledSeconds : CustomYieldInstruction
 	{
-		get { return Time.realtimeSinceStartup < _waitTime; }
-	}
+		private readonly float _waitTime;
 
-	public WaitForUnscaledSeconds(float secondsToWait)
-	{
-		_waitTime = Time.realtimeSinceStartup + secondsToWait;
+		public override bool keepWaiting
+		{
+			get { return Time.realtimeSinceStartup < _waitTime; }
+		}
+
+		public WaitForUnscaledSeconds(float secondsToWait)
+		{
+			_waitTime = Time.realtimeSinceStartup + secondsToWait;
+		}
 	}
 }
+

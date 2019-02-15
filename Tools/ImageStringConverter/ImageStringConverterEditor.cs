@@ -1,36 +1,23 @@
+#if UNITY_EDITOR
 using System;
 using System.IO;
 using MyBox.EditorTools;
 using UnityEditor;
 using UnityEngine;
 
-namespace MyBox
+namespace MyBox.Internal
 {
-	
 	/// <summary>
 	/// This tool allows to save image as a string and load image back from that string.
 	/// It allows to store simple textures as const strings right in script files.
 	/// I suggest to use tinypng.com before conversion! 
 	/// </summary>
-	public class StringImageConverter : EditorWindow
+	public class ImageStringConverterEditor : EditorWindow
 	{
-
-		/// <summary>
-		/// Use "Tools/MyBox/String Image Converter" to get string image representation
-		/// </summary>
-		public static Texture2D ConvertFromString(string source, int width, int height)
-		{
-			var bytes = Convert.FromBase64String(source);
-			var texture = new Texture2D(width, height);
-			texture.LoadImage(bytes);
-			return texture;
-		}
-
-		
 		[MenuItem("Tools/MyBox/String Image Converter", false, 50)]
 		private static void CreateWindow()
 		{
-			GetWindow<StringImageConverter>(false, "String Image Converter").Show();
+			GetWindow<ImageStringConverterEditor>(false, "String Image Converter").Show();
 		}
 
 		private string _representation;
@@ -58,7 +45,7 @@ namespace MyBox
 			CopyToClipboard(_representation);
 			ShowNotification(new GUIContent(selected[0] + "\nCopied to Clipboard as string"));
 
-			_texture = ConvertFromString(_representation, _width, _height);
+			_texture = ImageStringConverter.ImageFromString(_representation, _width, _height);
 		}
 		void CopyToClipboard(string text)
 		{
@@ -69,3 +56,4 @@ namespace MyBox
 		}
 	}
 }
+#endif

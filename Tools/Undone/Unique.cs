@@ -2,7 +2,7 @@
 using System;
 using MyBox.EditorTools;
 
-namespace MyBox
+namespace MyBox.Internal
 {
 	[ExecuteInEditMode, DisallowMultipleComponent]
 	public class Unique : MonoBehaviour, ISerializationCallbackReceiver
@@ -31,9 +31,9 @@ namespace MyBox
 			// if you'll start editor or reload scene, framecount will be zero. 
 			// We may cache newly assigned ID here
 			// TODO: This is not working if you'll unload and load scene in multiscene mode! 
-				// Need a way to detect if scene was loaded right before awake call...?
-				// Separate script to track loaded scenes and in which frame which scene was loaded?
-				// But SceneManager.sceneLoaded will be called after Awake. Put this logic to Start?
+			// Need a way to detect if scene was loaded right before awake call...?
+			// Separate script to track loaded scenes and in which frame which scene was loaded?
+			// But SceneManager.sceneLoaded will be called after Awake. Put this logic to Start?
 			if (Time.frameCount == 0) _instanceID = actualId;
 			if (_instanceID == actualId) return;
 

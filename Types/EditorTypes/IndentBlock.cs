@@ -1,15 +1,20 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using System;
 
-public class IndentBlock : IDisposable
+namespace MyBox.EditorTools
 {
-	public IndentBlock()
+	public class IndentBlock : IDisposable
 	{
-		EditorGUI.indentLevel++;
-	}
+		public IndentBlock()
+		{
+			EditorGUI.indentLevel++;
+		}
 
-	public void Dispose()
-	{
-		EditorGUI.indentLevel--;
+		public void Dispose()
+		{
+			EditorGUI.indentLevel--;
+		}
 	}
 }
+#endif

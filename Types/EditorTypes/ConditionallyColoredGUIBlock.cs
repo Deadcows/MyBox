@@ -1,19 +1,24 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using UnityEngine;
 
-public class ConditionallyColoredGUIBlock : IDisposable
+namespace MyBox.EditorTools
 {
-	private readonly Color _originalColor;
-
-	public ConditionallyColoredGUIBlock(bool condition, Color color)
+	public class ConditionallyColoredGUIBlock : IDisposable
 	{
-		_originalColor = GUI.color;
+		private readonly Color _originalColor;
 
-		if (condition) GUI.color = color;
-	}
+		public ConditionallyColoredGUIBlock(bool condition, Color color)
+		{
+			_originalColor = GUI.color;
 
-	public void Dispose()
-	{
-		GUI.color = _originalColor;
+			if (condition) GUI.color = color;
+		}
+
+		public void Dispose()
+		{
+			GUI.color = _originalColor;
+		}
 	}
 }
+#endif

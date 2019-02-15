@@ -1,20 +1,23 @@
 ﻿using UnityEngine;
 
-[ExecuteAlways]
-public class Billboard : MonoBehaviour
+namespace MyBox
 {
-
-	private static Camera _camera;
-
-	private void Update()
+	[ExecuteAlways]
+	public class Billboard : MonoBehaviour
 	{
-		if (_camera == null) FindCamera();
-		if (_camera == null) return;
-		transform.forward = _camera.transform.forward;
-	}
+		private static Camera _camera;
 
-	private void FindCamera()
-	{
-		_camera = FindObjectOfType<Camera>();
+		private void Update()
+		{
+			if (_camera == null) FindCamera();
+			if (_camera == null) return;
+			transform.forward = _camera.transform.forward;
+		}
+
+		private void FindCamera()
+		{
+			_camera = FindObjectOfType<Camera>();
+		}
 	}
 }
+

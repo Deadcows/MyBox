@@ -2,9 +2,9 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
-namespace MyBox
+namespace MyBox.Internal
 {
-	public class MyAnimationCreator
+	public class AnimationCreator
 	{
 		/// <summary>
 		/// Create .controller asset at path and assign with targetObject.Animator

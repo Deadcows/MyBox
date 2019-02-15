@@ -7,12 +7,10 @@ namespace MyBox
 {
 	public class ButtonImageBased : MonoBehaviour, ISelectHandler, IDeselectHandler
 	{
-#pragma warning disable 649
 		[SerializeField, MustBeAssigned] private Sprite _regularSprite;
 		[SerializeField, MustBeAssigned] private Sprite _regularSelectedSprite;
 		[SerializeField, MustBeAssigned] private Sprite _clickedSprite;
 		[SerializeField, MustBeAssigned] private Sprite _clickedSelectedSprite;
-#pragma warning restore 649
 
 
 		public bool AlternativeSpriteset

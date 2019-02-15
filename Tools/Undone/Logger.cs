@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace MyBox
+namespace MyBox.Internal
 {
     public class Logger
     {

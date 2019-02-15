@@ -8,7 +8,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace RoboRyanTron.SceneReference
+namespace MyBox
 {
     /// <summary>
     /// Class used to serialize a reference to a scene asset that can be used
