@@ -9,11 +9,11 @@ namespace MyBox.EditorTools
 	public static class MyScriptableObject
 	{
 		/// <summary>
-		/// Load all SO of type from Resources
+		/// Load all ScriptableObjects of type
 		/// </summary>
 		public static T[] LoadAssetsFromResources<T>() where T : ScriptableObject
 		{
-			return Resources.LoadAll("", typeof(T)).Cast<T>().ToArray();
+			return Resources.FindObjectsOfTypeAll<T>();
 		}
 
 		/// <summary>
