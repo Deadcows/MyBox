@@ -13,6 +13,7 @@ using UnityEditor;
 
 namespace MyBox
 {
+#pragma warning disable 618
 	// This component gives a GameObject a stable, non-replicatable Globally Unique IDentifier.
 	// It can be used to reference a specific instance of an object no matter where it is.
 	// This can also be used for other systems, such as Save/Load game
@@ -142,4 +143,5 @@ namespace MyBox
 			GuidManager.Remove(guid);
 		}
 	}
+#pragma warning restore 618
 }

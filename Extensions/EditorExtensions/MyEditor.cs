@@ -9,6 +9,7 @@ namespace MyBox.EditorTools
 {
 	public static class MyEditor
 	{
+#pragma warning disable 618
 		#region Hierarchy Management
 
 		/// <summary>
@@ -67,8 +68,13 @@ namespace MyBox.EditorTools
 				EditorApplication.update -= ObjectRename;
 				var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
 				var hierarchyWindow = EditorWindow.GetWindow(type);
-				var rename = type.GetMethod("RenameGO", BindingFlags.Instance | BindingFlags.NonPublic);
-				rename.Invoke(hierarchyWindow, null);
+				var renameMethod = type.GetMethod("RenameGO", BindingFlags.Instance | BindingFlags.NonPublic);
+				if (renameMethod == null)
+				{
+					Debug.LogError("RenameGO method is obsolete?");
+					return;
+				}
+				renameMethod.Invoke(hierarchyWindow, null);
 			}
 		}
 
@@ -85,6 +91,7 @@ namespace MyBox.EditorTools
 		public static void ApplyPrefab(GameObject instance)
 		{
 			var instanceRoot = PrefabUtility.FindRootGameObjectWithSameParentPrefab(instance);
+
 			var targetPrefab = PrefabUtility.GetCorrespondingObjectFromSource(instanceRoot);
 
 			if (instanceRoot == null || targetPrefab == null)
@@ -94,6 +101,7 @@ namespace MyBox.EditorTools
 			}
 
 			PrefabUtility.ReplacePrefab(instanceRoot, targetPrefab, ReplacePrefabOptions.ConnectToPrefab);
+
 		}
 
 		/// <summary>
@@ -147,6 +155,7 @@ namespace MyBox.EditorTools
 		}
 
 		#endregion
+#pragma warning restore 618
 	}
 }
 #endif

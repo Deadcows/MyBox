@@ -7,6 +7,7 @@ using UnityEditor;
 
 namespace MyBox.Internal
 {
+#pragma warning disable 618
 	public class JsonDataSettingsTransfer : IPostprocessBuild
 	{
 		public int callbackOrder
@@ -30,6 +31,7 @@ namespace MyBox.Internal
 			foreach (var setting in settings)
 			{
 				var filename = Path.GetFileName(setting);
+				if (filename == null) continue;
 				var newFilepath = Path.Combine(buildPath, filename);
 				File.Copy(setting, newFilepath);
 			}
@@ -57,6 +59,7 @@ namespace MyBox.Internal
 			return Directory.GetFiles(path).Where(p => p.EndsWith(".json")).ToArray();
 		}
 	}
+#pragma warning restore 618
 }
 
 #endif
