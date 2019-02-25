@@ -18,8 +18,11 @@ namespace MyBox
 			DisplayScript = displayScriptField;
 		}
 	}
+}
 
 #if UNITY_EDITOR
+namespace MyBox.Internal
+{
 	[CustomPropertyDrawer(typeof(DisplayInspectorAttribute))]
 	public class DisplayInspectorAttributeDrawer : PropertyDrawer
 	{
@@ -100,5 +103,5 @@ namespace MyBox
 			GUI.backgroundColor = defaultBackgroundColor;
 		}
 	}
-#endif
 }
+#endif

@@ -23,8 +23,11 @@ namespace MyBox
 	public class SearchableEnumAttribute : PropertyAttribute
 	{
 	}
+}
 
 #if UNITY_EDITOR
+namespace MyBox.Internal
+{
 	/// <summary>
 	/// Draws the custom enum selector popup for enum fields using the
 	/// SearchableEnumAttribute.
@@ -489,5 +492,5 @@ namespace MyBox
 
 		#endregion -- GUI -----------------------------------------------------
 	}
-#endif
 }
+#endif

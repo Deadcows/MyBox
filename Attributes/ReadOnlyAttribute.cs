@@ -9,8 +9,11 @@ namespace MyBox
 	public class ReadOnlyAttribute : PropertyAttribute
 	{
 	}
+}
 
 #if UNITY_EDITOR
+namespace MyBox.Internal
+{
 	[CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
 	public class ReadOnlyAttributeDrawer : PropertyDrawer
 	{
@@ -26,5 +29,5 @@ namespace MyBox
 			GUI.enabled = true;
 		}
 	}
-#endif
 }
+#endif

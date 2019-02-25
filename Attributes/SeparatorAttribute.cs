@@ -23,8 +23,11 @@ namespace MyBox
 			WithOffset = withOffset;
 		}
 	}
+}
 
 #if UNITY_EDITOR
+namespace MyBox.Internal
+{
 	[CustomPropertyDrawer(typeof(SeparatorAttribute))]
 	public class SeparatorAttributeDrawer : DecoratorDrawer
 	{
@@ -58,5 +61,5 @@ namespace MyBox
 			return separatorAttribute.WithOffset ? 36.0f : 26f;
 		}
 	}
-#endif
 }
+#endif

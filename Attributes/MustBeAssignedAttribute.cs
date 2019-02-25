@@ -16,8 +16,11 @@ namespace MyBox
 	public class MustBeAssignedAttribute : PropertyAttribute
 	{
 	}
+}
 
 #if UNITY_EDITOR
+namespace MyBox.Internal
+{
 	[InitializeOnLoad]
 	public class MustBeAssignedAttributeChecker
 	{
@@ -115,5 +118,5 @@ namespace MyBox
 			}
 		}
 	}
-#endif
 }
+#endif

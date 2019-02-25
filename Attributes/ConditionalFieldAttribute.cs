@@ -137,8 +137,10 @@ namespace MyBox
 		readonly HashSet<object> _warningsPool = new HashSet<object>();
 #endif
 	}
-
+}
 #if UNITY_EDITOR
+namespace MyBox.Internal
+{
 	[CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
 	public class ConditionalFieldAttributeDrawer : PropertyDrawer
 	{
@@ -163,5 +165,6 @@ namespace MyBox
 			if (_toShow) EditorGUI.PropertyField(position, property, label, true);
 		}
 	}
-#endif
 }
+
+#endif

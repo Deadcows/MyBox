@@ -24,8 +24,11 @@ namespace MyBox
 			this.MethodName = MethodName;
 		}
 	}
+}
 
 #if UNITY_EDITOR
+namespace MyBox.Internal
+{
 	[CustomPropertyDrawer(typeof(ButtonAttribute))]
 	public class ButtonAttributeDrawer : PropertyDrawer
 	{
@@ -58,5 +61,5 @@ namespace MyBox
 					eventName, eventOwnerType));
 		}
 	}
-#endif
 }
+#endif

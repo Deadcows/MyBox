@@ -19,8 +19,11 @@ namespace MyBox
 			ValuesArray = definedValues;
 		}
 	}
+}
 
 #if UNITY_EDITOR
+namespace MyBox.Internal
+{
 	[CustomPropertyDrawer(typeof(DefinedValuesAttribute))]
 	public class DefinedValuesAttributeDrawer : PropertyDrawer
 	{
@@ -106,5 +109,5 @@ namespace MyBox
 			get { return _variableType == typeof(float); }
 		}
 	}
-#endif
 }
+#endif

@@ -30,8 +30,11 @@ namespace MyBox
 		public float Min;
 		public float Max;
 	}
+}
 
 #if UNITY_EDITOR
+namespace MyBox.Internal
+{
 	[CustomPropertyDrawer(typeof(RangedFloat), true)]
 	public class MinMaxRangeAttributeDrawer : PropertyDrawer
 	{
@@ -79,5 +82,5 @@ namespace MyBox
 			EditorGUI.EndProperty();
 		}
 	}
-#endif
 }
+#endif
