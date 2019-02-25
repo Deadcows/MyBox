@@ -9,6 +9,7 @@ namespace MyBox.Internal
 	public class AssetPresetPreprocessor : AssetPostprocessor
 	{
 		private static AssetsPresetPreprocessBase _preprocessBase;
+		private static bool _preprocessBaseChecked;
 
 		private void OnPreprocessAsset()
 		{
@@ -32,14 +33,15 @@ namespace MyBox.Internal
 
 		private bool PreloadBase()
 		{
+			if (_preprocessBaseChecked) return false;
+			
 			if (_preprocessBase == null)
 			{
 				_preprocessBase = MyScriptableObject.LoadAssetsFromResources<AssetsPresetPreprocessBase>().FirstOrDefault();
 				if (_preprocessBase == null) _preprocessBase = MyScriptableObject.LoadAssets<AssetsPresetPreprocessBase>().SingleOrDefault();
 			}
 
-			if (_preprocessBase == null) Debug.LogError("AssetsPresetPostprocessBase is null");
-
+			_preprocessBaseChecked = true;
 			return _preprocessBase != null;
 		}
 	}
