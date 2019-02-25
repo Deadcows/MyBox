@@ -1,18 +1,28 @@
 # MyBox
-MyBox is a set of tools and extensions for Unity. 99% of it made by me over the years of work with Unity and during **[The Final Station](https://store.steampowered.com/app/435530/The_Final_Station/)** development. <br />
-Most of this stuff was made for specific cases and may or may not work for you. If you want to contribute or report a bug write me to andrew@deadcow.ru
-
-**To use MyBox you need to make sure your project supports C#7 features.**<br />
-**It's better to use Unity 2018.3+ version and "PlayerSettings/Player/Script Runtime Version" must be set to .NET 4.x**
-
-## [Entity Component System](ECS/)
-ECS Tools, Helper Systems and Extentions <br />
-**is not up to date and was commented out for better compatibility :sweat: I'll check it out later**
+MyBox is a set of tools, features and extensions for Unity.<br />
+It is MyBox. Now it's YourBox too.<br />
 
 ## [Tools](Tools/)
 Tools such as Logger and TimeTest
 
 ## [Attributes](Attributes/)
+### Button:
+```c#
+public Collider[] Colliders;
+
+[Button("CollectColliders"), SerializeField]
+int _collectColliders;
+
+private void CollectColliders()
+{
+  Colliders = FindObjectsOfType<Collider>();
+}
+```
+![ButtonAttribute Example][ButtonAttribute]
+
+[ButtonAttribute]: https://habrastorage.org/webt/bq/du/cg/bqducgp2jew2ecdryczayia5hbq.gif "ButtonAttribute Example"
+
+
 ### ConditionalField:
 ```c#
 public bool WanderAround;
@@ -64,17 +74,18 @@ Set displayScriptField to false (by default it's true) to hide property field on
 [DisplayInspector2]: http://deadcow.ru/MyBox/DisplayInspector2.gif "DisplayInspector Example2"
 
 
-### Layer:
+### Tag, Layer, SpriteLayer:
 ```c#
-public class InteractiveObject : MonoBehaviour
-{
-	[Layer] 
-	public int DefaultLayer;
-}
+[Tag]
+public string Tag;
+[Layer]
+public int Layer;
+[SpriteLayerAttribute]
+public int SortingLayer;
 ```
 ![Layer Example][Layer]
 
-[Layer]: http://deadcow.ru/MyBox/LayerAttribute.gif "Layer Example"
+[Layer]: https://habrastorage.org/webt/gj/is/yh/gjisyhaqi3hgzrghuvt3ppevfs8.gif "Layer Example"
 
 
 ### MinMaxRange and RangedFloat:
@@ -108,6 +119,19 @@ public float MyFloat;
 ![MustBeAssigned Example][MustBeAssigned]
 
 [MustBeAssigned]: http://deadcow.ru/MyBox/MustBeAssigned.png "MustBeAssigned Example"
+
+
+### PositiveValueOnly:
+Assures that value is positive. Works with numbers and vectors
+```c#
+[PositiveValueOnly]
+public Vector2 ScanRange;
+[PositiveValueOnly]
+public float ChaseSpeed;
+```
+![PositiveValueOnly Example][PositiveValueOnly]
+
+[PositiveValueOnly]: https://habrastorage.org/webt/kj/g_/tx/kjg_tx0agin62_9grlpebcrpzi4.gif "PositiveValueOnly Example"
 
 
 ### ReadOnly:
