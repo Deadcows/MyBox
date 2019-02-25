@@ -20,7 +20,9 @@ namespace MyBox.EditorTools
 			else _list.DoLayoutList();
 		}
 
+		
 		public Action<SerializedProperty, Rect, int> CustomDrawer;
+		public Func<int, int> CustomDrawerHeight;
 		public Func<int, bool> CustomRemove;
 
 		private ReorderableList _list;
@@ -75,21 +77,22 @@ namespace MyBox.EditorTools
 
 		private void DrawElement(Rect rect, int index, bool active, bool focused)
 		{
-			var element = _property.GetArrayElementAtIndex(index);
 			EditorGUI.BeginChangeCheck();
-			var newRect = rect;
-			newRect.x += 20;
-
-			if (element.propertyType == SerializedPropertyType.Generic)
-				EditorGUI.LabelField(newRect, element.displayName);
-
+			
+			var property = _property.GetArrayElementAtIndex(index);
 			rect.height = GetElementHeight(index);
 			rect.y += 1;
 
-			var property = _property.GetArrayElementAtIndex(index);
-
 			if (CustomDrawer != null) CustomDrawer(property, rect, index);
-			else EditorGUI.PropertyField(rect, property, GUIContent.none, true);
+			else
+			{
+				var element = _property.GetArrayElementAtIndex(index);
+				var newRect = rect;
+				newRect.x += 20;
+				
+				if (element.propertyType == SerializedPropertyType.Generic) EditorGUI.LabelField(newRect, element.displayName);
+				EditorGUI.PropertyField(rect, property, GUIContent.none, true);
+			}
 
 			_list.elementHeight = rect.height + 4.0f;
 			if (EditorGUI.EndChangeCheck()) Apply();
@@ -97,6 +100,8 @@ namespace MyBox.EditorTools
 
 		private float GetElementHeight(int index)
 		{
+			if (CustomDrawerHeight != null) return CustomDrawerHeight(index);
+			
 			var element = _property.GetArrayElementAtIndex(index);
 			var height = EditorGUI.GetPropertyHeight(element, GUIContent.none, true);
 			return Mathf.Max(EditorGUIUtility.singleLineHeight, height + 4.0f);

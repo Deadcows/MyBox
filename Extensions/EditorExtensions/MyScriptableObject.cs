@@ -61,7 +61,7 @@ namespace MyBox.EditorTools
 				Debug.LogError("ScriptableObjectUtility caused: Create Asset failed because Name is empty");
 				return null;
 			}
-
+			
 			string path = folder + "/" + name.Trim() + ".asset";
 
 			var instance = ScriptableObject.CreateInstance<T>();
@@ -77,6 +77,15 @@ namespace MyBox.EditorTools
 			Debug.Log("Scriptable object asset created at " + path);
 
 			return instance;
+		}
+
+		public static T CreateAssetWithFolderDialog<T>(string filename) where T : ScriptableObject
+		{
+			var path = EditorUtility.SaveFolderPanel("Where to save", "Assets/", "");
+			if (path.Length <= 0) return null;
+			var relativePath = "Assets" + path.Substring(Application.dataPath.Length);
+			
+			return CreateAsset<T>(filename, relativePath);
 		}
 	}
 }
