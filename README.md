@@ -10,13 +10,14 @@ Tools such as Logger and TimeTest
 ```c#
 public Collider[] Colliders;
 
+#if UNITY_EDITOR
 [Button("CollectColliders"), SerializeField]
 int _collectColliders;
-
 private void CollectColliders()
 {
   Colliders = FindObjectsOfType<Collider>();
 }
+#endif
 ```
 ![ButtonAttribute Example][ButtonAttribute]
 
