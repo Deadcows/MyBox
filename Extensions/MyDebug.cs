@@ -16,7 +16,7 @@ namespace MyBox
 			sb.Append(typeof(T).Name + " (" + toLog.Length + ")\n");
 			for (var i = 0; i < toLog.Length; i++)
 			{
-				sb.Append("\n" + i + ": " + toLog[i]);
+				sb.Append("\n\t" + i.ToString().Colored(Colors.brown) + ": " + toLog[i]);
 			}
 
 			Debug.Log(sb.ToString());
@@ -104,6 +104,7 @@ namespace MyBox
 #endif
 		}
 
+		
 		/// <summary>
 		/// Draw directional arrow
 		/// </summary>
@@ -113,14 +114,15 @@ namespace MyBox
 			var rightVector = new Vector3(0, 0, 1);
 			var directionRotation = Quaternion.LookRotation(direction);
 
-			Gizmos.DrawRay(position, direction);
+			Debug.DrawRay(position, direction);
 			Vector3 right = directionRotation * Quaternion.Euler(0, 180 + headAngle, 0) * rightVector;
 			Vector3 left = directionRotation * Quaternion.Euler(0, 180 - headAngle, 0) * rightVector;
-			Gizmos.DrawRay(position + direction, right * headLength);
-			Gizmos.DrawRay(position + direction, left * headLength);
+			Debug.DrawRay(position + direction, right * headLength);
+			Debug.DrawRay(position + direction, left * headLength);
 #endif
 		}
 
+		
 		/// <summary>
 		/// Draw XYZ dimensional RGB cross
 		/// </summary>
