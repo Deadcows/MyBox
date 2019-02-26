@@ -23,7 +23,7 @@ private string CollectColliders()
 ```
 ![ButtonAttribute Example][ButtonAttribute]
 
-[ButtonAttribute]: https://habrastorage.org/webt/o0/k_/w5/o0k_w5ycjfs6ztt1simoyeftjvq.gif "ButtonAttribute Example"
+[ButtonAttribute]: https://habrastorage.org/webt/65/5p/it/655pit_y1cjrg9umxlxuxj5g03c.gif "ButtonAttribute Example"
 
 
 ### ConditionalField:
