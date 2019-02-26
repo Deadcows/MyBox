@@ -6,22 +6,24 @@ It is MyBox. Now it's YourBox too.<br />
 Tools such as Logger and TimeTest
 
 ## [Attributes](Attributes/)
-### Button:
+### ButtonMethod:
+You may apply this attribute to any method and this will appear in inspector as a button. <br />
+If this method returns anything, result will be logged.
 ```c#
 public Collider[] Colliders;
 
-#if UNITY_EDITOR
-[Button("CollectColliders"), SerializeField]
-int _collectColliders;
-private void CollectColliders()
+#if UNITY_EDITOR // conditional compilation is not mandatory
+[ButtonMethod]
+private string CollectColliders()
 {
-  Colliders = FindObjectsOfType<Collider>();
+    Colliders = FindObjectsOfType<Collider>();
+    return Colliders.Length + " Colliders found on scene, cached";
 }
 #endif
 ```
 ![ButtonAttribute Example][ButtonAttribute]
 
-[ButtonAttribute]: https://habrastorage.org/webt/bq/du/cg/bqducgp2jew2ecdryczayia5hbq.gif "ButtonAttribute Example"
+[ButtonAttribute]: https://habrastorage.org/webt/o0/k_/w5/o0k_w5ycjfs6ztt1simoyeftjvq.gif "ButtonAttribute Example"
 
 
 ### ConditionalField:
