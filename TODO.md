@@ -1,7 +1,7 @@
-* #### Asset Preset Postprocess Tool:
-  * Tool to automatically assign Presets to Assets conditionally on Import stage with AssetPostprocessor
-  * Conditions like "path contains/of type/with prefix/with postfix"
-  * Solid tool to replace custom AssetPostprocessors with nice interface due to Preset feature :)
+* #### Shore MyBox settings in ProjectSettings folder?
+  * Shared way to store settings and don't mess with Assets folder
+  * Can such assets be displayed in inspector?
+  * MaintainerSettings as an example
 	
 * #### MustBeAssigned may work with ScriptableObjects in project? 
   * Allow to disable this feature? Measure performance
@@ -14,9 +14,10 @@
   * Execute those on Playmode and game build
   * To cache/calculate heavy stuff
 	
-* #### MyGizmosHandler
+* #### MyGizmosHandler && MyOnGUIHandler
   * MyDebug.DrawText is working only in OnDrawGizmos :( 
   * I want to access OnDrawGizmos in non-MonoBehaviour scripts
+  * MyOnGUI may be useful, for instance, in FPSCounter feature
   * MB with static access, with lazy initialization and HideAndDontSave?
     * EveryFrame subscription is heavy...
     * Push struct with IDraw and logic to draw with gizmos, remove pusded structs from MyGizmosHandler.OnDrawGizmos? Measure performance
