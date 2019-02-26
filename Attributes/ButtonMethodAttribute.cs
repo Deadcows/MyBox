@@ -80,7 +80,7 @@ namespace MyBox.Internal
 		private void InvokeMethod(MethodInfo method)
 		{
 			var returnObj = method.Invoke(target, null);
-			if (returnObj != null) Debug.Log(string.Format("Method '{0}' returned: {1}", method.Name, returnObj));
+			if (returnObj != null) Debug.Log(returnObj.ToString(), _target);
 		}
 
 		#region Util
