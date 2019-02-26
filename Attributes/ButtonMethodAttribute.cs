@@ -79,8 +79,13 @@ namespace MyBox.Internal
 
 		private void InvokeMethod(MethodInfo method)
 		{
-			var returnObj = method.Invoke(target, null);
-			if (returnObj != null) Debug.Log(returnObj.ToString(), _target);
+			var result = method.Invoke(target, null);
+			
+			if (result != null)
+			{
+				var message = string.Format("{0} \nResult of Method '{1}' invocation on object {2}", result, method.Name, _target.name);
+				Debug.Log(message , _target);
+			}
 		}
 
 		#region Util
