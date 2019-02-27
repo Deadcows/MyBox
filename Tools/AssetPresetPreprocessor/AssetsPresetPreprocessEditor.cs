@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿#if UNITY_EDITOR
+using System.Linq;
 using MyBox.EditorTools;
 using UnityEditor;
 using UnityEditor.Presets;
@@ -10,7 +11,7 @@ namespace MyBox.Internal
 	public class AssetsPresetPreprocessEditor : Editor
 	{
 		[MenuItem("Tools/MyBox/Postprocess Preset Tool", false, 50)]
-		private static void PingBase()
+		private static void SelectBase()
 		{
 			var presetBase = MyScriptableObject.LoadAssetsFromResources<AssetsPresetPreprocessBase>().FirstOrDefault();
 			if (presetBase == null)
@@ -18,33 +19,34 @@ namespace MyBox.Internal
 				presetBase = MyScriptableObject.CreateAssetWithFolderDialog<AssetsPresetPreprocessBase>("AssetsPresetPostprocessBase");
 			}
 
-			if (presetBase != null)
-			{
-				EditorGUIUtility.PingObject(presetBase);
-				Selection.activeObject = presetBase;
-			}
+			if (presetBase != null) Selection.activeObject = presetBase;
 		}
 
 		private Vector2 _scrollPos;
 		private GUIStyle _labelStyle;
 
 		private ReorderableCollection _reorderableBase;
+		private SerializedProperty _presets;
 
 		private void OnEnable()
 		{
 			_labelStyle = new GUIStyle(EditorStyles.label);
 			_labelStyle.richText = true;
 
-			_reorderableBase = new ReorderableCollection(serializedObject.FindProperty("Presets"));
+			_presets = serializedObject.FindProperty("Presets");
+			_reorderableBase = new ReorderableCollection(_presets);
 
 			_reorderableBase.CustomDrawerHeight += PresetDrawerHeight;
 			_reorderableBase.CustomDrawer += PresetDrawer;
+			_reorderableBase.CustomAdd += CustomAdd;
 		}
 
 		private void OnDisable()
 		{
+			if (_reorderableBase == null) return;
 			_reorderableBase.CustomDrawerHeight -= PresetDrawerHeight;
 			_reorderableBase.CustomDrawer -= PresetDrawer;
+			_reorderableBase.CustomAdd -= CustomAdd;
 			_reorderableBase = null;
 		}
 
@@ -52,9 +54,23 @@ namespace MyBox.Internal
 		{
 			return (int) (EditorGUIUtility.singleLineHeight * 2 + 4);
 		}
-
+		
+		private bool CustomAdd(int index)
+		{
+			EditorApplication.delayCall += () =>
+			{
+				var newElement = _presets.GetArrayElementAtIndex(index);
+				newElement.FindPropertyRelative("PathContains").stringValue = string.Empty;
+				newElement.FindPropertyRelative("TypeOf").stringValue = string.Empty;
+				newElement.FindPropertyRelative("Prefix").stringValue = string.Empty;
+				newElement.FindPropertyRelative("Postfix").stringValue = string.Empty;
+				newElement.FindPropertyRelative("Preset").objectReferenceValue = null;
+				newElement.serializedObject.ApplyModifiedProperties();
+			};
+			return false;
+		}
+		
 		private void PresetDrawer(SerializedProperty property, Rect rect, int index)
-
 		{
 			var properties = new PresetProperties(property);
 			DrawPresetColourLine(rect, properties.Preset.objectReferenceValue as Preset);
@@ -130,15 +146,18 @@ namespace MyBox.Internal
 
 		private void DrawPresetColourLine(Rect rect, Preset preset)
 		{
-			if (preset == null) return;
 			var cRect = new Rect(rect);
 			cRect.width = 6;
 			cRect.height -= 2;
 
 			Color color = MyGUI.Brown;
-			var presetType = preset.GetTargetTypeName();
-			if (presetType.Contains("Texture")) color = MyGUI.Blue;
-			else if (presetType.Contains("Audio")) color = MyGUI.Red;
+			if (preset == null) color = Color.red;
+			else
+			{
+				var presetType = preset.GetTargetTypeName();
+				if (presetType.Contains("Texture")) color = MyGUI.Blue;
+				else if (presetType.Contains("Audio")) color = MyGUI.Red;
+			}
 
 			MyGUI.DrawColouredRect(cRect, color);
 			EditorGUI.LabelField(cRect, GUIContent.none);
@@ -160,3 +179,4 @@ namespace MyBox.Internal
 		}
 	}
 }
+#endif

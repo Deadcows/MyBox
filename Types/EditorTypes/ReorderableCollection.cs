@@ -22,9 +22,23 @@ namespace MyBox.EditorTools
 
 		
 		public Action<SerializedProperty, Rect, int> CustomDrawer;
+		/// <summary>
+		/// Return Height, Receive element index.
+		/// Use EditorApplication.delayCall to perform custom logic
+		/// </summary>
 		public Func<int, int> CustomDrawerHeight;
+		/// <summary>
+		/// Return false to perform default logic, Receive element index.
+		/// Use EditorApplication.delayCall to perform custom logic.
+		/// </summary>
+		public Func<int, bool> CustomAdd;
+		/// <summary>
+		/// Return false to perform default logic, Receive element index.
+		/// Use EditorApplication.delayCall to perform custom logic.
+		/// </summary>
 		public Func<int, bool> CustomRemove;
 
+		
 		private ReorderableList _list;
 		private SerializedProperty _property;
 
@@ -32,6 +46,8 @@ namespace MyBox.EditorTools
 			bool withRemoveButton = true)
 		{
 			_property = property;
+			_property.isExpanded = true;
+			
 			CreateList(property, withAddButton, withRemoveButton);
 		}
 
@@ -56,6 +72,7 @@ namespace MyBox.EditorTools
 			_list = new ReorderableList(property.serializedObject, property, true, true, withAddButton,
 				withRemoveButton);
 			_list.onChangedCallback += list => Apply();
+			_list.onAddCallback += AddElement;
 			_list.onRemoveCallback += RemoveElement;
 			_list.drawHeaderCallback += DrawElementHeader;
 			_list.onCanRemoveCallback += (list) => _list.count > 0;
@@ -69,6 +86,12 @@ namespace MyBox.EditorTools
 				EditorGUI.ToggleLeft(rect, _property.displayName, _property.isExpanded, EditorStyles.boldLabel);
 		}
 
+		private void AddElement(ReorderableList list)
+		{
+			if (CustomAdd == null || !CustomAdd(_property.arraySize))
+				ReorderableList.defaultBehaviours.DoAddButton(list);
+		}
+		
 		private void RemoveElement(ReorderableList list)
 		{
 			if (CustomRemove == null || !CustomRemove(list.index))

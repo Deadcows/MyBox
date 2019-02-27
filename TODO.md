@@ -4,6 +4,9 @@
 * #### Multiscene asset
   * To save/load opened loaded/active scenes in editor
 	
+* #### AssetPresetPreprocessor is very slow on matching assets, profile & optimize
+  * At least skip import if nothing changed?
+
 * #### IPrepare interface
   * To add custom logic to Behaviours
   * Execute those on Playmode and game build
