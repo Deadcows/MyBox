@@ -10,7 +10,7 @@ namespace MyBox.Internal
 {
 	public class JsonDataEditor : EditorWindow
 	{
-		[MenuItem("Tools/Settings Editor", false, 50)]
+		//[MenuItem("Tools/MyBox/Settings Editor", false, 50)]
 		private static void Initialize()
 		{
 			var window = GetWindow<JsonDataEditor>();
