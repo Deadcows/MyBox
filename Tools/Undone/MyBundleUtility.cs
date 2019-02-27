@@ -67,7 +67,7 @@ namespace MyBox.Internal
 		#endregion
 
 
-		[MenuItem("Assets/Build Tool", priority = 3)]
+		//[MenuItem("Assets/Build Tool", priority = 3)]
 		private static void CreateWindow()
 		{
 			GetWindow<MyBundleUtility>().Show();
