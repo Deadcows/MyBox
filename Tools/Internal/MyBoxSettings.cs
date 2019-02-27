@@ -35,7 +35,7 @@ namespace MyBox.Internal
 		
 		#region Instance
 		
-		public static MyBoxSettings Instance
+		private static MyBoxSettings Instance
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace MyBox.Internal
 		private const string Path = Directory + "/MyBoxSettings.asset";
 		private static MyBoxSettings _instance;
 		
-		public static void Save()
+		private static void Save()
 		{
 			var instance = _instance;
 			if (!System.IO.Directory.Exists(Directory)) System.IO.Directory.CreateDirectory(Directory);
