@@ -39,6 +39,7 @@
   * Base class (attribute?) to ensure that there is at least one SO of this type
   * SelectFolder/Filename prompt will automatically appear on recompilation if no instances of SO found? 
     * Warning if there is more than one?
+    * Static accessor? Or probably better to add Load<T> method?
 
 * #### TemplatesCreator
   * Add a way to add templates as separate assets
