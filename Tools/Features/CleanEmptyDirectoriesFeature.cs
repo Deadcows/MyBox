@@ -11,13 +11,12 @@ namespace MyBox.Internal
 {
 	public class CleanEmptyDirectoriesFeature : UnityEditor.AssetModificationProcessor
 	{
-		private const string AutoSaveFeatureKey = "MyBox.CleanEmptyDirectoriesEnabled";
 		private const string MenuItemName = "Tools/MyBox/Clear Empty Directories On Save";
 
 		private static bool IsEnabled
 		{
-			get { return EditorPrefs.GetBool(AutoSaveFeatureKey, true); }
-			set { EditorPrefs.SetBool(AutoSaveFeatureKey, value); }
+			get { return MyBoxSettings.CleanEmptyDirectoriesFeature; }
+			set { MyBoxSettings.CleanEmptyDirectoriesFeature = value; }
 		}
 
 		[MenuItem(MenuItemName, priority = 100)]

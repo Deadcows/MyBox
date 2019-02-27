@@ -8,13 +8,12 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public class AutoSaveFeature
 	{
-		private const string AutoSaveFeatureKey = "MyBox.AutoSaveEnabled";
 		private const string MenuItemName = "Tools/MyBox/AutoSave on Play";
 
 		private static bool IsEnabled
 		{
-			get { return EditorPrefs.GetBool(AutoSaveFeatureKey, true); }
-			set { EditorPrefs.SetBool(AutoSaveFeatureKey, value); }
+			get { return MyBoxSettings.AutoSaveEnabled; }
+			set { MyBoxSettings.AutoSaveEnabled = value; }
 		}
 
 		[MenuItem(MenuItemName, priority = 100)]
