@@ -1,6 +1,8 @@
 # MyBox
 MyBox is a set of tools, features and extensions for Unity.<br />
-It is MyBox. Now it's yours too.<br />
+It is MyBox. Now it's yours too :raised_hands:<br />
+
+--------
 
 ## [Attributes](https://github.com/Deadcows/MyBox/wiki/Attributes)
 **[ButtonMethod](https://github.com/Deadcows/MyBox/wiki/Attributes#buttonmethod)** — Display button in inspector<br />
@@ -15,6 +17,7 @@ It is MyBox. Now it's yours too.<br />
 **[SearchableEnum](https://github.com/Deadcows/MyBox/wiki/Attributes#searchableenum)** — Nice UI for enums with lots of elements<br />
 **[Separator](https://github.com/Deadcows/MyBox/wiki/Attributes#separator)** — Draw separator with or without title<br />
 
+--------
 
 ## [Tools and Features](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features)
 **[AssetPressetPreprocessor](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#assetpressetpreprocessor)** — Conditionally apply Presets to your assets on import<br />
