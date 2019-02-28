@@ -37,13 +37,13 @@ namespace MyBox.Internal
 			"}\n";
 
 
-		[MenuItem("Assets/Create/ECS System", false, -100)]
+		//[MenuItem("Assets/Create/ECS System", false, -100)]
 		public static void CreateComponentSystemMenuItem()
 		{
 			CreateFromTemplate(ComponentSystemTemplate);
 		}
 
-		[MenuItem("Assets/Create/ECS Component", false, -99)]
+		//[MenuItem("Assets/Create/ECS Component", false, -99)]
 		public static void CreateComponentMenuItem()
 		{
 			CreateFromTemplate(ComponentTemplate);

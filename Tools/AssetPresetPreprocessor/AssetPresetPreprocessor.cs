@@ -2,7 +2,6 @@
 using System.Linq;
 using MyBox.EditorTools;
 using UnityEditor;
-using UnityEngine;
 
 namespace MyBox.Internal
 {
@@ -17,24 +16,18 @@ namespace MyBox.Internal
 
 			foreach (var preset in _preprocessBase.Presets)
 			{
+				if (preset.Preset == null) continue;
 				if (!preset.Sample(assetPath)) continue;
-
-				if (!preset.Preset.CanBeAppliedTo(assetImporter))
-				{
-					Debug.LogError("Preset " + preset.Preset + " cannot be applied to object at path " + assetPath);
-				}
-				else
-				{
-					preset.Preset.ApplyTo(assetImporter);
-					return;
-				}
+				if (!preset.Preset.CanBeAppliedTo(assetImporter)) continue;
+				
+				preset.Preset.ApplyTo(assetImporter);
+				return;
 			}
 		}
 
 		private bool PreloadBase()
 		{
-			if (_preprocessBaseChecked) return false;
-			
+			if (_preprocessBaseChecked) return _preprocessBase != null;
 			if (_preprocessBase == null)
 			{
 				_preprocessBase = MyScriptableObject.LoadAssetsFromResources<AssetsPresetPreprocessBase>().FirstOrDefault();

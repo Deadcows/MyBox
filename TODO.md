@@ -1,14 +1,12 @@
-* #### Shore MyBox settings in ProjectSettings folder?
-  * Shared way to store settings and don't mess with Assets folder
-  * Can such assets be displayed in inspector?
-  * MaintainerSettings as an example
-	
 * #### MustBeAssigned may work with ScriptableObjects in project? 
   * Allow to disable this feature? Measure performance
   
 * #### Multiscene asset
   * To save/load opened loaded/active scenes in editor
 	
+* #### AssetPresetPreprocessor is very slow on matching assets, profile & optimize
+  * At least skip import if nothing changed?
+
 * #### IPrepare interface
   * To add custom logic to Behaviours
   * Execute those on Playmode and game build
@@ -47,6 +45,4 @@
     * MenuItems is separate feature/wrapper for TemplateCreator?
     * WHOA! Figured it out. I may generate separate script with MenuItems in any selected by used folder. Find this script and get its path to regenerate if needed!
    
-* #### Unique component is deprecated. GUID component is better. Remove it
-
 * #### Conditionally remove some features like extension/hotkeys with Conditional Compilation?

@@ -8,7 +8,7 @@ namespace MyBox.Internal
 {
 	public class EmbeddedAnimationCreator : EditorWindow
 	{
-		[MenuItem("Tools/MyBox/Embedded Animation Creator", false, 50)]
+		//[MenuItem("Tools/MyBox/Embedded Animation Creator", false, 50)]
 		private static void CreateWindow()
 		{
 			_instance = GetWindow<EmbeddedAnimationCreator>();
