@@ -20,7 +20,7 @@ namespace MyBox.Internal
 				if (!preset.Sample(assetPath)) continue;
 				if (!preset.Preset.CanBeAppliedTo(assetImporter)) continue;
 				
-				preset.Preset.ApplyTo(assetImporter);
+				preset.Preset.ApplyTo(assetImporter, preset.PropertiesToApply);
 				return;
 			}
 		}
@@ -32,9 +32,10 @@ namespace MyBox.Internal
 			{
 				_preprocessBase = MyScriptableObject.LoadAssetsFromResources<AssetsPresetPreprocessBase>().FirstOrDefault();
 				if (_preprocessBase == null) _preprocessBase = MyScriptableObject.LoadAssets<AssetsPresetPreprocessBase>().SingleOrDefault();
+				
+				_preprocessBaseChecked = true;
 			}
 
-			_preprocessBaseChecked = true;
 			return _preprocessBase != null;
 		}
 	}

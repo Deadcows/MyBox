@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using System.Linq;
 using MyBox.EditorTools;
 using UnityEditor;
@@ -25,15 +26,20 @@ namespace MyBox.Internal
 		private Vector2 _scrollPos;
 		private GUIStyle _labelStyle;
 
+		private AssetsPresetPreprocessBase _target;
 		private ReorderableCollection _reorderableBase;
 		private SerializedProperty _presets;
+		private SerializedProperty _exclude;
 
 		private void OnEnable()
 		{
 			_labelStyle = new GUIStyle(EditorStyles.label);
 			_labelStyle.richText = true;
 
+			_target = target as AssetsPresetPreprocessBase;
+			
 			_presets = serializedObject.FindProperty("Presets");
+			_exclude = serializedObject.FindProperty("ExcludeProperties");
 			_reorderableBase = new ReorderableCollection(_presets);
 
 			_reorderableBase.CustomDrawerHeight += PresetDrawerHeight;
@@ -54,7 +60,7 @@ namespace MyBox.Internal
 		{
 			return (int) (EditorGUIUtility.singleLineHeight * 2 + 4);
 		}
-		
+
 		private bool CustomAdd(int index)
 		{
 			EditorApplication.delayCall += () =>
@@ -69,7 +75,7 @@ namespace MyBox.Internal
 			};
 			return false;
 		}
-		
+
 		private void PresetDrawer(SerializedProperty property, Rect rect, int index)
 		{
 			var properties = new PresetProperties(property);
@@ -118,6 +124,7 @@ namespace MyBox.Internal
 			secondLineRect.x += secondLineRect.width + betweenFields;
 			secondLineRect.width = slRatio * 4;
 			secondLineRect.x += labelWidth;
+			
 			EditorGUI.PropertyField(secondLineRect, properties.Preset, GUIContent.none);
 
 
@@ -165,6 +172,7 @@ namespace MyBox.Internal
 
 		public override void OnInspectorGUI()
 		{
+			serializedObject.Update();
 			EditorGUILayout.Space();
 			EditorGUILayout.LabelField("First match will be applied");
 			EditorGUILayout.LabelField("Assets/...<b>[PC:Path Contains]</b>.../", _labelStyle);
@@ -175,7 +183,57 @@ namespace MyBox.Internal
 
 			_reorderableBase.Draw();
 
+			EditorGUILayout.Space();
+
+			EditorGUI.BeginChangeCheck();
+			EditorGUILayout.PropertyField(_exclude, true);
+			if (EditorGUI.EndChangeCheck())
+			{
+				EditorApplication.delayCall += UpdateExcludes;
+			}
+
+			EditorGUILayout.Space();
+
+			if (GUILayout.Button("Update Excludes", EditorStyles.toolbarButton)) UpdateExcludes();
+
 			GUILayout.EndScrollView();
+
+			serializedObject.ApplyModifiedProperties();
+		}
+
+		private void UpdateExcludes()
+		{
+			foreach (var preset in _target.Presets)
+			{
+				if (preset.Preset == null) continue;
+
+				UpdateExcludesOnPreset(preset);
+			}
+		}
+
+		private void UpdateExcludesOnPreset(ConditionalPreset preset)
+		{
+			var toApply = new List<string>();
+			foreach (var modification in preset.Preset.PropertyModifications)
+			{
+				var path = modification.propertyPath;
+				bool exclude = false;
+				for (var i = 0; i < _target.ExcludeProperties.Length; i++)
+				{
+					var excludePath = _target.ExcludeProperties[i];
+					if (path.Contains(excludePath))
+					{
+						exclude = true;
+						break;
+					}
+				}
+				if (!exclude) toApply.Add(path);
+
+				serializedObject.ApplyModifiedProperties();
+			}
+
+			preset.PropertiesToApply = toApply.ToArray();
+			EditorUtility.SetDirty(target);
 		}
 	}
 }

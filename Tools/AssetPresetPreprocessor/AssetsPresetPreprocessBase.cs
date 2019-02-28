@@ -8,10 +8,12 @@ namespace MyBox.Internal
 	public class AssetsPresetPreprocessBase : ScriptableObject
 	{
 		public ConditionalPreset[] Presets;
+
+		public string[] ExcludeProperties = {"SpriteBorder"};
 	}
 
 	[Serializable]
-	public struct ConditionalPreset
+	public class ConditionalPreset
 	{
 		public string PathContains;
 		public string TypeOf;
@@ -19,6 +21,8 @@ namespace MyBox.Internal
 		public string Postfix;
 		
 		public Preset Preset;
+
+		public string[] PropertiesToApply;
 
 		public bool Sample(string path)
 		{
