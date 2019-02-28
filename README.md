@@ -1,169 +1,27 @@
 # MyBox
 MyBox is a set of tools, features and extensions for Unity.<br />
-It is MyBox. Now it's YourBox too.<br />
+It is MyBox. Now it's yours too :raised_hands:<br />
 
-## [Tools](Tools/)
-Tools such as Logger and TimeTest
+Tons of images below :point_down:
 
-## [Attributes](Attributes/)
-### ButtonMethod:
-You may apply this attribute to any method and this will appear in inspector as a button. <br />
-If this method returns anything, result will be logged.
-```c#
-public Collider[] Colliders;
+--------
 
-#if UNITY_EDITOR // conditional compilation is not mandatory
-[ButtonMethod]
-private string CollectColliders()
-{
-    Colliders = FindObjectsOfType<Collider>();
-    return Colliders.Length + " Colliders found on scene, cached";
-}
-#endif
-```
-![ButtonAttribute Example][ButtonAttribute]
+## [Attributes](https://github.com/Deadcows/MyBox/wiki/Attributes)
+**[ButtonMethod](https://github.com/Deadcows/MyBox/wiki/Attributes#buttonmethod)** — Display button in inspector<br />
+**[ConditionalField](https://github.com/Deadcows/MyBox/wiki/Attributes#conditionalfield)** — Conditionally display property in inspector, based on some other property value<br />
+**[DefinedValues](https://github.com/Deadcows/MyBox/wiki/Attributes#definedvalues)** — Display Dropdown with predefined values<br />
+**[DisplayInspector](https://github.com/Deadcows/MyBox/wiki/Attributes#displayinspector)** — Display one inspector inside of another<br />
+**[Tag, Layer, SpriteLayer](https://github.com/Deadcows/MyBox/wiki/Attributes#tag-layer-spritelayer)** — Dropdown with Tags, Layers or SpriteLayers<br />
+**[MinMaxRange and RangedFloat](https://github.com/Deadcows/MyBox/wiki/Attributes#minmaxrange-and-rangedfloat)** — Ranged sliders<br />
+**[MustBeAssigned](https://github.com/Deadcows/MyBox/wiki/Attributes#mustbeassigned)** — Automatically checks if field is assigned (not null / not empty / not default value) on Playmode<br />
+**[PositiveValueOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#positivevalueonly)** — Prohibit values below zero<br />
+**[ReadOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#readonly)** — Draw property with disabled GUI<br />
+**[SearchableEnum](https://github.com/Deadcows/MyBox/wiki/Attributes#searchableenum)** — Nice UI for enums with lots of elements<br />
+**[Separator](https://github.com/Deadcows/MyBox/wiki/Attributes#separator)** — Draw separator with or without title<br />
 
-[ButtonAttribute]: https://habrastorage.org/webt/65/5p/it/655pit_y1cjrg9umxlxuxj5g03c.gif "ButtonAttribute Example"
+--------
 
-
-### ConditionalField:
-```c#
-public bool WanderAround;
-[ConditionalField("WanderAround")] public float WanderDistance = 5;
-
-public AIState NextState = AIState.None;
-[ConditionalField("NextState", AIState.Idle)] public float IdleTime = 5;
-```
-![ConditionalField Example][ConditionalField]
-
-[ConditionalField]: http://deadcow.ru/MyBox/ConditionalField.gif "ConditionalField Example"
-
-
-### DefinedValues:
-```c#
-[DefinedValues(1, 3, 5)]
-public int AgentHeight;
-```
-![DefinedValues Example][DefinedValues]
-
-[DefinedValues]: http://deadcow.ru/MyBox/DefinedValues.gif "DefinedValues Example"
-
-
-### DisplayInspector:
-Displays one inspector inside of another. 
-It's handy if you'd like to store some settings in scriptable objects.
-
-[DisplayInspector(displayScriptField:false)] to hide object field once assigned (useful for "single instance" settings)
-```c#
-[CreateAssetMenu]
-public class AgentAIContextSettings : ScriptableObject
-{
-	public bool WanderAround;
-	public float WanderDistance = 5;
-}
-```
-```c#
-[DisplayInspector]
-public AgentAIContextSettings Settings;
-```
-Set displayScriptField to false (by default it's true) to hide property field once 
-```c#
-[DisplayInspector(displayScriptField:false)]
-```
-![DisplayInspector Example][DisplayInspector]
-![DisplayInspector Example2][DisplayInspector2]
-
-[DisplayInspector]: http://deadcow.ru/MyBox/DisplayInspector.gif "DisplayInspector Example"
-[DisplayInspector2]: http://deadcow.ru/MyBox/DisplayInspector2.gif "DisplayInspector Example2"
-
-
-### Tag, Layer, SpriteLayer:
-```c#
-[Tag]
-public string Tag;
-[Layer]
-public int Layer;
-[SpriteLayerAttribute]
-public int SortingLayer;
-```
-![Layer Example][Layer]
-
-[Layer]: https://habrastorage.org/webt/gj/is/yh/gjisyhaqi3hgzrghuvt3ppevfs8.gif "Layer Example"
-
-
-### MinMaxRange and RangedFloat:
-by [Richard Fine](https://bitbucket.org/richardfine/scriptableobjectdemo)
-
-RangedFloat may be used without MinMaxRange. Default is 0-1 range
-```c#
-public class RandomisedHealth : MonoBehaviour
-{
-	[MinMaxRange(80, 120)] 
-	public RangedFloat Health;
-	public RangedFloat Raito;
-}
-```
-![MinMaxRange Example][MinMaxRange]
-
-[MinMaxRange]: http://deadcow.ru/MyBox/MinMaxRange.gif "MinMaxRange Example"
-
-
-### MustBeAssigned:
-Previously I used a lot of Debug.Assert() in Awake to ensure that all desired values are assigned through inspector.
-Now I just use MustBeAssigned. 
-
-It triggers on value types with default values, null refs, empty arrays and strings
-```c#
-[MustBeAssigned]
-public MonoBehaviour MyScript;
-[MustBeAssigned]
-public float MyFloat;
-```
-![MustBeAssigned Example][MustBeAssigned]
-
-[MustBeAssigned]: http://deadcow.ru/MyBox/MustBeAssigned.png "MustBeAssigned Example"
-
-
-### PositiveValueOnly:
-Assures that value is positive. Works with numbers and vectors
-```c#
-[PositiveValueOnly]
-public Vector2 ScanRange;
-[PositiveValueOnly]
-public float ChaseSpeed;
-```
-![PositiveValueOnly Example][PositiveValueOnly]
-
-[PositiveValueOnly]: https://habrastorage.org/webt/kj/g_/tx/kjg_tx0agin62_9grlpebcrpzi4.gif "PositiveValueOnly Example"
-
-
-### ReadOnly:
-I use it in rare cases to debug things through inspector
-```c#
-public float InitialHealth = 100;
-[ReadOnly]
-public float CurrentHealth;
-```
-![ReadOnly Example][ReadOnly]
-
-[ReadOnly]: http://deadcow.ru/MyBox/ReadOnly.png "ReadOnly Example"
-
-
-### SearchableEnum:
-by incredible [Ryan Hipple](https://github.com/roboryantron/UnityEditorJunkie)
-```c#
-public float InitialHealth = 100;
-[ReadOnly]
-public float CurrentHealth;
-```
-![SearchableEnum Example][SearchableEnum]
-
-[SearchableEnum]: https://user-images.githubusercontent.com/20144789/39614240-5e844c24-4f3c-11e8-998a-e0fbf969ddd4.gif "SearchableEnum Example"
-
-
-### Separator:
-Decorative separator. May be with or without title
-
-![Separator Example][Separator]
-
-[Separator]: http://deadcow.ru/MyBox/Separator.png "Separator Example"
+## [Tools and Features](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features)
+**[AssetPressetPreprocessor](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#assetpressetpreprocessor)** — Conditionally apply Presets to your assets on import<br />
+**[TimeTest](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#timetest)** — Measure performance with simple api<br />
+**[Features](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#cleanup-empty-directories-and-autosave-features-and-some-hotkeys)** — Cleanup Empty Directories, AutoSave featur, Hotkeys<br />
