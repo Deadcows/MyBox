@@ -2,6 +2,8 @@
 MyBox is a set of tools, features and extensions for Unity.<br />
 It is MyBox. Now it's yours too :raised_hands:<br />
 
+Tons of images below :point_down:
+
 --------
 
 ## [Attributes](https://github.com/Deadcows/MyBox/wiki/Attributes)
