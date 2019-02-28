@@ -17,24 +17,26 @@ namespace MyBox.Internal
 			get { return Instance._autoSaveEnabled; }
 			set
 			{
+				if (Instance._autoSaveEnabled == value) return;
 				Instance._autoSaveEnabled = value;
 				Save();
 			}
 		}
-		
+
 		public static bool CleanEmptyDirectoriesFeature
 		{
 			get { return Instance._cleanEmptyDirectoriesFeature; }
 			set
 			{
+				if (Instance._cleanEmptyDirectoriesFeature == value) return;
 				Instance._cleanEmptyDirectoriesFeature = value;
 				Save();
 			}
 		}
-		
-		
+
+
 		#region Instance
-		
+
 		private static MyBoxSettings Instance
 		{
 			get
@@ -44,25 +46,25 @@ namespace MyBox.Internal
 				return _instance;
 			}
 		}
-		
+
 		private const string Directory = "ProjectSettings";
 		private const string Path = Directory + "/MyBoxSettings.asset";
 		private static MyBoxSettings _instance;
-		
+
 		private static void Save()
 		{
 			var instance = _instance;
 			if (!System.IO.Directory.Exists(Directory)) System.IO.Directory.CreateDirectory(Directory);
 			try
 			{
-				UnityEditorInternal.InternalEditorUtility.SaveToSerializedFileAndForget(new Object[]{instance}, Path, true);
+				UnityEditorInternal.InternalEditorUtility.SaveToSerializedFileAndForget(new Object[] {instance}, Path, true);
 			}
 			catch (Exception ex)
 			{
 				Debug.LogError("Unable to save MyBoxSettings!\n" + ex);
 			}
 		}
-		
+
 		private static MyBoxSettings LoadOrCreate()
 		{
 			var settings = !File.Exists(Path) ? CreateNewSettings() : LoadSettings();
@@ -71,19 +73,19 @@ namespace MyBox.Internal
 				DeleteFile(Path);
 				settings = CreateNewSettings();
 			}
-			
+
 			settings.hideFlags = HideFlags.HideAndDontSave;
-			
+
 			return settings;
 		}
-		
-		
+
+
 		private static MyBoxSettings LoadSettings()
 		{
 			MyBoxSettings settingsInstance;
 			try
 			{
-				settingsInstance = (MyBoxSettings)UnityEditorInternal.InternalEditorUtility.LoadSerializedFileAndForget(Path)[0];
+				settingsInstance = (MyBoxSettings) UnityEditorInternal.InternalEditorUtility.LoadSerializedFileAndForget(Path)[0];
 			}
 			catch (Exception ex)
 			{
@@ -93,7 +95,7 @@ namespace MyBox.Internal
 
 			return settingsInstance;
 		}
-		
+
 		private static MyBoxSettings CreateNewSettings()
 		{
 			_instance = CreateInstance<MyBoxSettings>();
@@ -101,18 +103,18 @@ namespace MyBox.Internal
 
 			return _instance;
 		}
-		
+
 		private static void DeleteFile(string path)
 		{
 			if (!File.Exists(path)) return;
-			
+
 			var attributes = File.GetAttributes(path);
 			if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
 				File.SetAttributes(path, attributes & ~FileAttributes.ReadOnly);
-			
+
 			File.Delete(path);
 		}
-		
+
 		#endregion
 	}
 }
