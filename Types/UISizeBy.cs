@@ -2,43 +2,52 @@ using UnityEngine;
 
 namespace MyBox
 {
-    /// <summary>
-    /// Set size of RectTransform by some other RectTransform
-    /// </summary>
-    [ExecuteInEditMode]
-    public class UISizeBy : MonoBehaviour
-    {
-        [MustBeAssigned] public RectTransform CopySizeFrom;
+	/// <summary>
+	/// Set size of RectTransform by some other RectTransform
+	/// </summary>
+	[ExecuteInEditMode]
+	public class UISizeBy : MonoBehaviour
+	{
+		[MustBeAssigned] public RectTransform CopySizeFrom;
 
-        [Separator]
-        public bool CopyWidth = true;
-        public bool CopyHeight;
+		[Separator("CopyWidth/Height, Set optional offset")]
+		public OptionalInt CopyWidth;
 
-        [ConditionalField("CopyWidth")]
-        public float AdditionalWidth;
-        [ConditionalField("CopyHeight")]
-        public float AdditionalHeight;
+		public OptionalInt CopyHeight;
 
-        private RectTransform _transform;
+		[Separator("Optional Min/Max Width/Height")]
+		public OptionalMinMax MinMaxWidth;
 
-        private void Start()
-        {
-            _transform = transform as RectTransform;
+		public OptionalMinMax MinMaxHeight;
 
-            Debug.Assert(CopyWidth || CopyHeight, this);
-        }
+		private RectTransform _transform;
+		private Vector2 _latestSize;
 
+		private void Start()
+		{
+			_transform = transform as RectTransform;
 
-        private void Update()
-        {
-            if (CopySizeFrom == null) return;
-            if (_transform == null) return;
+			Debug.Assert(_transform != null, this);
+			Debug.Assert(CopyWidth.IsSet || CopyHeight.IsSet, this);
+		}
 
-            var fromSize = CopySizeFrom.sizeDelta;
-            var toSize = _transform.sizeDelta;
-            var x = CopyWidth ? fromSize.x + AdditionalWidth : toSize.x;
-            var y = CopyHeight ? fromSize.y + AdditionalHeight : toSize.y;
-            _transform.sizeDelta = new Vector2(x, y);
-        }
-    }
+		private void LateUpdate()
+		{
+			if (CopySizeFrom == null) return;
+			if (_transform == null) return;
+
+			var copyFromSize = CopySizeFrom.sizeDelta;
+			if (_latestSize == copyFromSize) return;
+			_latestSize = copyFromSize;
+			
+			var toSize = _transform.sizeDelta;
+			var x = CopyWidth.IsSet ? _latestSize.x + CopyWidth.Value : toSize.x;
+			var y = CopyHeight.IsSet ? _latestSize.y + CopyHeight.Value : toSize.y;
+
+			x = MinMaxWidth.GetFixed(x);
+			y = MinMaxHeight.GetFixed(y);
+
+			_transform.sizeDelta = new Vector2(x, y);
+		}
+	}
 }
