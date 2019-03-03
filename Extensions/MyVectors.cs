@@ -88,6 +88,19 @@ namespace MyBox
 			transform.position = transform.position.SetYZ(y, z);
 		}
 		
+		//Reset
+		
+		/// <summary>
+		/// Set position to Vector3.zero.
+		/// </summary>
+		public static void ResetPosition(this Transform transform)
+		{
+			transform.position = Vector3.zero;
+		}
+
+		
+		
+		
 		// RectTransform 
 		
 		public static void SetPositionX(this RectTransform transform, float x)
@@ -109,7 +122,6 @@ namespace MyBox
 		{
 			transform.anchoredPosition = transform.anchoredPosition.OffsetY(y);
 		}
-		
 
 		#endregion
 

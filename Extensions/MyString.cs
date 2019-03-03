@@ -1,10 +1,28 @@
-﻿namespace MyBox
+﻿using System.Text.RegularExpressions;
+
+namespace MyBox
 {
 	public static class MyString
 	{
 		public static string ToCamelCase(this string camelCaseString)
 		{
-			return System.Text.RegularExpressions.Regex.Replace(camelCaseString, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ").Trim();
+			return Regex.Replace(camelCaseString, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ").Trim();
+		}
+		
+		public static string SplitCamelCase(this string camelCaseString)
+		{
+			if (string.IsNullOrEmpty(camelCaseString)) return camelCaseString;
+
+			string camelCase = Regex.Replace(Regex.Replace(camelCaseString, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
+			string firstLetter = camelCase.Substring(0, 1).ToUpper();
+
+			if (camelCaseString.Length > 1)
+			{
+				string rest = camelCase.Substring(1);
+
+				return firstLetter + rest;
+			}
+			return firstLetter;
 		}
 
 		/// <summary>

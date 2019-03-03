@@ -3,9 +3,15 @@
   
 * #### Multiscene asset
   * To save/load opened loaded/active scenes in editor
+  
+* #### MonoBehaviourPool
+
+* #### Highlight empty fields with MustBeAssignedAttribute in inspector
 	
 * #### AssetPresetPreprocessor is very slow on matching assets, profile & optimize
   * At least skip import if nothing changed?
+  
+* #### Node editor tools (ง ͠° ͟ل͜ ͡°)ง
 
 * #### IPrepare interface
   * To add custom logic to Behaviours

@@ -17,11 +17,22 @@ namespace MyBox
 		/// <summary>
 		/// Snap to grid of "round" size
 		/// </summary>
-		public static float Snap(float val, float round)
+		public static float Snap(this float val, float round)
 		{
 			return round * Mathf.Round(val / round);
 		}
+		
+		/// <summary>
+		/// Returns the sign 1/-1 evaluated at the given value.
+		/// </summary>
+		public static int Sign(float x)
+		{
+			if (x > 0) return 1;
+			if (x < 0) return -1;
 
+			return 0;
+		}
+		
 		/// <summary>
 		/// Shortcut for Mathf.Approximately
 		/// </summary>
@@ -29,7 +40,23 @@ namespace MyBox
 		{
 			return Mathf.Approximately(value, compare);
 		}
+		
+		/// <summary>
+		/// Value is in [0, 1) range.
+		/// </summary>
+		public static bool InRange01(this float value)
+		{
+			return InRange(value, 0, 1);
+		}
 
+		/// <summary>
+		/// Value is in [closedLeft, openRight) range.
+		/// </summary>
+		public static bool InRange(this float value, float closedLeft, float openRight)
+		{
+			return value >= closedLeft && value < openRight;
+		}
+		
 		/// <summary>
 		/// Clamp value to less than min or more than max
 		/// </summary>
@@ -58,9 +85,8 @@ namespace MyBox
 			return (int) ((float) num).NotInRange(min, max);
 		}
 
-		
 		/// <summary>
-		/// Return point that is closer to num
+		/// Return point A or B, closest to num
 		/// </summary>
 		public static float ClosestPoint(this float num, float pointA, float pointB)
 		{

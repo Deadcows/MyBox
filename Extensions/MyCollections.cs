@@ -58,6 +58,28 @@ namespace MyBox
 			return collection[Random.Range(0, collection.Length - 1)];
 		}
 
+		public static T[] GetRandomCollection<T>(this IList<T> collection, int amount)
+		{
+			if (amount > collection.Count)
+			{
+				Debug.LogError("GetRandomCollection Caused: source collection items count is less than randoms count");
+				return null;
+			}
+
+			var randoms = new T[amount];
+			var indexes = Enumerable.Range(0, amount).ToList();
+			
+			for (var i = 0; i < amount; i++)
+			{
+				var random = Random.Range(0, indexes.Count);
+				randoms[i] = collection[random];
+				indexes.RemoveAt(random);
+			}
+
+			return randoms;
+		}
+		
+
 		/// <summary>
 		/// Is collection null or empty
 		/// </summary>

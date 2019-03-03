@@ -56,6 +56,38 @@ namespace MyBox
 			return string.Format("#{0:X2}{1:X2}{2:X2}", (int) (color.r * 255), (int) (color.g * 255), (int) (color.b * 255));
 		}
 
+		
+		private const float LightOffset = 0.0625f;
+		private const float DarkerFactor = 0.9f;
+		/// <summary>
+		/// Returns a color lighter than the given color.
+		/// </summary>
+		/// <param name="color"></param>
+		/// <returns></returns>
+		public static Color Lighter(this Color color)
+		{
+			return new Color(
+				color.r + LightOffset,
+				color.g + LightOffset,
+				color.b + LightOffset,
+				color.a);
+		}
+
+		/// <summary>
+		/// Returns a color darker than the given color.
+		/// </summary>
+		/// <param name="color"></param>
+		/// <returns></returns>
+		public static Color Darker(this Color color)
+		{
+			return new Color(
+				color.r - LightOffset,
+				color.g - LightOffset,
+				color.b - LightOffset,
+				color.a);
+		}
+
+		
 		/// <summary>
 		/// Brightness offset with 1 is brightest and -1 is darkest
 		/// </summary>
