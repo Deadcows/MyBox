@@ -31,6 +31,11 @@ namespace MyBox
 			return component.gameObject.AddComponent<T>();
 		}
 
+		public static bool HasComponent<T>(this GameObject gameObject) where T : Component
+		{
+			return gameObject.GetComponent<T>() != null;
+		}
+		
 		
 		/// <summary>
 		/// Get all components of specified Layer in childs

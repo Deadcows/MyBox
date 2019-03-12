@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace MyBox.Internal
 {
-	public class ToggleLockHotkey
+	public static class ToggleLockHotkey
 	{
 		[MenuItem("Tools/MyBox/Toggle Lock &q")]
 		static void ToggleInspectorLock()

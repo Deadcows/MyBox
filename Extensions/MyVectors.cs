@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace MyBox
 {
@@ -7,7 +8,7 @@ namespace MyBox
 		#region Set X/Y/Z
 
 		// Set X
-		
+
 		public static Vector3 SetX(this Vector3 vector, float x)
 		{
 			return new Vector3(x, vector.y, vector.z);
@@ -41,7 +42,7 @@ namespace MyBox
 		}
 
 		// Set Z
-		
+
 		public static Vector3 SetZ(this Vector3 vector, float z)
 		{
 			return new Vector3(vector.x, vector.y, z);
@@ -53,7 +54,7 @@ namespace MyBox
 		}
 
 		// Set XY
-		
+
 		public static Vector3 SetXY(this Vector3 vector, float x, float y)
 		{
 			return new Vector3(x, y, vector.z);
@@ -87,9 +88,9 @@ namespace MyBox
 		{
 			transform.position = transform.position.SetYZ(y, z);
 		}
-		
+
 		//Reset
-		
+
 		/// <summary>
 		/// Set position to Vector3.zero.
 		/// </summary>
@@ -98,26 +99,24 @@ namespace MyBox
 			transform.position = Vector3.zero;
 		}
 
-		
-		
-		
+
 		// RectTransform 
-		
+
 		public static void SetPositionX(this RectTransform transform, float x)
 		{
 			transform.anchoredPosition = transform.anchoredPosition.SetX(x);
 		}
-		
+
 		public static void SetPositionY(this RectTransform transform, float y)
 		{
 			transform.anchoredPosition = transform.anchoredPosition.SetY(y);
 		}
-		
+
 		public static void OffsetPositionX(this RectTransform transform, float x)
 		{
 			transform.anchoredPosition = transform.anchoredPosition.OffsetX(x);
 		}
-		
+
 		public static void OffsetPositionY(this RectTransform transform, float y)
 		{
 			transform.anchoredPosition = transform.anchoredPosition.OffsetY(y);
@@ -362,6 +361,41 @@ namespace MyBox
 			}
 
 			return new Vector2(x / vectors.Length, y / vectors.Length);
+		}
+
+		#endregion
+
+
+		#region Get Closest 
+
+		/// <summary>
+		/// Finds the position closest to the given one.
+		/// </summary>
+		/// <param name="position">World position.</param>
+		/// <param name="otherPositions">Other world positions.</param>
+		/// <returns>Closest position.</returns>
+		public static Vector3 GetClosest(this Vector3 position, IEnumerable<Vector3> otherPositions)
+		{
+			var closest = Vector3.zero;
+			var shortestDistance = Mathf.Infinity;
+
+			foreach (var otherPosition in otherPositions)
+			{
+				var distance = (position - otherPosition).sqrMagnitude;
+
+				if (distance < shortestDistance)
+				{
+					closest = otherPosition;
+					shortestDistance = distance;
+				}
+			}
+
+			return closest;
+		}
+
+		public static Vector3 GetClosest(this IEnumerable<Vector3> positions, Vector3 position)
+		{
+			return position.GetClosest(positions);
 		}
 
 		#endregion
