@@ -90,21 +90,21 @@ namespace MyBox.EditorTools
 		/// <summary>
 		/// ToolbarButton with Border, Margin and Padding set to 0
 		/// </summary>
-		public static GUIStyle BorderlessToolbarButtonButtonStyle
+		public static GUIStyle BorderlessToolbarButtonStyle
 		{
 			get
 			{
-				if (_borderlessToolbarButtonButton != null) return _borderlessToolbarButtonButton;
-				_borderlessToolbarButtonButton = new GUIStyle(ResizableToolbarButtonStyle);
+				if (_borderlessToolbarButton != null) return _borderlessToolbarButton;
+				_borderlessToolbarButton = new GUIStyle(ResizableToolbarButtonStyle);
 				var emptyOffset = new RectOffset();
-				_borderlessToolbarButtonButton.border = emptyOffset;
-				_borderlessToolbarButtonButton.margin = emptyOffset;
-				_borderlessToolbarButtonButton.padding = emptyOffset;
-				return _borderlessToolbarButtonButton;
+				_borderlessToolbarButton.border = emptyOffset;
+				_borderlessToolbarButton.margin = emptyOffset;
+				_borderlessToolbarButton.padding = emptyOffset;
+				return _borderlessToolbarButton;
 			}
 		}
 
-		private static GUIStyle _borderlessToolbarButtonButton;
+		private static GUIStyle _borderlessToolbarButton;
 
 		/// <summary>
 		/// MiniButtonLeft/Middle/Right style based on array index
