@@ -1,6 +1,8 @@
 {
     "name": "MyBox",
-    "references": [],
+    "references": [
+        "GUID:f06555f75b070af458a003d92f9efb00"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -8,5 +10,6 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": []
 }
