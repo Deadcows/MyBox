@@ -37,9 +37,9 @@ namespace MyBox
 	}
 }
 
+#if UNITY_EDITOR
 namespace MyBox.Internal
 {
-#if UNITY_EDITOR
 	[CustomPropertyDrawer(typeof(AnimationStateReference))]
 	public class AnimationStateReferenceDrawer : PropertyDrawer
 	{

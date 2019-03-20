@@ -4,7 +4,6 @@
 // Date:   17/02/2019
 // ----------------------------------------------------------------------------
 
-using MyBox.EditorTools;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -33,7 +32,7 @@ namespace MyBox.Internal
 		{
 			if (!IsNumerical(property.propertyType))
 			{
-				MyGUI.DrawColouredRect(position, MyGUI.Red);
+				EditorTools.MyGUI.DrawColouredRect(position, EditorTools.MyGUI.Red);
 				EditorGUI.LabelField(position, new GUIContent("", "[PositiveValueOnly] used with non-numeric property"));
 			}
 			else

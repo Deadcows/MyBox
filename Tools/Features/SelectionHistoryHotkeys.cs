@@ -4,6 +4,7 @@
 // Date:   22/04/2018
 // ----------------------------------------------------------------------------
 
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -78,3 +79,4 @@ namespace MyBox.Internal
 		}
 	}
 }
+#endif

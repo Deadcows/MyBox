@@ -1,9 +1,9 @@
 using System;
 using MyBox.Internal;
+using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEngine;
 #endif
 
 namespace MyBox

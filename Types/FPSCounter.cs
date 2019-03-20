@@ -1,5 +1,4 @@
 ﻿using MyBox;
-using MyBox.EditorTools;
 using UnityEngine;
 
 public class FPSCounter : MonoBehaviour
@@ -31,9 +30,9 @@ public class FPSCounter : MonoBehaviour
 
 	private void Awake()
 	{
-		_goodColor = MyGUI.Green;
-		_okColor = MyGUI.Yellow;
-		_badColor = MyGUI.Red;
+		_goodColor = new Color(.4f, .6f, .4f);
+		_okColor = new Color(.8f, .8f, .2f, .6f);
+		_badColor = new Color(.8f, .6f, .6f);
 
 		var percent = _targetFrameRate / 100;
 		var percent10 = percent * 10;
@@ -88,5 +87,4 @@ public class FPSCounter : MonoBehaviour
 	{
 		LeftTop, LeftBottom, RightTop, RightBottom
 	}
-
 }

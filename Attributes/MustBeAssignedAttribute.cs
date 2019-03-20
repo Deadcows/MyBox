@@ -1,10 +1,10 @@
 ﻿using System;
+using UnityEngine;
 
 #if UNITY_EDITOR
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEngine;
 using Object = UnityEngine.Object;
 #endif
 

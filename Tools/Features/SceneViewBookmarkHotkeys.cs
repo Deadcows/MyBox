@@ -4,6 +4,7 @@
 // Date:   26/01/2018
 // ----------------------------------------------------------------------------
 
+#if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -248,3 +249,4 @@ namespace MyBox.Internal
 		#endregion
 	}
 }
+#endif
