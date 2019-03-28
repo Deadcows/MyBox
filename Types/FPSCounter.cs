@@ -10,7 +10,12 @@ public class FPSCounter : MonoBehaviour
 	[SerializeField] private Anchor _anchor;
 	[SerializeField] private int _xOffset;
 	[SerializeField] private int _yOffset;
-	
+
+	/// <summary>
+	/// Skip some time at start to skip performance drop on game start
+	/// and produce more accurate Avg FPS
+	/// </summary>
+	private float _idleTime = 2;
 
 	private float _elapsed;
 	private int _frames;
@@ -57,6 +62,12 @@ public class FPSCounter : MonoBehaviour
 	
 	private void Update()
 	{
+		if (_idleTime > 0)
+		{
+			_idleTime -= Time.deltaTime;
+			return;
+		}
+		
 		_elapsed += Time.deltaTime;
 		++_frames;
 		
