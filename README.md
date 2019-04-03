@@ -28,4 +28,17 @@ Tons of images below :point_down:
 
 --------
 
-//TODO: Types, Extensions, Unfinished tools
+## [Types](https://github.com/Deadcows/MyBox/wiki/Types)
+**[Guid Component](https://github.com/Deadcows/MyBox/wiki/Types#guidcomponent)** — Generate unique and persistent IDs<br />
+**[SceneReference Component](https://github.com/Deadcows/MyBox/wiki/Types#scenereference)** — Reference scene with Scene asset in inspector<br />
+**[ActivateOnStart Component](https://github.com/Deadcows/MyBox/wiki/Types#activestateonstart-component)** — Set state of specific GO on game start<br />
+**[AnimationStateReference](https://github.com/Deadcows/MyBox/wiki/Types#animationstatereference)** — Specify AnimationClip on object with Animator<br />
+**[Billboard Component](https://github.com/Deadcows/MyBox/wiki/Types#billboard-component)** — Force object to always face camera<br />
+**[ColliderGizmo Component](https://github.com/Deadcows/MyBox/wiki/Types#collidergizmo-component)** — Highlight colliders and triggers in SceneView<br />
+**[FPSCounter Component](https://github.com/Deadcows/MyBox/wiki/Types#fpscounter)** — Display FPS counter on Playmode<br />
+**[MyDictionary](https://github.com/Deadcows/MyBox/wiki/Types#mydictionary)** — Serializable Dictionary<br />
+**[Optional and OptionalMinMax](https://github.com/Deadcows/MyBox/wiki/Types#optional-and-optionalminmax)** — Optionally assignable values<br />
+
+--------
+
+//TODO: Extensions, Unfinished tools
