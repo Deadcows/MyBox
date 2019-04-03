@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MyBox
 {
-	public class ButtonImageBased : MonoBehaviour, ISelectHandler, IDeselectHandler
+	public class UIImageBasedButton : MonoBehaviour, ISelectHandler, IDeselectHandler
 	{
 		[SerializeField, MustBeAssigned] private Sprite _regularSprite;
 		[SerializeField, MustBeAssigned] private Sprite _regularSelectedSprite;
