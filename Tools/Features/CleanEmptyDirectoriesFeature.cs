@@ -36,6 +36,8 @@ namespace MyBox.Internal
 		public static string[] OnWillSaveAssets(string[] paths)
 		{
 			if (!IsEnabled) return paths;
+			// Prefab creation enforces SaveAsset and this may cause unwanted dir cleanup
+			if (paths.Length == 1 && paths[0].EndsWith(".prefab")) return paths;
 			
 			List<DirectoryInfo> emptyDirectories = GetEmptyDirectories();
 			if (emptyDirectories == null) return paths;
