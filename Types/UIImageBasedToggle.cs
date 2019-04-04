@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace MyBox
 {
-	public class ToggleImageBased : MonoBehaviour
+	public class UIImageBasedToggle : MonoBehaviour
 	{
 		[SerializeField] private Sprite _checked;
 		[SerializeField] private Sprite _checkedHighlighted;
