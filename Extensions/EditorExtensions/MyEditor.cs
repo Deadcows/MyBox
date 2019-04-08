@@ -1,15 +1,19 @@
 ﻿#if UNITY_EDITOR
+#pragma warning disable 618
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using Object = UnityEngine.Object;
+using System.Linq;
 
 namespace MyBox.EditorTools
 {
 	public static class MyEditor
 	{
-#pragma warning disable 618
 		#region Hierarchy Management
 
 		/// <summary>
@@ -74,6 +78,7 @@ namespace MyBox.EditorTools
 					Debug.LogError("RenameGO method is obsolete?");
 					return;
 				}
+
 				renameMethod.Invoke(hierarchyWindow, null);
 			}
 		}
@@ -101,7 +106,6 @@ namespace MyBox.EditorTools
 			}
 
 			PrefabUtility.ReplacePrefab(instanceRoot, targetPrefab, ReplacePrefabOptions.ConnectToPrefab);
-
 		}
 
 		/// <summary>
@@ -155,7 +159,45 @@ namespace MyBox.EditorTools
 		}
 
 		#endregion
-#pragma warning restore 618
+
+
+		#region Get Fields With Attribute
+
+		/// <summary>
+		/// Get all fields with specified attribute on all Components on scene
+		/// </summary>
+		public static ComponentField[] GetFieldsWithAttribute<T>() where T : Attribute
+		{
+			MonoBehaviour[] allComponents = Object.FindObjectsOfType<MonoBehaviour>();
+
+			var fields = new List<ComponentField>();
+
+			foreach (var component in allComponents)
+			{
+				Type typeOfScript = component.GetType();
+				var matchingFields = typeOfScript
+					.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+					.Where(field => field.IsDefined(typeof(T), false));
+				foreach (var matchingField in matchingFields) fields.Add(new ComponentField(matchingField, component));
+			}
+
+			return fields.ToArray();
+		}
+
+		public struct ComponentField
+		{
+			public readonly FieldInfo Field;
+			public readonly Component Component;
+
+			public ComponentField(FieldInfo field, Component component)
+			{
+				Field = field;
+				Component = component;
+			}
+		}
+
+		#endregion
 	}
 }
+#pragma warning restore 618
 #endif
