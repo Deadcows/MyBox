@@ -1,6 +1,8 @@
 * #### MustBeAssigned may work with ScriptableObjects in project? 
   * Allow to disable this feature? Measure performance
   
+* ### DisplayInspector — Allow to fold inspector
+  
 * #### Multiscene asset
   * To save/load opened loaded/active scenes in editor
   

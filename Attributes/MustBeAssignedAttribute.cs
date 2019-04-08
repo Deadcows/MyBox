@@ -1,13 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using System.Linq;
-using System.Reflection;
-using UnityEditor;
-using Object = UnityEngine.Object;
-#endif
-
 namespace MyBox
 {
 	/// <summary>
@@ -21,6 +14,11 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using System.Linq;
+	using System.Reflection;
+	using UnityEditor;
+	using Object = UnityEngine.Object;
+	
 	[InitializeOnLoad]
 	public class MustBeAssignedAttributeChecker
 	{
@@ -34,20 +32,15 @@ namespace MyBox.Internal
 			if (Application.isPlaying)
 			{
 				EditorApplication.update -= CheckOnce;
-				CheckComponents();
+				AssertComponents();
 			}
 		}
 
 
-		private static void CheckComponents()
+		private static void AssertComponents()
 		{
-			MonoBehaviour[] scripts = Object.FindObjectsOfType<MonoBehaviour>();
-			AssertComponents(scripts);
-		}
-
-
-		private static void AssertComponents(MonoBehaviour[] components)
-		{
+			MonoBehaviour[] components = Object.FindObjectsOfType<MonoBehaviour>();
+			
 			ConditionalFieldChecker conditionalFieldChecker = new ConditionalFieldChecker();
 
 			foreach (MonoBehaviour behaviour in components)
