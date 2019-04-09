@@ -43,8 +43,8 @@ namespace MyBox.Internal
 		}
 
 
-		private const string BackMenuLabel = "Tools/MyBox/Back %[";
-		private const string ForwardMenuLabel = "Tools/MyBox/Forward %]";
+		private const string BackMenuLabel = "Tools/MyBox/Back %#[";
+		private const string ForwardMenuLabel = "Tools/MyBox/Forward %#]";
 
 		[MenuItem(BackMenuLabel)]
 		private static void Back()
