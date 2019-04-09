@@ -1,3 +1,5 @@
+* #### Allow to opt out MustBeAssigned and AutoProperty checks? Add highlight in inspector if disibled?
+
 * #### MustBeAssigned may work with ScriptableObjects in project? 
   * Allow to disable this feature? Measure performance
   

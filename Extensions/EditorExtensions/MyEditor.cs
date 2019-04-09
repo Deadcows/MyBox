@@ -168,7 +168,7 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static ComponentField[] GetFieldsWithAttribute<T>() where T : Attribute
 		{
-			MonoBehaviour[] allComponents = Object.FindObjectsOfType<MonoBehaviour>();
+			var allComponents = GetAllBehavioursInScenes();
 
 			var fields = new List<ComponentField>();
 
@@ -194,6 +194,28 @@ namespace MyBox.EditorTools
 				Field = field;
 				Component = component;
 			}
+		}
+
+		/// <summary>
+		/// It's like FindObjectsOfType, but allows to get disabled objects
+		/// </summary>
+		/// <returns></returns>
+		public static MonoBehaviour[] GetAllBehavioursInScenes()
+		{
+			var components = new List<MonoBehaviour>();
+
+			for (var i = 0; i < SceneManager.sceneCount; i++)
+			{
+				var scene = SceneManager.GetSceneAt(i);
+				var root = scene.GetRootGameObjects();
+				foreach (var gameObject in root)
+				{
+					var behaviours = gameObject.GetComponentsInChildren<MonoBehaviour>(true);
+					foreach (var behaviour in behaviours) components.Add(behaviour);
+				}
+			}
+
+			return components.ToArray();
 		}
 
 		#endregion

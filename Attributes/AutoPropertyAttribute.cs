@@ -29,7 +29,7 @@ namespace MyBox.Internal
 			GUI.enabled = true;
 		}
 	}
-
+	
 
 	[InitializeOnLoad]
 	public static class AutoPropertyHandler
@@ -47,7 +47,7 @@ namespace MyBox.Internal
 				FillProperty(autoProperties[i]);
 			}
 		}
-
+		
 		private static void FillProperty(MyEditor.ComponentField property)
 		{
 			var propertyType = property.Field.FieldType;
@@ -55,7 +55,7 @@ namespace MyBox.Internal
 			if (property.Field.FieldType.IsArray)
 			{
 				var underlyingType = propertyType.GetElementType();
-				Object[] components = property.Component.GetComponentsInChildren(underlyingType);
+				Object[] components = property.Component.GetComponentsInChildren(underlyingType, true);
 				if (components != null && components.Length > 0)
 				{
 					var serializedObject = new SerializedObject(property.Component);
@@ -67,11 +67,13 @@ namespace MyBox.Internal
 			}
 			else
 			{
-				var component = property.Component.GetComponentInChildren(propertyType);
+				var component = property.Component.GetComponentInChildren(propertyType, true);
 				if (component != null)
 				{
-					property.Field.SetValue(property.Component, component);
-					EditorUtility.SetDirty(property.Component);
+					var serializedObject = new SerializedObject(property.Component);
+					var serializedProperty = serializedObject.FindProperty(property.Field.Name);
+					serializedProperty.objectReferenceValue = component;
+					serializedObject.ApplyModifiedProperties();
 					return;
 				}
 			}
