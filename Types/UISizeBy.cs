@@ -20,6 +20,7 @@ namespace MyBox
 
 		public OptionalMinMax MinMaxHeight;
 
+
 		private RectTransform _transform;
 		private Vector2 _latestSize;
 
@@ -27,8 +28,8 @@ namespace MyBox
 		{
 			_transform = transform as RectTransform;
 
-			Debug.Assert(_transform != null, this);
-			Debug.Assert(CopyWidth.IsSet || CopyHeight.IsSet, this);
+			if (_transform == null) Debug.LogError(name + " Caused: Transform is not a RectTransform", this);
+			if (!CopyWidth.IsSet && !CopyHeight.IsSet) Debug.LogError(name + " Caused: You must set CopyWidth or CopyHeight for UISizeBy to work", this);
 		}
 
 		private void LateUpdate()
@@ -39,7 +40,7 @@ namespace MyBox
 			var copyFromSize = CopySizeFrom.sizeDelta;
 			if (_latestSize == copyFromSize) return;
 			_latestSize = copyFromSize;
-			
+
 			var toSize = _transform.sizeDelta;
 			var x = CopyWidth.IsSet ? _latestSize.x + CopyWidth.Value : toSize.x;
 			var y = CopyHeight.IsSet ? _latestSize.y + CopyHeight.Value : toSize.y;
