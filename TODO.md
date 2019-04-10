@@ -7,10 +7,12 @@
   
 * #### Multiscene asset
   * To save/load opened loaded/active scenes in editor
+  * Write last opened asset id to EditorPrefs, bind to Save event to update asset automatically?
   
 * #### MonoBehaviourPool
 
 * #### Highlight empty fields with MustBeAssignedAttribute in inspector
+  * And AutoProperty fields if none found on GO	
 	
 * #### AssetPresetPreprocessor is very slow on matching assets, profile & optimize
   * At least skip import if nothing changed?
@@ -37,13 +39,14 @@
 	
 * #### EmbeddedAnimationCreator to EmbeddedAssetCreator? 
   * It's cool to have, to pack related assets into one parent asset
-  * Yeah, I know how parent assets, but how to unparent?
+  * How to unparent assets?
 	
 * #### MyBundleUtility is a mess. Might be useful
   * Tools to build bundles out of scenes (with multiscene solutions)
     * And handle bundles loading/unloading on scene load/unload?
 		
 * #### SingleScriptableObject. No more messy Create/ with CreateAssetMenuAttribute for settings SO's
+  * Can it cache itself somehow...? To gain static or single entry point access
   * Base class (attribute?) to ensure that there is at least one SO of this type
   * SelectFolder/Filename prompt will automatically appear on recompilation if no instances of SO found? 
     * Warning if there is more than one?
