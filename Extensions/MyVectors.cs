@@ -279,6 +279,17 @@ namespace MyBox
 			return new Vector3(vector.x, vector.y);
 		}
 
+
+		public static Vector2 ToVector2(this Vector2Int vector)
+		{
+			return new Vector2(vector.x, vector.y);
+		}
+
+		public static Vector3 ToVector3(this Vector3Int vector)
+		{
+			return new Vector3(vector.x, vector.y);
+		}
+
 		#endregion
 
 
