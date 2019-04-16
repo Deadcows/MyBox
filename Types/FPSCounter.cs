@@ -48,7 +48,7 @@ public class FPSCounter : MonoBehaviour
 		var xPos = 0;
 		var yPos = 0;
 		var linesHeight = 40;
-		var linesWidth = 150;
+		var linesWidth = 90;
 		if (_anchor == Anchor.LeftBottom || _anchor == Anchor.RightBottom) yPos = Screen.height - linesHeight;
 		if (_anchor == Anchor.RightTop || _anchor == Anchor.RightBottom) xPos = Screen.width - linesWidth;
 		xPos += _xOffset;
