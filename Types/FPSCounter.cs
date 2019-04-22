@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class FPSCounter : MonoBehaviour
 {
+	public bool EditorOnly;
+	
+	[Separator]
 	[SerializeField] private float _updateInterval = 1f;
 	[SerializeField] private int _targetFrameRate = 30;
 	
@@ -35,6 +38,8 @@ public class FPSCounter : MonoBehaviour
 
 	private void Awake()
 	{
+		if (EditorOnly && Application.isEditor) return;
+		
 		_goodColor = new Color(.4f, .6f, .4f);
 		_okColor = new Color(.8f, .8f, .2f, .6f);
 		_badColor = new Color(.8f, .6f, .6f);
@@ -62,6 +67,8 @@ public class FPSCounter : MonoBehaviour
 	
 	private void Update()
 	{
+		if (EditorOnly && Application.isEditor) return;
+
 		if (_idleTime > 0)
 		{
 			_idleTime -= Time.deltaTime;
@@ -84,6 +91,8 @@ public class FPSCounter : MonoBehaviour
 
 	private void OnGUI()
 	{
+		if (EditorOnly && Application.isEditor) return;
+
 		var defaultColor = GUI.color;
 		var color = _goodColor;
 		if (_fps <= _okFps || _averageFps <= _okFps) color = _okColor;
