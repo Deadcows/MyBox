@@ -26,7 +26,7 @@ namespace MyBox
 namespace MyBox.Internal
 {
 	[CustomEditor(typeof(MonoBehaviour), true)]
-	public class ButtonMethodAttributeEditor : Editor
+	public class ButtonMethodMonoBehaviourEditor : Editor
 	{
 		private List<MethodInfo> _methods;
 		private MonoBehaviour _target;
@@ -36,37 +36,48 @@ namespace MyBox.Internal
 			_target = target as MonoBehaviour;
 			if (_target == null) return;
 
-			CollectValidMembers(_target.GetType());
+			_methods = ButtonMethodHandler.CollectValidMembers(_target.GetType());
 		}
 
 		public override void OnInspectorGUI()
 		{
 			base.OnInspectorGUI();
-
 			if (_methods == null) return;
 
-			EditorGUILayout.Space();
+			ButtonMethodHandler.OnInspectorGUI(_target, _methods);
+		}
+	}
 
-			foreach (MethodInfo method in _methods)
-			{
-				if (GUILayout.Button(method.Name.SplitCamelCase())) InvokeMethod(method);
-			}
+
+	[CustomEditor(typeof(ScriptableObject), true)]
+	public class ButtonMethodScriptableObjectEditor : Editor
+	{
+		private List<MethodInfo> _methods;
+		private ScriptableObject _target;
+
+		private void OnEnable()
+		{
+			_target = target as ScriptableObject;
+			if (_target == null) return;
+
+			_methods = ButtonMethodHandler.CollectValidMembers(_target.GetType());
 		}
 
-
-		private void InvokeMethod(MethodInfo method)
+		public override void OnInspectorGUI()
 		{
-			var result = method.Invoke(target, null);
+			base.OnInspectorGUI();
+			if (_methods == null) return;
 
-			if (result != null)
-			{
-				var message = string.Format("{0} \nResult of Method '{1}' invocation on object {2}", result, method.Name, _target.name);
-				Debug.Log(message, _target);
-			}
+			ButtonMethodHandler.OnInspectorGUI(_target, _methods);
 		}
+	}
 
-		private void CollectValidMembers(Type type)
+	public static class ButtonMethodHandler
+	{
+		public static List<MethodInfo> CollectValidMembers(Type type)
 		{
+			List<MethodInfo> methods = null;
+
 			var members = type.GetMembers(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
 				.Where(IsButtonMethod);
 
@@ -75,13 +86,36 @@ namespace MyBox.Internal
 				var method = member as MethodInfo;
 				if (IsValidMember(method, member))
 				{
-					if (_methods == null) _methods = new List<MethodInfo>();
-					_methods.Add(method);
+					if (methods == null) methods = new List<MethodInfo>();
+					methods.Add(method);
 				}
+			}
+
+			return methods;
+		}
+
+		public static void OnInspectorGUI(UnityEngine.Object target, List<MethodInfo> methods)
+		{
+			EditorGUILayout.Space();
+
+			foreach (MethodInfo method in methods)
+			{
+				if (GUILayout.Button(method.Name.SplitCamelCase())) InvokeMethod(target, method);
 			}
 		}
 
-		private bool IsValidMember(MethodInfo method, MemberInfo member)
+		private static void InvokeMethod(UnityEngine.Object target, MethodInfo method)
+		{
+			var result = method.Invoke(target, null);
+
+			if (result != null)
+			{
+				var message = string.Format("{0} \nResult of Method '{1}' invocation on object {2}", result, method.Name, target.name);
+				Debug.Log(message, target);
+			}
+		}
+
+		private static bool IsValidMember(MethodInfo method, MemberInfo member)
 		{
 			if (method == null)
 			{
@@ -102,7 +136,7 @@ namespace MyBox.Internal
 			return true;
 		}
 
-		private bool IsButtonMethod(MemberInfo memberInfo)
+		private static bool IsButtonMethod(MemberInfo memberInfo)
 		{
 			return Attribute.IsDefined(memberInfo, typeof(ButtonMethodAttribute));
 		}
