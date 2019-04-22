@@ -8,11 +8,51 @@ using UnityEditor;
 
 namespace MyBox
 {
-	[Serializable] public class OptionalFloat : Optional<float> { }
-	[Serializable] public class OptionalInt : Optional<int> { }
-	[Serializable] public class OptionalString : Optional<string> { }
-	[Serializable] public class OptionalGameObject : Optional<GameObject> { }
-	[Serializable] public class OptionalComponent : Optional<Component> { }
+	[Serializable]
+	public class OptionalFloat : Optional<float>
+	{
+		public static OptionalFloat WithValue(float value)
+		{
+			return new OptionalFloat {IsSet = true, Value = value};
+		}
+	}
+
+	[Serializable]
+	public class OptionalInt : Optional<int>
+	{
+		public static OptionalInt WithValue(int value)
+		{
+			return new OptionalInt {IsSet = true, Value = value};
+		}
+	}
+
+	[Serializable]
+	public class OptionalString : Optional<string>
+	{
+		public static OptionalString WithValue(string value)
+		{
+			return new OptionalString {IsSet = true, Value = value};
+		}
+	}
+
+	[Serializable]
+	public class OptionalKeyCode : Optional<KeyCode>
+	{
+		public static OptionalKeyCode WithValue(KeyCode value)
+		{
+			return new OptionalKeyCode {IsSet = true, Value = value};
+		}
+	}
+
+	[Serializable]
+	public class OptionalGameObject : Optional<GameObject>
+	{
+	}
+
+	[Serializable]
+	public class OptionalComponent : Optional<Component>
+	{
+	}
 }
 
 namespace MyBox.Internal
@@ -23,9 +63,11 @@ namespace MyBox.Internal
 		public bool IsSet;
 		public T Value;
 	}
-	
+
 	[Serializable]
-	public class OptionalParent {}
+	public class OptionalParent
+	{
+	}
 }
 
 #if UNITY_EDITOR
@@ -45,10 +87,10 @@ namespace MyBox.Internal
 			var checkWidth = 14;
 			var spaceWidth = 4;
 			var valWidth = position.width - checkWidth - spaceWidth;
-			
+
 			position.width = checkWidth;
 			isSet.boolValue = EditorGUI.Toggle(position, GUIContent.none, isSet.boolValue);
-			
+
 			position.x += checkWidth + spaceWidth;
 			position.width = valWidth;
 			if (isSet.boolValue) EditorGUI.PropertyField(position, value, GUIContent.none);
