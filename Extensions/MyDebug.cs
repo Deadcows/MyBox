@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -9,18 +10,41 @@ namespace MyBox
 {
 	public static class MyDebug
 	{
+		#region Log Array
+
+		private static StringBuilder StringBuilder;
+
 		public static void LogArray<T>(T[] toLog)
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.Append("Log Array: ");
-			sb.Append(typeof(T).Name + " (" + toLog.Length + ")\n");
+			if (StringBuilder == null) StringBuilder = new StringBuilder();
+			else StringBuilder.Clear();
+
+			StringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(toLog.Length).Append(")\n");
 			for (var i = 0; i < toLog.Length; i++)
 			{
-				sb.Append("\n\t" + i.ToString().Colored(Colors.brown) + ": " + toLog[i]);
+				StringBuilder.Append("\n\t").Append(i.ToString().Colored(Colors.brown)).Append(": ").Append(toLog[i]);
 			}
 
-			Debug.Log(sb.ToString());
+			Debug.Log(StringBuilder.ToString());
 		}
+
+		public static void LogArray<T>(IList<T> toLog)
+		{
+			if (StringBuilder == null) StringBuilder = new StringBuilder();
+			else StringBuilder.Clear();
+
+			var count = toLog.Count;
+			StringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(count).Append(")\n");
+
+			for (var i = 0; i < count; i++)
+			{
+				StringBuilder.Append("\n\t" + i.ToString().Colored(Colors.brown) + ": " + toLog[i]);
+			}
+
+			Debug.Log(StringBuilder.ToString());
+		}
+
+		#endregion
 
 
 		#region Debug Bounds 
@@ -84,7 +108,7 @@ namespace MyBox
 		}
 
 		#endregion
-		
+
 
 		public static void DrawString(string text, Vector3 worldPos, Color? colour = null)
 		{
@@ -104,7 +128,7 @@ namespace MyBox
 #endif
 		}
 
-		
+
 		/// <summary>
 		/// Draw directional arrow
 		/// </summary>
@@ -122,7 +146,7 @@ namespace MyBox
 #endif
 		}
 
-		
+
 		/// <summary>
 		/// Draw XYZ dimensional RGB cross
 		/// </summary>
