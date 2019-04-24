@@ -10,7 +10,7 @@ namespace MyBox.Internal
 	{
 		public ConditionalPreset[] Presets;
 
-		public string[] ExcludeProperties = {"SpriteBorder"};
+		public string[] ExcludeProperties = {"SpriteBorder", "Pivot", "Alignment"};
 	}
 
 	[Serializable]
