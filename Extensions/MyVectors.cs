@@ -289,6 +289,17 @@ namespace MyBox
 		{
 			return new Vector3(vector.x, vector.y);
 		}
+		
+
+		public static Vector2Int ToVector2Int(this Vector2 vector)
+		{
+			return new Vector2Int(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y));
+		}
+
+		public static Vector3Int ToVector3Int(this Vector3 vector)
+		{
+			return new Vector3Int(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
+		}
 
 		#endregion
 
