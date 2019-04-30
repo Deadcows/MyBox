@@ -165,16 +165,16 @@ namespace MyBox.EditorTools
                     return p.GetValue(source, null);
             }
             return null;
-
-            IEnumerable<Type> GetHierarchyTypes(Type sourceType)
-            {
-                yield return sourceType;
-                while (sourceType.BaseType != null)
-                {
-                    yield return sourceType.BaseType;
-                    sourceType = sourceType.BaseType;
-                }
-            }
+        }
+        
+        private static IEnumerable<Type> GetHierarchyTypes(Type sourceType)
+        {
+	        yield return sourceType;
+	        while (sourceType.BaseType != null)
+	        {
+		        yield return sourceType.BaseType;
+		        sourceType = sourceType.BaseType;
+	        }
         }
 
         private static object GetValueAt(object source, string name, int index)

@@ -17,7 +17,7 @@ namespace MyBox
 		public static void LogArray<T>(T[] toLog)
 		{
 			if (StringBuilder == null) StringBuilder = new StringBuilder();
-			else StringBuilder.Clear();
+			else StringBuilder.Length = 0;
 
 			StringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(toLog.Length).Append(")\n");
 			for (var i = 0; i < toLog.Length; i++)
@@ -31,7 +31,7 @@ namespace MyBox
 		public static void LogArray<T>(IList<T> toLog)
 		{
 			if (StringBuilder == null) StringBuilder = new StringBuilder();
-			else StringBuilder.Clear();
+			else StringBuilder.Length = 0;
 
 			var count = toLog.Count;
 			StringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(count).Append(")\n");
