@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MyBox.Internal
 {
-    public class Logger
+    public static class MyLogger
     {
         private const string LogFile = "customLog.txt";
         private const string TimeFormat = "MM-dd_HH-mm-ss";
@@ -17,7 +17,7 @@ namespace MyBox.Internal
 
         private const int MaxMessageLength = 4000;
 
-        static Logger()
+        static MyLogger()
         {
             Session = Guid.NewGuid().ToString();
             Version = "Version not initiated";
@@ -66,7 +66,7 @@ namespace MyBox.Internal
             return DateTime.Now.ToString(TimeFormat);
         }
 
-        public static void Log(Exception ex)
+        private static void Log(Exception ex)
         {
             Log("Exception:" + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
         }
