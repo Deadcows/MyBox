@@ -50,5 +50,12 @@ namespace MyBox
 
 			_transform.sizeDelta = new Vector2(x, y);
 		}
+
+		[ButtonMethod]
+		private void UpdateView()
+		{
+			_latestSize = Vector2.zero;
+			LateUpdate();
+		}
 	}
 }
