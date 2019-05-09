@@ -4,11 +4,18 @@ namespace MyBox
 {
 	public static class MyString
 	{
+		
+		/// <summary>
+		/// "Camel case string" => "CamelCaseString" 
+		/// </summary>
 		public static string ToCamelCase(this string camelCaseString)
 		{
 			return Regex.Replace(camelCaseString, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ").Trim();
 		}
 		
+		/// <summary>
+		/// "CamelCaseString" => "Camel Case String"
+		/// </summary>
 		public static string SplitCamelCase(this string camelCaseString)
 		{
 			if (string.IsNullOrEmpty(camelCaseString)) return camelCaseString;
