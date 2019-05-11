@@ -11,6 +11,8 @@
   
 * #### MonoBehaviourPool
 
+* #### MyGizmos => Arrow, Dotted, Cross?
+
 * #### Highlight empty fields with MustBeAssignedAttribute in inspector
   * And AutoProperty fields if none found on GO	
 	
