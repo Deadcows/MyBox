@@ -38,7 +38,7 @@ public class FPSCounter : MonoBehaviour
 
 	private void Awake()
 	{
-		if (EditorOnly && Application.isEditor) return;
+		if (EditorOnly && !Application.isEditor) return;
 		
 		_goodColor = new Color(.4f, .6f, .4f);
 		_okColor = new Color(.8f, .8f, .2f, .6f);
@@ -103,7 +103,7 @@ public class FPSCounter : MonoBehaviour
 		GUI.color = defaultColor;
 	}
 
-	public enum Anchor
+	private enum Anchor
 	{
 		LeftTop, LeftBottom, RightTop, RightBottom
 	}
