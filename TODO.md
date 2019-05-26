@@ -1,3 +1,7 @@
+* #### Automatically generate asmdef dependencies for Unity 2019.1 and 2019.2
+
+* #### Add documentation links for MonoBehaviour types
+
 * #### Allow to opt out MustBeAssigned and AutoProperty checks? Add highlight in inspector if disibled?
 
 * #### MustBeAssigned may work with ScriptableObjects in project? 
