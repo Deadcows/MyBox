@@ -2,6 +2,10 @@
 MyBox is a set of tools, features and extensions for Unity.<br />
 It is MyBox. Now it's yours too :raised_hands:<br />
 
+If you are using Unity <b>2019.1</b> or <b>2019.2</b> you need to specify a few dependencies in MyBox.asmdef file.<br />
+With 2019.1 MyBox requires Unity.Timeline reference, and with 2019.2 you also need to refer to Unity.ugui<br />
+![](https://habrastorage.org/webt/jf/m2/ao/jfm2aospj6hkveelgx0gt66iifc.png)
+
 Tons of images below :point_down:
 
 --------
