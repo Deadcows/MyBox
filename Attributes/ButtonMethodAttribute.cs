@@ -25,7 +25,7 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
-	[CustomEditor(typeof(MonoBehaviour), true)]
+	[CustomEditor(typeof(MonoBehaviour), true), CanEditMultipleObjects]
 	public class ButtonMethodMonoBehaviourEditor : Editor
 	{
 		private List<MethodInfo> _methods;
@@ -49,7 +49,7 @@ namespace MyBox.Internal
 	}
 
 
-	[CustomEditor(typeof(ScriptableObject), true)]
+	[CustomEditor(typeof(ScriptableObject), true), CanEditMultipleObjects]
 	public class ButtonMethodScriptableObjectEditor : Editor
 	{
 		private List<MethodInfo> _methods;
