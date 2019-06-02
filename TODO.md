@@ -67,3 +67,5 @@
 * #### Conditionally remove some features like extension/hotkeys with Conditional Compilation?
 
 * #### Somehow apply Custom Drawer to empty array? ConditionalField is need this
+
+* #### ConditionalField should hide Separator attribute?
