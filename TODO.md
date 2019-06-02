@@ -65,3 +65,5 @@
     * WHOA! Figured it out. I may generate separate script with MenuItems in any selected by used folder. Find this script and get its path to regenerate if needed!
    
 * #### Conditionally remove some features like extension/hotkeys with Conditional Compilation?
+
+* #### Somehow apply Custom Drawer to empty array? ConditionalField is need this
