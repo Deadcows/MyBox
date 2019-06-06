@@ -174,6 +174,8 @@ namespace MyBox.EditorTools
 
 			foreach (var component in allComponents)
 			{
+				if (component == null) continue;
+			
 				Type typeOfScript = component.GetType();
 				var matchingFields = typeOfScript
 					.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
