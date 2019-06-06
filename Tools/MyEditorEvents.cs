@@ -1,12 +1,14 @@
 #if UNITY_EDITOR
 using System;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEngine;
+using UnityEditor.Build.Reporting;
 
 namespace MyBox.EditorTools
 {
 	[InitializeOnLoad]
-	public class MyEditorEvents : UnityEditor.AssetModificationProcessor
+	public class MyEditorEvents : UnityEditor.AssetModificationProcessor, IPreprocessBuildWithReport
 	{
 		/// <summary>
 		/// Occurs on Scenes/Assets Save
@@ -18,9 +20,21 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static Action OnFirstFrame;
 
+		public static Action BeforePlaymode;
 
-		#region OnSave
+		public static Action BeforeBuild;
 
+
+		static MyEditorEvents()
+		{
+			EditorApplication.update += CheckOnce;
+			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+		}
+
+
+		/// <summary>
+		/// On Editor Save
+		/// </summary>
 		private static string[] OnWillSaveAssets(string[] paths)
 		{
 			// Prefab creation enforces SaveAsset and this may cause unwanted dir cleanup
@@ -31,16 +45,9 @@ namespace MyBox.EditorTools
 			return paths;
 		}
 
-		#endregion
-
-
-		#region OnFirstFrame
-
-		static MyEditorEvents()
-		{
-			EditorApplication.update += CheckOnce;
-		}
-
+		/// <summary>
+		/// On First Frame
+		/// </summary>
 		private static void CheckOnce()
 		{
 			if (Application.isPlaying)
@@ -50,7 +57,26 @@ namespace MyBox.EditorTools
 			}
 		}
 
-		#endregion
+		/// <summary>
+		/// On Before Playmode
+		/// </summary>
+		private static void OnPlayModeStateChanged(PlayModeStateChange state)
+		{
+			if (state == PlayModeStateChange.ExitingEditMode && BeforePlaymode != null) BeforePlaymode();
+		}
+
+		/// <summary>
+		/// Before Build
+		/// </summary>
+		public void OnPreprocessBuild(BuildReport report)
+		{
+			if (BeforeBuild != null) BeforeBuild();
+		}
+
+		public int callbackOrder
+		{
+			get { return 0; }
+		}
 	}
 }
 #endif
