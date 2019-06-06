@@ -2,13 +2,19 @@
 using System;
 using UnityEditor;
 using MyBox.Internal;
+using UnityEngine;
+
 #endif
 
 namespace MyBox
 {
 	public interface IPrepare
 	{
-		void Prepare();
+		/// <summary>
+		/// Prepare component to cache 
+		/// </summary>
+		/// <returns></returns>
+		bool Prepare();
 	}
 }
 
@@ -21,9 +27,17 @@ namespace MyBox.EditorTools
 	{
 		#region Menu Items Settings
 
+		private const string PrepareItemName = "Tools/MyBox/IPrepare/Prepare";
 		private const string BeforePlaymodeItemName = "Tools/MyBox/IPrepare/BeforePlaymode";
 		private const string BeforeBuildItemName = "Tools/MyBox/IPrepare/BeforeBuild";
 		private const string OnSaveItemName = "Tools/MyBox/IPrepare/OnSave";
+
+		[MenuItem(PrepareItemName, priority = 109)]
+		private static void MenuItemPrepare()
+		{
+			Prepare();
+		}
+
 
 		private static bool BeforePlaymode
 		{
@@ -97,14 +111,16 @@ namespace MyBox.EditorTools
 
 		public static void Prepare()
 		{
-			string prepareUndoKey = "PrepareProcessUndo";
-
 			var toPrepare = MyExtensions.FindObjectsOfInterfaceAsComponents<IPrepare>();
 			foreach (var prepare in toPrepare)
 			{
-				Undo.RecordObject(prepare.Component, prepareUndoKey);
-				prepare.Interface.Prepare();
-				if (prepare.Component != null) EditorUtility.SetDirty(prepare.Component);
+				bool updated = prepare.Interface.Prepare();
+				if (prepare.Component != null && updated)
+				{
+					EditorUtility.SetDirty(prepare.Component);
+					// Log in case we don't know what makes scenes dirty
+					Debug.Log(prepare.Component.name + " Prepared, changed", prepare.Component);
+				}
 			}
 
 			if (OnPrepare != null) OnPrepare();
