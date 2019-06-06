@@ -6,10 +6,6 @@
 
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace MyBox
 {
 	public class PositiveValueOnlyAttribute : PropertyAttribute
@@ -20,6 +16,8 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using UnityEditor;
+
 	[CustomPropertyDrawer(typeof(PositiveValueOnlyAttribute))]
 	public class PositiveValueOnlyAttributeDrawer : PropertyDrawer
 	{
@@ -32,14 +30,14 @@ namespace MyBox.Internal
 		{
 			if (!IsNumerical(property.propertyType))
 			{
-				EditorTools.MyGUI.DrawColouredRect(position, EditorTools.MyGUI.Red);
+				DrawColouredRect(position, RedColour);
 				EditorGUI.LabelField(position, new GUIContent("", "[PositiveValueOnly] used with non-numeric property"));
 			}
 			else
 			{
 				if (HandleNegativeValues(property)) property.serializedObject.ApplyModifiedProperties();
 			}
-			
+
 			EditorGUI.PropertyField(position, property, true);
 		}
 
@@ -55,12 +53,12 @@ namespace MyBox.Internal
 				case SerializedPropertyType.Float:
 				case SerializedPropertyType.Integer:
 					return HandleNumerics(property);
-					
+
 				case SerializedPropertyType.Vector2:
 				case SerializedPropertyType.Vector3:
 				case SerializedPropertyType.Vector4:
 					return HandleVectors(property);
-				
+
 				case SerializedPropertyType.Vector2Int:
 				case SerializedPropertyType.Vector3Int:
 					return HandleIntVectors(property);
@@ -77,6 +75,7 @@ namespace MyBox.Internal
 				property.intValue = 0;
 				return true;
 			}
+
 			if (property.propertyType == SerializedPropertyType.Float && property.floatValue < 0)
 			{
 				property.floatValue = 0;
@@ -85,7 +84,7 @@ namespace MyBox.Internal
 
 			return false;
 		}
-		
+
 
 		private bool HandleVectors(SerializedProperty property)
 		{
@@ -128,8 +127,8 @@ namespace MyBox.Internal
 
 			return handled;
 		}
-		
-		
+
+
 		private bool HandleIntVectors(SerializedProperty property)
 		{
 			if (property.propertyType == SerializedPropertyType.Vector2Int)
@@ -137,7 +136,7 @@ namespace MyBox.Internal
 				var vector = property.vector2IntValue;
 				if (vector.x > 0 && vector.y > 0) return false;
 				property.vector2IntValue = new Vector2Int(
-					vector.x < 0 ? 0 : vector.x, 
+					vector.x < 0 ? 0 : vector.x,
 					vector.y < 0 ? 0 : vector.y);
 				return true;
 			}
@@ -155,8 +154,8 @@ namespace MyBox.Internal
 
 			return false;
 		}
-		
-		
+
+
 		private bool IsNumerical(SerializedPropertyType propertyType)
 		{
 			switch (propertyType)
@@ -173,6 +172,23 @@ namespace MyBox.Internal
 				default: return false;
 			}
 		}
+
+		/// <summary>
+		/// Draw Rect filled with Color
+		/// COPY OF MyGUI.DrawColouredRect()
+		/// </summary>
+		private static void DrawColouredRect(Rect rect, Color color)
+		{
+			var defaultBackgroundColor = GUI.backgroundColor;
+			GUI.backgroundColor = color;
+			GUI.Box(rect, "");
+			GUI.backgroundColor = defaultBackgroundColor;
+		}
+
+		/// <summary>
+		/// COPY OF MyGUI.Red
+		/// </summary>
+		private static readonly Color RedColour = new Color(.8f, .6f, .6f);
 	}
 }
 #endif

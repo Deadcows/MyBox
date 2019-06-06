@@ -5,14 +5,8 @@
 // ----------------------------------------------------------------------------
 
 using System;
+using System.Text.RegularExpressions;
 using UnityEngine;
-#if UNITY_EDITOR
-using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
-using UnityEditor;
-
-#endif
 
 namespace MyBox
 {
@@ -25,6 +19,11 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using System.Linq;
+	using System.Collections.Generic;
+	using System.Reflection;
+	using UnityEditor;
+	
 	[CustomEditor(typeof(MonoBehaviour), true), CanEditMultipleObjects]
 	public class ButtonMethodMonoBehaviourEditor : Editor
 	{
@@ -100,7 +99,7 @@ namespace MyBox.Internal
 
 			foreach (MethodInfo method in methods)
 			{
-				if (GUILayout.Button(method.Name.SplitCamelCase())) InvokeMethod(target, method);
+				if (GUILayout.Button(SplitCamelCase(method.Name))) InvokeMethod(target, method);
 			}
 		}
 
@@ -139,6 +138,27 @@ namespace MyBox.Internal
 		private static bool IsButtonMethod(MemberInfo memberInfo)
 		{
 			return Attribute.IsDefined(memberInfo, typeof(ButtonMethodAttribute));
+		}
+		
+		
+		/// <summary>
+		/// "CamelCaseString" => "Camel Case String"
+		/// COPY OF MyString.SplitCamelCase()
+		/// </summary>
+		private static string SplitCamelCase(string camelCaseString)
+		{
+			if (string.IsNullOrEmpty(camelCaseString)) return camelCaseString;
+
+			string camelCase = Regex.Replace(Regex.Replace(camelCaseString, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
+			string firstLetter = camelCase.Substring(0, 1).ToUpper();
+
+			if (camelCaseString.Length > 1)
+			{
+				string rest = camelCase.Substring(1);
+
+				return firstLetter + rest;
+			}
+			return firstLetter;
 		}
 	}
 }
