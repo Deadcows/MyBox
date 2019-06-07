@@ -130,5 +130,41 @@ namespace MyBox
 
 			return -1;
 		}
+		
+		/// <summary>
+		/// Is Elements in two collections are the same
+		/// </summary>
+		public static bool ContentsMatch<T>(this IEnumerable<T> first, IEnumerable<T> second)
+		{
+			if (first.IsNullOrEmpty() && second.IsNullOrEmpty()) return true;
+			var firstCount = first.Count();
+			var secondCount = second.Count();
+			if (firstCount != secondCount) return false;
+
+			foreach (var x1 in first)
+			{
+				if (!second.Contains(x1)) return false;
+			}
+
+			return true;
+		}
+		
+		/// <summary>
+		/// Is Keys in MyDictionary is the same as some collection
+		/// </summary>
+		public static bool KeysContentsMatch<T1, T2>(this MyDictionary<T1, T2> source, IEnumerable<T1> check)
+		{
+			if (source.IsNullOrEmpty() && check.IsNullOrEmpty()) return true;
+			return source.Keys.ContentsMatch(check);
+		}
+			
+		/// <summary>
+		/// Is Values in MyDictionary is the same as some collection
+		/// </summary>
+		public static bool ValuesContentsMatch<T1, T2>(this MyDictionary<T1, T2> source, IEnumerable<T2> check)
+		{
+			if (source.IsNullOrEmpty() && check.IsNullOrEmpty()) return true;
+			return source.Values.ContentsMatch(check);
+		}
 	}
 }

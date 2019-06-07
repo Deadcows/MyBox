@@ -11,9 +11,9 @@ namespace MyBox.Internal
 	{
 		[SerializeField] private bool _autoSaveEnabled = true;
 		[SerializeField] private bool _cleanEmptyDirectoriesFeature = true;
-		[SerializeField] private bool _iPrepareBeforePlaymode = true;
-		[SerializeField] private bool _iPrepareBeforeBuild = true;
-		[SerializeField] private bool _iPrepareOnSave = true;
+		[SerializeField] private bool _iPrepareBeforePlaymode;
+		[SerializeField] private bool _iPrepareBeforeBuild;
+		[SerializeField] private bool _iPrepareOnSave;
 
 		public static bool AutoSaveEnabled
 		{
