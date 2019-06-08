@@ -137,6 +137,8 @@ namespace MyBox
 		public static bool ContentsMatch<T>(this IEnumerable<T> first, IEnumerable<T> second)
 		{
 			if (first.IsNullOrEmpty() && second.IsNullOrEmpty()) return true;
+			if (first.IsNullOrEmpty() || second.IsNullOrEmpty()) return false;
+			
 			var firstCount = first.Count();
 			var secondCount = second.Count();
 			if (firstCount != secondCount) return false;
@@ -155,6 +157,8 @@ namespace MyBox
 		public static bool KeysContentsMatch<T1, T2>(this MyDictionary<T1, T2> source, IEnumerable<T1> check)
 		{
 			if (source.IsNullOrEmpty() && check.IsNullOrEmpty()) return true;
+			if (source.IsNullOrEmpty() || check.IsNullOrEmpty()) return false;
+			
 			return source.Keys.ContentsMatch(check);
 		}
 			
@@ -164,6 +168,8 @@ namespace MyBox
 		public static bool ValuesContentsMatch<T1, T2>(this MyDictionary<T1, T2> source, IEnumerable<T2> check)
 		{
 			if (source.IsNullOrEmpty() && check.IsNullOrEmpty()) return true;
+			if (source.IsNullOrEmpty() || check.IsNullOrEmpty()) return false;
+			
 			return source.Values.ContentsMatch(check);
 		}
 	}
