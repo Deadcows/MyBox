@@ -11,6 +11,18 @@ namespace MyBox
 		/// </summary>
 		public static T[] RemoveAt<T>(this T[] array, int index)
 		{
+			if (index < 0)
+			{
+				Debug.LogError("Index is less than zero. Array is not modified");
+				return array;
+			}
+
+			if (index >= array.Length)
+			{
+				Debug.LogError("Index exceeds array length. Array is not modified");
+				return array;
+			}
+			
 			T[] newArray = new T[array.Length - 1];
 			int index1 = 0;
 			for (int index2 = 0; index2 < array.Length; ++index2)
@@ -29,6 +41,18 @@ namespace MyBox
 		/// </summary>
 		public static T[] InsertAt<T>(this T[] array, int index)
 		{
+			if (index < 0)
+			{
+				Debug.LogError("Index is less than zero. Array is not modified");
+				return array;
+			}
+
+			if (index > array.Length)
+			{
+				Debug.LogError("Index exceeds array length. Array is not modified");
+				return array;
+			}
+			
 			T[] newArray = new T[array.Length + 1];
 			int index1 = 0;
 			for (int index2 = 0; index2 < newArray.Length; ++index2)
@@ -43,19 +67,11 @@ namespace MyBox
 		}
 
 		/// <summary>
-		/// Get random element in collection
+		/// Returns random element from collection
 		/// </summary>
-		public static T GetRandom<T>(this IList<T> collection)
+		public static T GetRandom<T>(this IEnumerable<T> collection)
 		{
-			return collection[Random.Range(0, collection.Count - 1)];
-		}
-
-		/// <summary>
-		/// Get random element in collection
-		/// </summary>
-		public static T GetRandom<T>(this T[] collection)
-		{
-			return collection[Random.Range(0, collection.Length - 1)];
+			return collection.ElementAt(Random.Range(0, collection.Count() - 1));
 		}
 
 		public static T[] GetRandomCollection<T>(this IList<T> collection, int amount)
