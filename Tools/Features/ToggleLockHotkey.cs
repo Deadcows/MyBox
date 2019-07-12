@@ -1,4 +1,10 @@
-﻿#if UNITY_EDITOR
+﻿// ---------------------------------------------------------------------------- 
+// Author: Abomb
+// https://forum.unity.com/threads/shortcut-key-for-lock-inspector.95815/#post-1056603
+// Date:   09/10/2012
+// ----------------------------------------------------------------------------
+
+#if UNITY_EDITOR
 using System;
 using System.Reflection;
 using UnityEditor;
@@ -12,27 +18,27 @@ namespace MyBox.Internal
 		[MenuItem("Tools/MyBox/Toggle Lock &q")]
 		static void ToggleInspectorLock()
 		{
-			if (_mouseOverWindow == null)
-			{
-				int i = EditorPrefs.GetInt("LockableInspectorIndex", 0);
+			Type inspectorWindowType = Assembly.GetAssembly(typeof(Editor)).GetType("UnityEditor.InspectorWindow");
 
-				Type type = Assembly.GetAssembly(typeof(Editor)).GetType("UnityEditor.InspectorWindow");
-				Object[] findObjectsOfTypeAll = Resources.FindObjectsOfTypeAll(type);
-				_mouseOverWindow = (EditorWindow) findObjectsOfTypeAll[i];
+			if (_inspectorWindow == null)
+			{
+				Object[] findObjectsOfTypeAll = Resources.FindObjectsOfTypeAll(inspectorWindowType);
+				_inspectorWindow = (EditorWindow) findObjectsOfTypeAll[0];
 			}
 
-			if (_mouseOverWindow != null && _mouseOverWindow.GetType().Name == "InspectorWindow")
+			if (_inspectorWindow != null && _inspectorWindow.GetType().Name == "InspectorWindow")
 			{
-				Type type = Assembly.GetAssembly(typeof(Editor)).GetType("UnityEditor.InspectorWindow");
-				PropertyInfo propertyInfo = type.GetProperty("isLocked");
-				if (propertyInfo == null) return;
-				bool value = (bool) propertyInfo.GetValue(_mouseOverWindow, null);
-				propertyInfo.SetValue(_mouseOverWindow, !value, null);
-				_mouseOverWindow.Repaint();
+				PropertyInfo isLockedPropertyInfo = inspectorWindowType.GetProperty("isLocked");
+				if (isLockedPropertyInfo == null) return;
+
+				bool value = (bool) isLockedPropertyInfo.GetValue(_inspectorWindow, null);
+				isLockedPropertyInfo.SetValue(_inspectorWindow, !value, null);
+
+				_inspectorWindow.Repaint();
 			}
 		}
 
-		private static EditorWindow _mouseOverWindow;
+		private static EditorWindow _inspectorWindow;
 	}
 }
 #endif
