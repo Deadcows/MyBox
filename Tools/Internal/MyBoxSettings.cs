@@ -11,9 +11,10 @@ namespace MyBox.Internal
 	{
 		[SerializeField] private bool _autoSaveEnabled = true;
 		[SerializeField] private bool _cleanEmptyDirectoriesFeature = true;
-		[SerializeField] private bool _iPrepareBeforePlaymode;
-		[SerializeField] private bool _iPrepareBeforeBuild;
-		[SerializeField] private bool _iPrepareOnSave;
+		[SerializeField] private bool _iPrepareOnSave = true;
+		
+		//[SerializeField] private bool _iPrepareBeforePlaymode;
+		//[SerializeField] private bool _iPrepareBeforeBuild;
 
 		public static bool AutoSaveEnabled
 		{
@@ -37,27 +38,6 @@ namespace MyBox.Internal
 			}
 		}
 		
-
-		public static bool IPrepareBeforePlaymode
-		{
-			get { return Instance._iPrepareBeforePlaymode; }
-			set
-			{
-				if (Instance._iPrepareBeforePlaymode == value) return;
-				Instance._iPrepareBeforePlaymode = value;
-				Save();
-			}
-		}
-		public static bool IPrepareBeforeBuild
-		{
-			get { return Instance._iPrepareBeforeBuild; }
-			set
-			{
-				if (Instance._iPrepareBeforeBuild == value) return;
-				Instance._iPrepareBeforeBuild = value;
-				Save();
-			}
-		}
 		public static bool IPrepareOnSave
 		{
 			get { return Instance._iPrepareOnSave; }
@@ -68,7 +48,26 @@ namespace MyBox.Internal
 				Save();
 			}
 		}
-
+//		public static bool IPrepareBeforePlaymode
+//		{
+//			get { return Instance._iPrepareBeforePlaymode; }
+//			set
+//			{
+//				if (Instance._iPrepareBeforePlaymode == value) return;
+//				Instance._iPrepareBeforePlaymode = value;
+//				Save();
+//			}
+//		}
+//		public static bool IPrepareBeforeBuild
+//		{
+//			get { return Instance._iPrepareBeforeBuild; }
+//			set
+//			{
+//				if (Instance._iPrepareBeforeBuild == value) return;
+//				Instance._iPrepareBeforeBuild = value;
+//				Save();
+//			}
+//		}
 
 		#region Instance
 
