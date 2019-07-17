@@ -9,8 +9,6 @@
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
-	using System.Collections.Generic;
-	using System.Linq;
 	using UnityEngine;
 	using UnityEditor;
 
@@ -43,26 +41,18 @@ namespace MyBox.Internal
 			
 			var toPrepare = MyExtensions.FindObjectsOfInterfaceAsComponents<IPrepare>();
 
-			HashSet<string> modifiedScenes = null;
 			foreach (var prepare in toPrepare)
 			{
 				bool changed = prepare.Interface.Prepare();
 
 				if (changed && prepare.Component != null)
 				{
-					if (modifiedScenes == null) modifiedScenes = new HashSet<string>();
-					modifiedScenes.Add(prepare.Component.gameObject.scene.path);
-
+					EditorUtility.SetDirty(prepare.Component);
 					Debug.Log(prepare.Component.name + "." + prepare.Component.GetType().Name + ": Changed on Prepare", prepare.Component);
 				}
 			}
 
-			if (modifiedScenes != null)
-			{
-				for (var i = 0; i < paths.Length; i++) modifiedScenes.Add(paths[i]);
-			}
-
-			return modifiedScenes == null ? paths : modifiedScenes.ToArray();
+			return paths;
 		}
 	}
 }
