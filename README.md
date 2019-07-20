@@ -29,6 +29,7 @@ Tons of images below :point_down:
 ## [Tools and Features](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features)
 **[AssetPressetPreprocessor](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#assetpressetpreprocessor)** — Conditionally apply Presets to your assets on import<br />
 **[TimeTest](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#timetest)** — Measure performance with simple api<br />
+**[IPrepare](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#iprepare)** — Easy way to replace caching, calculations and asserts from playmode<br />
 **[Features](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#cleanup-empty-directories-and-autosave-features-and-some-hotkeys)** — Cleanup Empty Directories, AutoSave feature, Hotkeys<br />
 
 --------
