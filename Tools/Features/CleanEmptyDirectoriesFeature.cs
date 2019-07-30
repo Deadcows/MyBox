@@ -11,31 +11,13 @@ namespace MyBox.Internal
 {
 	public class CleanEmptyDirectoriesFeature : UnityEditor.AssetModificationProcessor
 	{
-		private const string MenuItemName = "Tools/MyBox/Clear Empty Directories On Save";
-
-		private static bool IsEnabled
-		{
-			get { return MyBoxSettings.CleanEmptyDirectoriesFeature; }
-			set { MyBoxSettings.CleanEmptyDirectoriesFeature = value; }
-		}
-
-		[MenuItem(MenuItemName, priority = 100)]
-		private static void MenuItem()
-		{
-			IsEnabled = !IsEnabled;
-		}
-
-		[MenuItem(MenuItemName, true)]
-		private static bool MenuItemValidation()
-		{
-			Menu.SetChecked(MenuItemName, IsEnabled);
-			return true;
-		}
+		public static bool IsEnabled = true;
 
 		
 		public static string[] OnWillSaveAssets(string[] paths)
 		{
 			if (!IsEnabled) return paths;
+			
 			// Prefab creation enforces SaveAsset and this may cause unwanted dir cleanup
 			if (paths.Length == 1 && paths[0].EndsWith(".prefab")) return paths;
 			

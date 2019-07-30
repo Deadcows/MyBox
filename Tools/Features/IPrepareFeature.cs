@@ -21,26 +21,7 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public class PrepareOnSave
 	{
-		private const string IPrepareMenuItemKey = "Tools/MyBox/Run Prepare On Save";
-
-		private static bool IPrepareIsEnabled
-		{
-			get { return MyBoxSettings.PrepareOnPlaymode; }
-			set { MyBoxSettings.PrepareOnPlaymode = value; }
-		}
-
-		[MenuItem(IPrepareMenuItemKey, priority = 100)]
-		private static void IPrepareMenuItem()
-		{
-			IPrepareIsEnabled = !IPrepareIsEnabled;
-		}
-
-		[MenuItem(IPrepareMenuItemKey, true)]
-		private static bool IPrepareMenuItemValidation()
-		{
-			Menu.SetChecked(IPrepareMenuItemKey, IPrepareIsEnabled);
-			return true;
-		}
+		public static bool IsEnabled = true;
 
 		static PrepareOnSave()
 		{
@@ -49,7 +30,7 @@ namespace MyBox.Internal
 
 		static void Prepare()
 		{
-			if (!IPrepareIsEnabled) return;
+			if (!IsEnabled) return;
 			
 			var toPrepare = MyExtensions.FindObjectsOfInterfaceAsComponents<IPrepare>();
 
