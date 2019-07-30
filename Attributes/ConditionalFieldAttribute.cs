@@ -11,19 +11,21 @@ namespace MyBox
 	[AttributeUsage(AttributeTargets.Field)]
 	public class ConditionalFieldAttribute : PropertyAttribute
 	{
-		private readonly string _propertyToCheck;
+		private readonly string _fieldToCheck;
 		private readonly object _compareValue;
-
-		public ConditionalFieldAttribute(string propertyToCheck, object compareValue = null)
+		private readonly bool _inverse;
+		
+		public ConditionalFieldAttribute(string fieldToCheck, object compareValue = null, bool inverse = false)
 		{
-			_propertyToCheck = propertyToCheck;
+			_fieldToCheck = fieldToCheck;
 			_compareValue = compareValue;
+			_inverse = inverse;
 		}
 
 #if UNITY_EDITOR
 		public bool CheckBehaviourPropertyVisible(MonoBehaviour behaviour, string propertyName)
 		{
-			if (string.IsNullOrEmpty(_propertyToCheck)) return true;
+			if (string.IsNullOrEmpty(_fieldToCheck)) return true;
 
 			var so = new SerializedObject(behaviour);
 			var property = so.FindProperty(propertyName);
@@ -34,22 +36,23 @@ namespace MyBox
 
 		public bool CheckPropertyVisible(SerializedProperty property)
 		{
-			var conditionProperty = FindRelativeProperty(property, _propertyToCheck);
+			var conditionProperty = FindRelativeProperty(property, _fieldToCheck);
 			if (conditionProperty == null) return true;
+			
+			string asString = AsStringValue(conditionProperty).ToUpper();
+
+			
+			if (_compareValue != null)
+			{
+				bool compareValueMatch = _compareValue.ToString().ToUpper() == asString;
+				return compareValueMatch ? !_inverse : _inverse;
+			}
 
 
-			//Debug.Log(property.name + " " + property.isArray);
+			bool someValueAssigned = asString != "FALSE" && asString != "0" && asString != "NULL";
+			if (someValueAssigned) return !_inverse;
 
-			bool isBoolMatch = conditionProperty.propertyType == SerializedPropertyType.Boolean &&
-			                   conditionProperty.boolValue;
-			string compareStringValue = _compareValue != null ? _compareValue.ToString().ToUpper() : "NULL";
-			if (isBoolMatch && compareStringValue == "FALSE") isBoolMatch = false;
-
-			string conditionPropertyStringValue = AsStringValue(conditionProperty).ToUpper();
-			bool objectMatch = compareStringValue == conditionPropertyStringValue;
-
-			bool notVisible = !isBoolMatch && !objectMatch;
-			return !notVisible;
+			return _inverse;
 		}
 
 		private SerializedProperty FindRelativeProperty(SerializedProperty property, string toGet)
