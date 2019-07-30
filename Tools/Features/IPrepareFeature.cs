@@ -21,24 +21,24 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public class PrepareOnSave
 	{
-		private const string MenuItemName = "Tools/MyBox/Run Prepare On Save";
+		private const string IPrepareMenuItemKey = "Tools/MyBox/Run Prepare On Save";
 
-		private static bool IsEnabled
+		private static bool IPrepareIsEnabled
 		{
 			get { return MyBoxSettings.PrepareOnPlaymode; }
 			set { MyBoxSettings.PrepareOnPlaymode = value; }
 		}
 
-		[MenuItem(MenuItemName, priority = 100)]
-		private static void MenuItem()
+		[MenuItem(IPrepareMenuItemKey, priority = 100)]
+		private static void IPrepareMenuItem()
 		{
-			IsEnabled = !IsEnabled;
+			IPrepareIsEnabled = !IPrepareIsEnabled;
 		}
 
-		[MenuItem(MenuItemName, true)]
-		private static bool MenuItemValidation()
+		[MenuItem(IPrepareMenuItemKey, true)]
+		private static bool IPrepareMenuItemValidation()
 		{
-			Menu.SetChecked(MenuItemName, IsEnabled);
+			Menu.SetChecked(IPrepareMenuItemKey, IPrepareIsEnabled);
 			return true;
 		}
 
@@ -49,6 +49,8 @@ namespace MyBox.Internal
 
 		static void Prepare()
 		{
+			if (!IPrepareIsEnabled) return;
+			
 			var toPrepare = MyExtensions.FindObjectsOfInterfaceAsComponents<IPrepare>();
 
 			HashSet<Scene> modifiedScenes = null;
