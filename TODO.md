@@ -1,5 +1,7 @@
 * #### Custom Editor Window for MyBox settings with logo and stuff 🤩
 
+* #### IPrepareAlways to use void Prepare()
+
 * #### Allow to use every feature separately, without MyBox
 
 * #### Automatically generate asmdef dependencies for Unity 2019.1 and 2019.2
