@@ -1,3 +1,7 @@
+* #### Custom Editor Window for MyBox settings with logo and stuff 🤩
+
+* #### Allow to use every feature separately, without MyBox
+
 * #### Automatically generate asmdef dependencies for Unity 2019.1 and 2019.2
 
 * #### Add documentation links for MonoBehaviour types
@@ -24,11 +28,6 @@
   * At least skip import if nothing changed?
   
 * #### Node editor tools (ง ͠° ͟ل͜ ͡°)ง
-
-* #### IPrepare interface
-  * To add custom logic to Behaviours
-  * Execute those on Playmode and game build
-  * To cache/calculate heavy stuff
 	
 * #### MyGizmosHandler && MyOnGUIHandler
   * MyDebug.DrawText is working only in OnDrawGizmos :( 
