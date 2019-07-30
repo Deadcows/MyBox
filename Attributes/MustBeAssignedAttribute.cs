@@ -18,10 +18,12 @@ namespace MyBox.Internal
 	using System.Reflection;
 	using UnityEditor;
 	using Object = UnityEngine.Object;
-	
+
 	[InitializeOnLoad]
 	public class MustBeAssignedAttributeChecker
 	{
+		public static Func<FieldInfo, MonoBehaviour, bool> ExcludeFieldFilter;
+
 		static MustBeAssignedAttributeChecker()
 		{
 			EditorApplication.update += CheckOnce;
@@ -36,12 +38,22 @@ namespace MyBox.Internal
 			}
 		}
 
+		private static bool FieldExcluded(FieldInfo field, MonoBehaviour behaviour)
+		{
+			if (ExcludeFieldFilter == null) return false;
+
+			foreach (var filterDelegate in ExcludeFieldFilter.GetInvocationList())
+			{
+				var filter = filterDelegate as Func<FieldInfo, MonoBehaviour, bool>;
+				if (filter != null && filter(field, behaviour)) return true;
+			}
+
+			return false;
+		}
 
 		private static void AssertComponents()
 		{
 			MonoBehaviour[] components = Object.FindObjectsOfType<MonoBehaviour>();
-			
-			ConditionalFieldChecker conditionalFieldChecker = new ConditionalFieldChecker();
 
 			foreach (MonoBehaviour behaviour in components)
 			{
@@ -54,8 +66,9 @@ namespace MyBox.Internal
 				{
 					object propValue = field.GetValue(behaviour);
 
-					// Used to check ConditionalFieldAttribute
-					if (!conditionalFieldChecker.IsVisible(field, behaviour)) continue;
+					// Used by external systems to exclude specific fields.
+					// Specifically for ConditionalFieldAttribute
+					if (FieldExcluded(field, behaviour)) continue;
 
 					// Value Type with default value
 					if (field.FieldType.IsValueType && Activator.CreateInstance(field.FieldType).Equals(propValue))
@@ -89,25 +102,6 @@ namespace MyBox.Internal
 							behaviour.gameObject);
 					}
 				}
-			}
-		}
-
-		private class ConditionalFieldChecker
-		{
-			private readonly Type _conditionallyVisibleType = typeof(ConditionalFieldAttribute);
-
-			public bool IsVisible(FieldInfo field, MonoBehaviour behaviour)
-			{
-				if (_conditionallyVisibleType == null) return true;
-				if (!field.IsDefined(_conditionallyVisibleType, false)) return true;
-
-				// Get a specific attribute of this field
-				var conditionalFieldAttribute = field.GetCustomAttributes(_conditionallyVisibleType, false)
-					.Select(a => a as ConditionalFieldAttribute)
-					.SingleOrDefault();
-
-				return conditionalFieldAttribute == null ||
-				       conditionalFieldAttribute.CheckBehaviourPropertyVisible(behaviour, field.Name);
 			}
 		}
 	}
