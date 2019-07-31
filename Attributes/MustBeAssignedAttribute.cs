@@ -4,8 +4,9 @@ using UnityEngine;
 namespace MyBox
 {
 	/// <summary>
-	/// Apply to reference type property in MonoBehaviour to check if it is null at game start
+	/// Apply to MonoBehaviour field to assert that this field is assigned via inspector (not null, false, empty of zero) on playmode
 	/// </summary>
+	[AttributeUsage(AttributeTargets.Field)]
 	public class MustBeAssignedAttribute : PropertyAttribute
 	{
 	}
