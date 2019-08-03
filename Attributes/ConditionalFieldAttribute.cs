@@ -38,7 +38,6 @@ namespace MyBox {
 
 
             if (_compareValues != null) {
-                // TODO: Refactor
                 if (!_inverse) {
                     return PropertyValueEqualsAnyValuesToCompare(asString);
                 } else {
