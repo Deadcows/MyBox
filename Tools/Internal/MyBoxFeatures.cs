@@ -7,7 +7,7 @@ namespace MyBox.Internal
 	{
 		private const string AutoSaveMenuItemKey = "Tools/MyBox/AutoSave on Play";
 		private const string CleanupEmptyDirectoriesMenuItemKey = "Tools/MyBox/Clear Empty Directories On Save";
-		private const string IPrepareMenuItemKey = "Tools/MyBox/Run Prepare On Save";
+		private const string IPrepareMenuItemKey = "Tools/MyBox/Run Prepare On Entering Playmode";
 
 		static MyBoxFeatures()
 		{
@@ -86,7 +86,7 @@ namespace MyBox.Internal
 			{
 				{
 					MyBoxSettings.PrepareOnPlaymode = value;
-					PrepareOnSave.IsEnabled = value;
+					IPrepareFeature.IsEnabled = value;
 				}
 			}
 		}

@@ -4,6 +4,9 @@ using UnityEngine.SceneManagement;
 
 namespace MyBox
 {
+	/// <summary>
+	/// Prepare() called on every MonoBehaviour by IPrepareFeature class. If Prepare() returns true, parent scene will be marked dirty 
+	/// </summary>
 	public interface IPrepare
 	{
 		bool Prepare();
@@ -19,18 +22,27 @@ namespace MyBox.Internal
 	using UnityEditor;
 
 	[InitializeOnLoad]
-	public class PrepareOnSave
+	public class IPrepareFeature
 	{
 		public static bool IsEnabled = true;
 
-		static PrepareOnSave()
+		static IPrepareFeature()
 		{
-			MyEditorEvents.BeforePlaymode += Prepare;
+			MyEditorEvents.BeforePlaymode += PrepareOnPlay;
 		}
 
-		static void Prepare()
+		private static void PrepareOnPlay()
 		{
 			if (!IsEnabled) return;
+			
+			RunPrepare();
+		}
+		
+		/// <summary>
+		/// Calls Prepare() on any MonoBehaviour with IPrepare interface. If Prepare() returns true, parent scene will be marked dirty
+		/// </summary>
+		public static void RunPrepare()
+		{
 			
 			var toPrepare = MyExtensions.FindObjectsOfInterfaceAsComponents<IPrepare>();
 
