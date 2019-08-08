@@ -15,7 +15,7 @@ namespace MyBox
 				var go = new GameObject("Static Coroutine Owner");
 				Object.DontDestroyOnLoad(_coroutineOwner);
 				go.hideFlags = HideFlags.HideAndDontSave;
-				
+
 				_coroutineOwner = go.AddComponent<CoroutineOwner>();
 
 				return _coroutineOwner;
@@ -23,8 +23,8 @@ namespace MyBox
 		}
 
 		private static CoroutineOwner _coroutineOwner;
-		
-		
+
+
 		/// <summary>
 		/// StartCoroutine without MonoBehaviour
 		/// </summary>
@@ -32,10 +32,28 @@ namespace MyBox
 		{
 			return CoroutineOwner.StartCoroutine(coroutine);
 		}
+
+		/// <summary>
+		/// Stop coroutine started with MyCoroutines.StartCoroutine
+		/// </summary>
+		public static void StopCoroutine(Coroutine coroutine)
+		{
+			CoroutineOwner.StopCoroutine(coroutine);
+		}
+
+		/// <summary>
+		/// Stop all coroutines started with MyCoroutines.StartCoroutine
+		/// </summary>
+		public static void StopAllCoroutines()
+		{
+			CoroutineOwner.StopAllCoroutines();
+		}
 	}
 }
 
 namespace MyBox.Internal
 {
-	internal class CoroutineOwner : MonoBehaviour {}
+	internal class CoroutineOwner : MonoBehaviour
+	{
+	}
 }
