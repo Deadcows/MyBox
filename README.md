@@ -43,6 +43,7 @@ Tons of images below :point_down:
 **[ColliderGizmo Component](https://github.com/Deadcows/MyBox/wiki/Types#collidergizmo-component)** — Highlight colliders and triggers in SceneView<br />
 **[FPSCounter Component](https://github.com/Deadcows/MyBox/wiki/Types#fpscounter)** — Display FPS counter on Playmode<br />
 **[MyDictionary](https://github.com/Deadcows/MyBox/wiki/Types#mydictionary)** — Serializable Dictionary<br />
+**[MinMaxInt and MinMaxFloat](https://github.com/Deadcows/MyBox/wiki/Types#minmaxint-and-minmaxfloat)** — Asserts that Max => Min with handy inspector drawer<br />
 **[Optional and OptionalMinMax](https://github.com/Deadcows/MyBox/wiki/Types#optional-and-optionalminmax)** — Optionally assignable values<br />
 
 --------
