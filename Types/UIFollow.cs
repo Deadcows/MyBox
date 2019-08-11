@@ -9,8 +9,10 @@ namespace MyBox
 		public Vector2 Offset;
 		public Camera GameCamera;
 
+#pragma warning disable 0649
 		[SerializeField, Tooltip("Hide Canvas when Following Panel is offscreen")] 
 		private bool _hideOffscreen;
+#pragma warning restore 0649
 		[SerializeField, ConditionalField("_hideOffscreen")]
 		private Canvas _canvas;
 		

@@ -6,8 +6,10 @@ namespace MyBox
 {
 	public class UIImageBasedToggle : MonoBehaviour
 	{
+#pragma warning disable 0649
 		[SerializeField] private Sprite _checked;
 		[SerializeField] private Sprite _checkedHighlighted;
+#pragma warning restore 0649
 
 		[Tooltip("Unique Toggle Event")] public UnityEvent Checked;
 

@@ -23,8 +23,10 @@ namespace MyBox
 			get { return _assigned; }
 		}
 
+#pragma warning disable 0649
 		[SerializeField] private string _stateName = String.Empty;
 		[SerializeField] private bool _assigned;
+#pragma warning restore 0649
 	}
 
 	public static class AnimationStateReferenceExtension
