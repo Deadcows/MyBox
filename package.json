@@ -1,0 +1,14 @@
+{
+"name": "com.do-my-best.my-box",
+"version": "0.0.1",
+"displayName": "MyBox",
+"description": "MyBox is a set of attributes, tools and extensions for Unity",
+
+"unity": "2018.3",
+"dependencies": {},
+
+"keywords": ["attributes", "extensions", "editor tools"],
+"author": { "name" : "Andrew Rumak",
+   "email" : "andrew@deadcow.ru",
+   "url" : "http://andrew@deadcow.ru/" }
+}
