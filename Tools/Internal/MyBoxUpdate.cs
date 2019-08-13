@@ -48,7 +48,7 @@ namespace MyBox.Internal
 			if (manifestFile == null) return false; // TODO: Exceptional
 			
 			var manifest = File.ReadAllLines(manifestFile);
-			var myBoxLine = manifest.SingleOrDefault(l => l.Contains("\"com.mybox\""));
+			var myBoxLine = manifest.FirstOrDefault(l => l.Contains("\"com.mybox\""));
 			if (myBoxLine.IsNullOrEmpty()) return false;
 			
 			Debug.Log(packageDir);
