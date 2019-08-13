@@ -12,16 +12,19 @@ namespace MyBox.Internal
 	public class MyBoxUpdate : EditorWindow
 	{
 		private readonly string MyBoxPackageInfoURL = "https://raw.githubusercontent.com/Deadcows/MyBox/master/package.json";
+		private readonly string ReleasesURL = "https://github.com/Deadcows/MyBox/releases";
 
+		private readonly string MyBoxPackageTag = "com.mybox";
+		private readonly string MyBoxRepoLink = "https://github.com/Deadcows/MyBox.git";
+		
 		[MenuItem("Tools/MyBox/Check for updates")]
 		private static void MuBoxUpdateMenuItem()
 		{
 			GetWindow<MyBoxUpdate>();
 		}
-
+		
 		private string _currentVersion;
 		private string _latestVersion;
-		private string _desiredVersion;
 		private void OnGUI()
 		{
 			if (GUILayout.Button("Check for updates", EditorStyles.toolbarButton))
@@ -33,28 +36,56 @@ namespace MyBox.Internal
 			}
 			_currentVersion = EditorGUILayout.TextField(_currentVersion);
 			_latestVersion = EditorGUILayout.TextField(_latestVersion);
-			_desiredVersion = EditorGUILayout.TextField(_desiredVersion);
 			
 			if (GUILayout.Button("Update", EditorStyles.toolbarButton))
 			{
-				
+				if (!IsUPMVersion()) Application.OpenURL(ReleasesURL);
+				else UpdatePackage();
 			}
 		}
 
 		private bool IsUPMVersion()
 		{
-			var packageDir = Application.dataPath.Replace("Assets", "Packages");
-			var manifestFile = Directory.GetFiles(packageDir).SingleOrDefault(f => f.EndsWith("manifest.json"));
+			var manifestFile = GetPackagesManifest();
 			if (manifestFile == null) return false; // TODO: Exceptional
 			
 			var manifest = File.ReadAllLines(manifestFile);
-			var myBoxLine = manifest.FirstOrDefault(l => l.Contains("\"com.mybox\""));
-			if (myBoxLine.IsNullOrEmpty()) return false;
-			
-			Debug.Log(packageDir);
-			Debug.Log(myBoxLine);
-			return true;
+			return manifest.Any(l => l.Contains(MyBoxPackageTag));
 		}
+
+		private void UpdatePackage()
+		{
+			// TODO: Latest version should be valid
+			var manifestFile = GetPackagesManifest();
+			var manifest = File.ReadAllLines(manifestFile);
+			var myBoxLine = manifest.SingleOrDefault(l => l.Contains(MyBoxRepoLink));
+			if (myBoxLine.IsNullOrEmpty()) return; // TODO: Exceptional
+	
+			var indexOfMyBoxLine = manifest.IndexOfItem(myBoxLine);
+			myBoxLine = myBoxLine.Trim();
+			bool withComma = myBoxLine.EndsWith(",");
+
+			var tagWrapped = "\"" + MyBoxPackageTag + "\"";
+			var separator = ": ";
+			var version = "#" + _latestVersion;
+			var repoLinkWrapped = "\"" + MyBoxRepoLink + version + "\"";
+			var comma = withComma ? "," : "";
+
+			MyDebug.LogArray(manifest);
+			
+			var newLine = tagWrapped + separator + version + repoLinkWrapped + comma;
+			manifest[indexOfMyBoxLine] = newLine;
+
+			Debug.Log(newLine);
+			MyDebug.LogArray(manifest);
+		}
+
+		private string GetPackagesManifest()
+		{
+			var packageDir = Application.dataPath.Replace("Assets", "Packages");
+			return Directory.GetFiles(packageDir).SingleOrDefault(f => f.EndsWith("manifest.json"));
+		}
+		
 		
 		#region Get Versions
 
