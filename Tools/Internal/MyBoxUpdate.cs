@@ -44,7 +44,7 @@ namespace MyBox.Internal
 		private bool IsUPMVersion()
 		{
 			var packageDir = Application.dataPath.Replace("Assets", "Packages");
-			var manifestFile = Directory.GetFiles(packageDir).SingleOrDefault(f => f == "manifest.json");
+			var manifestFile = Directory.GetFiles(packageDir).SingleOrDefault(f => f.EndsWith("manifest.json"));
 			if (manifestFile == null) return false; // TODO: Exceptional
 			
 			var manifest = File.ReadAllLines(manifestFile);
