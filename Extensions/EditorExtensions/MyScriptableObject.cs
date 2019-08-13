@@ -32,25 +32,7 @@ namespace MyBox.EditorTools
 			return a;
 		}
 
-		/// <summary>
-		/// Get relative to Assets folder path to script file location
-		/// </summary>
-		public static string GetRelativeScriptAssetsPath(ScriptableObject so)
-		{
-			MonoScript ms = MonoScript.FromScriptableObject(so);
-			return AssetDatabase.GetAssetPath(ms);
-		}
-
-		/// <summary>
-		/// Get full path to script file location
-		/// </summary>
-		public static string GetScriptAssetPath(ScriptableObject so)
-		{
-			var assetsPath = GetRelativeScriptAssetsPath(so);
-			return new FileInfo(assetsPath).DirectoryName;
-		}
-
-
+		
 		/// <summary>
 		/// Create ScriptableObject asset of name in folder
 		/// </summary>

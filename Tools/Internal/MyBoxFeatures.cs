@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 
 namespace MyBox.Internal
@@ -107,3 +108,4 @@ namespace MyBox.Internal
 		#endregion
 	}
 }
+#endif

@@ -221,6 +221,47 @@ namespace MyBox.EditorTools
 		}
 
 		#endregion
+
+		
+		#region Get Script Asseet Path
+
+		/// <summary>
+		/// Get relative to Assets folder path to script file location
+		/// </summary>
+		public static string GetRelativeScriptAssetsPath(ScriptableObject so)
+		{
+			MonoScript ms = MonoScript.FromScriptableObject(so);
+			return AssetDatabase.GetAssetPath(ms);
+		}
+
+		/// <summary>
+		/// Get full path to script file location
+		/// </summary>
+		public static string GetScriptAssetPath(ScriptableObject so)
+		{
+			var assetsPath = GetRelativeScriptAssetsPath(so);
+			return new FileInfo(assetsPath).DirectoryName;
+		}
+		
+		/// <summary>
+		/// Get relative to Assets folder path to script file location
+		/// </summary>
+		public static string GetRelativeScriptAssetsPath(MonoBehaviour mb)
+		{
+			MonoScript ms = MonoScript.FromMonoBehaviour(mb);
+			return AssetDatabase.GetAssetPath(ms);
+		}
+
+		/// <summary>
+		/// Get full path to script file location
+		/// </summary>
+		public static string GetScriptAssetPath(MonoBehaviour mb)
+		{
+			var assetsPath = GetRelativeScriptAssetsPath(mb);
+			return new FileInfo(assetsPath).DirectoryName;
+		}
+
+		#endregion
 	}
 }
 #pragma warning restore 618
