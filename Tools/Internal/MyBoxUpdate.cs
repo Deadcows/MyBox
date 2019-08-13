@@ -16,39 +16,46 @@ namespace MyBox.Internal
 
 		private readonly string MyBoxPackageTag = "com.mybox";
 		private readonly string MyBoxRepoLink = "https://github.com/Deadcows/MyBox.git";
-		
+
 		[MenuItem("Tools/MyBox/Check for updates")]
 		private static void MuBoxUpdateMenuItem()
 		{
 			GetWindow<MyBoxUpdate>();
 		}
-		
+
+		private bool _isUPMVersion;
+
+		private void Awake()
+		{
+			_isUPMVersion = IsUPMVersion();
+			CheckCurrentVersion();
+		}
+
 		private string _currentVersion;
 		private string _latestVersion;
+
 		private void OnGUI()
-		{
-			if (GUILayout.Button("Check for updates", EditorStyles.toolbarButton))
-			{
-				CheckCurrentVersion();
+		{			
+			EditorGUILayout.LabelField("Current version: " + _currentVersion);
+			EditorGUILayout.LabelField("Latest version: " + _latestVersion);
+			
+			if (GUILayout.Button("Check for updates", EditorStyles.toolbarButton)) 
 				CheckOnlineVersionAsync();
 
-				Debug.Log(IsUPMVersion() ? "UPM" : "Raw installation");
-			}
-			_currentVersion = EditorGUILayout.TextField(_currentVersion);
-			_latestVersion = EditorGUILayout.TextField(_latestVersion);
-			
+			GUI.enabled = !_latestVersion.IsNullOrEmpty() && _currentVersion != _latestVersion;
 			if (GUILayout.Button("Update", EditorStyles.toolbarButton))
 			{
-				if (!IsUPMVersion()) Application.OpenURL(ReleasesURL);
+				if (!_isUPMVersion) Application.OpenURL(ReleasesURL);
 				else UpdatePackage();
 			}
+			GUI.enabled = true;
 		}
 
 		private bool IsUPMVersion()
 		{
 			var manifestFile = GetPackagesManifest();
 			if (manifestFile == null) return false; // TODO: Exceptional
-			
+
 			var manifest = File.ReadAllLines(manifestFile);
 			return manifest.Any(l => l.Contains(MyBoxPackageTag));
 		}
@@ -59,9 +66,10 @@ namespace MyBox.Internal
 			var manifestFile = GetPackagesManifest();
 			var manifest = File.ReadAllLines(manifestFile);
 			var myBoxLine = manifest.SingleOrDefault(l => l.Contains(MyBoxRepoLink));
-			if (myBoxLine.IsNullOrEmpty()) return; // TODO: Exceptional
-	
+			if (string.IsNullOrEmpty(myBoxLine)) return; // TODO: Exceptional
+
 			var indexOfMyBoxLine = manifest.IndexOfItem(myBoxLine);
+			var indent = myBoxLine.Substring(0, myBoxLine.IndexOf('"'));
 			myBoxLine = myBoxLine.Trim();
 			bool withComma = myBoxLine.EndsWith(",");
 
@@ -71,13 +79,8 @@ namespace MyBox.Internal
 			var repoLinkWrapped = "\"" + MyBoxRepoLink + version + "\"";
 			var comma = withComma ? "," : "";
 
-			MyDebug.LogArray(manifest);
-			
-			var newLine = tagWrapped + separator + version + repoLinkWrapped + comma;
+			var newLine = indent + tagWrapped + separator + repoLinkWrapped + comma;
 			manifest[indexOfMyBoxLine] = newLine;
-
-			Debug.Log(newLine);
-			MyDebug.LogArray(manifest);
 		}
 
 		private string GetPackagesManifest()
@@ -85,8 +88,8 @@ namespace MyBox.Internal
 			var packageDir = Application.dataPath.Replace("Assets", "Packages");
 			return Directory.GetFiles(packageDir).SingleOrDefault(f => f.EndsWith("manifest.json"));
 		}
-		
-		
+
+
 		#region Get Versions
 
 		private async void CheckOnlineVersionAsync()
@@ -99,16 +102,16 @@ namespace MyBox.Internal
 				Repaint();
 			}
 		}
-		
+
 		private void CheckCurrentVersion()
 		{
 			var scriptPath = MyEditor.GetScriptAssetPath(this);
 			var scriptDirectory = new DirectoryInfo(scriptPath);
-			
+
 			// Script is in MyBox/Tools/Internal so we need to get dir two steps up in hierarchy
 			if (scriptDirectory.Parent == null || scriptDirectory.Parent.Parent == null) return; //TODO: Exceptional
 			var myBoxDirectory = scriptDirectory.Parent.Parent;
-			
+
 			var packageJson = myBoxDirectory.GetFiles().SingleOrDefault(f => f.Name == "package.json");
 			if (packageJson == null) return; //TODO: Exceptional
 
@@ -126,8 +129,6 @@ namespace MyBox.Internal
 		}
 
 		#endregion
-		
-		
 	}
 }
 #endif
