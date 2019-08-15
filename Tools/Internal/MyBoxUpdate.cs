@@ -28,14 +28,22 @@ namespace MyBox.Internal
 		private void Awake()
 		{
 			_isUPMVersion = IsUPMVersion();
+			//_logo = ImageStringConverter.ImageFromString(MyBoxWindow.MyBoxLogo, 128, 128);
 			CheckCurrentVersion();
 		}
 
 		private string _currentVersion;
 		private string _latestVersion;
+		//private Texture2D _logo;
 
 		private void OnGUI()
-		{			
+		{
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				GUILayout.FlexibleSpace();
+				//EditorGUILayout.LabelField(new GUIContent(_logo), GUILayout.Width(128), GUILayout.Height(128));
+				GUILayout.FlexibleSpace();
+			}
 			EditorGUILayout.LabelField("Current version: " + _currentVersion);
 			EditorGUILayout.LabelField("Latest version: " + _latestVersion);
 			

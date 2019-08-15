@@ -1,8 +1,4 @@
-﻿using MyBox.EditorTools;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
-
-namespace MyBox
+﻿namespace MyBox
 {
 	/// <summary>
 	/// Prepare() called on every MonoBehaviour by IPrepareFeature class. If Prepare() returns true, parent scene will be marked dirty 
@@ -20,6 +16,8 @@ namespace MyBox.Internal
 	using System.Linq;
 	using UnityEngine;
 	using UnityEditor;
+	using UnityEditor.SceneManagement;
+	using UnityEngine.SceneManagement;
 
 	[InitializeOnLoad]
 	public class IPrepareFeature
@@ -28,7 +26,7 @@ namespace MyBox.Internal
 
 		static IPrepareFeature()
 		{
-			MyEditorEvents.BeforePlaymode += PrepareOnPlay;
+			EditorTools.MyEditorEvents.BeforePlaymode += PrepareOnPlay;
 		}
 
 		private static void PrepareOnPlay()

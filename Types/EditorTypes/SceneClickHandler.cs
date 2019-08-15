@@ -22,12 +22,17 @@ namespace MyBox.EditorTools
 			SingleClickHandler = singleClick;
 			Cancellable = cancellable;
 
+			// TODO: Handle obsolete with ifdefs
+#pragma warning disable 618
 			SceneView.onSceneGUIDelegate += OnSceneGUI;
+#pragma warning restore 618
 		}
 
 		~SceneClickHandler()
 		{
+#pragma warning disable 618
 			SceneView.onSceneGUIDelegate -= OnSceneGUI;
+#pragma warning restore 618
 		}
 
 
