@@ -35,6 +35,41 @@ namespace MyBox
 			return Mathf.Clamp(value, minMax.Min, minMax.Max);
 		}
 		
+		
+		/// <summary>
+		/// Distance from Min to Max
+		/// </summary>
+		public static int Length(this MinMaxInt minMax)
+		{
+			return minMax.Max - minMax.Min;
+		}
+		
+		/// <summary>
+		/// Distance from Min to Max
+		/// </summary>
+		public static float Length(this MinMaxFloat minMax)
+		{
+			return minMax.Max - minMax.Min;
+		}
+		
+		
+		/// <summary>
+		/// Point between Min and Max
+		/// </summary>
+		public static int MidPoint(this MinMaxInt minMax)
+		{
+			return minMax.Min + minMax.Length() / 2;
+		}
+		
+		/// <summary>
+		/// Point between Min and Max
+		/// </summary>
+		public static float MidPoint(this MinMaxFloat minMax)
+		{
+			return minMax.Min + minMax.Length() / 2f;
+		}
+		
+		
 		/// <summary>
 		/// Lerp from min to max
 		/// </summary>

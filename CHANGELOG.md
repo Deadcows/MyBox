@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ## [Unreleased]
 - Fixed crucial bug with MyCoroutines type
 - Added MinMaxInt/Float Clamp and Lerp extension methods
+- Added MinMaxInt/Float Length and MidPoint extension methods
 
 ## [1.0.1] - 2019-15-13
 - Compilation errors fixed

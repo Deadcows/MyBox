@@ -1,6 +1,8 @@
-...
+* #### Custom Editor Window for MyBox settings with logo and stuff ❤
 
-* #### Custom Editor Window for MyBox settings with logo and stuff 🤩
+* #### RangedFloat/Int and MinMaxFloat/Int functionality should be merged?
+
+* #### Test coverage, man (ง •̀_•́)ง
 
 * #### IPrepareAlways to use void Prepare()
 
