@@ -16,6 +16,33 @@ namespace MyBox
 		public int Min;
 		public int Max;
 	}
+
+	public static class MinMaxExtensions
+	{
+		/// <summary>
+		/// Clamp value between MinMax values
+		/// </summary>
+		public static int Clamp(this MinMaxInt minMax, int value)
+		{
+			return Mathf.Clamp(value, minMax.Min, minMax.Max);
+		}
+		
+		/// <summary>
+		/// Clamp value between MinMax values
+		/// </summary>
+		public static float Clamp(this MinMaxFloat minMax, float value)
+		{
+			return Mathf.Clamp(value, minMax.Min, minMax.Max);
+		}
+		
+		/// <summary>
+		/// Lerp from min to max
+		/// </summary>
+		public static float Lerp(this MinMaxFloat minMax, float value)
+		{
+			return Mathf.Lerp(minMax.Min, minMax.Max, value);
+		}
+	}
 }
 
 #if UNITY_EDITOR
