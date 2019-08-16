@@ -13,7 +13,7 @@ namespace MyBox
 				if (_coroutineOwner != null) return _coroutineOwner;
 
 				var go = new GameObject("Static Coroutine Owner");
-				Object.DontDestroyOnLoad(_coroutineOwner);
+				Object.DontDestroyOnLoad(go);
 				go.hideFlags = HideFlags.HideAndDontSave;
 
 				_coroutineOwner = go.AddComponent<CoroutineOwner>();
