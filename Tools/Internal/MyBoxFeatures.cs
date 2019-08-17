@@ -6,15 +6,17 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public class MyBoxFeatures
 	{
-		private const string AutoSaveMenuItemKey = "Tools/MyBox/AutoSave on Play";
-		private const string CleanupEmptyDirectoriesMenuItemKey = "Tools/MyBox/Clear Empty Directories On Save";
-		private const string IPrepareMenuItemKey = "Tools/MyBox/Run Prepare On Entering Playmode";
+		private const string AutoSaveMenuItemKey = "Tools/MyBox/AutoSave on play";
+		private const string CleanupEmptyDirectoriesMenuItemKey = "Tools/MyBox/Clear empty directories On Save";
+		private const string IPrepareMenuItemKey = "Tools/MyBox/Run Prepare on play";
+		private const string CheckForUpdatesKey = "Tools/MyBox/Check for updates on start";
 
 		static MyBoxFeatures()
 		{
 			AutoSaveIsEnabled = AutoSaveIsEnabled;
 			CleanupEmptyDirectoriesIsEnabled = CleanupEmptyDirectoriesIsEnabled;
 			IPrepareIsEnabled = IPrepareIsEnabled;
+			CheckForUpdatesEnabled = CheckForUpdatesEnabled;
 		}
 
 
@@ -102,6 +104,36 @@ namespace MyBox.Internal
 		private static bool IPrepareMenuItemValidation()
 		{
 			Menu.SetChecked(IPrepareMenuItemKey, IPrepareIsEnabled);
+			return true;
+		}
+
+		#endregion
+		
+		
+		#region Check For Updates
+
+		private static bool CheckForUpdatesEnabled
+		{
+			get { return MyBoxSettings.CheckForUpdates; }
+			set
+			{
+				{
+					MyBoxSettings.CheckForUpdates = value;
+					MyBoxUpdateWindow.IsEnabled = value;
+				}
+			}
+		}
+
+		[MenuItem(CheckForUpdatesKey, priority = 100)]
+		private static void CheckForUpdatesMenuItem()
+		{
+			CheckForUpdatesEnabled = !CheckForUpdatesEnabled;
+		}
+
+		[MenuItem(CheckForUpdatesKey, true)]
+		private static bool CheckForUpdatesMenuItemValidation()
+		{
+			Menu.SetChecked(CheckForUpdatesKey, CheckForUpdatesEnabled);
 			return true;
 		}
 

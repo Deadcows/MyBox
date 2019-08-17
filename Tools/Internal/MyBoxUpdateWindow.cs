@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -9,46 +10,65 @@ using UnityEngine;
 
 namespace MyBox.Internal
 {
-	public class MyBoxUpdate : EditorWindow
+	[InitializeOnLoad]
+	public class MyBoxUpdateWindow : EditorWindow
 	{
-		private readonly string MyBoxPackageInfoURL = "https://raw.githubusercontent.com/Deadcows/MyBox/master/package.json";
-		private readonly string ReleasesURL = "https://github.com/Deadcows/MyBox/releases";
+		public static bool IsEnabled = true;
 
-		private readonly string MyBoxPackageTag = "com.mybox";
-		private readonly string MyBoxRepoLink = "https://github.com/Deadcows/MyBox.git";
 
-		[MenuItem("Tools/MyBox/Check for updates")]
-		private static void MuBoxUpdateMenuItem()
+		private static readonly string MyBoxPackageInfoURL = "https://raw.githubusercontent.com/Deadcows/MyBox/master/package.json";
+		private static readonly string ReleasesURL = "https://github.com/Deadcows/MyBox/releases";
+
+		private static readonly string MyBoxPackageTag = "com.mybox";
+		private static readonly string MyBoxRepoLink = "https://github.com/Deadcows/MyBox.git";
+
+
+		private static bool _isUPMVersion;
+		private static string _currentVersion;
+		private static string _latestVersion;
+
+		private static EditorWindow _windowInstance;
+
+		static MyBoxUpdateWindow()
 		{
-			GetWindow<MyBoxUpdate>();
+			if (!IsEnabled) return;
+
+			try
+			{
+				CheckForUpdate(true);
+			}
+			catch (Exception ex) {}
 		}
 
-		private bool _isUPMVersion;
+
+		[MenuItem("Tools/MyBox/Update window")]
+		private static void MuBoxUpdateMenuItem()
+		{
+			_windowInstance = GetWindow<MyBoxUpdateWindow>();
+			_windowInstance.titleContent = new GUIContent("Update MyBox");
+		}
+
 
 		private void Awake()
 		{
+			CheckForUpdate();
 			_isUPMVersion = IsUPMVersion();
-			//_logo = ImageStringConverter.ImageFromString(MyBoxWindow.MyBoxLogo, 128, 128);
-			CheckCurrentVersion();
 		}
 
-		private string _currentVersion;
-		private string _latestVersion;
-		//private Texture2D _logo;
 
 		private void OnGUI()
 		{
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.FlexibleSpace();
-				//EditorGUILayout.LabelField(new GUIContent(_logo), GUILayout.Width(128), GUILayout.Height(128));
+
+
 				GUILayout.FlexibleSpace();
 			}
+
 			EditorGUILayout.LabelField("Current version: " + _currentVersion);
-			EditorGUILayout.LabelField("Latest version: " + _latestVersion);
-			
-			if (GUILayout.Button("Check for updates", EditorStyles.toolbarButton)) 
-				CheckOnlineVersionAsync();
+			EditorGUILayout.LabelField("Latest version: " + (_latestVersion.IsNullOrEmpty() ? "..." : _latestVersion));
+
 
 			GUI.enabled = !_latestVersion.IsNullOrEmpty() && _currentVersion != _latestVersion;
 			if (GUILayout.Button("Update", EditorStyles.toolbarButton))
@@ -56,19 +76,18 @@ namespace MyBox.Internal
 				if (!_isUPMVersion) Application.OpenURL(ReleasesURL);
 				else UpdatePackage();
 			}
+
 			GUI.enabled = true;
 		}
 
-		private bool IsUPMVersion()
+		private static void CheckForUpdate(bool withLog = false)
 		{
-			var manifestFile = GetPackagesManifest();
-			if (manifestFile == null) return false; // TODO: Exceptional
-
-			var manifest = File.ReadAllLines(manifestFile);
-			return manifest.Any(l => l.Contains(MyBoxPackageTag));
+			CheckCurrentVersion();
+			CheckOnlineVersionAsync(withLog);
 		}
 
-		private void UpdatePackage()
+		
+		private static void UpdatePackage()
 		{
 			// TODO: Latest version should be valid
 			var manifestFile = GetPackagesManifest();
@@ -91,29 +110,42 @@ namespace MyBox.Internal
 			manifest[indexOfMyBoxLine] = newLine;
 		}
 
-		private string GetPackagesManifest()
+		private static bool IsUPMVersion()
+		{
+			var manifestFile = GetPackagesManifest();
+			if (manifestFile == null) return false; // TODO: Exceptional
+
+			var manifest = File.ReadAllLines(manifestFile);
+			return manifest.Any(l => l.Contains(MyBoxPackageTag));
+		}
+
+		private static string GetPackagesManifest()
 		{
 			var packageDir = Application.dataPath.Replace("Assets", "Packages");
 			return Directory.GetFiles(packageDir).SingleOrDefault(f => f.EndsWith("manifest.json"));
 		}
 
 
-		#region Get Versions
-
-		private async void CheckOnlineVersionAsync()
+		private static async void CheckOnlineVersionAsync(bool withLog)
 		{
 			//TODO: Try Catch Exceptional
 			using (HttpClient wc = new HttpClient())
 			{
 				var packageJson = await wc.GetStringAsync(MyBoxPackageInfoURL);
 				_latestVersion = ParsePackageVersion(packageJson);
-				Repaint();
+				if (_windowInstance != null) _windowInstance.Repaint();
+
+				if (_currentVersion != _latestVersion && withLog)
+				{
+					Debug.Log("It's time to update MyBox :)! Use \"Tools/MyBox/Update window\". Current version: " + 
+					          _currentVersion + ", new version: " + _latestVersion);
+				}
 			}
 		}
 
-		private void CheckCurrentVersion()
+		private static void CheckCurrentVersion()
 		{
-			var scriptPath = MyEditor.GetScriptAssetPath(this);
+			var scriptPath = MyEditor.GetScriptAssetPath(MyBoxUpdateWindowLocation.Instance);
 			var scriptDirectory = new DirectoryInfo(scriptPath);
 
 			// Script is in MyBox/Tools/Internal so we need to get dir two steps up in hierarchy
@@ -126,7 +158,7 @@ namespace MyBox.Internal
 			_currentVersion = ParsePackageVersion(File.ReadAllText(packageJson.FullName));
 		}
 
-		private string ParsePackageVersion(string json)
+		private static string ParsePackageVersion(string json)
 		{
 			var versionLine = json.Split('\r', '\n').SingleOrDefault(l => l.Contains("version"));
 			if (versionLine == null) return null; //TODO: Exceptional
@@ -135,8 +167,6 @@ namespace MyBox.Internal
 
 			return matches[1].Value.Trim('"');
 		}
-
-		#endregion
 	}
 }
 #endif
