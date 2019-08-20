@@ -4,11 +4,9 @@
 
 * #### Test coverage, man (ง •̀_•́)ง
 
-* #### IPrepareAlways to use void Prepare()
+* #### IPrepareAlways to use Prepare() without bool return
 
 * #### Allow to use every feature separately, without MyBox
-
-* #### Automatically generate asmdef dependencies for Unity 2019.1 and 2019.2
 
 * #### Add documentation links for MonoBehaviour types
 
@@ -24,17 +22,11 @@
   * Write last opened asset id to EditorPrefs, bind to Save event to update asset automatically?
   
 * #### MonoBehaviourPool
+  * Static class with GetPoolable<MB>(this GameObject prefab) and DeactivatePoolable<MB>(this MB behaviour) or something
 
 * #### MyGizmos => Arrow, Dotted, Cross?
-
-* #### Highlight empty fields with MustBeAssignedAttribute in inspector
-  * And AutoProperty fields if none found on GO	
-	
-* #### AssetPresetPreprocessor is very slow on matching assets, profile & optimize
-  * At least skip import if nothing changed?
+  * MyGizmos, MyHandles, MyDebug should be reconsidered
   
-* #### Node editor tools (ง ͠° ͟ل͜ ͡°)ง
-	
 * #### MyGizmosHandler && MyOnGUIHandler
   * MyDebug.DrawText is working only in OnDrawGizmos :( 
   * I want to access OnDrawGizmos in non-MonoBehaviour scripts
@@ -44,15 +36,28 @@
     * Push struct with IDraw and logic to draw with gizmos, remove pusded structs from MyGizmosHandler.OnDrawGizmos? Measure performance
     * Some way to draw every-frame Gizmos with system, that run only once per x seconds?
 		
+* #### Highlight empty fields with MustBeAssignedAttribute in inspector
+  * Same with AutoProperty fields, if none found on GO	
+	
+* #### AssetPresetPreprocessor is very slow on matching assets, profile & optimize
+  * At least skip import if nothing changed?
+  
+* #### Node editor tools (ง ͠° ͟ل͜ ͡°)ง
+	
 * #### AnimationCreator is pretty cool with simple Idle-Play or looping Idle animators. 
+  * So the idea is to add Context menu item to generate AnimationController asset with imbedded AnimationClips assets
+  * The simplest case is Animator with Play clip and empty default Idle. To play single animation on some event
+  * Another case is Animator winh one Default looping clip fir infinite cycled animation
   * Is it possible to play animation without animator? 
     * https://github.com/Unity-Technologies/SimpleAnimation
 	
 * #### EmbeddedAnimationCreator to EmbeddedAssetCreator? 
-  * It's cool to have, to pack related assets into one parent asset
+  * It is possible to embed one asset inside of another via script. Will be cool to have such functionality via ContextMenuItems
+  * It's cool to have, to pack related assets into one parent asset. Like animation clips in animator or relates SO assets or whatewer
   * How to unparent assets?
 	
 * #### MyBundleUtility is a mess. Might be useful
+  * Yeah well it looks like Unity now have its own Bandles Tools
   * Tools to build bundles out of scenes (with multiscene solutions)
     * And handle bundles loading/unloading on scene load/unload?
 		
@@ -64,6 +69,7 @@
     * Static accessor? Or probably better to add Load<T> method?
 
 * #### TemplatesCreator
+  * Template is custom code snippets, like "Create/C# Script" but for custom things
   * Add a way to add templates as separate assets
   * There is no way to have MenuItems with runtime naming :(?
     * MenuItems is separate feature/wrapper for TemplateCreator?
@@ -72,5 +78,7 @@
 * #### Conditionally remove some features like extension/hotkeys with Conditional Compilation?
 
 * #### Somehow apply Custom Drawer to empty array? ConditionalField is need this
+  * Custom MyArray type :)? Well it's terrible idea I guess
+  * Maybe new unity UI Elements will change it somehow
 
 * #### ConditionalField should hide Separator attribute?
