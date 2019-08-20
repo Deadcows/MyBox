@@ -4,11 +4,14 @@ It is MyBox. Now it's yours too :raised_hands:<br />
 
 --------
 
-You may install MyBox by simply putting MyBox folder somewhere under your Assets folder<br />
+You may install MyBox by simply putting MyBox folder somewhere under your Assets folder.<br />
 Or via <b>Unity Package Manager</b>:<br />
 Open Packages/manifest.json file in your project folder and put this line along with other dependencies<br />
 <pre>"com.mybox": "https://github.com/Deadcows/MyBox.git"</pre>
 Note how the comma lies at the end of every line in dependencies, except of the last line!
+
+To update, use Tools->MyBox->Update window<br />
+MyBox will notify on new versions 🤗
 
 --------
 
