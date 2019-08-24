@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 using UnityEngine.SceneManagement;
 
@@ -12,24 +12,56 @@ namespace MyBox
     /// </summary>
     public static class MySceneBundle
     {
+        public enum TransferSceneBundleOption
+        {
+            TRANSFER_ON_LAST_SCENE,
+            TRANSFER_ON_ANY_SCENE_UNLOADED
+        }
+
+        /// <summary>
+        /// Set the option for when will the scene bundle transfer.
+        /// </summary>
+        public static TransferSceneBundleOption SceneBundleTransferOption { get; set; }
 
         private static SceneBundle currentSceneBundle;
         private static SceneBundle nextSceneBundle;
 
         static MySceneBundle()
         {
+            SceneBundleTransferOption = TransferSceneBundleOption.TRANSFER_ON_LAST_SCENE;
+
             currentSceneBundle = new SceneBundle();
             nextSceneBundle = new SceneBundle();
 
 #if UNITY_EDITOR
-            UnityEditor.SceneManagement.EditorSceneManager.activeSceneChanged += PrepareSceneBundleForNextScene;
+            UnityEditor.SceneManagement.EditorSceneManager.sceneUnloaded += PrepareSceneBundleForNextSceneByTransferOptions;
 #else
-            SceneManager.activeSceneChanged += PrepareSceneBundleForNextScene;
-
+            SceneManager.sceneUnloaded += PrepareSceneBundleForNextSceneIfLastSceneUnloaded;
 #endif
         }
 
-        private static void PrepareSceneBundleForNextScene(Scene currentScene, Scene newScene)
+        private static void PrepareSceneBundleForNextSceneByTransferOptions(Scene unloadedScene)
+        {
+            if (SceneBundleTransferOption == TransferSceneBundleOption.TRANSFER_ON_LAST_SCENE && IsUnloadingLastScene())
+            {
+                PrepareSceneBundleForNextScene();
+            }
+            else if (SceneBundleTransferOption == TransferSceneBundleOption.TRANSFER_ON_ANY_SCENE_UNLOADED)
+            {
+                PrepareSceneBundleForNextScene();
+            }
+        }
+
+        private static bool IsUnloadingLastScene()
+        {
+#if UNITY_EDITOR
+            return UnityEditor.SceneManagement.EditorSceneManager.sceneCount == 2;
+#else
+            return SceneManager.sceneCount == 2;
+#endif
+        }
+
+        private static void PrepareSceneBundleForNextScene()
         {
             currentSceneBundle = nextSceneBundle;
             nextSceneBundle = new SceneBundle();
