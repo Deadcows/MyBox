@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 - Added MonoSingleton Type
+- Fixed indent issue with nested inspector for OptionalMinMax type
 
 ## [1.0.2] - 2019-15-17
 - Fixed crucial bug with MyCoroutines type
