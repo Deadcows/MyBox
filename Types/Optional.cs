@@ -80,6 +80,7 @@ namespace MyBox.Internal
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+			EditorGUI.indentLevel = 0; // PropertyDrawer Indent fix for nested inspectors
 
 			var value = property.FindPropertyRelative("Value");
 			var isSet = property.FindPropertyRelative("IsSet");

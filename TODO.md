@@ -1,6 +1,6 @@
 * #### Custom Editor Window for MyBox settings with logo and stuff ❤
 
-* #### Check for indent issue with PropertyDrawers in nested inspectors
+* #### AnimationStateReference not working with nested inspector
 
 * #### RangedFloat/Int and MinMaxFloat/Int functionality should be merged?
 
