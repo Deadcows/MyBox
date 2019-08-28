@@ -1,10 +1,5 @@
 ﻿using System;
 
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEngine;
-#endif
-
 namespace MyBox
 {
 	/// <summary>
@@ -40,6 +35,9 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using UnityEditor;
+	using UnityEngine;
+	
 	[CustomPropertyDrawer(typeof (OptionalMinMax))]
 	public class MinMaxFloatPropertyDrawer : PropertyDrawer
 	{

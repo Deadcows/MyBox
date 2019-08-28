@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ## [Unreleased]
 - Added MonoSingleton Type
 - Fixed indent issue with nested inspector for MinMaxInt/Float, Optional, OptionalMinMax type
+- MySceneBundle is a Tool (Type?) to transfer data from one scene to another. Thanks to Kaynn-Cahya!
 
 ## [1.0.2] - 2019-15-17
 - Fixed crucial bug with MyCoroutines type
