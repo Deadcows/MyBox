@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace MyBox
 {
@@ -18,6 +17,7 @@ namespace MyBox.Internal
 {
 	using UnityEditor;
 	using EditorTools;
+	using Object = UnityEngine.Object;
 
 	[CustomPropertyDrawer(typeof(AutoPropertyAttribute))]
 	public class AutoPropertyDrawer : PropertyDrawer
