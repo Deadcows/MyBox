@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------
 // Author: Kaynn, Yeo Wen Qin
 // https://github.com/Kaynn-Cahya
 // Date:   20/08/2019
@@ -217,27 +217,27 @@ namespace MyBox.Internal
 
 		internal Bundle<string> StringData
 		{
-			get => stringData;
+			get { return stringData; }
 		}
 
 		internal Bundle<float> FloatData
 		{
-			get => floatData;
+			get { return floatData; }
 		}
 
 		internal Bundle<int> IntData
 		{
-			get => intData;
+			get { return intData; }
 		}
 
 		internal Bundle<bool> BoolData
 		{
-			get => boolData;
+			get { return boolData; }
 		}
 
 		internal Bundle<object> ObjectData
 		{
-			get => objectData;
+			get { return objectData; }
 		}
 	}
 
