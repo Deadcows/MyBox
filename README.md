@@ -28,6 +28,7 @@ Tons of images below :point_down:
 **[MustBeAssigned](https://github.com/Deadcows/MyBox/wiki/Attributes#mustbeassigned)** — Automatically checks if field is assigned (not null / not empty / not default value) on Playmode<br />
 **[PositiveValueOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#positivevalueonly)** — Prohibit values below zero<br />
 **[ReadOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#readonly)** — Draw property with disabled GUI<br />
+**[RequireTag and RequireLayer](https://github.com/Deadcows/MyBox/wiki/Attributes#requiretag-and-requirelayer)** — Automatically set Tag and Layer<br />
 **[SearchableEnum](https://github.com/Deadcows/MyBox/wiki/Attributes#searchableenum)** — Nice UI for enums with lots of elements<br />
 **[Separator](https://github.com/Deadcows/MyBox/wiki/Attributes#separator)** — Draw separator with or without title<br />
 
