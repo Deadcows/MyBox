@@ -2,11 +2,17 @@
 
 * #### AnimationStateReference not working with nested inspector
 
+* #### OnPlaymodeLogger (MyLogger?) to accumulate log messages before playmode and log on playmode
+  * Some systems log things on BeforePlaymode and such messages will be erased if ClearOnPlay is set on Console
+  * RequireLayerOtRagAttributeHandler and some other system...
+ 
 * #### RangedFloat/Int and MinMaxFloat/Int functionality should be merged?
 
 * #### Test coverage, man (ง •̀_•́)ง
 
 * #### IPrepareAlways to use Prepare() without bool return
+
+* #### Auto generate MyLayers and MyTags scripts with const strings/ints representing actual, well, layers and tags
 
 * #### Allow to use every feature separately, without MyBox
 
