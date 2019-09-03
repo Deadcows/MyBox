@@ -209,6 +209,8 @@ namespace MyBox.EditorTools
 			for (var i = 0; i < SceneManager.sceneCount; i++)
 			{
 				var scene = SceneManager.GetSceneAt(i);
+				if (!scene.isLoaded) continue;
+				
 				var root = scene.GetRootGameObjects();
 				foreach (var gameObject in root)
 				{
