@@ -51,11 +51,14 @@ namespace MyBox
 			_transform.sizeDelta = new Vector2(x, y);
 		}
 
+#if UNITY_EDITOR
 		[ButtonMethod]
 		private void UpdateView()
 		{
 			_latestSize = Vector2.zero;
+			UnityEditor.Undo.RecordObject(_transform, "UISizeBy.UpdateView");
 			LateUpdate();
 		}
+#endif
 	}
 }
