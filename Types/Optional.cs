@@ -74,7 +74,7 @@ namespace MyBox.Internal
 namespace MyBox.Internal
 {
 	[CustomPropertyDrawer(typeof(OptionalParent), true)]
-	public class OptionalFloatPropertyDrawer : PropertyDrawer
+	public class OptionalTypePropertyDrawer : PropertyDrawer
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -95,9 +95,6 @@ namespace MyBox.Internal
 			position.x += checkWidth + spaceWidth;
 			position.width = valWidth;
 			if (isSet.boolValue) EditorGUI.PropertyField(position, value, GUIContent.none);
-
-			if (GUI.changed) property.serializedObject.ApplyModifiedProperties();
-
 			EditorGUI.EndProperty();
 		}
 	}
