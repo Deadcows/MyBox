@@ -12,33 +12,49 @@ using UnityEditor;
 
 namespace MyBox
 {
-	public class MinMaxRangeAttribute : Attribute
-	{
-		public MinMaxRangeAttribute(float min, float max)
-		{
-			Min = min;
-			Max = max;
-		}
+    public class MinMaxRangeAttribute : Attribute
+    {
+        public MinMaxRangeAttribute(float min, float max)
+        {
+            Min = min;
+            Max = max;
+        }
 
-		public readonly float Min;
-		public readonly float Max;
-	}
+        public readonly float Min;
+        public readonly float Max;
+    }
 
-	[Serializable]
-	public struct RangedFloat
-	{
-		public float Min;
-		public float Max;
-	}
+    [Serializable]
+    public class RangedFloat
+    {
+        public float Min = 0;
+        public float Max = 0;
 
-	[Serializable]
-	public struct RangedInt
-	{
-		public int Min;
-		public int Max;
-	}
-	
-	public static class RangedExtensions 
+        public RangedFloat() { }
+
+        public RangedFloat(float a, float b)
+        {
+            Min = a;
+            Max = b;
+        }
+    }
+
+    [Serializable]
+    public class RangedInt
+    {
+        public int Min = 0;
+        public int Max = 0;
+
+        public RangedInt() { }
+
+        public RangedInt(int a, int b)
+        {
+            Min = a;
+            Max = b;
+        }
+    }
+
+    public static class RangedExtensions 
 	{
 		public static float LerpFromRange(this RangedFloat ranged, float t)
 		{
