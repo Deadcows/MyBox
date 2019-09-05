@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 - Fixed: ConditionalFieldAttribute always hide the field if "compare to" values were not assigned
+- UIRelativePosition type allows to align UI element relative to some other RectTransform with offsets and stuff
 
 ## [1.0.3] - 2019-09-02
 - RequireLayer and RequireTag attributes

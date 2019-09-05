@@ -10,18 +10,25 @@ namespace MyBox
 		public Camera GameCamera;
 
 #pragma warning disable 0649
-		[SerializeField, Tooltip("Hide Canvas when Following Panel is offscreen")] 
+		[SerializeField, Tooltip("Hide Canvas when Following Panel is offscreen")]
 		private bool _hideOffscreen;
 #pragma warning restore 0649
 		[SerializeField, ConditionalField("_hideOffscreen")]
 		private Canvas _canvas;
-		
+
 		[SerializeField] private bool _editTime = true;
 
+		
 		public bool IsOffscreen
 		{
 			get { return OffscreenOffset != Vector2.zero; }
 		}
+		
+		private RectTransform Transform
+		{
+			get { return _transform ? _transform : _transform = transform as RectTransform; }
+		}
+		private RectTransform _transform;
 
 		public Vector2 OffscreenOffset
 		{
@@ -47,23 +54,6 @@ namespace MyBox
 			}
 		}
 
-		private RectTransform Transform
-		{
-			get { return _transform ? _transform : _transform = transform as RectTransform; }
-		}
-
-		private RectTransform _transform;
-
-		private void OnValidate()
-		{
-			if (_hideOffscreen && _canvas == null)
-			{
-				_canvas = GetComponentInChildren<Canvas>();
-				if (_canvas == null) _canvas = GetComponentInParent<Canvas>();
-
-				Debug.LogError(name + " Caused: UIFollow with HideOffscreen cant found Canvas" );
-			}
-		}
 
 		private void LateUpdate()
 		{
@@ -86,7 +76,7 @@ namespace MyBox
 			var followPosition = ToFollow.position.Offset(Offset);
 			Vector3 screenspace = GameCamera.WorldToScreenPoint(followPosition);
 			Transform.anchoredPosition = screenspace;
-			
+
 			ToggleCanvasOffscreen();
 		}
 
@@ -95,5 +85,18 @@ namespace MyBox
 			if (!_hideOffscreen) return;
 			_canvas.enabled = !IsOffscreen;
 		}
+
+#if UNITY_EDITOR
+		private void OnValidate()
+		{
+			if (_hideOffscreen && _canvas == null)
+			{
+				_canvas = GetComponentInChildren<Canvas>();
+				if (_canvas == null) _canvas = GetComponentInParent<Canvas>();
+
+				Debug.LogError(name + " Caused: UIFollow with HideOffscreen cant found Canvas");
+			}
+		}
+#endif
 	}
 }
