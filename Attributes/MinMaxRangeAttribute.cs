@@ -12,7 +12,7 @@ using UnityEditor;
 
 namespace MyBox
 {
-    public class MinMaxRangeAttribute : Attribute
+    public class MinMaxRangeAttribute : PropertyAttribute
     {
         public MinMaxRangeAttribute(float min, float max)
         {
@@ -25,12 +25,10 @@ namespace MyBox
     }
 
     [Serializable]
-    public class RangedFloat
+    public struct RangedFloat
     {
-        public float Min = 0;
-        public float Max = 0;
-
-        public RangedFloat() { }
+        public float Min;
+        public float Max;
 
         public RangedFloat(float a, float b)
         {
@@ -40,12 +38,10 @@ namespace MyBox
     }
 
     [Serializable]
-    public class RangedInt
+    public struct RangedInt
     {
-        public int Min = 0;
-        public int Max = 0;
-
-        public RangedInt() { }
+        public int Min;
+        public int Max;
 
         public RangedInt(int a, int b)
         {
@@ -81,100 +77,84 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
-	[CustomPropertyDrawer(typeof(RangedInt), true)]
+	[CustomPropertyDrawer(typeof(MinMaxRangeAttribute))]
 	public class MinMaxRangeIntAttributeDrawer : PropertyDrawer
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			label = EditorGUI.BeginProperty(position, label, property);
-			position = EditorGUI.PrefixLabel(position, label);
+            label = EditorGUI.BeginProperty(position, label, property);
+            position = EditorGUI.PrefixLabel(position, label);
 
-			SerializedProperty minProp = property.FindPropertyRelative("Min");
+            SerializedProperty minProp = property.FindPropertyRelative("Min");
 			SerializedProperty maxProp = property.FindPropertyRelative("Max");
 
-			float minValue = minProp.intValue;
-			float maxValue = maxProp.intValue;
+            bool ifInt = false;
 
-			float rangeMin = 0;
-			float rangeMax = 1;
+            float minValue;
+            float maxValue;
 
-			var ranges = (MinMaxRangeAttribute[]) fieldInfo.GetCustomAttributes(typeof(MinMaxRangeAttribute), true);
-			if (ranges.Length > 0)
-			{
-				rangeMin = ranges[0].Min;
-				rangeMax = ranges[0].Max;
-			}
+            if (minProp.propertyType is SerializedPropertyType.Integer) ifInt = true;
 
-			const float rangeBoundsLabelWidth = 40f;
+            float rangeMin = 0;
+            float rangeMax = 1;
 
-			var rangeBoundsLabel1Rect = new Rect(position);
-			rangeBoundsLabel1Rect.width = rangeBoundsLabelWidth;
-			GUI.Label(rangeBoundsLabel1Rect, new GUIContent(minValue.ToString("F2")));
-			position.xMin += rangeBoundsLabelWidth;
+            MinMaxRangeAttribute attr = (MinMaxRangeAttribute)base.attribute;
 
-			var rangeBoundsLabel2Rect = new Rect(position);
-			rangeBoundsLabel2Rect.xMin = rangeBoundsLabel2Rect.xMax - rangeBoundsLabelWidth;
-			GUI.Label(rangeBoundsLabel2Rect, new GUIContent(maxValue.ToString("F2")));
-			position.xMax -= rangeBoundsLabelWidth;
+            rangeMin = attr.Min;
+            rangeMin = attr.Max;
 
-			EditorGUI.BeginChangeCheck();
-			EditorGUI.MinMaxSlider(position, ref minValue, ref maxValue, rangeMin, rangeMax);
-			if (EditorGUI.EndChangeCheck())
-			{
-				minProp.intValue = Mathf.RoundToInt(minValue);
-				maxProp.intValue = Mathf.RoundToInt(maxValue);
-			}
+            if (ifInt)
+            {
+                minValue = minProp.intValue;
+                maxValue = maxProp.intValue;
 
-			EditorGUI.EndProperty();
-		}
-	}
+                const float rangeBoundsLabelWidth = 40f;
 
-	[CustomPropertyDrawer(typeof(RangedFloat), true)]
-	public class MinMaxRangeFloatAttributeDrawer : PropertyDrawer
-	{
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			label = EditorGUI.BeginProperty(position, label, property);
-			position = EditorGUI.PrefixLabel(position, label);
+                var rangeBoundsLabel1Rect = new Rect(position);
+                rangeBoundsLabel1Rect.width = rangeBoundsLabelWidth;
+                GUI.Label(rangeBoundsLabel1Rect, new GUIContent(minValue.ToString("F0")));
+                position.xMin += rangeBoundsLabelWidth;
 
-			SerializedProperty minProp = property.FindPropertyRelative("Min");
-			SerializedProperty maxProp = property.FindPropertyRelative("Max");
+                var rangeBoundsLabel2Rect = new Rect(position);
+                rangeBoundsLabel2Rect.xMin = rangeBoundsLabel2Rect.xMax - rangeBoundsLabelWidth;
+                GUI.Label(rangeBoundsLabel2Rect, new GUIContent(maxValue.ToString("F0")));
+                position.xMax -= rangeBoundsLabelWidth;
 
-			float minValue = minProp.floatValue;
-			float maxValue = maxProp.floatValue;
+                EditorGUI.BeginChangeCheck();
+                EditorGUI.MinMaxSlider(position, ref minValue, ref maxValue, rangeMin, rangeMax);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    minProp.intValue = Mathf.RoundToInt(minValue);
+                    maxProp.intValue = Mathf.RoundToInt(maxValue);
+                }
+            }
+            else
+            {
+                minValue = minProp.floatValue;
+                maxValue = maxProp.floatValue;
 
-			float rangeMin = 0;
-			float rangeMax = 1;
+                const float rangeBoundsLabelWidth = 40f;
 
-			var ranges = (MinMaxRangeAttribute[]) fieldInfo.GetCustomAttributes(typeof(MinMaxRangeAttribute), true);
-			if (ranges.Length > 0)
-			{
-				rangeMin = ranges[0].Min;
-				rangeMax = ranges[0].Max;
-			}
+                var rangeBoundsLabel1Rect = new Rect(position);
+                rangeBoundsLabel1Rect.width = rangeBoundsLabelWidth;
+                GUI.Label(rangeBoundsLabel1Rect, new GUIContent(minValue.ToString("F2")));
+                position.xMin += rangeBoundsLabelWidth;
 
-			const float rangeBoundsLabelWidth = 40f;
+                var rangeBoundsLabel2Rect = new Rect(position);
+                rangeBoundsLabel2Rect.xMin = rangeBoundsLabel2Rect.xMax - rangeBoundsLabelWidth;
+                GUI.Label(rangeBoundsLabel2Rect, new GUIContent(maxValue.ToString("F2")));
+                position.xMax -= rangeBoundsLabelWidth;
 
-			var rangeBoundsLabel1Rect = new Rect(position);
-			rangeBoundsLabel1Rect.width = rangeBoundsLabelWidth;
-			GUI.Label(rangeBoundsLabel1Rect, new GUIContent(minValue.ToString("F2")));
-			position.xMin += rangeBoundsLabelWidth;
-
-			var rangeBoundsLabel2Rect = new Rect(position);
-			rangeBoundsLabel2Rect.xMin = rangeBoundsLabel2Rect.xMax - rangeBoundsLabelWidth;
-			GUI.Label(rangeBoundsLabel2Rect, new GUIContent(maxValue.ToString("F2")));
-			position.xMax -= rangeBoundsLabelWidth;
-
-			EditorGUI.BeginChangeCheck();
-			EditorGUI.MinMaxSlider(position, ref minValue, ref maxValue, rangeMin, rangeMax);
-			if (EditorGUI.EndChangeCheck())
-			{
-				minProp.floatValue = minValue;
-				maxProp.floatValue = maxValue;
-			}
-
-			EditorGUI.EndProperty();
-		}
-	}
+                EditorGUI.BeginChangeCheck();
+                EditorGUI.MinMaxSlider(position, ref minValue, ref maxValue, rangeMin, rangeMax);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    minProp.floatValue = minValue;
+                    maxProp.floatValue = maxValue;
+                }
+            }
+            EditorGUI.EndProperty();
+        }
+    }
 }
 #endif
