@@ -1,12 +1,17 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 
 namespace MyBox
 {
+    /// <summary>
+    /// Conditional statement for Attributes. Does not work with DecoratorDrawers or Typed drawers.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public class ConditionalFieldAttribute : PropertyAttribute
     {
@@ -164,6 +169,8 @@ namespace MyBox.Internal
     [CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
     public class ConditionalFieldAttributeDrawer : PropertyDrawer
     {
+        bool mutlipleAttributes = false;
+
         PropertyAttribute genericAttribute = null;
         Type genericDrawerType = null;
         PropertyDrawer genericDrawerInstance = null;
@@ -171,19 +178,22 @@ namespace MyBox.Internal
         private void GetPropertyDrawerType()
         {
             if (genericDrawerInstance == null)
-            {
+            {        
                 //Get the second attribute flag
                 try
                 {
                     genericAttribute = (PropertyAttribute)fieldInfo.GetCustomAttributes(typeof(PropertyAttribute), false)[1];
-                    //Debug.Log(fieldInfo.GetCustomAttributesData()[1]);
-                    //foreach(var b in fieldInfo.GetCustomAttributesData()[1].ConstructorArguments)
-                    //{
-                    //    Debug.Log(b);
-                    //}
+
+                    if (genericAttribute is DecoratorDrawer || genericAttribute is ContextMenuItemAttribute || genericAttribute is SeparatorAttribute | genericAttribute is AutoPropertyAttribute)
+                    {
+                        Debug.LogError(this + ": Does not work with" + genericAttribute.GetType());
+                        return;
+                    }
+                    if (genericAttribute is TooltipAttribute) return;
                 }
                 catch (Exception e)
                 {
+                    Debug.Log(this + ": Can't find stacked propertyAttribute after ConditionalProperty: " + e);
                     return;
                 }
 
@@ -192,13 +202,13 @@ namespace MyBox.Internal
                 {
                     Assembly[] asm = AppDomain.CurrentDomain.GetAssemblies();
                     IEnumerable<Type> t = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
-                        .Where(x => typeof(PropertyDrawer).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+                        .Where(x => (typeof(PropertyDrawer).IsAssignableFrom(x)) && !x.IsInterface && !x.IsAbstract);
                     Type outType = t.Where(x => CustomAttributeData.GetCustomAttributes(x).First().ConstructorArguments.First().Value == genericAttribute.GetType()).First();
                     genericDrawerType = outType;
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(this + ":Can't find AssocitatedDrawer property in CustomPropertyAttribute of " + genericAttribute.GetType() + " : " + e);
+                    Debug.Log(this + ": Can't find property drawer from CustomPropertyAttribute of " + genericAttribute.GetType() + " : " + e);
                     return;
                 }
 
@@ -206,10 +216,29 @@ namespace MyBox.Internal
                 try
                 {
                     genericDrawerInstance = (PropertyDrawer)Activator.CreateInstance(genericDrawerType);
-                    object[] attributeParams = (object[])fieldInfo.GetCustomAttributesData()[1].ConstructorArguments.Select(x => x.Value).Cast<object>().ToArray();
-                    if (attributeParams.Count() > 0)
+                    //Get arguments
+                    IList<CustomAttributeTypedArgument> attributeParams = fieldInfo.GetCustomAttributesData()[1].ConstructorArguments;
+                    IList<CustomAttributeTypedArgument> unpackedParams = new List<CustomAttributeTypedArgument>();
+                    //Unpack any params objec[] args
+                    foreach (CustomAttributeTypedArgument singleParam in attributeParams)
                     {
-                        genericAttribute = (PropertyAttribute)Activator.CreateInstance(genericAttribute.GetType(), attributeParams);
+                        if (singleParam.Value.GetType() == typeof(ReadOnlyCollection<CustomAttributeTypedArgument>))
+                        {
+                            foreach (CustomAttributeTypedArgument unpackedSingleParam in (ReadOnlyCollection<CustomAttributeTypedArgument>)singleParam.Value)
+                            {
+                                unpackedParams.Add(unpackedSingleParam);
+                            }
+                        }
+                        else
+                        {
+                            unpackedParams.Add(singleParam);
+                        }
+                    }
+                    object[] attributeParamsObj = (object[])unpackedParams.Select(x => x.Value).Cast<object>().ToArray();
+
+                    if (attributeParamsObj.Count() > 0)
+                    {
+                        genericAttribute = (PropertyAttribute)Activator.CreateInstance(genericAttribute.GetType(), attributeParamsObj);
                     }
                     else
                     {
@@ -246,11 +275,15 @@ namespace MyBox.Internal
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            GetPropertyDrawerType();
+            if (fieldInfo.GetCustomAttributes(typeof(PropertyAttribute), false).Count() > 1)
+            {
+                mutlipleAttributes = true;
+                GetPropertyDrawerType();
+            }
             _toShow = Attribute.CheckPropertyVisible(property);
             if (_toShow)
             {
-                if(genericDrawerInstance != null)
+                if (genericDrawerInstance != null)
                 {
                     return genericDrawerInstance.GetPropertyHeight(property, label);
                 }
@@ -269,7 +302,7 @@ namespace MyBox.Internal
         {
             if (_toShow)
             {
-                if (genericDrawerInstance != null)
+                if (mutlipleAttributes && genericDrawerInstance != null)
                 {
                     try
                     {
@@ -281,7 +314,10 @@ namespace MyBox.Internal
                         Debug.Log(this + ": Unable to instantiate " + genericAttribute.GetType() + " : " + e);
                     }
                 }
-                else EditorGUI.PropertyField(position, property, label);
+                else
+                {
+                    EditorGUI.PropertyField(position, property, label);
+                }
             }
         }
     }
