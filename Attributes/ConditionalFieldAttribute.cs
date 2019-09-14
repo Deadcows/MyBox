@@ -324,7 +324,7 @@ namespace MyBox.Internal
 				catch (Exception e)
 				{
 					EditorGUI.PropertyField(position, property, label);
-					Debug.Log(this + ": Unable to instantiate " + _genericAttribute.GetType() + " : " + e);
+					LogWarning("Unable to instantiate " + _genericAttribute.GetType() + " : " + e, property);
 				}
 			}
 			else
