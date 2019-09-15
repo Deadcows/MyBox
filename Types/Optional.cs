@@ -2,9 +2,6 @@ using System;
 using MyBox.Internal;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace MyBox
 {
@@ -73,6 +70,8 @@ namespace MyBox.Internal
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using UnityEditor;
+	
 	[CustomPropertyDrawer(typeof(OptionalParent), true)]
 	public class OptionalTypePropertyDrawer : PropertyDrawer
 	{
