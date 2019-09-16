@@ -100,11 +100,9 @@ namespace MyBox
 
 				var who = "Property <color=brown>" + arrayProp.name + "</color> in object <color=brown>" + target.name + "</color> caused: ";
 				var warning = who + "Array fields is not supported by [ConditionalFieldAttribute]";
-				
-				if (ConditionalFieldAttributeDrawer.WarningsPool.Contains(warning)) return null;
-				Debug.LogWarning(warning, target);
-				ConditionalFieldAttributeDrawer.WarningsPool.Add(warning);
-				
+
+				WarningsPool.Log(warning, target);
+
 				return null;
 			}
 
@@ -189,9 +187,7 @@ namespace MyBox.Internal
 			if (fieldInfo.DeclaringType != null) warning += " on behaviour <color=brown>" + fieldInfo.DeclaringType.Name + "</color>";
 			warning += " caused: " + log;
 
-			if (WarningsPool.Contains(warning)) return;
-			Debug.LogWarning(warning, property.serializedObject.targetObject);
-			WarningsPool.Add(warning);
+			WarningsPool.Log(warning, property.serializedObject.targetObject);
 		}
 
 		private void GetPropertyDrawerType(SerializedProperty property)
@@ -332,11 +328,6 @@ namespace MyBox.Internal
 				EditorGUI.PropertyField(position, property, label);
 			}
 		}
-
-
-		//This pool is used to prevent spamming with warning messages
-		//One message per property
-		public static readonly HashSet<string> WarningsPool = new HashSet<string>();
 	}
 }
 #endif
