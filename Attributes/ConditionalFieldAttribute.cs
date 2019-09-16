@@ -294,7 +294,7 @@ namespace MyBox.Internal
             //Get the type
             _genericType = fieldInfo.FieldType;
 
-            var _genericObject = Activator.CreateInstance(_genericType);
+            var _genericObject = fieldInfo;
 
             if (_genericType is ContextMenuItemAttribute || _genericType is SeparatorAttribute | _genericType is AutoPropertyAttribute)
             {
@@ -323,31 +323,6 @@ namespace MyBox.Internal
             try
             {
                 _genericTypeDrawerInstance = (PropertyDrawer)Activator.CreateInstance(_genericTypeDrawerType);
-                //Get arguments
-                IList<CustomAttributeTypedArgument> attributeParams = fieldInfo.GetCustomAttributesData()[1].ConstructorArguments;
-                IList<CustomAttributeTypedArgument> unpackedParams = new List<CustomAttributeTypedArgument>();
-                //Unpack any params object[] args
-                foreach (CustomAttributeTypedArgument singleParam in attributeParams)
-                {
-                    if (singleParam.Value.GetType() == typeof(ReadOnlyCollection<CustomAttributeTypedArgument>))
-                    {
-                        foreach (CustomAttributeTypedArgument unpackedSingleParam in (ReadOnlyCollection<CustomAttributeTypedArgument>)singleParam.Value)
-                        {
-                            unpackedParams.Add(unpackedSingleParam);
-                        }
-                    }
-                    else
-                    {
-                        unpackedParams.Add(singleParam);
-                    }
-                }
-
-                object[] attributeParamsObj = unpackedParams.Select(x => x.Value).ToArray();
-
-                if (attributeParamsObj.Any())
-                {
-                    _genericObject = Activator.CreateInstance(_genericType, attributeParamsObj);
-                }
             }
             catch (Exception e)
             {
