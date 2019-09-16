@@ -14,6 +14,12 @@ namespace MyBox
 	{
 		public float Min;
 		public float Max;
+		
+		public MinMaxFloat(float min, float max)
+		{
+			Min = min;
+			Max = max;
+		}
 	}
 
 	[Serializable]
@@ -21,6 +27,12 @@ namespace MyBox
 	{
 		public int Min;
 		public int Max;
+		
+		public MinMaxInt(int min, int max)
+		{
+			Min = min;
+			Max = max;
+		}
 	}
 
 	public static class MinMaxExtensions
@@ -77,11 +89,19 @@ namespace MyBox
 		
 		
 		/// <summary>
-		/// Lerp from min to max
+		/// Lerp from Min to Max
 		/// </summary>
 		public static float Lerp(this MinMaxFloat minMax, float value)
 		{
 			return Mathf.Lerp(minMax.Min, minMax.Max, value);
+		}
+		
+		/// <summary>
+		/// Lerp from Min to Max
+		/// </summary>
+		public static float LerpUnclamped(this MinMaxFloat minMax, float value)
+		{
+			return Mathf.LerpUnclamped(minMax.Min, minMax.Max, value);
 		}
 	}
 }
