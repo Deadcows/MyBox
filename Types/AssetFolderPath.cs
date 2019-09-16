@@ -25,11 +25,14 @@ namespace MyBox.Internal
 			string name = label.text;
 			string path = pathProperty.stringValue;
 
+			var buttonWidth = 60;
+
 			Rect textfieldBox = position;
-			textfieldBox.width = position.width * .8f;
+			textfieldBox.width -= buttonWidth + 16;
+			
 			Rect buttonBox = position;
-			buttonBox.x = position.width * .85f;
-			buttonBox.width = position.width - buttonBox.x;
+			buttonBox.width = buttonWidth;
+			buttonBox.x = textfieldBox.width + 16;
 			
 			if (!path.Contains(Application.dataPath))
 			{
