@@ -1,6 +1,10 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.ObjectModel;
+using System.Reflection;
+using MyBox.Internal;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -8,6 +12,9 @@ using UnityEditor;
 
 namespace MyBox
 {
+	/// <summary>
+	/// Conditionally Show/Hide field in inspector, based on some other field value 
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Field)]
 	public class ConditionalFieldAttribute : PropertyAttribute
 	{
@@ -15,6 +22,9 @@ namespace MyBox
 		private readonly object[] _compareValues;
 		private readonly bool _inverse;
 
+		/// <param name="fieldToCheck">String name of field to check value</param>
+		/// <param name="inverse">Inverse check result</param>
+		/// <param name="compareValues">On which values field will be shown in inspector</param>
 		public ConditionalFieldAttribute(string fieldToCheck, bool inverse = false, params object[] compareValues)
 		{
 			_fieldToCheck = fieldToCheck;
@@ -86,13 +96,13 @@ namespace MyBox
 			{
 				var cleanPath = path.Substring(0, path.IndexOf('['));
 				var arrayProp = property.serializedObject.FindProperty(cleanPath);
-				if (_warningsPool.Contains(arrayProp.exposedReferenceValue)) return null;
 				var target = arrayProp.serializedObject.targetObject;
-				var who = string.Format("Property <color=brown>{0}</color> in object <color=brown>{1}</color> caused: ", arrayProp.name,
-					target.name);
 
-				Debug.LogWarning(who + "Array fields is not supported by [ConditionalFieldAttribute]", target);
-				_warningsPool.Add(arrayProp.exposedReferenceValue);
+				var who = "Property <color=brown>" + arrayProp.name + "</color> in object <color=brown>" + target.name + "</color> caused: ";
+				var warning = who + "Array fields is not supported by [ConditionalFieldAttribute]";
+
+				WarningsPool.Log(warning, target);
+
 				return null;
 			}
 
@@ -117,9 +127,11 @@ namespace MyBox
 
 				parent = i == 0
 					? property.serializedObject.FindProperty(element)
-					: parent.FindPropertyRelative(element);
+					: parent != null
+						? parent.FindPropertyRelative(element)
+						: null;
 
-				if (index >= 0) parent = parent.GetArrayElementAtIndex(index);
+				if (index >= 0 && parent != null) parent = parent.GetArrayElementAtIndex(index);
 			}
 
 			return parent;
@@ -151,19 +163,125 @@ namespace MyBox
 					return string.Empty;
 			}
 		}
-
-		//This pool is used to prevent spamming with warning messages
-		//One message per property
-		readonly HashSet<object> _warningsPool = new HashSet<object>();
 #endif
 	}
 }
+
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
 	[CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
 	public class ConditionalFieldAttributeDrawer : PropertyDrawer
 	{
+		private bool _multipleAttributes;
+
+		private PropertyAttribute _genericAttribute;
+		private PropertyDrawer _genericDrawerInstance;
+		private Type _genericDrawerType;
+
+		private static IEnumerable<Type> _typesCache;
+
+		private void LogWarning(string log, SerializedProperty property)
+		{
+			var warning = "Property <color=brown>" + fieldInfo.Name + "</color>";
+			if (fieldInfo.DeclaringType != null) warning += " on behaviour <color=brown>" + fieldInfo.DeclaringType.Name + "</color>";
+			warning += " caused: " + log;
+
+			WarningsPool.Log(warning, property.serializedObject.targetObject);
+		}
+
+		private void GetPropertyDrawerType(SerializedProperty property)
+		{
+			if (_genericDrawerInstance != null) return;
+
+			//Get the second attribute flag
+			try
+			{
+				_genericAttribute = (PropertyAttribute) fieldInfo.GetCustomAttributes(typeof(PropertyAttribute), false)[1];
+
+				if (_genericAttribute is ContextMenuItemAttribute || _genericAttribute is SeparatorAttribute | _genericAttribute is AutoPropertyAttribute)
+				{
+					LogWarning("Does not work with" + _genericAttribute.GetType(), property);
+					return;
+				}
+
+				if (_genericAttribute is TooltipAttribute) return;
+			}
+			catch (Exception e)
+			{
+				LogWarning("Can't find stacked propertyAttribute after ConditionalProperty: " + e, property);
+				return;
+			}
+
+			//Get the associated attribute drawer
+			try
+			{
+				if (_typesCache == null)
+				{
+					_typesCache = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+						.Where(x => typeof(PropertyDrawer).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+				}
+
+				_genericDrawerType = _typesCache.First(x =>
+					(Type) CustomAttributeData.GetCustomAttributes(x).First().ConstructorArguments.First().Value == _genericAttribute.GetType());
+			}
+			catch (Exception e)
+			{
+				LogWarning("Can't find property drawer from CustomPropertyAttribute of " + _genericAttribute.GetType() + " : " + e, property);
+				return;
+			}
+
+			//Create instances of each (including the arguments)
+			try
+			{
+				_genericDrawerInstance = (PropertyDrawer) Activator.CreateInstance(_genericDrawerType);
+				//Get arguments
+				IList<CustomAttributeTypedArgument> attributeParams = fieldInfo.GetCustomAttributesData()[1].ConstructorArguments;
+				IList<CustomAttributeTypedArgument> unpackedParams = new List<CustomAttributeTypedArgument>();
+				//Unpack any params object[] args
+				foreach (CustomAttributeTypedArgument singleParam in attributeParams)
+				{
+					if (singleParam.Value.GetType() == typeof(ReadOnlyCollection<CustomAttributeTypedArgument>))
+					{
+						foreach (CustomAttributeTypedArgument unpackedSingleParam in (ReadOnlyCollection<CustomAttributeTypedArgument>) singleParam.Value)
+						{
+							unpackedParams.Add(unpackedSingleParam);
+						}
+					}
+					else
+					{
+						unpackedParams.Add(singleParam);
+					}
+				}
+
+				object[] attributeParamsObj = unpackedParams.Select(x => x.Value).ToArray();
+
+				if (attributeParamsObj.Any())
+				{
+					_genericAttribute = (PropertyAttribute) Activator.CreateInstance(_genericAttribute.GetType(), attributeParamsObj);
+				}
+				else
+				{
+					_genericAttribute = (PropertyAttribute) Activator.CreateInstance(_genericAttribute.GetType());
+				}
+			}
+			catch (Exception e)
+			{
+				LogWarning("no constructor available in " + _genericAttribute.GetType() + " : " + e, property);
+				return;
+			}
+
+			//Reassign the attribute field in the drawer so it can access the argument values
+			try
+			{
+				_genericDrawerType.GetField("m_Attribute", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(_genericDrawerInstance, _genericAttribute);
+			}
+			catch (Exception e)
+			{
+				LogWarning("Unable to assign attribute to " + _genericDrawerInstance.GetType() + " : " + e, property);
+			}
+		}
+
 		private ConditionalFieldAttribute Attribute
 		{
 			get { return _attribute ?? (_attribute = attribute as ConditionalFieldAttribute); }
@@ -175,16 +293,41 @@ namespace MyBox.Internal
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
-			_toShow = Attribute.CheckPropertyVisible(property);
+			if (fieldInfo.GetCustomAttributes(typeof(PropertyAttribute), false).Count() > 1)
+			{
+				_multipleAttributes = true;
+				GetPropertyDrawerType(property);
+			}
 
-			return _toShow ? EditorGUI.GetPropertyHeight(property) : 0;
+			_toShow = Attribute.CheckPropertyVisible(property);
+			if (!_toShow) return 0;
+
+			if (_genericDrawerInstance != null)
+				return _genericDrawerInstance.GetPropertyHeight(property, label);
+			return EditorGUI.GetPropertyHeight(property);
 		}
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			if (_toShow) EditorGUI.PropertyField(position, property, label, true);
+			if (!_toShow) return;
+
+			if (_multipleAttributes && _genericDrawerInstance != null)
+			{
+				try
+				{
+					_genericDrawerInstance.OnGUI(position, property, label);
+				}
+				catch (Exception e)
+				{
+					EditorGUI.PropertyField(position, property, label);
+					LogWarning("Unable to instantiate " + _genericAttribute.GetType() + " : " + e, property);
+				}
+			}
+			else
+			{
+				EditorGUI.PropertyField(position, property, label);
+			}
 		}
 	}
 }
-
 #endif

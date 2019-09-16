@@ -37,7 +37,7 @@ namespace MyBox.Internal
 			{
 				CheckForUpdate(true);
 			}
-			catch (Exception ex) {}
+			catch (Exception) {}
 		}
 
 
