@@ -5,7 +5,6 @@ using UnityEngine;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using MyBox.Internal;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -174,6 +173,7 @@ namespace MyBox.Internal
 	public class ConditionalFieldAttributeDrawer : PropertyDrawer
 	{
 		private bool _multipleAttributes;
+		private bool _specialType;
 
 		private PropertyAttribute _genericAttribute;
 		private PropertyDrawer _genericDrawerInstance;
@@ -201,7 +201,7 @@ namespace MyBox.Internal
 
 				if (_genericAttribute is ContextMenuItemAttribute || _genericAttribute is SeparatorAttribute | _genericAttribute is AutoPropertyAttribute)
 				{
-					LogWarning("Does not work with" + _genericAttribute.GetType(), property);
+					LogWarning("[ConditionalField] does not work with " + _genericAttribute.GetType(), property);
 					return;
 				}
 
@@ -282,6 +282,60 @@ namespace MyBox.Internal
 			}
 		}
 
+		private Type _genericType;
+		private PropertyDrawer _genericTypeDrawerInstance;
+		private Type _genericTypeDrawerType;
+
+		private void GetTypeDrawerType(SerializedProperty property)
+		{
+			if (_genericTypeDrawerInstance != null) return;
+
+			//Get the type
+			_genericType = fieldInfo.FieldType;
+
+			var _genericObject = fieldInfo;
+
+			//Get the associated attribute drawer
+			try
+			{
+				if (_typesCache == null)
+				{
+					_typesCache = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+						.Where(x => typeof(PropertyDrawer).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+				}
+
+				_genericTypeDrawerType = _typesCache.First(x =>
+					(Type) CustomAttributeData.GetCustomAttributes(x).First().ConstructorArguments.First().Value == _genericType);
+			}
+			catch (Exception)
+			{
+				LogWarning("[ConditionalField] does not work with "+_genericType+". Unable to find property drawer from the Type", property);
+				return;
+			}
+
+			//Create instances of each (including the arguments)
+			try
+			{
+				_genericTypeDrawerInstance = (PropertyDrawer) Activator.CreateInstance(_genericTypeDrawerType);
+			}
+			catch (Exception e)
+			{
+				LogWarning("no constructor available in " + _genericType + " : " + e, property);
+				return;
+			}
+
+			//Reassign the attribute field in the drawer so it can access the argument values
+			try
+			{
+				_genericTypeDrawerType.GetField("m_Attribute", BindingFlags.Instance | BindingFlags.NonPublic)
+					.SetValue(_genericTypeDrawerInstance, _genericObject);
+			}
+			catch (Exception)
+			{
+				//LogWarning("Unable to assign attribute to " + _genericTypeDrawerInstance.GetType() + " : " + e, property);
+			}
+		}
+
 		private ConditionalFieldAttribute Attribute
 		{
 			get { return _attribute ?? (_attribute = attribute as ConditionalFieldAttribute); }
@@ -298,12 +352,19 @@ namespace MyBox.Internal
 				_multipleAttributes = true;
 				GetPropertyDrawerType(property);
 			}
+			else if (!fieldInfo.FieldType.Module.ScopeName.Equals(typeof(int).Module.ScopeName))
+			{
+				_specialType = true;
+				GetTypeDrawerType(property);
+			}
 
 			_toShow = Attribute.CheckPropertyVisible(property);
 			if (!_toShow) return 0;
 
 			if (_genericDrawerInstance != null)
 				return _genericDrawerInstance.GetPropertyHeight(property, label);
+			if (_genericTypeDrawerInstance != null)
+				return _genericTypeDrawerInstance.GetPropertyHeight(property, label);
 			return EditorGUI.GetPropertyHeight(property);
 		}
 
@@ -321,6 +382,18 @@ namespace MyBox.Internal
 				{
 					EditorGUI.PropertyField(position, property, label);
 					LogWarning("Unable to instantiate " + _genericAttribute.GetType() + " : " + e, property);
+				}
+			}
+			else if (_specialType && _genericTypeDrawerInstance != null)
+			{
+				try
+				{
+					_genericTypeDrawerInstance.OnGUI(position, property, label);
+				}
+				catch (Exception e)
+				{
+					EditorGUI.PropertyField(position, property, label);
+					LogWarning("Unable to instantiate " + _genericType + " : " + e, property);
 				}
 			}
 			else

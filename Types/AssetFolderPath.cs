@@ -16,7 +16,7 @@ namespace MyBox.Internal
 	using UnityEngine;
 
 	[CustomPropertyDrawer(typeof(AssetFolderPath))]
-	public class PathWrapperDrawer : PropertyDrawer
+	public class AssetFolderPathDrawer : PropertyDrawer
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
