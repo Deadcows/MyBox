@@ -10,6 +10,8 @@
 
 * #### Test coverage, man (ง •̀_•́)ง
 
+* #### Update GUIDComponent? Remove it? 
+
 * #### IPrepareAlways to use Prepare() without bool return
 
 * #### Auto generate MyLayers and MyTags scripts with const strings/ints representing actual, well, layers and tags

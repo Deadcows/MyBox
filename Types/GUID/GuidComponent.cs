@@ -1,7 +1,7 @@
 ﻿// ---------------------------------------------------------------------------- 
 // Author: Unity Team
 // Date:   28/09/2018
-// Source: hhttps://github.com/Unity-Technologies/guid-based-reference
+// Source: https://github.com/Unity-Technologies/guid-based-reference
 // ----------------------------------------------------------------------------
 
 using System;
