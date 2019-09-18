@@ -44,6 +44,8 @@ namespace MyBox.EditorTools
 
 		public const string ArrowTopRightLight = "↘";
 
+		public const string Check = "✓";
+		
 		public const string Cross = "×";
 
 		#endregion
