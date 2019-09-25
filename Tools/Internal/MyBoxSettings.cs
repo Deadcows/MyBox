@@ -11,7 +11,7 @@ namespace MyBox.Internal
 	{
 		[SerializeField] private bool _autoSaveEnabled = true;
 		[SerializeField] private bool _cleanEmptyDirectoriesFeature = true;
-		[SerializeField] private bool _prepareOnSave = true;
+		[SerializeField] private bool _prepareOnPlaymode = true;
 		[SerializeField] private bool _checkForUpdates = true;
 
 		public static bool AutoSaveEnabled
@@ -38,11 +38,11 @@ namespace MyBox.Internal
 
 		public static bool PrepareOnPlaymode
 		{
-			get { return Instance._prepareOnSave; }
+			get { return Instance._prepareOnPlaymode; }
 			set
 			{
-				if (Instance._prepareOnSave == value) return;
-				Instance._prepareOnSave = value;
+				if (Instance._prepareOnPlaymode == value) return;
+				Instance._prepareOnPlaymode = value;
 				Save();
 			}
 		}

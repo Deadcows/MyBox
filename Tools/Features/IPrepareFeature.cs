@@ -1,4 +1,6 @@
-﻿namespace MyBox
+﻿using System;
+
+namespace MyBox
 {
 	/// <summary>
 	/// Prepare() called on every MonoBehaviour by IPrepareFeature class. If Prepare() returns true, parent scene will be marked dirty 
@@ -24,6 +26,8 @@ namespace MyBox.Internal
 	{
 		public static bool IsEnabled = true;
 
+		public static Action OnPrepare;
+
 		static IPrepareFeature()
 		{
 			EditorTools.MyEditorEvents.BeforePlaymode += PrepareOnPlay;
@@ -41,6 +45,7 @@ namespace MyBox.Internal
 		/// </summary>
 		public static void RunPrepare()
 		{
+			if (OnPrepare != null) OnPrepare();
 			
 			var toPrepare = MyExtensions.FindObjectsOfInterfaceAsComponents<IPrepare>();
 

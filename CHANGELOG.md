@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.1.0] - 2019-09-25
+- Added: Commentary component. Add commentaries in inspector;
+- Fix: UIRelativePosition fixes;
+- Few redundant warnings removed
+- Versioning changed to release patches more often without extra warnings
+
 ## [1.0.4] - 2019-09-16
 - Added: UIRelativePosition type allows to align UI element relative to some other RectTransform with offsets and stuff
 - Added: AssetPath and AssetFolderPath types. String wrappers with "Browse" button in inspector. Thanks to Nate Wilson (wilsnat) for the idea

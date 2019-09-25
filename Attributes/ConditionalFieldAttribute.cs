@@ -309,7 +309,8 @@ namespace MyBox.Internal
 			}
 			catch (Exception)
 			{
-				LogWarning("[ConditionalField] does not work with "+_genericType+". Unable to find property drawer from the Type", property);
+				// Commented out because of multiple false warnings on Behaviour types
+				//LogWarning("[ConditionalField] does not work with "+_genericType+". Unable to find property drawer from the Type", property);
 				return;
 			}
 

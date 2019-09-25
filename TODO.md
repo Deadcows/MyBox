@@ -1,6 +1,12 @@
 * #### Custom Editor Window for MyBox settings with logo and stuff ❤
 
+* #### Allow Commentary to be a type (to be shown and edited inside of other inspector) +   
+  * Statically assign via script
+  * Make readonly
+  
 * #### AnimationStateReference not working with nested inspector
+
+* #### Setting to get MyBoxUpdate warnings about new versions + about bugfixes
 
 * #### OnPlaymodeLogger (MyLogger?) to accumulate log messages before playmode and log on playmode
   * Some systems log things on BeforePlaymode and such messages will be erased if ClearOnPlay is set on Console
@@ -43,7 +49,7 @@
   * MyOnGUI may be useful, for instance, in FPSCounter feature
   * MB with static access, with lazy initialization and HideAndDontSave?
     * EveryFrame subscription is heavy...
-    * Push struct with IDraw and logic to draw with gizmos, remove pusded structs from MyGizmosHandler.OnDrawGizmos? Measure performance
+    * Push struct with IDraw and logic to draw with gizmos, remove pushed structs from MyGizmosHandler.OnDrawGizmos? Measure performance
     * Some way to draw every-frame Gizmos with system, that run only once per x seconds?
 		
 * #### Highlight empty fields with MustBeAssignedAttribute in inspector

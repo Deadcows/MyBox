@@ -24,8 +24,8 @@ namespace MyBox.Internal
 
 
 		private static bool _isUPMVersion;
-		private static string _currentVersion;
-		private static string _latestVersion;
+		private static Version _currentVersion;
+		private static Version _latestVersion;
 
 		private static EditorWindow _windowInstance;
 
@@ -37,7 +37,9 @@ namespace MyBox.Internal
 			{
 				CheckForUpdate(true);
 			}
-			catch (Exception) {}
+			catch (Exception)
+			{
+			}
 		}
 
 
@@ -49,7 +51,7 @@ namespace MyBox.Internal
 		}
 
 
-		private void Awake()
+		private void OnEnable()
 		{
 			CheckForUpdate();
 			_isUPMVersion = IsUPMVersion();
@@ -58,26 +60,17 @@ namespace MyBox.Internal
 
 		private void OnGUI()
 		{
-			using (new EditorGUILayout.HorizontalScope())
-			{
-				GUILayout.FlexibleSpace();
+			if (_currentVersion == null) return;
 
+			EditorGUILayout.LabelField("Current version: " + _currentVersion.AsSting);
+			EditorGUILayout.LabelField("Latest version: " + (_latestVersion == null ? "..." : _latestVersion.AsSting));
 
-				GUILayout.FlexibleSpace();
-			}
-
-			EditorGUILayout.LabelField("Current version: " + _currentVersion);
-			EditorGUILayout.LabelField("Latest version: " + (_latestVersion.IsNullOrEmpty() ? "..." : _latestVersion));
-
-
-			GUI.enabled = !_latestVersion.IsNullOrEmpty() && _currentVersion != _latestVersion;
-			if (GUILayout.Button("Update", EditorStyles.toolbarButton))
+			bool anyUpdate = _latestVersion != null && _currentVersion.FullMatch(_latestVersion);
+			if (GUILayout.Button(anyUpdate ? "Update" : "Force Update", EditorStyles.toolbarButton))
 			{
 				if (!_isUPMVersion) Application.OpenURL(ReleasesURL);
 				else UpdatePackage();
 			}
-
-			GUI.enabled = true;
 		}
 
 		private static void CheckForUpdate(bool withLog = false)
@@ -86,7 +79,7 @@ namespace MyBox.Internal
 			CheckOnlineVersionAsync(withLog);
 		}
 
-		
+
 		private static void UpdatePackage()
 		{
 			// TODO: Latest version should be valid
@@ -132,12 +125,12 @@ namespace MyBox.Internal
 			using (HttpClient wc = new HttpClient())
 			{
 				var packageJson = await wc.GetStringAsync(MyBoxPackageInfoURL);
-				_latestVersion = ParsePackageVersion(packageJson);
+				_latestVersion = new Version(ParsePackageVersion(packageJson));
 				if (_windowInstance != null) _windowInstance.Repaint();
 
-				if (_currentVersion != _latestVersion && withLog)
+				if (!_currentVersion.BaseVersionMatch(_latestVersion) && withLog)
 				{
-					Debug.Log("It's time to update MyBox :)! Use \"Tools/MyBox/Update window\". Current version: " + 
+					Debug.Log("It's time to update MyBox :)! Use \"Tools/MyBox/Update window\". Current version: " +
 					          _currentVersion + ", new version: " + _latestVersion);
 				}
 			}
@@ -155,7 +148,7 @@ namespace MyBox.Internal
 			var packageJson = myBoxDirectory.GetFiles().SingleOrDefault(f => f.Name == "package.json");
 			if (packageJson == null) return; //TODO: Exceptional
 
-			_currentVersion = ParsePackageVersion(File.ReadAllText(packageJson.FullName));
+			_currentVersion = new Version(ParsePackageVersion(File.ReadAllText(packageJson.FullName)));
 		}
 
 		private static string ParsePackageVersion(string json)
@@ -166,6 +159,35 @@ namespace MyBox.Internal
 			if (matches.Count <= 1 || matches[1].Value.IsNullOrEmpty()) return null; //TODO: Exceptional
 
 			return matches[1].Value.Trim('"');
+		}
+
+		[Serializable]
+		private class Version
+		{
+			public string Major;
+			public string Minor;
+			public string Patch;
+
+			public string AsSting;
+
+			public Version(string version)
+			{
+				AsSting = version;
+				var v = version.Split('.');
+				Major = v[0];
+				Minor = v[1];
+				Patch = v[2];
+			}
+
+			public bool BaseVersionMatch(Version version)
+			{
+				return Major == version.Major && Minor == version.Minor;
+			}
+
+			public bool FullMatch(Version version)
+			{
+				return BaseVersionMatch(version) && Patch == version.Patch;
+			}
 		}
 	}
 }

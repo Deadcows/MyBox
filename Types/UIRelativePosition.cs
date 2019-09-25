@@ -23,7 +23,8 @@ namespace MyBox
 		private RectTransform _transform;
 		private Vector2 _latestSize;
 		private Vector3 _latestPosition;
-
+		private bool _firstCall;
+		
 		private void Start()
 		{
 			_transform = transform as RectTransform;
@@ -36,7 +37,14 @@ namespace MyBox
 		{
 			if (_transform == null) return;
 			if (Target == null) return;
-
+			if (!_firstCall)
+			{
+				// Position is zero on PrefabModeEntered?
+				// ForceUpdateRectTransforms is not helping, but on second frame it's all ok
+				_firstCall = true;
+				return;
+			}
+			
 			var relativeToSize = Target.sizeDelta;
 			var relativeToPosition = Target.position;
 			if (_latestSize == relativeToSize && _latestPosition == relativeToPosition) return;
@@ -53,7 +61,7 @@ namespace MyBox
 			var y = top - anchorOffsetY + SetY.Value;
 
 			var localPosition = _transform.position;
-			var finalPosition = new Vector2(SetX.IsSet ? x : localPosition.x, SetY.IsSet ? y : localPosition.y);
+			var finalPosition = new Vector2(SetX.IsSet ? (int)x : localPosition.x, SetY.IsSet ? (int)y : localPosition.y);
 			_transform.position = finalPosition;
 		}
 

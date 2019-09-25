@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-namespace MyBox
+namespace MyBox.Internal
 {
-	public class Commentary : MonoBehaviour
+	public class CommentaryComponent : MonoBehaviour
 	{
 #if UNITY_EDITOR
 		[Serializable]
@@ -24,21 +24,21 @@ namespace MyBox.Internal
 	using UnityEditor;
 	using EditorTools;
 
-	[CustomEditor(typeof(Commentary))]
+	[CustomEditor(typeof(CommentaryComponent))]
 	public class CommentaryDrawer : Editor
 	{
-		private Commentary _commentary;
+		private CommentaryComponent _commentary;
 		private GUIContent _boxContent;
 
 		private bool _editMode;
 
 		public override void OnInspectorGUI()
 		{
-			if (_commentary == null) _commentary = target as Commentary;
+			if (_commentary == null) _commentary = target as CommentaryComponent;
 			if (_commentary == null) return;
 			if (_commentary.Entries == null)
 			{
-				_commentary.Entries = new Commentary.Entry[0];
+				_commentary.Entries = new CommentaryComponent.Entry[0];
 				EditorUtility.SetDirty(_commentary);
 			}
 
