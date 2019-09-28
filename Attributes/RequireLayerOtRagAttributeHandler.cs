@@ -1,6 +1,6 @@
+#if UNITY_EDITOR
 using Plugins.MyBox.Tools;
 
-#if UNITY_EDITOR
 namespace MyBox.Internal
 {
 	using UnityEditor;
