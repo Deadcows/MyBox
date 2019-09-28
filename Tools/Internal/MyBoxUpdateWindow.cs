@@ -65,7 +65,7 @@ namespace MyBox.Internal
 			EditorGUILayout.LabelField("Current version: " + _currentVersion.AsSting);
 			EditorGUILayout.LabelField("Latest version: " + (_latestVersion == null ? "..." : _latestVersion.AsSting));
 
-			bool anyUpdate = _latestVersion != null && _currentVersion.FullMatch(_latestVersion);
+			bool anyUpdate = _latestVersion != null && !_currentVersion.FullMatch(_latestVersion);
 			if (GUILayout.Button(anyUpdate ? "Update" : "Force Update", EditorStyles.toolbarButton))
 			{
 				if (!_isUPMVersion) Application.OpenURL(ReleasesURL);
