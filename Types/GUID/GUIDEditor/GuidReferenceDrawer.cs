@@ -1,30 +1,24 @@
-﻿// ---------------------------------------------------------------------------- 
-// Author: Unity Team
-// Date:   28/09/2018
-// Source: hhttps://github.com/Unity-Technologies/guid-based-reference
-// ----------------------------------------------------------------------------
-
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
 namespace MyBox.Internal
 {
-	// Using a property drawer to allow any class to have a field of type GuidReference and still get good UX
-	// If you are writing your own inspector for a class that uses a GuidReference, drawing it with
-	// EditorLayout.PropertyField(prop) or similar will get this to show up automatically
+	/// <summary>
+	/// Using a property drawer to allow any class to have a field of type GuidRefernce and still get good UX
+	/// If you are writing your own inspector for a class that uses a GuidReference, drawing it with
+	/// EditorLayout.PropertyField(prop) or similar will get this to show up automatically
+	/// </summary>
 	[CustomPropertyDrawer(typeof(GuidReference))]
 	public class GuidReferenceDrawer : PropertyDrawer
 	{
-		private SerializedProperty guidProp;
-		private SerializedProperty sceneProp;
-		private SerializedProperty nameProp;
+		SerializedProperty guidProp;
+		SerializedProperty sceneProp;
+		SerializedProperty nameProp;
 
 		// cache off GUI content to avoid creating garbage every frame in editor
-		private readonly GUIContent sceneLabel =
-			new GUIContent("Containing Scene", "The target object is expected in this scene asset.");
-
-		private readonly GUIContent clearButtonGUI = new GUIContent("Clear", "Remove Cross Scene Reference");
+		GUIContent sceneLabel = new GUIContent("Containing Scene", "The target object is expected in this scene asset.");
+		GUIContent clearButtonGUI = new GUIContent("Clear", "Remove Cross Scene Reference");
 
 		// add an extra line to display source scene for targets
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -48,6 +42,7 @@ namespace MyBox.Internal
 			var guidCompPosition = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
 			System.Guid currentGuid;
+			GameObject currentGO = null;
 
 			// working with array properties is a bit unwieldy
 			// you have to get the property at each index manually
@@ -60,7 +55,7 @@ namespace MyBox.Internal
 			}
 
 			currentGuid = new System.Guid(byteArray);
-			var currentGO = GuidManager.ResolveGuid(currentGuid);
+			currentGO = GuidManager.ResolveGuid(currentGuid);
 			GuidComponent currentGuidComponent = currentGO != null ? currentGO.GetComponent<GuidComponent>() : null;
 
 			GuidComponent component = null;
@@ -74,8 +69,7 @@ namespace MyBox.Internal
 
 				bool guiEnabled = GUI.enabled;
 				GUI.enabled = false;
-				EditorGUI.LabelField(guidCompPosition,
-					new GUIContent(nameProp.stringValue, "Target GameObject is not currently loaded."),
+				EditorGUI.LabelField(guidCompPosition, new GUIContent(nameProp.stringValue, "Target GameObject is not currently loaded."),
 					EditorStyles.objectField);
 				GUI.enabled = guiEnabled;
 
@@ -91,9 +85,7 @@ namespace MyBox.Internal
 			else
 			{
 				// if our object is loaded, we can simply use an object field directly
-				component =
-					EditorGUI.ObjectField(guidCompPosition, currentGuidComponent, typeof(GuidComponent), true) as
-						GuidComponent;
+				component = EditorGUI.ObjectField(guidCompPosition, currentGuidComponent, typeof(GuidComponent), true) as GuidComponent;
 			}
 
 			if (currentGuidComponent != null && component == null)
@@ -111,7 +103,7 @@ namespace MyBox.Internal
 				// only update the GUID Prop if something changed. This fixes multi-edit on GUID References
 				if (component != currentGuidComponent)
 				{
-					byteArray = component.Guid.ToByteArray();
+					byteArray = component.GetGuid().ToByteArray();
 					arraySize = guidProp.arraySize;
 					for (int i = 0; i < arraySize; ++i)
 					{

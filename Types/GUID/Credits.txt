@@ -1,0 +1,7 @@
+Official GUID based reference solution from Unity.
+Included in MyBox because I personally use it almost in every project :)
+And also with a few additions, like public Guid and GuidString properties.
+
+
+https://github.com/Unity-Technologies/guid-based-reference
+Version Aug 29, 2019

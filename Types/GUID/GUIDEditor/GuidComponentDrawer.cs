@@ -1,11 +1,6 @@
-﻿// ---------------------------------------------------------------------------- 
-// Author: Unity Team
-// Date:   28/09/2018
-// Source: hhttps://github.com/Unity-Technologies/guid-based-reference
-// ----------------------------------------------------------------------------
-
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine;
 
 namespace MyBox.Internal
 {
@@ -16,9 +11,13 @@ namespace MyBox.Internal
 
 		public override void OnInspectorGUI()
 		{
-			if (guidComp == null) guidComp = (GuidComponent) target;
+			if (guidComp == null)
+			{
+				guidComp = (GuidComponent) target;
+			}
 
-			EditorGUILayout.LabelField("Guid:", guidComp.GuidString);
+			// Draw label
+			EditorGUILayout.LabelField("Guid:", guidComp.GetGuid().ToString());
 		}
 	}
 }

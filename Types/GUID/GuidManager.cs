@@ -1,16 +1,12 @@
-﻿// ---------------------------------------------------------------------------- 
-// Author: Unity Team
-// Date:   28/09/2018
-// Source: hhttps://github.com/Unity-Technologies/guid-based-reference
-// ----------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace MyBox
 {
-	// Class to handle registering and accessing objects by GUID
+	/// <summary>
+	/// Class to handle registering and accessing objects by GUID
+	/// </summary>
 	public class GuidManager
 	{
 		// for each GUID we need to know the Game Object it references
@@ -47,70 +43,70 @@ namespace MyBox
 		}
 
 		// Singleton interface
-		private static GuidManager _instance;
+		static GuidManager Instance;
 
 		// All the public API is static so you need not worry about creating an instance
 		public static bool Add(GuidComponent guidComponent)
 		{
-			if (_instance == null)
+			if (Instance == null)
 			{
-				_instance = new GuidManager();
+				Instance = new GuidManager();
 			}
 
-			return _instance.InternalAdd(guidComponent);
+			return Instance.InternalAdd(guidComponent);
 		}
 
-		public static void Remove(Guid guid)
+		public static void Remove(System.Guid guid)
 		{
-			if (_instance == null)
+			if (Instance == null)
 			{
-				_instance = new GuidManager();
+				Instance = new GuidManager();
 			}
 
-			_instance.InternalRemove(guid);
+			Instance.InternalRemove(guid);
 		}
 
-		public static GameObject ResolveGuid(Guid guid, Action<GameObject> onAddCallback, Action onRemoveCallback)
+		public static GameObject ResolveGuid(System.Guid guid, Action<GameObject> onAddCallback, Action onRemoveCallback)
 		{
-			if (_instance == null)
+			if (Instance == null)
 			{
-				_instance = new GuidManager();
+				Instance = new GuidManager();
 			}
 
-			return _instance.ResolveGuidInternal(guid, onAddCallback, onRemoveCallback);
+			return Instance.ResolveGuidInternal(guid, onAddCallback, onRemoveCallback);
 		}
 
-		public static GameObject ResolveGuid(Guid guid, Action onDestroyCallback)
+		public static GameObject ResolveGuid(System.Guid guid, Action onDestroyCallback)
 		{
-			if (_instance == null)
+			if (Instance == null)
 			{
-				_instance = new GuidManager();
+				Instance = new GuidManager();
 			}
 
-			return _instance.ResolveGuidInternal(guid, null, onDestroyCallback);
+			return Instance.ResolveGuidInternal(guid, null, onDestroyCallback);
 		}
 
-		public static GameObject ResolveGuid(Guid guid)
+		public static GameObject ResolveGuid(System.Guid guid)
 		{
-			if (_instance == null)
+			if (Instance == null)
 			{
-				_instance = new GuidManager();
+				Instance = new GuidManager();
 			}
 
-			return _instance.ResolveGuidInternal(guid, null, null);
+			return Instance.ResolveGuidInternal(guid, null, null);
 		}
 
 		// instance data
-		private readonly Dictionary<Guid, GuidInfo> guidToObjectMap;
+		private Dictionary<System.Guid, GuidInfo> guidToObjectMap;
 
 		private GuidManager()
 		{
-			guidToObjectMap = new Dictionary<Guid, GuidInfo>();
+			guidToObjectMap = new Dictionary<System.Guid, GuidInfo>();
 		}
 
 		private bool InternalAdd(GuidComponent guidComponent)
 		{
-			Guid guid = guidComponent.Guid;
+			Guid guid = guidComponent.GetGuid();
 
 			GuidInfo info = new GuidInfo(guidComponent);
 
@@ -148,7 +144,7 @@ namespace MyBox
 			return true;
 		}
 
-		private void InternalRemove(Guid guid)
+		private void InternalRemove(System.Guid guid)
 		{
 			GuidInfo info;
 			if (guidToObjectMap.TryGetValue(guid, out info))
@@ -163,7 +159,7 @@ namespace MyBox
 		// nice easy api to find a GUID, and if it works, register an on destroy callback
 		// this should be used to register functions to cleanup any data you cache on finding
 		// your target. Otherwise, you might keep components in memory by referencing them
-		private GameObject ResolveGuidInternal(Guid guid, Action<GameObject> onAddCallback, Action onRemoveCallback)
+		private GameObject ResolveGuidInternal(System.Guid guid, Action<GameObject> onAddCallback, Action onRemoveCallback)
 		{
 			GuidInfo info;
 			if (guidToObjectMap.TryGetValue(guid, out info))
