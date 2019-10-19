@@ -4,8 +4,7 @@ It is MyBox. Now it's yours too :raised_hands:<br />
 
 --------
 
-You may install MyBox by simply putting MyBox folder somewhere under your Assets folder.<br />
-Or via <b>Unity Package Manager</b>:<br />
+You may install MyBox via <b>Unity Package Manager</b>:<br />
 Open Packages/manifest.json file in your project folder and put this line along with other dependencies<br />
 <pre>"com.mybox": "https://github.com/Deadcows/MyBox.git"</pre>
 Note how the comma lies at the end of every line in dependencies, except of the last line!
@@ -13,9 +12,14 @@ Note how the comma lies at the end of every line in dependencies, except of the 
 To update, use Tools->MyBox->Update window<br />
 MyBox will notify on new versions 🤗
 
+---
+
 ❕If you've got problems with update process simply remove "lock" section at the end of your Packages/manifest.json file.
 This will force Unity to redownload all git packages:
 ![](https://habrastorage.org/webt/zz/39/gd/zz39gd953fyel_zlvmonde-psva.png)
+
+
+...or simply put MyBox folder somewhere under your Assets folder 🤨<br />
 
 --------
 
@@ -40,6 +44,7 @@ Tons of images below :point_down:
 
 ## [Tools and Features](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features)
 **[AssetPressetPreprocessor](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#assetpressetpreprocessor)** — Conditionally apply Presets to your assets on import<br />
+
 **[TimeTest](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#timetest)** — Measure performance with simple api<br />
 **[IPrepare](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#iprepare)** — Easy way to replace caching, calculations and asserts from playmode<br />
 **[Features](https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#cleanup-empty-directories-and-autosave-features-and-some-hotkeys)** — Cleanup Empty Directories, AutoSave feature, Hotkeys<br />
