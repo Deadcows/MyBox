@@ -8,7 +8,7 @@ namespace MyBox
 	#region Default Reordable Types
 
 	[Serializable]
-	public class ReorderableGameObject : ReorderableArray<GameObject>
+	public class ReorderableGameObject : Reorderable<GameObject>
 	{
 	}
 
@@ -18,7 +18,7 @@ namespace MyBox
 	}
 
 	[Serializable]
-	public class ReorderableTransform : ReorderableArray<Transform>
+	public class ReorderableTransform : Reorderable<Transform>
 	{
 	}
 
@@ -31,9 +31,20 @@ namespace MyBox
 
 
 	[Serializable]
-	public class ReorderableArray<T> : Internal.ReorderableBase
+	public class Reorderable<T> : Internal.ReorderableBase
 	{
 		public T[] Collection;
+
+		public int Length
+		{
+			get { return Collection.Length; }
+		}
+		
+		public T this[int i]
+		{
+			get { return Collection[i]; }
+			set { Collection[i] = value; }
+		}
 	}
 
 	[Serializable]
