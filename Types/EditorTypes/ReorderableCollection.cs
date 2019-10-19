@@ -16,39 +16,65 @@ namespace MyBox.EditorTools
 
 		public void Draw()
 		{
-			if (!_property.isExpanded) DrawHeader();
-			else _list.DoLayoutList();
+			if (_property.isExpanded)
+			{
+				var headerRect = GUILayoutUtility.GetRect(0, 0, GUILayout.ExpandWidth(true));
+				headerRect.height = 20;
+				_list.DoLayoutList();
+				DrawHeader(headerRect);
+			}
+			else DrawHeader(GUILayoutUtility.GetRect(0, 20, GUILayout.ExpandWidth(true)));
 		}
 
-		
+		public void Draw(Rect rect)
+		{
+			if (_property.isExpanded) _list.DoList(rect);
+			DrawHeader(rect);
+		}
+
+		public float Height
+		{
+			get { return _property.isExpanded ? _list.GetHeight() : EditorGUIUtility.singleLineHeight + 12; }
+		}
+
+		public SerializedProperty Property
+		{
+			get { return _property; }
+		}
+
 		public Action<SerializedProperty, Rect, int> CustomDrawer;
+
 		/// <summary>
 		/// Return Height, Receive element index.
 		/// Use EditorApplication.delayCall to perform custom logic
 		/// </summary>
 		public Func<int, int> CustomDrawerHeight;
+
 		/// <summary>
 		/// Return false to perform default logic, Receive element index.
 		/// Use EditorApplication.delayCall to perform custom logic.
 		/// </summary>
 		public Func<int, bool> CustomAdd;
+
 		/// <summary>
 		/// Return false to perform default logic, Receive element index.
 		/// Use EditorApplication.delayCall to perform custom logic.
 		/// </summary>
 		public Func<int, bool> CustomRemove;
 
-		
+
 		private ReorderableList _list;
 		private SerializedProperty _property;
+		private readonly string _customHeader; 
 
 		public ReorderableCollection(SerializedProperty property, bool withAddButton = true,
-			bool withRemoveButton = true)
+			bool withRemoveButton = true, string customHeader = null)
 		{
 			_property = property;
 			_property.isExpanded = true;
+			_customHeader = customHeader;
 			
-			CreateList(property, withAddButton, withRemoveButton);
+			CreateList(property, withAddButton, withRemoveButton, customHeader == null);
 		}
 
 		~ReorderableCollection()
@@ -57,33 +83,32 @@ namespace MyBox.EditorTools
 			_list = null;
 		}
 
-		private void DrawHeader()
+		private void DrawHeader(Rect rect)
 		{
-			EditorGUILayout.BeginHorizontal();
-			_property.isExpanded = EditorGUILayout.ToggleLeft(string.Format("{0}[]", _property.displayName),
+			var headerRect = new Rect(rect);
+			headerRect.height = EditorGUIUtility.singleLineHeight;
+			
+			ReorderableList.defaultBehaviours.DrawHeaderBackground(headerRect);
+			
+			headerRect.width -= 50;
+			headerRect.x += 6;
+			headerRect.y += 2;
+			_property.isExpanded = EditorGUI.ToggleLeft(headerRect,
+				(_customHeader != null ? _customHeader : _property.displayName) + "[" + _property.arraySize + "]",
 				_property.isExpanded,
 				EditorStyles.boldLabel);
-			EditorGUILayout.LabelField(string.Format("size: {0}", _property.arraySize));
-			EditorGUILayout.EndHorizontal();
 		}
 
-		private void CreateList(SerializedProperty property, bool withAddButton, bool withRemoveButton)
+		private void CreateList(SerializedProperty property, bool withAddButton, bool withRemoveButton, bool displayHeader)
 		{
-			_list = new ReorderableList(property.serializedObject, property, true, true, withAddButton,
+			_list = new ReorderableList(property.serializedObject, property, true, displayHeader, withAddButton,
 				withRemoveButton);
 			_list.onChangedCallback += list => Apply();
 			_list.onAddCallback += AddElement;
 			_list.onRemoveCallback += RemoveElement;
-			_list.drawHeaderCallback += DrawElementHeader;
 			_list.onCanRemoveCallback += (list) => _list.count > 0;
 			_list.drawElementCallback += DrawElement;
 			_list.elementHeightCallback += GetElementHeight;
-		}
-
-		private void DrawElementHeader(Rect rect)
-		{
-			_property.isExpanded =
-				EditorGUI.ToggleLeft(rect, _property.displayName, _property.isExpanded, EditorStyles.boldLabel);
 		}
 
 		private void AddElement(ReorderableList list)
@@ -91,7 +116,7 @@ namespace MyBox.EditorTools
 			if (CustomAdd == null || !CustomAdd(_property.arraySize))
 				ReorderableList.defaultBehaviours.DoAddButton(list);
 		}
-		
+
 		private void RemoveElement(ReorderableList list)
 		{
 			if (CustomRemove == null || !CustomRemove(list.index))
@@ -101,7 +126,7 @@ namespace MyBox.EditorTools
 		private void DrawElement(Rect rect, int index, bool active, bool focused)
 		{
 			EditorGUI.BeginChangeCheck();
-			
+
 			var property = _property.GetArrayElementAtIndex(index);
 			rect.height = GetElementHeight(index);
 			rect.y += 1;
@@ -112,7 +137,7 @@ namespace MyBox.EditorTools
 				var element = _property.GetArrayElementAtIndex(index);
 				var newRect = rect;
 				newRect.x += 20;
-				
+
 				if (element.propertyType == SerializedPropertyType.Generic) EditorGUI.LabelField(newRect, element.displayName);
 				EditorGUI.PropertyField(rect, property, GUIContent.none, true);
 			}
@@ -124,7 +149,7 @@ namespace MyBox.EditorTools
 		private float GetElementHeight(int index)
 		{
 			if (CustomDrawerHeight != null) return CustomDrawerHeight(index);
-			
+
 			var element = _property.GetArrayElementAtIndex(index);
 			var height = EditorGUI.GetPropertyHeight(element, GUIContent.none, true);
 			return Mathf.Max(EditorGUIUtility.singleLineHeight, height + 4.0f);
