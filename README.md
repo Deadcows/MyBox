@@ -13,6 +13,10 @@ Note how the comma lies at the end of every line in dependencies, except of the 
 To update, use Tools->MyBox->Update window<br />
 MyBox will notify on new versions 🤗
 
+❕If you've got problems with update process simply remove "lock" section at the end of your Packages/manifest.json file.
+This will force Unity to redownload all git packages:
+![](https://habrastorage.org/webt/zz/39/gd/zz39gd953fyel_zlvmonde-psva.png)
+
 --------
 
 Tons of images below :point_down:
