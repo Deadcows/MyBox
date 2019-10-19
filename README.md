@@ -10,16 +10,14 @@ Open Packages/manifest.json file in your project folder and put this line along 
 Note how the comma lies at the end of every line in dependencies, except of the last line!
 
 To update, use Tools->MyBox->Update window<br />
-MyBox will notify on new versions 🤗
+MyBox will notify on new versions 🤗 <br /><br />
 
----
-
-❕If you've got problems with update process simply remove "lock" section at the end of your Packages/manifest.json file.
+❕If you got problems with update process simply remove "lock" section at the end of your Packages/manifest.json file.
 This will force Unity to redownload all git packages:
 ![](https://habrastorage.org/webt/zz/39/gd/zz39gd953fyel_zlvmonde-psva.png)
 
 
-...or simply put MyBox folder somewhere under your Assets folder 🤨<br />
+...or simply put MyBox folder downloaded from git somewhere under your Assets folder 🤨<br />
 
 --------
 
