@@ -13,7 +13,7 @@ To update, use Tools->MyBox->Update window<br />
 MyBox will notify on new versions 🤗 <br /><br />
 
 ❕If you got problems with update process simply remove "lock" section at the end of your Packages/manifest.json file.
-This will force Unity to redownload all git packages:
+This will force Unity to redownload all git packages: <br />
 ![](https://habrastorage.org/webt/zz/39/gd/zz39gd953fyel_zlvmonde-psva.png)
 
 
