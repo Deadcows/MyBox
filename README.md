@@ -2,8 +2,8 @@
 MyBox is a set of tools, features and extensions for Unity.<br />
 It is MyBox. Now it's yours too :raised_hands:<br />
 
---------
 
+## Installation: 
 You may install MyBox via <b>Unity Package Manager</b>:<br />
 Open Packages/manifest.json file in your project folder and put this line along with other dependencies<br />
 <pre>"com.mybox": "https://github.com/Deadcows/MyBox.git"</pre>
