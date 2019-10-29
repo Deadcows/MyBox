@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AI;
 
 namespace MyBox
@@ -63,6 +64,30 @@ namespace MyBox
 			}
 
 			return path.corners[path.corners.Length - 1];
+		}
+		
+		/// <summary>
+		/// Split path on points with defined distance
+		/// </summary>
+		/// <param name="path">Path to calculate</param>
+		/// <param name="distance">Distance between points on path</param>
+		public static IEnumerable<Vector3> GetPointsOnPath(this NavMeshPath path, float distance = 1)
+		{
+			float pieceTraversedDistance = 0;
+			for (var i = 1; i < path.corners.Length; i++)
+			{
+				var from = path.corners[i - 1];
+				var to = path.corners[i];
+				var pieceLength = Vector3.Distance(from, to);
+
+				while (pieceTraversedDistance < pieceLength + distance)
+				{
+					var pointRatio = pieceTraversedDistance / pieceLength;
+					yield return Vector3.Lerp(from, to, pointRatio);
+					pieceTraversedDistance += distance;
+				}
+				pieceTraversedDistance -= pieceLength;
+			}
 		}
 	}
 }
