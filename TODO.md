@@ -6,6 +6,11 @@
   
 * #### AnimationStateReference not working with nested inspector
 
+* #### Asset to sync some specified editorprefs (via VCS)
+  * asset stores its version (incremented every time on changes). Store different import/export versions?
+  * stores latest sync version in EditorPrefs
+  * if EditorPref value changed, compare EditorPrefs version with asset export version
+
 * #### Setting to get MyBoxUpdate warnings about new versions + about bugfixes
 
 * #### OnPlaymodeLogger (MyLogger?) to accumulate log messages before playmode and log on playmode
