@@ -3,6 +3,8 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine.AI;
+
 #endif
 
 namespace MyBox
@@ -33,6 +35,7 @@ namespace MyBox
 		public bool IncludeChildColliders;
 
 
+		private NavMeshObstacle _navMeshObstacle;
 		private List<EdgeCollider2D> _edgeColliders2D;
 		private List<BoxCollider2D> _boxColliders2D;
 		private List<CircleCollider2D> _circleColliders2D;
@@ -74,6 +77,7 @@ namespace MyBox
 			if (_boxColliders != null) _boxColliders.Clear();
 			if (_sphereColliders != null) _sphereColliders.Clear();
 
+			_navMeshObstacle = gameObject.GetComponent<NavMeshObstacle>();
 			Collider2D[] colliders2d = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider2D>() : gameObject.GetComponents<Collider2D>();
 			Collider[] colliders = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider>() : gameObject.GetComponents<Collider>();
 
@@ -197,6 +201,25 @@ namespace MyBox
 			DrawColliderGizmo(target.position + new Vector3(center.x, center.y, 0.0f), coll.radius * max);
 		}
 
+		private void DrawNavMeshObstacle(NavMeshObstacle obstacle)
+		{
+			var target = obstacle.transform;
+			
+			if (obstacle.shape == NavMeshObstacleShape.Box)
+			{
+				Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
+				DrawColliderGizmo(obstacle.center, obstacle.size);
+				Gizmos.matrix = Matrix4x4.identity;
+			}
+			else
+			{
+				var scale = target.lossyScale;
+				var center = obstacle.center;
+				var max = Mathf.Max(scale.x, Mathf.Max(scale.y, scale.z)); // to not use Mathf.Max version with params[]
+				DrawColliderGizmo(target.position + new Vector3(center.x, center.y, 0.0f), obstacle.radius * max);
+			}
+		}
+
 
 		private void DrawColliders()
 		{
@@ -209,12 +232,9 @@ namespace MyBox
 				}
 			}
 
-			Gizmos.color = new Color(WireColor.r, WireColor.g, WireColor.b, WireColor.a * Alpha);
-
-
-			Gizmos.color = new Color(FillColor.r, FillColor.g, FillColor.b, FillColor.a * Alpha);
-
 			if (!DrawWire && !DrawFill) return;
+			
+			if (_navMeshObstacle != null) DrawNavMeshObstacle(_navMeshObstacle);
 
 			if (_edgeColliders2D != null)
 			{
