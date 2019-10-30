@@ -42,17 +42,10 @@ namespace MyBox.Internal
 			string content = Convert.ToBase64String(File.ReadAllBytes(selected[0]));
 			_representation = content;
 			
-			CopyToClipboard(_representation);
+			MyEditor.CopyToClipboard(_representation);
 			ShowNotification(new GUIContent(selected[0] + "\nCopied to Clipboard as string"));
 
 			_texture = ImageStringConverter.ImageFromString(_representation, _width, _height);
-		}
-		void CopyToClipboard(string text)
-		{
-			TextEditor te = new TextEditor();
-			te.text = text;
-			te.SelectAll();
-			te.Copy();
 		}
 	}
 }

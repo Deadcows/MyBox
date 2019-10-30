@@ -264,6 +264,15 @@ namespace MyBox.EditorTools
 		}
 
 		#endregion
+
+
+		public static void CopyToClipboard(string text)
+		{
+			TextEditor te = new TextEditor();
+			te.text = text;
+			te.SelectAll();
+			te.Copy();
+		}
 	}
 }
 #pragma warning restore 618
