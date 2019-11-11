@@ -28,7 +28,7 @@ namespace MyBox.Internal
 				.SingleOrDefault();
 
 			return conditionalFieldAttribute != null &&
-			       !conditionalFieldAttribute.CheckBehaviourPropertyVisible(behaviour, field.Name);
+			       !ConditionalFieldUtility.BehaviourPropertyIsVisible(behaviour, field.Name, conditionalFieldAttribute);
 		}
 	}
 }
