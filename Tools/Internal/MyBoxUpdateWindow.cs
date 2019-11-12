@@ -15,31 +15,19 @@ namespace MyBox.Internal
 	{
 		public static bool IsEnabled = true;
 
-
-		private static readonly string MyBoxPackageInfoURL = "https://raw.githubusercontent.com/Deadcows/MyBox/master/package.json";
-		private static readonly string ReleasesURL = "https://github.com/Deadcows/MyBox/releases";
-
-		private static readonly string MyBoxPackageTag = "com.mybox";
-		private static readonly string MyBoxRepoLink = "https://github.com/Deadcows/MyBox.git";
-
-
-		private static bool _isUPMVersion;
 		private static Version _currentVersion;
 		private static Version _latestVersion;
 
+		
 		private static EditorWindow _windowInstance;
+		
 
 		static MyBoxUpdateWindow()
 		{
+			return;
 			if (!IsEnabled) return;
 
-			try
-			{
-				CheckForUpdate(true);
-			}
-			catch (Exception)
-			{
-			}
+			CheckForUpdate();
 		}
 
 
@@ -53,8 +41,8 @@ namespace MyBox.Internal
 
 		private void OnEnable()
 		{
+			_windowInstance = this;
 			CheckForUpdate();
-			_isUPMVersion = IsUPMVersion();
 		}
 
 
@@ -68,24 +56,24 @@ namespace MyBox.Internal
 			bool anyUpdate = _latestVersion != null && !_currentVersion.FullMatch(_latestVersion);
 			if (GUILayout.Button(anyUpdate ? "Update" : "Force Update", EditorStyles.toolbarButton))
 			{
-				if (!_isUPMVersion) Application.OpenURL(ReleasesURL);
+				if (!MyBoxUtilities.InstalledViaUPM) Application.OpenURL(MyBoxUtilities.ReleasesURL);
 				else UpdatePackage();
 			}
 		}
 
-		private static void CheckForUpdate(bool withLog = false)
+		private static void CheckForUpdate()
 		{
 			CheckCurrentVersion();
-			CheckOnlineVersionAsync(withLog);
+			CheckOnlineVersionAsync();
 		}
 
 
 		private static void UpdatePackage()
 		{
 			// TODO: Latest version should be valid
-			var manifestFile = GetPackagesManifest();
+			var manifestFile = MyBoxUtilities.ManifestJsonPath;
 			var manifest = File.ReadAllLines(manifestFile);
-			var myBoxLine = manifest.SingleOrDefault(l => l.Contains(MyBoxRepoLink));
+			var myBoxLine = manifest.SingleOrDefault(l => l.Contains(MyBoxUtilities.MyBoxRepoLink));
 			if (string.IsNullOrEmpty(myBoxLine)) return; // TODO: Exceptional
 
 			var indexOfMyBoxLine = manifest.IndexOfItem(myBoxLine);
@@ -93,42 +81,27 @@ namespace MyBox.Internal
 			myBoxLine = myBoxLine.Trim();
 			bool withComma = myBoxLine.EndsWith(",");
 
-			var tagWrapped = "\"" + MyBoxPackageTag + "\"";
+			var tagWrapped = "\"" + MyBoxUtilities.MyBoxPackageTag + "\"";
 			var separator = ": ";
 			var version = "#" + _latestVersion;
-			var repoLinkWrapped = "\"" + MyBoxRepoLink + version + "\"";
+			var repoLinkWrapped = "\"" + MyBoxUtilities.MyBoxRepoLink + version + "\"";
 			var comma = withComma ? "," : "";
 
 			var newLine = indent + tagWrapped + separator + repoLinkWrapped + comma;
 			manifest[indexOfMyBoxLine] = newLine;
 		}
 
-		private static bool IsUPMVersion()
-		{
-			var manifestFile = GetPackagesManifest();
-			if (manifestFile == null) return false; // TODO: Exceptional
 
-			var manifest = File.ReadAllLines(manifestFile);
-			return manifest.Any(l => l.Contains(MyBoxPackageTag));
-		}
-
-		private static string GetPackagesManifest()
-		{
-			var packageDir = Application.dataPath.Replace("Assets", "Packages");
-			return Directory.GetFiles(packageDir).SingleOrDefault(f => f.EndsWith("manifest.json"));
-		}
-
-
-		private static async void CheckOnlineVersionAsync(bool withLog)
+		private static async void CheckOnlineVersionAsync()
 		{
 			//TODO: Try Catch Exceptional
 			using (HttpClient wc = new HttpClient())
 			{
-				var packageJson = await wc.GetStringAsync(MyBoxPackageInfoURL);
+				var packageJson = await wc.GetStringAsync(MyBoxUtilities.MyBoxPackageInfoURL);
 				_latestVersion = new Version(ParsePackageVersion(packageJson));
 				if (_windowInstance != null) _windowInstance.Repaint();
 
-				if (!_currentVersion.BaseVersionMatch(_latestVersion) && withLog)
+				if (!_currentVersion.BaseVersionMatch(_latestVersion))
 				{
 					Debug.Log("It's time to update MyBox :)! Use \"Tools/MyBox/Update window\". Current version: " +
 					          _currentVersion + ", new version: " + _latestVersion);
@@ -138,17 +111,14 @@ namespace MyBox.Internal
 
 		private static void CheckCurrentVersion()
 		{
-			var scriptPath = MyEditor.GetScriptAssetPath(MyBoxUpdateWindowLocation.Instance);
-			var scriptDirectory = new DirectoryInfo(scriptPath);
-
-			// Script is in MyBox/Tools/Internal so we need to get dir two steps up in hierarchy
-			if (scriptDirectory.Parent == null || scriptDirectory.Parent.Parent == null) return; //TODO: Exceptional
-			var myBoxDirectory = scriptDirectory.Parent.Parent;
-
-			var packageJson = myBoxDirectory.GetFiles().SingleOrDefault(f => f.Name == "package.json");
-			if (packageJson == null) return; //TODO: Exceptional
-
-			_currentVersion = new Version(ParsePackageVersion(File.ReadAllText(packageJson.FullName)));
+			var packageJsonPath = MyBoxUtilities.PackageJsonPath;
+			if (packageJsonPath == null)
+			{
+				Debug.LogWarning("MyBox is unable to check installed version :(");
+				return;
+			}
+			var packageJsonContents = File.ReadAllText(packageJsonPath);
+			_currentVersion = new Version(ParsePackageVersion(packageJsonContents));
 		}
 
 		private static string ParsePackageVersion(string json)
@@ -160,7 +130,10 @@ namespace MyBox.Internal
 
 			return matches[1].Value.Trim('"');
 		}
+		
 
+		#region Version Type
+		
 		[Serializable]
 		private class Version
 		{
@@ -170,6 +143,7 @@ namespace MyBox.Internal
 
 			public string AsSting;
 
+			/// <param name="version">NUM.NUM.NUM format</param>
 			public Version(string version)
 			{
 				AsSting = version;
@@ -179,6 +153,9 @@ namespace MyBox.Internal
 				Patch = v[2];
 			}
 
+			/// <summary>
+			/// Major & Minor versions match, skip patch releases
+			/// </summary>
 			public bool BaseVersionMatch(Version version)
 			{
 				return Major == version.Major && Minor == version.Minor;
@@ -189,6 +166,8 @@ namespace MyBox.Internal
 				return BaseVersionMatch(version) && Patch == version.Patch;
 			}
 		}
+		
+		#endregion
 	}
 }
 #endif
