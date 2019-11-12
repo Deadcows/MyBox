@@ -4,14 +4,15 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
-- Added Reorderable Collections!
-- Added Transform.StartShake and Transform.EndShake extension methods. Use on Camera transform for screen shake effect for instance
-- Added MyEditor.CopyToClipboard method. Copy string via script like with Ctrl+C
-- ConditionalFieldAttribute works on custom types inside of collections
-- ConditionalFieldAttribute now wirks much faster!
-- NavMeshPath.GetPointsOnPath extension to split path on evenly destributed points
+- Added: Reorderable Collections!
+- Added: Transform.StartShake and Transform.EndShake extension methods. Use on Camera transform for screen shake effect for instance
+- Added: NavMeshPath.GetPointsOnPath extension to split path on evenly destributed points
+- Added: MyEditor.CopyToClipboard method. Copy string via script like with Ctrl+C
+- Changed: ConditionalFieldAttribute works on custom types inside of collections
+- Changed: ConditionalFieldAttribute now wirks much faster!
+- Changed: ColliderGizmo now also highlights NavMeshObstacles
 - GUIDComponent updated
-- Compilation error fixed
+- Fix: Compilation error fixed
 
 
 ## [1.1.0] - 2019-09-25
