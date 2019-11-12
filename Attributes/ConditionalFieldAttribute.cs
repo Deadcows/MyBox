@@ -33,48 +33,47 @@ namespace MyBox
 namespace MyBox.Internal
 {
     using UnityEditor;
-    using UnityEngine.Profiling;
 
     [CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
     public class ConditionalFieldAttributeDrawer : PropertyDrawer
     {
         private ConditionalFieldAttribute _attribute;
-        private bool _initialized;
-        private SerializedProperty _targetProperty;
-
+        
+        private bool _customDrawersCached;
         private static IEnumerable<Type> _typesCache;
-
         private bool _multipleAttributes;
         private bool _specialType;
-
         private PropertyAttribute _genericAttribute;
         private PropertyDrawer _genericDrawerInstance;
         private Type _genericDrawerType;
-
         private Type _genericType;
         private PropertyDrawer _genericTypeDrawerInstance;
         private Type _genericTypeDrawerType;
 
 
+        /// <summary>
+        /// If conditional is part of type in collection, we need to link properties as in collection
+        /// </summary>
+        private readonly Dictionary<SerializedProperty, SerializedProperty> _conditionalToTarget = 
+            new Dictionary<SerializedProperty, SerializedProperty>();
         private bool _toShow = true;
 
 
         private void Initialize(SerializedProperty property)
         {
-            if (_initialized) return;
-
-            _attribute = attribute as ConditionalFieldAttribute;
+            if (_attribute == null) _attribute = attribute as ConditionalFieldAttribute;
             if (_attribute == null) return;
             
-            _targetProperty = ConditionalFieldUtility.FindRelativeProperty(property, _attribute.FieldToCheck);
-
-
+            if (!_conditionalToTarget.ContainsKey(property)) 
+                _conditionalToTarget.Add(property, ConditionalFieldUtility.FindRelativeProperty(property, _attribute.FieldToCheck));
+            
+            
+            if (_customDrawersCached) return;
             if (_typesCache == null)
             {
                 _typesCache = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
                     .Where(x => typeof(PropertyDrawer).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
             }
-
             
             if (fieldInfo.GetCustomAttributes(typeof(PropertyAttribute), false).Count() > 1)
             {
@@ -87,7 +86,7 @@ namespace MyBox.Internal
                 GetTypeDrawerType(property);
             }
 
-            _initialized = true;
+            _customDrawersCached = true;
         }
 
 
@@ -95,7 +94,7 @@ namespace MyBox.Internal
         {
             Initialize(property);
 
-            _toShow = ConditionalFieldUtility.PropertyIsVisible(_targetProperty, _attribute.Inverse, _attribute.CompareValues);
+            _toShow = ConditionalFieldUtility.PropertyIsVisible(_conditionalToTarget[property], _attribute.Inverse, _attribute.CompareValues);
             if (!_toShow) return 0;
 
             if (_genericDrawerInstance != null)

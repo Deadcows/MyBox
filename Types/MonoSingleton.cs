@@ -5,7 +5,6 @@ namespace MyBox
     public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         [SerializeField, Tooltip("True to not destroy this object when it loads")]
-        private bool dontDestroyOnLoad;
 
         private static T _instance;
 
@@ -28,17 +27,6 @@ namespace MyBox
 
         private void Awake()
         {
-            var instance = Instance;
-
-            if (dontDestroyOnLoad)
-            {
-                // Ensure that the instance actually exists before we do a "DontDestroyOnLoad" on it.
-                if (instance != null)
-                {
-                    DontDestroyOnLoad(instance);
-                }
-            }
-
             OnAwake();
         }
 

@@ -76,14 +76,14 @@ namespace MyBox.Internal
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
+			if (_reorderable == null)
+				_reorderable = new ReorderableCollection(property.FindPropertyRelative("Collection"), true, true, property.displayName);
+			
 			return _reorderable != null ? _reorderable.Height : base.GetPropertyHeight(property, label);
 		}
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			if (_reorderable == null)
-				_reorderable = new ReorderableCollection(property.FindPropertyRelative("Collection"), true, true, property.displayName);
-
 			EditorGUI.BeginProperty(position, label, property);
 			_reorderable.Draw(position);
 			EditorGUI.EndProperty();
