@@ -6,6 +6,10 @@
   
 * #### AnimationStateReference not working with nested inspector
 
+* #### SetValueOnBuild attribute. 
+  * I need to dig through all scenes in build settings, somehow find all fields with attribute in meta and change value?
+  * OR Maybe simply add type wrapper for any value type to return some value in editor and some other in build?
+
 * #### Asset to sync some specified editorprefs (via VCS)
   * asset stores its version (incremented every time on changes). Store different import/export versions?
   * stores latest sync version in EditorPrefs
