@@ -1,10 +1,11 @@
-using System.Net.Http;
-using System.Text.RegularExpressions;
 #if UNITY_EDITOR
 using System;
 using System.IO;
 using UnityEngine;
 using System.Linq;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using UnityEditor;
 
 namespace MyBox.Internal
 {
@@ -12,7 +13,7 @@ namespace MyBox.Internal
     {
         private static readonly string ReleasesURL = "https://github.com/Deadcows/MyBox/releases";
         private static readonly string MyBoxPackageInfoURL = "https://raw.githubusercontent.com/Deadcows/MyBox/master/package.json";
-        
+
         private static readonly string MyBoxPackageTag = "com.mybox";
         //public static readonly string MyBoxRepoLink = "https://github.com/Deadcows/MyBox.git";
 
@@ -20,7 +21,7 @@ namespace MyBox.Internal
         {
             Application.OpenURL(ReleasesURL);
         }
-        
+
 
         #region Get Current / Latest Versions
 
@@ -105,7 +106,7 @@ namespace MyBox.Internal
             }
 
             if (cutFrom <= 0) return false;
-            
+
             manifest[cutFrom - 1] = "}";
             var removeLinesCount = manifest.Count - cutFrom - 1;
             manifest.RemoveRange(cutFrom, removeLinesCount);
@@ -117,6 +118,8 @@ namespace MyBox.Internal
                     for (int i = 0; i < manifest.Count; i++)
                         sr.WriteLine(manifest[i]);
                 }
+
+                AssetDatabase.Refresh(ImportAssetOptions.Default);
             }
             catch (Exception ex)
             {
