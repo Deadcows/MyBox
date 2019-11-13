@@ -1,10 +1,14 @@
-using System.IO;
 #if UNITY_EDITOR
 using MyBox.EditorTools;
 using UnityEngine;
+using System.IO;
 
 namespace MyBox.Internal
 {
+    /// <summary>
+    /// SO is needed to determine the path to this script.
+    /// Thereby it's used to get relative path to MyBox
+    /// </summary>
     public class MyBoxInternalPath : ScriptableObject
     {
         /// <summary>
@@ -35,7 +39,7 @@ namespace MyBox.Internal
         private static DirectoryInfo _myBoxDirectory;
         private static bool _directoryChecked;
 
-        public static MyBoxInternalPath Instance
+        private static MyBoxInternalPath Instance
         {
             get
             {
