@@ -68,6 +68,7 @@ namespace MyBox
 			}
 
 			transform.position = initialPosition;
+			_activeShakingTransforms.Remove(transform);
 		}
 
 		private static void BreakShakeIfAny(Transform transform)
