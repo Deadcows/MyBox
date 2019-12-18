@@ -6,6 +6,10 @@
   
 * #### AnimationStateReference not working with nested inspector
 
+* #### ReorderableCollection - add dropdown area to assign bunch of objects via drag-n-drop
+
+* #### ButtonMethod and Foldout are not tested with multiobject selection
+
 * #### SetValueOnBuild attribute. 
   * I need to dig through all scenes in build settings, somehow find all fields with attribute in meta and change value?
   * OR Maybe simply add type wrapper for any value type to return some value in editor and some other in build?
