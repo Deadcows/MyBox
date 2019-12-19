@@ -29,6 +29,7 @@ Tons of images below :point_down:
 **[ConditionalField](https://github.com/Deadcows/MyBox/wiki/Attributes#conditionalfield)** — Conditionally display property in inspector, based on some other property value<br />
 **[DefinedValues](https://github.com/Deadcows/MyBox/wiki/Attributes#definedvalues)** — Display Dropdown with predefined values<br />
 **[DisplayInspector](https://github.com/Deadcows/MyBox/wiki/Attributes#displayinspector)** — Display one inspector inside of another<br />
+**[Foldout](https://github.com/Deadcows/MyBox/wiki/Attributes#foldout)** — Group your fields in inspector<br />
 **[Tag, Layer, SpriteLayer](https://github.com/Deadcows/MyBox/wiki/Attributes#tag-layer-spritelayer)** — Dropdown with Tags, Layers or SpriteLayers<br />
 **[MinMaxRange, RangedFloat and RangedInt](https://github.com/Deadcows/MyBox/wiki/Attributes#minmaxrange-rangedfloat-and-rangedint)** — Ranged sliders<br />
 **[MustBeAssigned](https://github.com/Deadcows/MyBox/wiki/Attributes#mustbeassigned)** — Automatically checks if field is assigned (not null / not empty / not default value) on Playmode<br />
