@@ -7,6 +7,7 @@
 using System;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MyBox
 {
@@ -24,59 +25,16 @@ namespace MyBox.Internal
 	using System.Reflection;
 	using UnityEditor;
 	
-	[CustomEditor(typeof(MonoBehaviour), true), CanEditMultipleObjects]
-	public class ButtonMethodMonoBehaviourEditor : Editor
+	public class ButtonMethodHandler
 	{
-		private List<MethodInfo> _methods;
-		private MonoBehaviour _target;
+		private readonly Object _target;
+		private readonly List<MethodInfo> _targetMethods;
 
-		private void OnEnable()
+		public ButtonMethodHandler(Object target)
 		{
-			_target = target as MonoBehaviour;
-			if (_target == null) return;
-
-			_methods = ButtonMethodHandler.CollectValidMembers(_target.GetType());
-		}
-
-		public override void OnInspectorGUI()
-		{
-			base.OnInspectorGUI();
-			if (_methods == null) return;
-
-			ButtonMethodHandler.OnInspectorGUI(_target, _methods);
-		}
-	}
-
-
-	[CustomEditor(typeof(ScriptableObject), true), CanEditMultipleObjects]
-	public class ButtonMethodScriptableObjectEditor : Editor
-	{
-		private List<MethodInfo> _methods;
-		private ScriptableObject _target;
-
-		private void OnEnable()
-		{
-			_target = target as ScriptableObject;
-			if (_target == null) return;
-
-			_methods = ButtonMethodHandler.CollectValidMembers(_target.GetType());
-		}
-
-		public override void OnInspectorGUI()
-		{
-			base.OnInspectorGUI();
-			if (_methods == null) return;
-
-			ButtonMethodHandler.OnInspectorGUI(_target, _methods);
-		}
-	}
-
-	public static class ButtonMethodHandler
-	{
-		public static List<MethodInfo> CollectValidMembers(Type type)
-		{
-			List<MethodInfo> methods = null;
-
+			_target = target;
+			
+			var type = target.GetType();
 			var members = type.GetMembers(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
 				.Where(IsButtonMethod);
 
@@ -85,25 +43,24 @@ namespace MyBox.Internal
 				var method = member as MethodInfo;
 				if (IsValidMember(method, member))
 				{
-					if (methods == null) methods = new List<MethodInfo>();
-					methods.Add(method);
+					if (_targetMethods == null) _targetMethods = new List<MethodInfo>();
+					_targetMethods.Add(method);
 				}
 			}
-
-			return methods;
 		}
 
-		public static void OnInspectorGUI(UnityEngine.Object target, List<MethodInfo> methods)
+		public void OnInspectorGUI()
 		{
+			if (_targetMethods == null) return;
 			EditorGUILayout.Space();
 
-			foreach (MethodInfo method in methods)
+			foreach (MethodInfo method in _targetMethods)
 			{
-				if (GUILayout.Button(SplitCamelCase(method.Name))) InvokeMethod(target, method);
+				if (GUILayout.Button(SplitCamelCase(method.Name))) InvokeMethod(_target, method);
 			}
 		}
 
-		private static void InvokeMethod(UnityEngine.Object target, MethodInfo method)
+		private static void InvokeMethod(Object target, MethodInfo method)
 		{
 			var result = method.Invoke(target, null);
 
