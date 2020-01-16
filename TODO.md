@@ -6,6 +6,11 @@
   
 * #### AnimationStateReference not working with nested inspector
 
+* #### Make FoldoutAttribute animated & alternative toolbar design
+  https://docs.unity3d.com/ScriptReference/EditorGUILayout.BeginFadeGroup.html
+  https://docs.unity3d.com/ScriptReference/EditorGUILayout.InspectorTitlebar.html
+  https://docs.unity3d.com/ScriptReference/EditorGUILayout.EditorToolbar.html
+
 * #### ReorderableCollection - add dropdown area to assign bunch of objects via drag-n-drop
 
 * #### ButtonMethod and Foldout are not tested with multiobject selection
