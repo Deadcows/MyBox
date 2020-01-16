@@ -4,7 +4,10 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
+
+## [1.3.0] - 2019-11-13
 - Added: FoldoutAttribute. Thanks to PixeyeHQ!
+- Added: UnityEvent inspector revamp! Now it's foldable and reorderable :). Thanks to Byron Mayne!
 - Fix: TransformShakeExtension critical bug fixed
 
 ## [1.2.0] - 2019-11-13
