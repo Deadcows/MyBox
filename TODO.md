@@ -11,6 +11,8 @@
   https://docs.unity3d.com/ScriptReference/EditorGUILayout.InspectorTitlebar.html
   https://docs.unity3d.com/ScriptReference/EditorGUILayout.EditorToolbar.html
 
+* #### Cursor (MyCursor?) type. To set Sprite and Hotspot values in inspector, with Cursor.Apply() function?
+
 * #### ReorderableCollection - add dropdown area to assign bunch of objects via drag-n-drop
 
 * #### ButtonMethod and Foldout are not tested with multiobject selection
