@@ -38,7 +38,7 @@ namespace MyBox.EditorTools
 		private static string[] OnWillSaveAssets(string[] paths)
 		{
 			// Prefab creation enforces SaveAsset and this may cause unwanted dir cleanup
-			if (paths.Length == 1 && paths[0].EndsWith(".prefab")) return paths;
+			if (paths.Length == 1 && (paths[0] == null || paths[0].EndsWith(".prefab"))) return paths;
 
 			if (OnSave != null) OnSave();
 
