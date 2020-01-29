@@ -21,7 +21,7 @@ namespace MyBox
 			var position = camera.WorldToViewportPoint(point);
 			return position.x > 0 && position.y > 0;
 		}
-		
+
 
 		public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
 		{
@@ -37,12 +37,12 @@ namespace MyBox
 			return component.gameObject.AddComponent<T>();
 		}
 
-		public static bool HasComponent<T>(this GameObject gameObject) where T : Component
+		public static bool HasComponent<T>(this GameObject gameObject)
 		{
 			return gameObject.GetComponent<T>() != null;
 		}
-		
-		
+
+
 		/// <summary>
 		/// Get all components of specified Layer in childs
 		/// </summary>
@@ -83,40 +83,40 @@ namespace MyBox
 			body.isKinematic = !state;
 			body.detectCollisions = state;
 		}
-		
-		
+
+
 		/// <summary>
 		/// Find all Components of specified interface
 		/// </summary>
-		public static I[] FindObjectsOfInterface<I>() where I : class
+		public static T[] FindObjectsOfInterface<T>() where T : class
 		{
 			var monoBehaviours = Object.FindObjectsOfType<Transform>();
 
-			return monoBehaviours.Select(behaviour => behaviour.GetComponent(typeof(I))).OfType<I>().ToArray();
+			return monoBehaviours.Select(behaviour => behaviour.GetComponent(typeof(T))).OfType<T>().ToArray();
 		}
 
 		/// <summary>
 		/// Find all Components of specified interface along with Component itself
 		/// </summary>
-		public static ComponentOfInterface<I>[] FindObjectsOfInterfaceAsComponents<I>() where I : class
+		public static ComponentOfInterface<T>[] FindObjectsOfInterfaceAsComponents<T>() where T : class
 		{
 			return Object.FindObjectsOfType<Component>()
-				.Where(c => c is I)
-				.Select(c => new ComponentOfInterface<I>(c, c as I)).ToArray();
+				.Where(c => c is T)
+				.Select(c => new ComponentOfInterface<T>(c, c as T)).ToArray();
 		}
 
-		public struct ComponentOfInterface<I>
+		public struct ComponentOfInterface<T>
 		{
 			public readonly Component Component;
-			public readonly I Interface;
+			public readonly T Interface;
 
-			public ComponentOfInterface(Component component, I @interface)
+			public ComponentOfInterface(Component component, T @interface)
 			{
 				Component = component;
 				Interface = @interface;
 			}
 		}
-		
+
 
 		#region One Per Instance
 
