@@ -134,7 +134,7 @@ namespace MyBox.Internal
             }
             else
             {
-                EditorGUI.PropertyField(position, property, label);
+                EditorGUI.PropertyField(position, property, label, true);
             }
         }
 
