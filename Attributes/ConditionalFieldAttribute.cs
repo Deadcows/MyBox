@@ -75,7 +75,7 @@ namespace MyBox.Internal
                     .Where(x => typeof(PropertyDrawer).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
             }
             
-            if (fieldInfo.GetCustomAttributes(typeof(PropertyAttribute), false).Count() > 1)
+            if (HaveMultipleAttributes())
             {
                 _multipleAttributes = true;
                 GetPropertyDrawerType(property);
@@ -87,6 +87,15 @@ namespace MyBox.Internal
             }
 
             _customDrawersCached = true;
+        }
+
+        private bool HaveMultipleAttributes()
+        {
+            if (fieldInfo == null) return false;
+            var genericAttributeType = typeof(PropertyAttribute);
+            var attributes = fieldInfo.GetCustomAttributes(genericAttributeType, false);
+            if (attributes.IsNullOrEmpty()) return false;
+            return attributes.Length > 1;
         }
 
 

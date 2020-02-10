@@ -1,9 +1,5 @@
 ﻿using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace MyBox
 {
 	public class SeparatorAttribute : PropertyAttribute
@@ -28,37 +24,39 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using UnityEditor;
+	
 	[CustomPropertyDrawer(typeof(SeparatorAttribute))]
 	public class SeparatorAttributeDrawer : DecoratorDrawer
 	{
-		private SeparatorAttribute separatorAttribute
+		private SeparatorAttribute Separator
 		{
-			get { return ((SeparatorAttribute) attribute); }
+			get { return (SeparatorAttribute) attribute; }
 		}
 
-		public override void OnGUI(Rect _position)
+		public override void OnGUI(Rect position)
 		{
-			if (separatorAttribute.Title == "")
+			if (Separator.Title == "")
 			{
-				_position.height = 1;
-				_position.y += 19;
-				GUI.Box(_position, "");
+				position.height = 1;
+				position.y += 19;
+				GUI.Box(position, "");
 			}
 			else
 			{
-				Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(separatorAttribute.Title));
-				float separatorWidth = (_position.width - textSize.x) / 2.0f - 5.0f;
-				_position.y += 19;
+				Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(Separator.Title));
+				float separatorWidth = (position.width - textSize.x) / 2.0f - 5.0f;
+				position.y += 19;
 
-				GUI.Box(new Rect(_position.xMin, _position.yMin, separatorWidth, 1), "");
-				GUI.Label(new Rect(_position.xMin + separatorWidth + 5.0f, _position.yMin - 8.0f, textSize.x, 20), separatorAttribute.Title);
-				GUI.Box(new Rect(_position.xMin + separatorWidth + 10.0f + textSize.x, _position.yMin, separatorWidth, 1), "");
+				GUI.Box(new Rect(position.xMin, position.yMin, separatorWidth, 1), "");
+				GUI.Label(new Rect(position.xMin + separatorWidth + 5.0f, position.yMin - 8.0f, textSize.x, 20), Separator.Title);
+				GUI.Box(new Rect(position.xMin + separatorWidth + 10.0f + textSize.x, position.yMin, separatorWidth, 1), "");
 			}
 		}
 
 		public override float GetHeight()
 		{
-			return separatorAttribute.WithOffset ? 36.0f : 26f;
+			return Separator.WithOffset ? 36.0f : 26f;
 		}
 	}
 }
