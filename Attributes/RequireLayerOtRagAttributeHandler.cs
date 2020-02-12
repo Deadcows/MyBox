@@ -3,11 +3,7 @@ namespace MyBox.Internal
 {
 	using UnityEditor;
 	using UnityEngine;
-
-	//TODO: combine Layer Handler and Tag Handler together for performance? 
-	//TODO: or add subscription for BeforePlaymodeComponentIteration event?
-	//TODO: 		is there a way to log changes made before playmode after playmode (to handle "clear on play")?
-	//TODO: 			this way it'll be possible to handle MustBeAssigned here as well
+	
 	[InitializeOnLoad]
 	public class RequireLayerOtRagAttributeHandler
 	{
@@ -28,10 +24,12 @@ namespace MyBox.Internal
 						var layerAttribute = attribute as RequireLayerAttribute;
 						if (layerAttribute != null)
 						{
-							var requiredLayer = LayerMask.NameToLayer(layerAttribute.Layer);
+							var requiredLayer = layerAttribute.LayerName != null ? 
+								LayerMask.NameToLayer(layerAttribute.LayerName) : 
+								layerAttribute.LayerIndex;
 							if (component.gameObject.layer == requiredLayer) continue;
 
-							Debug.LogWarning("Layer of " + component.name + " changed by RequireLayerAttribute to " + layerAttribute.Layer);
+							Debug.LogWarning("Layer of " + component.name + " changed by RequireLayerAttribute to " + layerAttribute.LayerName);
 							component.gameObject.layer = requiredLayer;
 							EditorUtility.SetDirty(component);
 							

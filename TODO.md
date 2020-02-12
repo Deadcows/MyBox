@@ -6,6 +6,9 @@
   
 * #### AnimationStateReference not working with nested inspector
 
+* #### Add EditorEvent.BeforePlaymodeComponentIteration to call Object.FindObjectsOfType<Component>() only once
+  * RequireLayerOtRagAttributeHandler and MustBeAssignedAttributeChecker   
+
 * #### Make FoldoutAttribute animated & alternative toolbar design
   https://docs.unity3d.com/ScriptReference/EditorGUILayout.BeginFadeGroup.html
   https://docs.unity3d.com/ScriptReference/EditorGUILayout.InspectorTitlebar.html
