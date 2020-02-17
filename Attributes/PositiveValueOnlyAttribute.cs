@@ -38,7 +38,7 @@ namespace MyBox.Internal
 				if (HandleNegativeValues(property)) property.serializedObject.ApplyModifiedProperties();
 			}
 
-			EditorGUI.PropertyField(position, property, true);
+			EditorGUI.PropertyField(position, property, label, true);
 		}
 
 
