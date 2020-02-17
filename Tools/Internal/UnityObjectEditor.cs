@@ -18,16 +18,19 @@ namespace MyBox.Internal
 
         private void OnDisable()
         {
-            _foldout.OnDisable();
+            _foldout?.OnDisable();
         }
 
         public override void OnInspectorGUI()
         {
-            _foldout.Update();
-            if (!_foldout.OverrideInspector) base.OnInspectorGUI();
-            else _foldout.OnInspectorGUI();
+            if (_foldout != null)
+            {
+                _foldout.Update();
+                if (!_foldout.OverrideInspector) base.OnInspectorGUI();
+                else _foldout.OnInspectorGUI();
+            }
 
-            _buttonMethod.OnInspectorGUI();
+            _buttonMethod?.OnInspectorGUI();
         }
     }
 }
