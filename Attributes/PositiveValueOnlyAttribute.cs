@@ -4,6 +4,7 @@
 // Date:   17/02/2019
 // ----------------------------------------------------------------------------
 
+
 using UnityEngine;
 
 namespace MyBox
@@ -17,6 +18,7 @@ namespace MyBox
 namespace MyBox.Internal
 {
 	using UnityEditor;
+	using EditorTools;
 
 	[CustomPropertyDrawer(typeof(PositiveValueOnlyAttribute))]
 	public class PositiveValueOnlyAttributeDrawer : PropertyDrawer
@@ -28,9 +30,9 @@ namespace MyBox.Internal
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			if (!IsNumerical(property.propertyType))
+			if (!property.IsNumerical())
 			{
-				DrawColouredRect(position, RedColour);
+				MyGUI.DrawColouredRect(position, MyGUI.Red);
 				EditorGUI.LabelField(position, new GUIContent("", "[PositiveValueOnly] used with non-numeric property"));
 			}
 			else
@@ -154,41 +156,6 @@ namespace MyBox.Internal
 
 			return false;
 		}
-
-
-		private bool IsNumerical(SerializedPropertyType propertyType)
-		{
-			switch (propertyType)
-			{
-				case SerializedPropertyType.Float:
-				case SerializedPropertyType.Integer:
-				case SerializedPropertyType.Vector2:
-				case SerializedPropertyType.Vector3:
-				case SerializedPropertyType.Vector4:
-				case SerializedPropertyType.Vector2Int:
-				case SerializedPropertyType.Vector3Int:
-					return true;
-
-				default: return false;
-			}
-		}
-
-		/// <summary>
-		/// Draw Rect filled with Color
-		/// COPY OF MyGUI.DrawColouredRect()
-		/// </summary>
-		private static void DrawColouredRect(Rect rect, Color color)
-		{
-			var defaultBackgroundColor = GUI.backgroundColor;
-			GUI.backgroundColor = color;
-			GUI.Box(rect, "");
-			GUI.backgroundColor = defaultBackgroundColor;
-		}
-
-		/// <summary>
-		/// COPY OF MyGUI.Red
-		/// </summary>
-		private static readonly Color RedColour = new Color(.8f, .6f, .6f);
 	}
 }
 #endif
