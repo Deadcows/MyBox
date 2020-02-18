@@ -66,6 +66,26 @@ namespace MyBox.EditorTools
 			return property.GetArrayElementAtIndex(newElementIndex);
 		}
 
+		/// <summary>
+		/// Property is float, int, vector or int vector
+		/// </summary>
+		public static bool IsNumerical(this SerializedProperty property)
+		{
+			var propertyType = property.propertyType;
+			switch (propertyType)
+			{
+				case SerializedPropertyType.Float:
+				case SerializedPropertyType.Integer:
+				case SerializedPropertyType.Vector2:
+				case SerializedPropertyType.Vector3:
+				case SerializedPropertyType.Vector4:
+				case SerializedPropertyType.Vector2Int:
+				case SerializedPropertyType.Vector3Int:
+					return true;
+
+				default: return false;
+			}
+		}
 
 		/// <summary>
 		/// Get string representation of serialized property
