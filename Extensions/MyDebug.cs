@@ -12,40 +12,44 @@ namespace MyBox
 	{
 		#region Log Array
 
-		private static StringBuilder StringBuilder;
+		private static StringBuilder _stringBuilder;
 
 		public static void LogArray<T>(T[] toLog)
 		{
-			if (StringBuilder == null) StringBuilder = new StringBuilder();
-			else StringBuilder.Length = 0;
+			if (_stringBuilder == null) _stringBuilder = new StringBuilder();
+			else _stringBuilder.Length = 0;
 
-			StringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(toLog.Length).Append(")\n");
+			_stringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(toLog.Length).Append(")\n");
 			for (var i = 0; i < toLog.Length; i++)
 			{
-				StringBuilder.Append("\n\t").Append(i.ToString().Colored(Colors.brown)).Append(": ").Append(toLog[i]);
+				_stringBuilder.Append("\n\t").Append(i.ToString().Colored(Colors.brown)).Append(": ").Append(toLog[i]);
 			}
 
-			Debug.Log(StringBuilder.ToString());
+			Debug.Log(_stringBuilder.ToString());
 		}
 
 		public static void LogArray<T>(IList<T> toLog)
 		{
-			if (StringBuilder == null) StringBuilder = new StringBuilder();
-			else StringBuilder.Length = 0;
+			if (_stringBuilder == null) _stringBuilder = new StringBuilder();
+			else _stringBuilder.Length = 0;
 
 			var count = toLog.Count;
-			StringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(count).Append(")\n");
+			_stringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(count).Append(")\n");
 
 			for (var i = 0; i < count; i++)
 			{
-				StringBuilder.Append("\n\t" + i.ToString().Colored(Colors.brown) + ": " + toLog[i]);
+				_stringBuilder.Append("\n\t" + i.ToString().Colored(Colors.brown) + ": " + toLog[i]);
 			}
 
-			Debug.Log(StringBuilder.ToString());
+			Debug.Log(_stringBuilder.ToString());
 		}
 
 		#endregion
 
+		public static void LogColor(Color color)
+		{
+			Debug.Log("<color=#" + ColorUtility.ToHtmlStringRGB(color) + ">████████████</color> = " + color);
+		}
 
 		#region Debug Bounds 
 
