@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using MyBox.EditorTools;
 using UnityEngine;
 
 namespace MyBox
@@ -28,13 +29,17 @@ namespace MyBox.Internal
 	public class ConstantsSelectionAttributeDrawer : PropertyDrawer
 	{
 		private ConstantsSelectionAttribute _attribute;
+		private readonly List<FieldInfo> _constants = new List<FieldInfo>(); 
 		private string[] _names;
 		private string[] _values;
-		private int _selectedValueIndex = -1;
+		private int _selectedValueIndex;
+		private bool _valueFound;
 
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
+			if (property.propertyType != SerializedPropertyType.String) return;
+			
 			if (_attribute == null) Initialize(property);
 			if (_values.IsNullOrEmpty() || _selectedValueIndex < 0)
 			{
@@ -42,11 +47,14 @@ namespace MyBox.Internal
 				return;
 			}
 
+			if (!_valueFound && _selectedValueIndex == 0) MyGUI.DrawColouredRect(position, MyGUI.Yellow);
+			
 			EditorGUI.BeginChangeCheck();
 			_selectedValueIndex = EditorGUI.Popup(position, label.text, _selectedValueIndex, _names);
 			if (EditorGUI.EndChangeCheck())
 			{
 				property.stringValue = _values[_selectedValueIndex];
+				property.serializedObject.ApplyModifiedProperties();
 			}
 		}
 
@@ -54,7 +62,6 @@ namespace MyBox.Internal
 		{
 			_attribute = (ConstantsSelectionAttribute) attribute;
 
-			List<FieldInfo> constants = new List<FieldInfo>();
 			FieldInfo[] allPublicStatics = _attribute.SelectFromType.GetFields(
 				BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
 			
@@ -64,30 +71,35 @@ namespace MyBox.Internal
 			foreach (FieldInfo fi in allPublicStatics)
 			{
 				if (fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(string))
-					constants.Add(fi);
+					_constants.Add(fi);
 			}
 			
-			if (constants.IsNullOrEmpty()) return;
-			_names = new string[constants.Count];
-			_values = new string[constants.Count];
-			for (var i = 0; i < constants.Count; i++)
+			if (_constants.IsNullOrEmpty()) return;
+			_names = new string[_constants.Count];
+			_values = new string[_constants.Count];
+			for (var i = 0; i < _constants.Count; i++)
 			{
-				_names[i] = constants[i].Name;
-				_values[i] = constants[i].GetValue(null) as string;
+				_names[i] = _constants[i].Name;
+				_values[i] = _constants[i].GetValue(null) as string;
 			}
-			
-			_selectedValueIndex = GetSelectedIndex(property);
-		}
 
-		
-		private int GetSelectedIndex(SerializedProperty property)
-		{
 			for (var i = 0; i < _values.Length; i++)
 			{
-				if (property.stringValue == _values[i]) return i;
+				if (property.stringValue == _values[i])
+				{
+					_valueFound = true;
+					_selectedValueIndex = i;
+				}
 			}
 			
-			return 0;
+
+			if (!_valueFound)
+			{
+				_names = _names.InsertAt(0);
+				_values = _values.InsertAt(0);
+				_names[0] = "NOT FOUND: " + property.stringValue;
+				_values[0] = property.stringValue;
+			}
 		}
 	}
 }
