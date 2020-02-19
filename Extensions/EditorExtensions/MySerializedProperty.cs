@@ -11,6 +11,8 @@ namespace MyBox.EditorTools
 {
 	public static class MySerializedProperty
 	{
+		#region Collections Handling
+
 		/// <summary>
 		/// Get array of property childs, if parent property is array
 		/// </summary>
@@ -65,6 +67,8 @@ namespace MyBox.EditorTools
 			property.InsertArrayElementAtIndex(newElementIndex);
 			return property.GetArrayElementAtIndex(newElementIndex);
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Property is float, int, vector or int vector
@@ -126,6 +130,22 @@ namespace MyBox.EditorTools
 			var targetType = targetObject.GetType();
 			return targetType.GetField(property.propertyPath);
 		}
+		
+		/// <summary>
+		/// Get raw object value out of the SerializedProperty
+		/// </summary>
+		public static object GetValue(this SerializedProperty property)
+		{
+			return GetFieldInfo(property).GetValue(property.serializedObject.targetObject);
+		}
+		
+		/// <summary>
+		/// Set raw object value to the SerializedProperty
+		/// </summary>
+		public static void SetValue(this SerializedProperty property,object value)
+		{
+			GetFieldInfo(property).SetValue(property.serializedObject.targetObject, value);
+		}
 
 		/// <summary>
 		/// Is specific attribute defined on SerializedProperty
@@ -140,75 +160,76 @@ namespace MyBox.EditorTools
 			return Attribute.IsDefined(fieldInfo, typeof(T));
 		}
 
-        #region SerializedProperty Get Parent
+		#region SerializedProperty Get Parent
 
-        // Found here http://answers.unity.com/answers/425602/view.html
-        // Update here https://gist.github.com/AdrienVR/1548a145c039d2fddf030ebc22f915de to support inherited private members.
-        /// <summary>
-        /// Get parent object of SerializedProperty
-        /// </summary>
-        public static object GetParent(this SerializedProperty prop)
-        {
-            var path = prop.propertyPath.Replace(".Array.data[", "[");
-            object obj = prop.serializedObject.targetObject;
-            var elements = path.Split('.');
-            foreach (var element in elements.Take(elements.Length - 1))
-            {
-                if (element.Contains("["))
-                {
-                    var elementName = element.Substring(0, element.IndexOf("[", StringComparison.Ordinal));
-                    var index = Convert.ToInt32(element.Substring(element.IndexOf("[", StringComparison.Ordinal)).Replace("[", "").Replace("]", ""));
-                    obj = GetValueAt(obj, elementName, index);
-                }
-                else
-                {
-                    obj = GetValue(obj, element);
-                }
-            }
+		// Found here http://answers.unity.com/answers/425602/view.html
+		// Update here https://gist.github.com/AdrienVR/1548a145c039d2fddf030ebc22f915de to support inherited private members.
+		/// <summary>
+		/// Get parent object of SerializedProperty
+		/// </summary>
+		public static object GetParent(this SerializedProperty prop)
+		{
+			var path = prop.propertyPath.Replace(".Array.data[", "[");
+			object obj = prop.serializedObject.targetObject;
+			var elements = path.Split('.');
+			foreach (var element in elements.Take(elements.Length - 1))
+			{
+				if (element.Contains("["))
+				{
+					var elementName = element.Substring(0, element.IndexOf("[", StringComparison.Ordinal));
+					var index = Convert.ToInt32(element.Substring(element.IndexOf("[", StringComparison.Ordinal)).Replace("[", "").Replace("]", ""));
+					obj = GetValueAt(obj, elementName, index);
+				}
+				else
+				{
+					obj = GetValue(obj, element);
+				}
+			}
 
-            return obj;
-        }
+			return obj;
+		}
 
-        private static object GetValue(object source, string name)
-        {
-            if (source == null)
-                return null;
+		private static object GetValue(object source, string name)
+		{
+			if (source == null)
+				return null;
 
-            foreach (var type in GetHierarchyTypes(source.GetType()))
-            {
-                var f = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-                if (f != null)
-                    return f.GetValue(source);
+			foreach (var type in GetHierarchyTypes(source.GetType()))
+			{
+				var f = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+				if (f != null)
+					return f.GetValue(source);
 
-                var p = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                if (p != null)
-                    return p.GetValue(source, null);
-            }
-            return null;
-        }
-        
-        private static IEnumerable<Type> GetHierarchyTypes(Type sourceType)
-        {
-	        yield return sourceType;
-	        while (sourceType.BaseType != null)
-	        {
-		        yield return sourceType.BaseType;
-		        sourceType = sourceType.BaseType;
-	        }
-        }
+				var p = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+				if (p != null)
+					return p.GetValue(source, null);
+			}
 
-        private static object GetValueAt(object source, string name, int index)
-        {
-            var enumerable = GetValue(source, name) as IEnumerable;
-            if (enumerable == null) return null;
+			return null;
+		}
 
-            var enm = enumerable.GetEnumerator();
-            while (index-- >= 0)
-                enm.MoveNext();
-            return enm.Current;
-        }
+		private static IEnumerable<Type> GetHierarchyTypes(Type sourceType)
+		{
+			yield return sourceType;
+			while (sourceType.BaseType != null)
+			{
+				yield return sourceType.BaseType;
+				sourceType = sourceType.BaseType;
+			}
+		}
 
-        #endregion
-    }
+		private static object GetValueAt(object source, string name, int index)
+		{
+			var enumerable = GetValue(source, name) as IEnumerable;
+			if (enumerable == null) return null;
+
+			var enm = enumerable.GetEnumerator();
+			while (index-- >= 0)
+				enm.MoveNext();
+			return enm.Current;
+		}
+
+		#endregion
+	}
 }
 #endif
