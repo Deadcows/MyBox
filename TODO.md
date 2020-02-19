@@ -1,5 +1,7 @@
 * #### Custom Editor Window for MyBox settings with logo and stuff ❤
 
+* #### ConstantsSelectionAttribute: allow to set custom value (toggle popup and regular PropertyField)
+
 * #### Allow Commentary to be a type (to be shown and edited inside of other inspector) +   
   * Statically assign via script
   * Make readonly

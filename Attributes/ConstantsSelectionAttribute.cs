@@ -22,6 +22,7 @@ namespace MyBox.Internal
 {
 	using UnityEditor;
 
+	//TODO: Allow to set custom value
 	[CustomPropertyDrawer(typeof(ConstantsSelectionAttribute))]
 	public class ConstantsSelectionAttributeDrawer : PropertyDrawer
 	{
@@ -48,15 +49,20 @@ namespace MyBox.Internal
 			_selectedValueIndex = EditorGUI.Popup(position, label.text, _selectedValueIndex, _names);
 			if (EditorGUI.EndChangeCheck())
 			{
-				property.SetValue(_values[_selectedValueIndex]);
+				fieldInfo.SetValue(property.serializedObject.targetObject, _values[_selectedValueIndex]);
 				property.serializedObject.ApplyModifiedProperties();
 			}
 		}
 
+		private object GetValue(SerializedProperty property)
+		{
+			return fieldInfo.GetValue(property.serializedObject.targetObject);
+		}
+		
 		private void Initialize(SerializedProperty property)
 		{
 			_attribute = (ConstantsSelectionAttribute) attribute;
-			_targetType = property.GetFieldInfo().FieldType;
+			_targetType = fieldInfo.FieldType;
 			
 			
 			FieldInfo[] allPublicStatics = _attribute.SelectFromType.GetFields(
@@ -80,7 +86,7 @@ namespace MyBox.Internal
 				_values[i] = _constants[i].GetValue(null);
 			}
 
-			var currentValue = property.GetValue();
+			var currentValue = GetValue(property);
 			for (var i = 0; i < _values.Length; i++)
 			{
 				if (currentValue.Equals(_values[i]))
@@ -94,7 +100,7 @@ namespace MyBox.Internal
 			{
 				_names = _names.InsertAt(0);
 				_values = _values.InsertAt(0);
-				var actualValue = property.GetValue();
+				var actualValue = GetValue(property);
 				_names[0] = "NOT FOUND: " + actualValue;
 				_values[0] = actualValue;
 			}
