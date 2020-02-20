@@ -51,6 +51,7 @@ namespace MyBox.Internal
 			{
 				fieldInfo.SetValue(property.serializedObject.targetObject, _values[_selectedValueIndex]);
 				property.serializedObject.ApplyModifiedProperties();
+				EditorUtility.SetDirty(property.serializedObject.targetObject);
 			}
 		}
 
