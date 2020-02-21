@@ -10,7 +10,7 @@ It is MyBox. Now it's yours too :raised_hands:<br />
 
 ### Install via OpenUPM
 
-The package is available on the [openupm registry](https://openupm.com). It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
+The package is available on the [openupm registry](https://openupm.com). You may install it via [openupm-cli](https://github.com/openupm/openupm-cli).
 
 ```
 openupm add com.mybox
