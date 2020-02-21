@@ -1,9 +1,22 @@
 # MyBox
+
+[![openupm](https://img.shields.io/npm/v/com.mybox?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.mybox/)
+
 MyBox is a set of tools, features and extensions for Unity.<br />
 It is MyBox. Now it's yours too :raised_hands:<br />
 
 
-## Installation: 
+## Installation:
+
+### Install via OpenUPM
+
+The package is available on the [openupm registry](https://openupm.com). It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
+
+```
+openupm add com.mybox
+```
+
+### Install via Git URL
 You may install MyBox via <b>Unity Package Manager</b>:<br />
 Open Packages/manifest.json file in your project folder and put this line along with other dependencies<br />
 <pre>"com.mybox": "https://github.com/Deadcows/MyBox.git"</pre>
