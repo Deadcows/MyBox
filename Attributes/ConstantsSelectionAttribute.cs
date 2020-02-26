@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+#if UNITY_EDITOR
 using MyBox.EditorTools;
+#endif
 using UnityEngine;
 
 namespace MyBox
