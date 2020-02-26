@@ -65,7 +65,7 @@ namespace MyBox
 				GameCamera = Camera.main;
 				if (GameCamera == null)
 				{
-					Debug.LogError("UIFollow Caused: Main Camera not found. Assign Camera manually");
+					Debug.LogError(name + ".UIFollow Caused: Main Camera not found. Assign Camera manually", this);
 					return;
 				}
 			}

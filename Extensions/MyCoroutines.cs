@@ -34,6 +34,14 @@ namespace MyBox
 		}
 
 		/// <summary>
+		/// Start next coroutine after this one
+		/// </summary>
+		public static Coroutine StartNext(this Coroutine coroutine, IEnumerator nextCoroutine)
+		{
+			return StartCoroutine(StartNextCoroutine(coroutine, nextCoroutine));
+		}
+		
+		/// <summary>
 		/// Stop coroutine started with MyCoroutines.StartCoroutine
 		/// </summary>
 		public static void StopCoroutine(Coroutine coroutine)
@@ -56,6 +64,13 @@ namespace MyBox
 		public static CoroutineGroup CreateGroup(MonoBehaviour owner = null)
 		{
 			return new CoroutineGroup(owner != null ? owner : CoroutineOwner);
+		}
+		
+
+		private static IEnumerator StartNextCoroutine(Coroutine coroutine, IEnumerator nextCoroutine)
+		{
+			yield return coroutine;
+			yield return StartCoroutine(nextCoroutine);
 		}
 	}
 	

@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-#if UNITY_EDITOR
-using MyBox.EditorTools;
-#endif
 using UnityEngine;
 
 namespace MyBox
@@ -23,6 +20,7 @@ namespace MyBox
 namespace MyBox.Internal
 {
 	using UnityEditor;
+	using EditorTools;
 
 	//TODO: Allow to set custom value
 	[CustomPropertyDrawer(typeof(ConstantsSelectionAttribute))]
