@@ -41,6 +41,7 @@ namespace MyBox
 		private List<CircleCollider2D> _circleColliders2D;
 		private List<BoxCollider> _boxColliders;
 		private List<SphereCollider> _sphereColliders;
+		private List<MeshCollider> _meshColliders;
 
 		private readonly HashSet<Transform> _withColliders = new HashSet<Transform>();
 
@@ -76,6 +77,7 @@ namespace MyBox
 			if (_circleColliders2D != null) _circleColliders2D.Clear();
 			if (_boxColliders != null) _boxColliders.Clear();
 			if (_sphereColliders != null) _sphereColliders.Clear();
+			if (_meshColliders != null) _meshColliders.Clear();
 
 			_navMeshObstacle = gameObject.GetComponent<NavMeshObstacle>();
 			Collider2D[] colliders2d = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider2D>() : gameObject.GetComponents<Collider2D>();
@@ -131,6 +133,14 @@ namespace MyBox
 					if (_sphereColliders == null) _sphereColliders = new List<SphereCollider>();
 					_sphereColliders.Add(sphere);
 					_withColliders.Add(sphere.transform);
+				}
+
+				var mesh = c as MeshCollider;
+				if (mesh != null)
+				{
+					if (_meshColliders == null) _meshColliders = new List<MeshCollider>();
+					_meshColliders.Add(mesh);
+					_withColliders.Add(mesh.transform);
 				}
 			}
 		}
@@ -199,6 +209,22 @@ namespace MyBox
 			var center = coll.center;
 			var max = Mathf.Max(scale.x, Mathf.Max(scale.y, scale.z)); // to not use Mathf.Max version with params[]
 			DrawColliderGizmo(target.position + new Vector3(center.x, center.y, 0.0f), coll.radius * max);
+		}
+
+		private void DrawMeshCollider(MeshCollider coll)
+		{
+			var target = coll.transform;
+			
+			if (DrawWire)
+			{
+				Gizmos.color = _wireGizmoColor;
+				Gizmos.DrawWireMesh(coll.sharedMesh, target.position, target.rotation, target.localScale * 1.01f);
+			}
+			if (DrawFill)
+			{
+				Gizmos.color = _fillGizmoColor;
+				Gizmos.DrawMesh(coll.sharedMesh, target.position, target.rotation, target.localScale * 1.01f);
+			}
 		}
 
 		private void DrawNavMeshObstacle(NavMeshObstacle obstacle)
@@ -278,6 +304,15 @@ namespace MyBox
 				{
 					if (sphere == null) continue;
 					DrawSphereCollider(sphere);
+				}
+			}
+			
+			if (_meshColliders != null)
+			{
+				foreach (var mesh in _meshColliders)
+				{
+					if (mesh == null) continue;
+					DrawMeshCollider(mesh);
 				}
 			}
 		}
