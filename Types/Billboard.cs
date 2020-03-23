@@ -5,18 +5,24 @@ namespace MyBox
 	[ExecuteAlways]
 	public class Billboard : MonoBehaviour
 	{
+		public Transform FacedObject;
+
+		private Transform ActiveFacedObject
+		{
+			get
+			{
+				if (FacedObject != null) return FacedObject;
+				if (_camera != null) return _camera.transform;
+				_camera = FindObjectOfType<Camera>();
+				return _camera.transform;
+			}
+		}
 		private static Camera _camera;
 
 		private void Update()
 		{
-			if (_camera == null) FindCamera();
-			if (_camera == null) return;
-			transform.forward = _camera.transform.forward;
-		}
-
-		private void FindCamera()
-		{
-			_camera = FindObjectOfType<Camera>();
+			if (ActiveFacedObject == null) return;
+			transform.LookAt(ActiveFacedObject);
 		}
 	}
 }
