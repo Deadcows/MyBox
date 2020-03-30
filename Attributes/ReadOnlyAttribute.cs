@@ -1,19 +1,26 @@
 ﻿using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace MyBox
 {
 	public class ReadOnlyAttribute : PropertyAttribute
 	{
+		public readonly bool OnlyOnPlaymode;
+
+		/// <param name="onlyOnPlaymode">
+		/// 	If you want to keep this field editable during EditMode and read-only during PlayMode
+		/// </param>
+		public ReadOnlyAttribute(bool onlyOnPlaymode = false)
+		{
+			OnlyOnPlaymode = onlyOnPlaymode;
+		}
 	}
 }
 
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using UnityEditor;
+	
 	[CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
 	public class ReadOnlyAttributeDrawer : PropertyDrawer
 	{
@@ -24,7 +31,8 @@ namespace MyBox.Internal
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			GUI.enabled = false;
+			bool editable = !Application.isPlaying && ((ReadOnlyAttribute) attribute).OnlyOnPlaymode;
+			if (!editable) GUI.enabled = false;
 			EditorGUI.PropertyField(position, property, label, true);
 			GUI.enabled = true;
 		}
