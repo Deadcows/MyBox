@@ -101,7 +101,7 @@ public class FPSCounter : MonoBehaviour
 		if (_fps <= _badFps || _averageFps <= _badFps) color = _badColor;
 		GUI.color = color;
 		GUI.Label(_rect1, "FPS: " + (int)_fps);
-		GUI.Label(_rect2, "Avg FPS: " + (int)_averageFps);
+		//GUI.Label(_rect2, "Avg FPS: " + (int)_averageFps);
 		GUI.color = defaultColor;
 	}
 
