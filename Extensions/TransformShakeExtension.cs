@@ -24,13 +24,14 @@ namespace MyBox
 		/// <param name="time">Shake time. -1 for infinite shaking</param>
 		/// <param name="shakeBounds">Shake amplitude in units</param>
 		/// <param name="useUnscaledTime">Shake time should be affected by Time.timeScale or not</param>
-		public static void StartShake(this Transform transform, float time = 0.1f, float shakeBounds = 0.1f, bool useUnscaledTime = true)
+		/// <param name="fadeBounds">Fade bounds to zero to the end of the shake</param>
+		public static void StartShake(this Transform transform, float time = 0.1f, float shakeBounds = 0.1f, bool useUnscaledTime = true, bool fadeBounds = false)
 		{
 			if (_activeShakingTransforms == null) _activeShakingTransforms = new Dictionary<Transform, Tuple<Coroutine, Vector3>>();
 
 			BreakShakeIfAny(transform);
 			
-			var coroutine = TransformShakeCoroutine(transform, time, shakeBounds, useUnscaledTime).StartCoroutine();
+			var coroutine = TransformShakeCoroutine(transform, time, shakeBounds, useUnscaledTime, fadeBounds).StartCoroutine();
 			_activeShakingTransforms.Add(transform, new Tuple<Coroutine, Vector3>(coroutine, transform.position));
 		}
 
@@ -43,16 +44,18 @@ namespace MyBox
 		} 
 		
 		
-		private static IEnumerator TransformShakeCoroutine(Transform transform, float shakeTime, float bounds, bool useUnscaledTime)
+		private static IEnumerator TransformShakeCoroutine(Transform transform, float shakeTime, float bounds, bool useUnscaledTime, bool fadeBounds)
 		{
 			Vector3 initialPosition = transform.position;
-			
+
+			float initialBounds = bounds;
 			float elapsed = 0;
 			while (shakeTime < 0 || elapsed < shakeTime)
 			{
 				yield return null;
 
 				elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+				float elapsedRate = 1 - elapsed / shakeTime; 
 				
 				float xShake = Random.value * _shakeAmplitude * 2 - _shakeAmplitude;
 				float yShake = Random.value * _shakeAmplitude * 2 - _shakeAmplitude;
@@ -61,6 +64,7 @@ namespace MyBox
 				newPosition.x += xShake;
 				newPosition.y += yShake;
 
+				bounds = fadeBounds ? initialBounds * elapsedRate : initialBounds;
 				newPosition.x = Mathf.Clamp(newPosition.x, initialPosition.x - bounds, initialPosition.x + bounds);
 				newPosition.y = Mathf.Clamp(newPosition.y, initialPosition.y - bounds, initialPosition.y + bounds);
 
