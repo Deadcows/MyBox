@@ -442,6 +442,7 @@ namespace MyBox
 
 #endif
 	}
+}
 
 
 #if UNITY_EDITOR
@@ -578,4 +579,3 @@ namespace MyBox
 	}
 
 #endif
-}
