@@ -7,6 +7,7 @@
   * Make readonly
   
 * #### AnimationStateReference not working with nested inspector
+* #### AnimationParameterReference to set parameter and it's value via inspector and simply Apply() in code
 
 * #### Add EditorEvent.BeforePlaymodeComponentIteration to call Object.FindObjectsOfType<Component>() only once
   * RequireLayerOtRagAttributeHandler and MustBeAssignedAttributeChecker   
