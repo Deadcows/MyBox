@@ -18,9 +18,18 @@ namespace MyBox.Internal
 		{
 			if (!IsEnabled) return paths;
 			
-			// Prefab creation enforces SaveAsset and this may cause unwanted dir cleanup
-			if (paths.Length == 1 && (paths[0] == null || paths[0].EndsWith(".prefab"))) return paths;
-			
+			// Sometimes somehow SaveAssets caused with null path;
+			// Prefab creation enforces SaveAsset and this may cause unwanted dir cleanup;
+			// Folder creation also causes SaveAsset so it's not possible to create folders;
+			if (paths.Length == 1)
+			{
+				bool isEmpty = paths[0] == null;
+				bool isPrefab = paths[0].EndsWith(".prefab");
+				bool isFolder = paths[0].EndsWith(".meta");
+				
+				if (isEmpty || isPrefab || isFolder) return paths;
+			}
+
 			List<DirectoryInfo> emptyDirectories = GetEmptyDirectories();
 			if (emptyDirectories == null) return paths;
 			
