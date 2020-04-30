@@ -135,10 +135,16 @@ namespace MyBox.EditorTools
 			else
 			{
 				var element = _property.GetArrayElementAtIndex(index);
-				var newRect = rect;
-				newRect.x += 20;
 
-				if (element.propertyType == SerializedPropertyType.Generic) EditorGUI.LabelField(newRect, element.displayName);
+				if (element.propertyType == SerializedPropertyType.Generic)
+				{
+					rect.x += 12;
+					rect.width -= 14;
+					var genericsLabel = rect;
+					genericsLabel.height = EditorGUIUtility.singleLineHeight;
+					
+					EditorGUI.LabelField(genericsLabel, element.displayName);
+				}
 				EditorGUI.PropertyField(rect, property, GUIContent.none, true);
 			}
 
