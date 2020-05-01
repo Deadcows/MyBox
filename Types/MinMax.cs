@@ -6,6 +6,7 @@
 
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace MyBox
 {
@@ -37,6 +38,8 @@ namespace MyBox
 
 	public static class MinMaxExtensions
 	{
+		#region Clamp
+
 		/// <summary>
 		/// Clamp value between MinMax values
 		/// </summary>
@@ -52,7 +55,10 @@ namespace MyBox
 		{
 			return Mathf.Clamp(value, minMax.Min, minMax.Max);
 		}
+
+		#endregion
 		
+		#region Length 
 		
 		/// <summary>
 		/// Distance from Min to Max
@@ -70,7 +76,10 @@ namespace MyBox
 			return minMax.Max - minMax.Min;
 		}
 		
-		
+		#endregion
+
+		#region MidPoint
+
 		/// <summary>
 		/// Point between Min and Max
 		/// </summary>
@@ -86,7 +95,18 @@ namespace MyBox
 		{
 			return minMax.Min + minMax.Length() / 2f;
 		}
+
+		#endregion
 		
+		#region Lerp
+		
+		/// <summary>
+		/// Lerp from Min to Max
+		/// </summary>
+		public static float Lerp(this MinMaxInt minMax, float value)
+		{
+			return Mathf.Lerp(minMax.Min, minMax.Max, value);
+		}
 		
 		/// <summary>
 		/// Lerp from Min to Max
@@ -96,6 +116,18 @@ namespace MyBox
 			return Mathf.Lerp(minMax.Min, minMax.Max, value);
 		}
 		
+		#endregion
+		
+		#region LerpUnclamped
+		
+		/// <summary>
+		/// Lerp from Min to Max
+		/// </summary>
+		public static float LerpUnclamped(this MinMaxInt minMax, float value)
+		{
+			return Mathf.LerpUnclamped(minMax.Min, minMax.Max, value);
+		}
+		
 		/// <summary>
 		/// Lerp from Min to Max
 		/// </summary>
@@ -103,6 +135,28 @@ namespace MyBox
 		{
 			return Mathf.LerpUnclamped(minMax.Min, minMax.Max, value);
 		}
+		
+		#endregion
+
+		#region RandomInRange
+
+		/// <summary>
+		/// Lerp from Min to Max
+		/// </summary>
+		public static float RandomInRange(this MinMaxInt minMax)
+		{
+			return Random.Range(minMax.Min, minMax.Max);
+		}
+		
+		/// <summary>
+		/// Lerp from Min to Max
+		/// </summary>
+		public static float RandomInRange(this MinMaxFloat minMax)
+		{
+			return Random.Range(minMax.Min, minMax.Max);
+		}
+
+		#endregion
 	}
 }
 
