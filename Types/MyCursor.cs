@@ -1,4 +1,5 @@
 using System;
+using MyBox.EditorTools;
 using UnityEngine;
 
 namespace MyBox
@@ -38,76 +39,129 @@ namespace MyBox.Internal
 	using UnityEngine;
 	using UnityEditor;
 
-	//[CustomPropertyDrawer(typeof(MyCursor), true)]
+	[CustomPropertyDrawer(typeof(MyCursor), true)]
 	public class MyCursorPropertyDrawer : PropertyDrawer
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			var spriteRect = position;
-			spriteRect.width -= 56;
-			var buttonRect = position;
-			buttonRect.width = 50;
-			buttonRect.x += spriteRect.width;
+			var texture = property.FindPropertyRelative("Texture");
+			var hotspot = property.FindPropertyRelative("Hotspot");
 			
-			EditorGUI.PropertyField(spriteRect, property.FindPropertyRelative("Sprite"), label);
-			if (GUI.Button(buttonRect, "Pop"))
+			position.width -= 128;
+			EditorGUI.BeginChangeCheck();
+			EditorGUI.PropertyField(position, texture, label);
+			if (EditorGUI.EndChangeCheck()) hotspot.vector2Value = Vector2.zero;
+			// position.x += position.width + 4;
+			// position.width = 48;
+			// EditorGUI.LabelField(position, "Hotspot: ");
+
+			position.x += position.width + 4;
+			position.width = 84;
+			EditorGUI.PropertyField(position, hotspot, new GUIContent(string.Empty, "Hotspot"));
+			
+			position.x += position.width + 4;
+			position.width = 34;
+			GUI.enabled = texture.objectReferenceValue != null;
+			if (GUI.Button(position, "Edit"))
 			{
-				PopupWindow.Show(position, new PopupExample(property));
+				PopupWindow.Show(position, new HotspotEditorPopup(property));
 			}
+			GUI.enabled = true;
+			
+			hotspot.serializedObject.ApplyModifiedProperties();
 		}
 	}
 	
-	public class PopupExample : PopupWindowContent
+	public class HotspotEditorPopup : PopupWindowContent
 	{
-		private readonly SerializedProperty _sprite;
-		private readonly SerializedProperty _hotspot;
+		private readonly SerializedProperty _hotspotProperty;
+		private readonly Texture2D _texture;
 		
-		public PopupExample(SerializedProperty property)
+		public HotspotEditorPopup(SerializedProperty property)
 		{
-			_sprite = property.FindPropertyRelative("Sprite");
-			_hotspot = property.FindPropertyRelative("Hotspot");
+			var textureProperty = property.FindPropertyRelative("Texture");
+			_hotspotProperty = property.FindPropertyRelative("Hotspot");
+			_texture = textureProperty.objectReferenceValue as Texture2D;
 		}
 
 		public override Vector2 GetWindowSize()
 		{
-			return new Vector2(200, 150);
+			var width = _texture.width + 8;
+			var height = _texture.height + 78;
+			return new Vector2(width < 128 ? 128 : width, height < 172 ? 172 : height);
 		}
 
 		public override void OnGUI(Rect rect)
 		{
-			 //var cursorStyle = new GUIStyle();
-			// cursorStyle.fixedWidth = 128;
-			// cursorStyle.fixedHeight = 128;
-			// cursorStyle.border = new RectOffset(2, 2, 2, 2);
-
-			GUILayout.Label(_sprite.objectReferenceValue as Texture2D, GUILayout.Width(128), GUILayout.Height(128));
+			if (_texture == null) return;
+			
+			GUILayout.Label(_texture, GUILayout.Width(_texture.width), GUILayout.Height(_texture.height));
+			var textureRect = GUILayoutUtility.GetLastRect();
+			
 			Event e = Event.current;
 			if (e.type == EventType.MouseDrag)
 			{
-				var buttonRect = GUILayoutUtility.GetLastRect();
 				var pos = Event.current.mousePosition;
-				var inside = new Vector2(pos.x - buttonRect.x, pos.y - buttonRect.y);
-				_hotspot.vector2Value = inside;
-				_hotspot.serializedObject.ApplyModifiedProperties();
-				
+				if (pos.y > textureRect.yMax + 10) return;
+				var inside = new Vector2(pos.x - textureRect.x, pos.y - textureRect.y);
+				inside = new Vector2(
+					Mathf.Clamp(inside.x, 0, _texture.width),
+					Mathf.Clamp(inside.y, 0, _texture.height)
+				);
+				_hotspotProperty.vector2Value = inside;
+				_hotspotProperty.serializedObject.ApplyModifiedProperties();
 				editorWindow.Repaint();
-				Debug.Log(inside);
-				Debug.Log(rect);
 			}
-			
-			GUI.backgroundColor = Color.magenta;
+
+			var cc = GUI.contentColor;
 			GUI.contentColor = Color.magenta;
-			GUI.Label(new Rect(_hotspot.vector2Value.x, _hotspot.vector2Value.y, 14, 14), Texture2D.whiteTexture);
-		}
+			textureRect.width = 8;
+			textureRect.height = 8;
+			textureRect.x += _hotspotProperty.vector2Value.x - 4;
+			textureRect.y += _hotspotProperty.vector2Value.y - 4;
+			GUI.Label(textureRect, Texture2D.whiteTexture);
+			GUI.contentColor = cc;
 
-		public override void OnOpen()
-		{
-			Debug.Log("Popup opened: " + this);
-		}
+			EditorGUILayout.Space();
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				EditorGUILayout.Space();
+				if (GUILayout.Button("↖", EditorStyles.toolbarButton, GUILayout.Width(40)))
+					_hotspotProperty.vector2Value = new Vector2(0, 0);
+				if (GUILayout.Button("↑", EditorStyles.toolbarButton, GUILayout.Width(40)))
+					_hotspotProperty.vector2Value = new Vector2(_texture.width / 2f, 0);
+				if (GUILayout.Button("↗", EditorStyles.toolbarButton, GUILayout.Width(40)))
+					_hotspotProperty.vector2Value = new Vector2(_texture.width, 0);
+				EditorGUILayout.Space();
+			}
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				EditorGUILayout.Space();
+				if (GUILayout.Button("←", EditorStyles.toolbarButton, GUILayout.Width(40)))
+					_hotspotProperty.vector2Value = new Vector2(0, _texture.height / 2f);
+				if (GUILayout.Button(MyGUI.Cross, EditorStyles.toolbarButton, GUILayout.Width(40)))
+					_hotspotProperty.vector2Value = new Vector2(_texture.width / 2f, _texture.height / 2f);
+				if (GUILayout.Button("→", EditorStyles.toolbarButton, GUILayout.Width(40)))
+					_hotspotProperty.vector2Value = new Vector2(_texture.width, _texture.height / 2f);
+				EditorGUILayout.Space();
+			}
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				EditorGUILayout.Space();
+				if (GUILayout.Button("↙", EditorStyles.toolbarButton, GUILayout.Width(40)))
+					_hotspotProperty.vector2Value = new Vector2(0, _texture.height);
+				if (GUILayout.Button("↓", EditorStyles.toolbarButton, GUILayout.Width(40)))
+					_hotspotProperty.vector2Value = new Vector2(_texture.width / 2f, _texture.height);
+				if (GUILayout.Button("↘", EditorStyles.toolbarButton, GUILayout.Width(40)))
+					_hotspotProperty.vector2Value = new Vector2(_texture.width, _texture.height);
+				EditorGUILayout.Space();
+			}
 
-		public override void OnClose()
-		{
-			Debug.Log("Popup closed: " + this);
+			if (GUI.changed)
+			{
+				_hotspotProperty.serializedObject.ApplyModifiedProperties();
+				editorWindow.Repaint();
+			}
 		}
 	}
 }
