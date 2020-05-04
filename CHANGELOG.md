@@ -5,9 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 ! wip AttributeBase
-! wip ReadOnlyAttribute onlyOnPlaymode parameter
 
 - Added: ConstantsSelectionAttribute to popup all const values of a specific type
+- Added: InitializationFieldAttribute to make field read-only in Playmode
 - Added: MyCursor type to with handy hotspot assignment
 - Added: MyCoroutines.CoroutineGroup with handy StartAll() and AnyProcessing
 - Added: MyDebug.LogColor(Color) because why not

@@ -2,11 +2,11 @@
 
 namespace MyBox
 {
-	public class ReadOnlyAttribute : PropertyAttribute
+	/// <summary>
+	/// Field will be Read-Only in Playmode
+	/// </summary>
+	public class InitializationFieldAttribute : PropertyAttribute
 	{
-		public ReadOnlyAttribute()
-		{
-		}
 	}
 }
 
@@ -15,8 +15,8 @@ namespace MyBox.Internal
 {
 	using UnityEditor;
 	
-	[CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
-	public class ReadOnlyAttributeDrawer : PropertyDrawer
+	[CustomPropertyDrawer(typeof(InitializationFieldAttribute))]
+	public class InitializationFieldAttributeDrawer : PropertyDrawer
 	{
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
@@ -25,7 +25,7 @@ namespace MyBox.Internal
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			GUI.enabled = false;
+			if (Application.isPlaying) GUI.enabled = false;
 			EditorGUI.PropertyField(position, property, label, true);
 			GUI.enabled = true;
 		}
