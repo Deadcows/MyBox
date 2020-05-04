@@ -88,21 +88,25 @@ namespace MyBox.Internal
 			}
 
 			var currentValue = GetValue(property);
-			for (var i = 0; i < _values.Length; i++)
+			if (currentValue != null)
 			{
-				if (currentValue.Equals(_values[i]))
+				for (var i = 0; i < _values.Length; i++)
 				{
-					_valueFound = true;
-					_selectedValueIndex = i;
+					if (currentValue.Equals(_values[i]))
+					{
+						_valueFound = true;
+						_selectedValueIndex = i;
+					}
 				}
 			}
-
+			
 			if (!_valueFound)
 			{
 				_names = _names.InsertAt(0);
 				_values = _values.InsertAt(0);
 				var actualValue = GetValue(property);
-				_names[0] = "NOT FOUND: " + actualValue;
+				var value = actualValue != null ? actualValue : "NULL";
+				_names[0] = "NOT FOUND: " + value;
 				_values[0] = actualValue;
 			}
 		}
