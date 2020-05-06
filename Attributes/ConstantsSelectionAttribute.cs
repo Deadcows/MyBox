@@ -43,7 +43,7 @@ namespace MyBox.Internal
 				return;
 			}
 
-			if (!_valueFound && _selectedValueIndex == 0) MyGUI.DrawColouredRect(position, MyGUI.Yellow);
+			if (!_valueFound && _selectedValueIndex == 0) MyGUI.DrawColouredRect(position, MyGUI.Colors.Yellow);
 
 			EditorGUI.BeginChangeCheck();
 			_selectedValueIndex = EditorGUI.Popup(position, label.text, _selectedValueIndex, _names);

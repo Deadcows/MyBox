@@ -9,45 +9,73 @@ using Object = UnityEngine.Object;
 
 namespace MyBox.EditorTools
 {
-    public static class MyGUI
+	public static class MyGUI
 	{
 		#region Colors
 
-		public static readonly Color Red = new Color(.8f, .6f, .6f);
+		public static class Colors
+		{
+			public static readonly Color Red = new Color(.8f, .6f, .6f);
 
-		public static readonly Color Green = new Color(.4f, .6f, .4f);
+			public static readonly Color Green = new Color(.4f, .6f, .4f);
 
-		public static readonly Color Blue = new Color(.6f, .6f, .8f);
+			public static readonly Color Blue = new Color(.6f, .6f, .8f);
 
-		public static readonly Color Gray = new Color(.3f, .3f, .3f);
+			public static readonly Color Gray = new Color(.3f, .3f, .3f);
 
-		public static readonly Color Yellow = new Color(.8f, .8f, .2f, .6f);
+			public static readonly Color Yellow = new Color(.8f, .8f, .2f, .6f);
 
-		public static readonly Color Brown = new Color(.7f, .5f, .2f, .6f);
+			public static readonly Color Brown = new Color(.7f, .5f, .2f, .6f);
+		}
 
 		#endregion
 
 
 		#region Characters
 
-		public const string ArrowUp = "▲";
+		public static class Characters
+		{
+			public const string ArrowUp = "▲";
 
-		public const string ArrowDown = "▼";
+			public const string ArrowDown = "▼";
 
-		public const string ArrowLeft = "◀";
+			public const string ArrowLeft = "◀";
 
-		public const string ArrowRight = "▶";
+			public const string ArrowRight = "▶";
 
-		public const string ArrowLeftLight = "←";
+			public const string ArrowLeftLight = "←";
 
-		public const string ArrowRightLight = "→";
+			public const string ArrowRightLight = "→";
 
-		public const string ArrowTopRightLight = "↘";
+			public const string ArrowTopRightLight = "↘";
 
-		public const string Check = "✓";
+			public const string Check = "✓";
+
+			public const string Cross = "×";
+		}
+
+		#endregion
+
 		
-		public const string Cross = "×";
+		#region Editor Icons
 
+		public static class EditorIcons
+		{
+			public static GUIContent Plus => EditorGUIUtility.IconContent("Toolbar Plus");
+			public static GUIContent Minus => EditorGUIUtility.IconContent("Toolbar Minus");
+			public static GUIContent Refresh => EditorGUIUtility.IconContent("Refresh");
+			
+			public static GUIContent ConsoleInfo => EditorGUIUtility.IconContent("console.infoicon.sml");
+			public static GUIContent ConsoleWarning => EditorGUIUtility.IconContent("console.warnicon.sml");
+			public static GUIContent ConsoleError => EditorGUIUtility.IconContent("console.erroricon.sml");
+			
+			public static GUIContent Check => EditorGUIUtility.IconContent("FilterSelectedOnly");
+			public static GUIContent Cross => EditorGUIUtility.IconContent("d_winbtn_win_close");
+			
+			public static GUIContent EyeOn => EditorGUIUtility.IconContent("d_VisibilityOn");
+			public static GUIContent EyeOff => EditorGUIUtility.IconContent("d_VisibilityOff");
+		}
+		
 		#endregion
 
 
@@ -485,12 +513,12 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static bool UpButton()
 		{
-			return GUILayout.Button(MyGUI.ArrowUp, EditorStyles.toolbarButton, GUILayout.Width(18));
+			return GUILayout.Button(Characters.ArrowUp, EditorStyles.toolbarButton, GUILayout.Width(18));
 		}
 
 		public static bool DownButton()
 		{
-			return GUILayout.Button(MyGUI.ArrowDown, EditorStyles.toolbarButton, GUILayout.Width(18));
+			return GUILayout.Button(Characters.ArrowDown, EditorStyles.toolbarButton, GUILayout.Width(18));
 		}
 
 		public static bool PlusButton()
@@ -501,7 +529,7 @@ namespace MyBox.EditorTools
 
 		public static bool CrossButton()
 		{
-			return GUILayout.Button(Cross, EditorStyles.toolbarButton, GUILayout.Width(18));
+			return GUILayout.Button(Characters.Cross, EditorStyles.toolbarButton, GUILayout.Width(18));
 		}
 
 		#endregion

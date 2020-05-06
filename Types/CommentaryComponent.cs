@@ -69,7 +69,7 @@ namespace MyBox.Internal
 								_commentary.Entries[i].Type = NextType(entry.Type);
 							}
 
-							if (GUILayout.Button(MyGUI.Cross, GUILayout.Width(40)))
+							if (GUILayout.Button(MyGUI.Characters.Cross, GUILayout.Width(40)))
 							{
 								var index = i;
 								EditorApplication.delayCall += () =>
@@ -88,7 +88,7 @@ namespace MyBox.Internal
 				EditorGUILayout.Space();
 				using (new GUILayout.HorizontalScope())
 				{
-					if (_commentary.Entries.Length > 0 && GUILayout.Button(MyGUI.Check, GUILayout.Width(40))) _editMode = false;
+					if (_commentary.Entries.Length > 0 && GUILayout.Button(MyGUI.Characters.Check, GUILayout.Width(40))) _editMode = false;
 					GUILayout.FlexibleSpace();
 					if (GUILayout.Button("+", GUILayout.Width(40)))
 					{

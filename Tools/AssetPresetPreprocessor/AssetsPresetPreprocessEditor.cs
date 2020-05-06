@@ -157,13 +157,13 @@ namespace MyBox.Internal
 			cRect.width = 6;
 			cRect.height -= 2;
 
-			Color color = MyGUI.Brown;
+			Color color = MyGUI.Colors.Brown;
 			if (preset == null) color = Color.red;
 			else
 			{
 				var presetType = preset.GetTargetTypeName();
-				if (presetType.Contains("Texture")) color = MyGUI.Blue;
-				else if (presetType.Contains("Audio")) color = MyGUI.Red;
+				if (presetType.Contains("Texture")) color = MyGUI.Colors.Blue;
+				else if (presetType.Contains("Audio")) color = MyGUI.Colors.Red;
 			}
 
 			MyGUI.DrawColouredRect(cRect, color);

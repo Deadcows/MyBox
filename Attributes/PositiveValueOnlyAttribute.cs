@@ -32,7 +32,7 @@ namespace MyBox.Internal
 		{
 			if (!property.IsNumerical())
 			{
-				MyGUI.DrawColouredRect(position, MyGUI.Red);
+				MyGUI.DrawColouredRect(position, MyGUI.Colors.Red);
 				EditorGUI.LabelField(position, new GUIContent("", "[PositiveValueOnly] used with non-numeric property"));
 			}
 			else

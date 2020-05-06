@@ -139,7 +139,7 @@ namespace MyBox.Internal
 				EditorGUILayout.Space();
 				if (GUILayout.Button("←", EditorStyles.toolbarButton, GUILayout.Width(40)))
 					_hotspotProperty.vector2Value = new Vector2(0, _texture.height / 2f);
-				if (GUILayout.Button(MyGUI.Cross, EditorStyles.toolbarButton, GUILayout.Width(40)))
+				if (GUILayout.Button(MyGUI.Characters.Cross, EditorStyles.toolbarButton, GUILayout.Width(40)))
 					_hotspotProperty.vector2Value = new Vector2(_texture.width / 2f, _texture.height / 2f);
 				if (GUILayout.Button("→", EditorStyles.toolbarButton, GUILayout.Width(40)))
 					_hotspotProperty.vector2Value = new Vector2(_texture.width, _texture.height / 2f);
