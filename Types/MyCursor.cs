@@ -1,5 +1,4 @@
 using System;
-using MyBox.EditorTools;
 using UnityEngine;
 
 namespace MyBox
@@ -38,6 +37,7 @@ namespace MyBox.Internal
 {
 	using UnityEngine;
 	using UnityEditor;
+	using EditorTools;
 
 	[CustomPropertyDrawer(typeof(MyCursor), true)]
 	public class MyCursorPropertyDrawer : PropertyDrawer
