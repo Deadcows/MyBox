@@ -6,6 +6,8 @@
   * Statically assign via script
   * Make readonly
   
+* #### InitializationFieldAttribute - MustBeAssigned setting
+
 * #### AnimationStateReference not working with nested inspector
 * #### AnimationParameterReference to set parameter and it's value via inspector and simply Apply() in code
 
