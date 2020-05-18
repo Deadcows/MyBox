@@ -10,14 +10,17 @@ namespace MyBox
 	}
 }
 
+namespace MyBox.Internal
+{
+	[Serializable]
+	public class CollectionWrapperBase {}
+}
+
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
 	using UnityEditor;
 	using UnityEngine;
-
-	[Serializable]
-	public class CollectionWrapperBase {}
 	
 	[CustomPropertyDrawer(typeof(CollectionWrapperBase), true)]
 	public class CollectionWrapperDrawer : PropertyDrawer
