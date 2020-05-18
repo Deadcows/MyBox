@@ -1,6 +1,28 @@
 * #### Custom Editor Window for MyBox settings with logo and stuff ❤
 
-* #### ConstantsSelectionAttribute: allow to set custom value (toggle popup and regular PropertyField)
+* #### Add: MyDictionary, visible in inspector!!1
+
+* #### Add: SingleScriptableObject. No more messy Create/ with CreateAssetMenuAttribute for settings SO's
+  * Can it cache itself somehow...? To gain static or single entry point access
+  * Base class (attribute?) to ensure that there is at least one SO of this type
+  * SelectFolder/Filename prompt will automatically appear on recompilation if no instances of SO found? 
+    * Warning if there is more than one?
+    * Static accessor? Or probably better to add Load<T> method?
+
+* #### Add: MultiScene asset
+  * To save/load opened loaded/active scenes in editor
+  * Write last opened asset id to EditorPrefs, bind to Save event to update asset automatically?
+
+* #### Add: EditorPrefs asset. To sync some specified editor prefs (via VCS)
+  * asset stores its version (incremented every time on changes). Store different import/export versions?
+  * stores latest sync version in EditorPrefs
+  * if EditorPref value changed, compare EditorPrefs version with asset export version
+
+
+* #### Change: ConstantsSelectionAttribute — Allow to set custom value
+* #### Change: ReorderableCollection - add dropdown area to assign bunch of objects via drag-n-drop
+
+---
 
 * #### Allow Commentary to be a type (to be shown and edited inside of other inspector) +   
   * Statically assign via script
@@ -12,29 +34,10 @@
 * #### Add EditorEvent.BeforePlaymodeComponentIteration to call Object.FindObjectsOfType<Component>() only once
   * RequireLayerOtRagAttributeHandler and MustBeAssignedAttributeChecker   
 
-* #### LazyProperty -> calculate value on access, but only once per frame (+once per X seconds)
-
 * #### Make FoldoutAttribute animated & alternative toolbar design
   https://docs.unity3d.com/ScriptReference/EditorGUILayout.BeginFadeGroup.html
   https://docs.unity3d.com/ScriptReference/EditorGUILayout.InspectorTitlebar.html
   https://docs.unity3d.com/ScriptReference/EditorGUILayout.EditorToolbar.html
-
-* #### Cursor (MyCursor?) type. To set Sprite and Hotspot values in inspector, with Cursor.Apply() function?
-
-* #### ConstantsSelectionAttribute — Allow to set custom value
-
-* #### ReorderableCollection - add dropdown area to assign bunch of objects via drag-n-drop
-
-* #### ButtonMethod and Foldout are not tested with multiobject selection
-
-* #### SetValueOnBuild attribute. 
-  * I need to dig through all scenes in build settings, somehow find all fields with attribute in meta and change value?
-  * OR Maybe simply add type wrapper for any value type to return some value in editor and some other in build?
-
-* #### Asset to sync some specified editorprefs (via VCS)
-  * asset stores its version (incremented every time on changes). Store different import/export versions?
-  * stores latest sync version in EditorPrefs
-  * if EditorPref value changed, compare EditorPrefs version with asset export version
 
 * #### Setting to get MyBoxUpdate warnings about new versions + about bugfixes
 
@@ -52,20 +55,14 @@
 
 * #### Auto generate MyLayers and MyTags scripts with const strings/ints representing actual, well, layers and tags
 
-* #### Allow to use every feature separately, without MyBox
-
 * #### Add documentation links for MonoBehaviour types
 
-* #### Allow to opt out MustBeAssigned and AutoProperty checks? Add highlight in inspector if disibled?
+* #### Allow to opt out MustBeAssigned and AutoProperty checks? Add highlight in inspector if disabled?
 
 * #### MustBeAssigned may work with ScriptableObjects in project? 
   * Allow to disable this feature? Measure performance
   
 * ### DisplayInspector — Allow to fold inspector
-  
-* #### Multiscene asset
-  * To save/load opened loaded/active scenes in editor
-  * Write last opened asset id to EditorPrefs, bind to Save event to update asset automatically?
   
 * #### MonoBehaviourPool
   * Static class with GetPoolable<MB>(this GameObject prefab) and DeactivatePoolable<MB>(this MB behaviour) or something
@@ -107,24 +104,9 @@
   * Tools to build bundles out of scenes (with multiscene solutions)
     * And handle bundles loading/unloading on scene load/unload?
 		
-* #### SingleScriptableObject. No more messy Create/ with CreateAssetMenuAttribute for settings SO's
-  * Can it cache itself somehow...? To gain static or single entry point access
-  * Base class (attribute?) to ensure that there is at least one SO of this type
-  * SelectFolder/Filename prompt will automatically appear on recompilation if no instances of SO found? 
-    * Warning if there is more than one?
-    * Static accessor? Or probably better to add Load<T> method?
-
 * #### TemplatesCreator
   * Template is custom code snippets, like "Create/C# Script" but for custom things
   * Add a way to add templates as separate assets
   * There is no way to have MenuItems with runtime naming :(?
     * MenuItems is separate feature/wrapper for TemplateCreator?
-    * WHOA! Figured it out. I may generate separate script with MenuItems in any selected by used folder. Find this script and get its path to regenerate if needed!
-   
-* #### Conditionally remove some features like extension/hotkeys with Conditional Compilation?
-
-* #### Somehow apply Custom Drawer to empty array? ConditionalField is need this
-  * Custom MyArray type :)? Well it's terrible idea I guess
-  * Maybe new unity UI Elements will change it somehow
-
-* #### ConditionalField should hide Separator attribute?
+    * ?? I may generate separate script with MenuItems in any selected by used folder. Find this script and get its path to regenerate if needed!
