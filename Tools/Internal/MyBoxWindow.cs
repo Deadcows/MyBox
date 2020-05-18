@@ -5,7 +5,7 @@ using UnityEngine;
 namespace MyBox.Internal
 {
 	[InitializeOnLoad]
-	public class MyBoxUpdateWindow : EditorWindow
+	public class MyBoxWindow : EditorWindow
 	{
 		public static bool AutoUpdateCheckIsEnabled = true;
 
@@ -15,7 +15,7 @@ namespace MyBox.Internal
 		private static EditorWindow _windowInstance;
 		
 
-		static MyBoxUpdateWindow()
+		static MyBoxWindow()
 		{
 			if (AutoUpdateCheckIsEnabled)
 			{
@@ -32,10 +32,10 @@ namespace MyBox.Internal
 			}
 		}
 
-		[MenuItem("Tools/MyBox/Update MyBox")]
+		[MenuItem("Tools/MyBox/MyBox Window", priority = 1)]
 		private static void MuBoxUpdateMenuItem()
 		{
-			_windowInstance = GetWindow<MyBoxUpdateWindow>();
+			_windowInstance = GetWindow<MyBoxWindow>();
 			_windowInstance.titleContent = new GUIContent("Update MyBox");
 		}
 

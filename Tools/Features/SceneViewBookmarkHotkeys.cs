@@ -70,115 +70,115 @@ namespace MyBox.Internal
 		
 		#region Menu Items
 
-		[MenuItem("Tools/MyBox/Bookmark Scene View 1 &1", false, 5000)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Bookmark Scene View 1 &1", false, 5000)]
 		private static void BookmarkSceneView1()
 		{
 			BookmarkSceneView(1);
 		}
 
-		[MenuItem("Tools/MyBox/Bookmark Scene View 2 &2", false, 5000)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Bookmark Scene View 2 &2", false, 5000)]
 		private static void BookmarkSceneView2()
 		{
 			BookmarkSceneView(2);
 		}
 
-		[MenuItem("Tools/MyBox/Bookmark Scene View 3 &3", false, 5000)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Bookmark Scene View 3 &3", false, 5000)]
 		private static void BookmarkSceneView3()
 		{
 			BookmarkSceneView(3);
 		}
 
-		[MenuItem("Tools/MyBox/Bookmark Scene View 4 &4", false, 5000)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Bookmark Scene View 4 &4", false, 5000)]
 		private static void BookmarkSceneView4()
 		{
 			BookmarkSceneView(4);
 		}
 
-		[MenuItem("Tools/MyBox/Bookmark Scene View 5 &5", false, 5000)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Bookmark Scene View 5 &5", false, 5000)]
 		private static void BookmarkSceneView5()
 		{
 			BookmarkSceneView(5);
 		}
 
-		[MenuItem("Tools/MyBox/Bookmark Scene View 6 &6", false, 5000)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Bookmark Scene View 6 &6", false, 5000)]
 		private static void BookmarkSceneView6()
 		{
 			BookmarkSceneView(6);
 		}
 
-		[MenuItem("Tools/MyBox/Bookmark Scene View 7 &7", false, 5000)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Bookmark Scene View 7 &7", false, 5000)]
 		private static void BookmarkSceneView7()
 		{
 			BookmarkSceneView(7);
 		}
 
-		[MenuItem("Tools/MyBox/Bookmark Scene View 8 &8", false, 5000)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Bookmark Scene View 8 &8", false, 5000)]
 		private static void BookmarkSceneView8()
 		{
 			BookmarkSceneView(8);
 		}
 
-		[MenuItem("Tools/MyBox/Bookmark Scene View 9 &9", false, 5000)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Bookmark Scene View 9 &9", false, 5000)]
 		private static void BookmarkSceneView9()
 		{
 			BookmarkSceneView(9);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 1 #1", false, 5001)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 1 #1", false, 5001)]
 		private static void MoveSceneViewToBookmark1()
 		{
 			RestoreSceneBookmark(1);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 2 #2", false, 5001)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 2 #2", false, 5001)]
 		private static void MoveSceneViewToBookmark2()
 		{
 			RestoreSceneBookmark(2);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 3 #3", false, 5001)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 3 #3", false, 5001)]
 		private static void MoveSceneViewToBookmark3()
 		{
 			RestoreSceneBookmark(3);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 4 #4", false, 5001)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 4 #4", false, 5001)]
 		private static void MoveSceneViewToBookmark4()
 		{
 			RestoreSceneBookmark(4);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 5 #5", false, 5001)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 5 #5", false, 5001)]
 		private static void MoveSceneViewToBookmark5()
 		{
 			RestoreSceneBookmark(5);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 6 #6", false, 5001)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 6 #6", false, 5001)]
 		private static void MoveSceneViewToBookmark6()
 		{
 			RestoreSceneBookmark(6);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 7 #7", false, 5001)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 7 #7", false, 5001)]
 		private static void MoveSceneViewToBookmark7()
 		{
 			RestoreSceneBookmark(7);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 8 #8", false, 5001)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 8 #8", false, 5001)]
 		private static void MoveSceneViewToBookmark8()
 		{
 			RestoreSceneBookmark(8);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 9 #9", false, 5001)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 9 #9", false, 5001)]
 		private static void MoveSceneViewToBookmark9()
 		{
 			RestoreSceneBookmark(9);
 		}
 
-		[MenuItem("Tools/MyBox/Return To Previous Scene View #0", false, 5002)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Return To Previous Scene View #0", false, 5002)]
 		private static void ReturnToPreviousSceneView()
 		{
 			RestoreSceneBookmark(UndoSlot);
@@ -186,61 +186,61 @@ namespace MyBox.Internal
 
 		
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 1 #1", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 1 #1", true)]
 		private static bool ValidateMoveSceneViewToBookmark1()
 		{
 			return BookmarkExists(1);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 2 #2", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 2 #2", true)]
 		private static bool ValidateMoveSceneViewToBookmark2()
 		{
 			return BookmarkExists(2);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 3 #3", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 3 #3", true)]
 		private static bool ValidateMoveSceneViewToBookmark3()
 		{
 			return BookmarkExists(3);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 4 #4", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 4 #4", true)]
 		private static bool ValidateMoveSceneViewToBookmark4()
 		{
 			return BookmarkExists(4);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 5 #5", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 5 #5", true)]
 		private static bool ValidateMoveSceneViewToBookmark5()
 		{
 			return BookmarkExists(5);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 6 #6", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 6 #6", true)]
 		private static bool ValidateMoveSceneViewToBookmark6()
 		{
 			return BookmarkExists(6);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 7 #7", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 7 #7", true)]
 		private static bool ValidateMoveSceneViewToBookmark7()
 		{
 			return BookmarkExists(7);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 8 #8", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 8 #8", true)]
 		private static bool ValidateMoveSceneViewToBookmark8()
 		{
 			return BookmarkExists(8);
 		}
 
-		[MenuItem("Tools/MyBox/Move Scene View To Bookmark 9 #9", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Move Scene View To Bookmark 9 #9", true)]
 		private static bool ValidateMoveSceneViewToBookmark9()
 		{
 			return BookmarkExists(9);
 		}
 
-		[MenuItem("Tools/MyBox/Return To Previous Scene View #0", true)]
+		[MenuItem("Tools/MyBox/Bookmark Scene View/Return To Previous Scene View #0", true)]
 		private static bool ValidateReturnToPreviousSceneView()
 		{
 			return BookmarkExists(UndoSlot);

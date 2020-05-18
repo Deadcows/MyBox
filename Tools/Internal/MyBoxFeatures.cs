@@ -119,7 +119,7 @@ namespace MyBox.Internal
 			{
 				{
 					MyBoxSettings.CheckForUpdates = value;
-					MyBoxUpdateWindow.AutoUpdateCheckIsEnabled = value;
+					MyBoxWindow.AutoUpdateCheckIsEnabled = value;
 				}
 			}
 		}
