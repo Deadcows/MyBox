@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Added: MyCursor type to with handy hotspot assignment
 - Added: MyCoroutines.CoroutineGroup with handy StartAll() and AnyProcessing
 - Added: MyDebug.LogColor(Color) because why not
+- Changed: ConditionalField now correctly uses CustomDrawer if drawer affects base type of target field 
 - Changed: DisplayInspectorAttribute now supports ButtonMethodAttribute inside of displayed types
 - Changed: RequiredLayerAttribute might accept layer index instead of the name
 - Changed: AnimationStateReference now might reference any object on scene

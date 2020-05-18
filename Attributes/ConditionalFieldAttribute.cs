@@ -106,9 +106,7 @@ namespace MyBox.Internal
 			if (!_toShow) return 0;
 
 			if (_genericAttributeDrawerInstance != null)
-			{
 				return _genericAttributeDrawerInstance.GetPropertyHeight(property, label);
-			}
 
 			if (_genericTypeDrawerInstance != null)
 				return _genericTypeDrawerInstance.GetPropertyHeight(property, label);
@@ -260,16 +258,23 @@ namespace MyBox.Internal
 		{
 			if (_genericTypeDrawerInstance != null) return;
 
-			//Get the type
-			_genericType = fieldInfo.FieldType;
-
-			var _genericObject = fieldInfo;
-
 			//Get the associated attribute drawer
 			try
 			{
-				_genericTypeDrawerType = _allPropertyDrawerAttributeTypes.First(x =>
-					(Type) CustomAttributeData.GetCustomAttributes(x).First().ConstructorArguments.First().Value == _genericType);
+				// Of all property drawers in the assembly we need to find one that affects target type
+				// or one of the base types of target type
+				foreach (Type propertyDrawerType in _allPropertyDrawerAttributeTypes)
+				{
+					_genericType = fieldInfo.FieldType;
+					var affectedType = (Type) CustomAttributeData.GetCustomAttributes(propertyDrawerType).First().ConstructorArguments.First().Value;
+					while (_genericType != null)
+					{
+						if (_genericTypeDrawerType != null) break;
+						if (affectedType == _genericType) _genericTypeDrawerType = propertyDrawerType;
+						else _genericType = _genericType.BaseType;
+					}
+					if (_genericTypeDrawerType != null) break;
+				}
 			}
 			catch (Exception)
 			{
@@ -277,7 +282,8 @@ namespace MyBox.Internal
 				//LogWarning("[ConditionalField] does not work with "+_genericType+". Unable to find property drawer from the Type", property);
 				return;
 			}
-
+			if (_genericTypeDrawerType == null) return;
+			
 			//Create instances of each (including the arguments)
 			try
 			{
@@ -293,7 +299,7 @@ namespace MyBox.Internal
 			try
 			{
 				_genericTypeDrawerType.GetField("m_Attribute", BindingFlags.Instance | BindingFlags.NonPublic)
-					.SetValue(_genericTypeDrawerInstance, _genericObject);
+					.SetValue(_genericTypeDrawerInstance, fieldInfo);
 			}
 			catch (Exception)
 			{
