@@ -23,7 +23,7 @@ Open Packages/manifest.json file in your project folder and put this line along 
 <pre>"com.mybox": "https://github.com/Deadcows/MyBox.git"</pre>
 Note how the comma lies at the end of every line in dependencies, except of the last line!
 
-To update, use Tools->MyBox->Update window<br />
+To update, use Tools->MyBox->MyBox Window<br />
 MyBox will notify on new versions 🤗 <br /><br />
 
 ❕If you got problems with update process simply remove "lock" section at the end of your Packages/manifest.json file.
