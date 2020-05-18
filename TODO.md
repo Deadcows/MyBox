@@ -21,6 +21,8 @@
 
 * #### Cursor (MyCursor?) type. To set Sprite and Hotspot values in inspector, with Cursor.Apply() function?
 
+* #### ConstantsSelectionAttribute — Allow to set custom value
+
 * #### ReorderableCollection - add dropdown area to assign bunch of objects via drag-n-drop
 
 * #### ButtonMethod and Foldout are not tested with multiobject selection
