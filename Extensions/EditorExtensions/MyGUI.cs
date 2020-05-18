@@ -71,9 +71,25 @@ namespace MyBox.EditorTools
 			
 			public static GUIContent Check => EditorGUIUtility.IconContent("FilterSelectedOnly");
 			public static GUIContent Cross => EditorGUIUtility.IconContent("d_winbtn_win_close");
+			public static GUIContent CheckGreen => EditorGUIUtility.IconContent("vcs_check");
+			public static GUIContent CrossRed => EditorGUIUtility.IconContent("vcs_delete");
 			
 			public static GUIContent EyeOn => EditorGUIUtility.IconContent("d_VisibilityOn");
 			public static GUIContent EyeOff => EditorGUIUtility.IconContent("d_VisibilityOff");
+			public static GUIContent Zoom => EditorGUIUtility.IconContent("d_ViewToolZoom");
+			
+			public static GUIContent Help => EditorGUIUtility.IconContent("_Help");
+			public static GUIContent Favourite => EditorGUIUtility.IconContent("Favorite");
+			public static GUIContent Label => EditorGUIUtility.IconContent("FilterByLabel");
+			
+			public static GUIContent Settings => EditorGUIUtility.IconContent("d_Settings");
+			public static GUIContent SettingsPopup => EditorGUIUtility.IconContent("_Popup");
+			public static GUIContent SettingsMixer => EditorGUIUtility.IconContent("Audio Mixer");
+			
+			public static GUIContent Circle => EditorGUIUtility.IconContent("TestNormal");
+			public static GUIContent CircleYellow => EditorGUIUtility.IconContent("TestInconclusive");
+			public static GUIContent CircleDotted => EditorGUIUtility.IconContent("TestIgnored");
+			public static GUIContent CircleRed => EditorGUIUtility.IconContent("TestFailed");
 		}
 		
 		#endregion
