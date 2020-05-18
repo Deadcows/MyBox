@@ -41,7 +41,7 @@ Tons of images below :point_down:
 **[AutoProperty](https://github.com/Deadcows/MyBox/wiki/Attributes#autoproperty)** — Assign fields automatically<br />
 **[ButtonMethod](https://github.com/Deadcows/MyBox/wiki/Attributes#buttonmethod)** — Display button in inspector<br />
 **[ConditionalField](https://github.com/Deadcows/MyBox/wiki/Attributes#conditionalfield)** — Conditionally display property in inspector, based on some other property value<br />
-**[ConstantsSelection](https://github.com/Deadcows/MyBox/wiki/Attributes#conditionalfield)** — Popup of const, readonly or static fields and properties<br />
+**[ConstantsSelection](https://github.com/Deadcows/MyBox/wiki/Attributes#constantsselection)** — Popup of const, readonly or static fields and properties<br />
 **[DefinedValues](https://github.com/Deadcows/MyBox/wiki/Attributes#definedvalues)** — Display Dropdown with predefined values<br />
 **[DisplayInspector](https://github.com/Deadcows/MyBox/wiki/Attributes#displayinspector)** — Display one inspector inside of another<br />
 **[Foldout](https://github.com/Deadcows/MyBox/wiki/Attributes#foldout)** — Group your fields in inspector<br />
