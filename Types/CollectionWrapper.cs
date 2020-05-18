@@ -10,6 +10,7 @@ namespace MyBox
 	}
 }
 
+#if UNITY_EDITOR
 namespace MyBox.Internal
 {
 	using UnityEditor;
@@ -34,3 +35,4 @@ namespace MyBox.Internal
 		}
 	}
 }
+#endif
