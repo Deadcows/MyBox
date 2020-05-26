@@ -31,11 +31,11 @@ namespace MyBox
 		/// <summary>
 		/// Set Alpha of Image.Color
 		/// </summary>
-		public static void SetAlpha(this Image image, float a)
+		public static void SetAlpha(this Graphic graphic, float a)
 		{
-			var color = image.color;
+			var color = graphic.color;
 			color = new Color(color.r, color.g, color.b, a);
-			image.color = color;
+			graphic.color = color;
 		}
 
 		/// <summary>
