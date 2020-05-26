@@ -3,6 +3,8 @@ All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
 ! wip AttributeBase
+- Added: SceneReference.LoadSceneAsync method
+
 
 ## [1.4.0] - 2020-05-18
 - Added: ConstantsSelectionAttribute to popup all const values of a specific type
