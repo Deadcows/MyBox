@@ -3,7 +3,11 @@ All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
 ! wip AttributeBase
+
+## [1.4.1] - 2020-06-06
 - Added: SceneReference.LoadSceneAsync method
+- Changed: Image.SetAlpha changed to more generic Graphic.SetAlpha
+- Fix: Build exception because of CollectionWrapperBase
 
 
 ## [1.4.0] - 2020-05-18
