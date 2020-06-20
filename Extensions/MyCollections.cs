@@ -232,5 +232,11 @@ namespace MyBox
 			
 			return source.Values.ContentsMatch(check);
 		}
+
+		/// <summary>
+		/// Gets the value associated with the specified key if it exists, or return the default value for the value type if it doesn't.
+		/// </summary>
+		public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key) =>
+			source.IsNullOrEmpty() ? default(TValue) : source.ContainsKey(key) ? source[key] : default(TValue);
 	}
 }
