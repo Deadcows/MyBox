@@ -238,5 +238,33 @@ namespace MyBox
 		/// </summary>
 		public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key) =>
 			source.IsNullOrEmpty() ? default(TValue) : source.ContainsKey(key) ? source[key] : default(TValue);
+
+		/// <summary>
+		/// Performs an action on each element of a collection.
+		/// </summary>
+		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, System.Action<T> action)
+		{
+			if (source.IsNullOrEmpty())
+			{
+				Debug.LogError("ForEach Caused: source collection is null or empty");
+				return null;
+			}
+			foreach (T element in source) action(element);
+			return source;
+		}
+
+		/// <summary>
+		/// Performs a function on each element of a collection.
+		/// </summary>
+		public static IEnumerable<T> ForEach<T, R>(this IEnumerable<T> source, System.Func<T, R> func)
+		{
+			if (source.IsNullOrEmpty())
+			{
+				Debug.LogError("ForEach Caused: source collection is null or empty");
+				return null;
+			}
+			foreach (T element in source) func(element);
+			return source;
+		}
 	}
 }
