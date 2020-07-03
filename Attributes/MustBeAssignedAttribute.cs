@@ -19,6 +19,7 @@ namespace MyBox.Internal
 	using System.Reflection;
 	using UnityEditor;
 	using Object = UnityEngine.Object;
+	using UnityEditor.Experimental.SceneManagement;
 
 	[InitializeOnLoad]
 	public class MustBeAssignedAttributeChecker
@@ -27,15 +28,16 @@ namespace MyBox.Internal
 
 		static MustBeAssignedAttributeChecker()
 		{
-			EditorApplication.update += CheckOnce;
+			PrefabStage.prefabSaved += AssertComponents;
+			// EditorApplication.update += CheckOnce;
 		}
 
 		private static void CheckOnce()
 		{
 			if (Application.isPlaying)
 			{
-				EditorApplication.update -= CheckOnce;
-				AssertComponents();
+				// EditorApplication.update -= CheckOnce;
+				// AssertComponents();
 			}
 		}
 
@@ -52,9 +54,9 @@ namespace MyBox.Internal
 			return false;
 		}
 
-		private static void AssertComponents()
+		private static void AssertComponents(GameObject prefab)
 		{
-			MonoBehaviour[] components = Object.FindObjectsOfType<MonoBehaviour>();
+			MonoBehaviour[] components = prefab.GetComponentsInChildren<MonoBehaviour>();
 
 			foreach (MonoBehaviour behaviour in components)
 			{
