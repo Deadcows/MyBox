@@ -20,6 +20,7 @@ namespace MyBox.Internal
 	using UnityEditor;
 	using Object = UnityEngine.Object;
 	using UnityEditor.Experimental.SceneManagement;
+	using EditorTools;
 
 	[InitializeOnLoad]
 	public class MustBeAssignedAttributeChecker
@@ -28,17 +29,8 @@ namespace MyBox.Internal
 
 		static MustBeAssignedAttributeChecker()
 		{
-			PrefabStage.prefabSaved += AssertComponents;
-			// EditorApplication.update += CheckOnce;
-		}
-
-		private static void CheckOnce()
-		{
-			if (Application.isPlaying)
-			{
-				// EditorApplication.update -= CheckOnce;
-				// AssertComponents();
-			}
+			MyEditorEvents.OnSave += AssertComponentsInScene;
+			PrefabStage.prefabSaved += AssertComponentsInPrefab;
 		}
 
 		private static bool FieldExcluded(FieldInfo field, MonoBehaviour behaviour)
@@ -54,10 +46,20 @@ namespace MyBox.Internal
 			return false;
 		}
 
-		private static void AssertComponents(GameObject prefab)
+		private static void AssertComponentsInScene()
+		{ 
+			var components = MyEditor.GetAllBehavioursInScenes();
+			AssertComponent(components);
+		}
+
+		private static void AssertComponentsInPrefab(GameObject prefab)
 		{
 			MonoBehaviour[] components = prefab.GetComponentsInChildren<MonoBehaviour>();
+			AssertComponent(components);
+		}
 
+		private static void AssertComponent(MonoBehaviour[] components)
+		{
 			foreach (MonoBehaviour behaviour in components)
 			{
 				Type typeOfScript = behaviour.GetType();

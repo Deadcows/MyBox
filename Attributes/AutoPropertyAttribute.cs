@@ -37,7 +37,9 @@ namespace MyBox.Internal
 	{
 		static AutoPropertyHandler()
 		{
+			// this event is for Gameobjects in the scene.
 			MyEditorEvents.OnSave += CheckComponentsInScene;
+			// this event is for prefabs saved in edit mode.
 			PrefabStage.prefabSaved += CheckComponentsInPrefab;
 		}
 
