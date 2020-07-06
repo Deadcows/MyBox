@@ -9,6 +9,7 @@ All notable changes to this package will be documented in this file.
 ## [1.4.1] - 2020-06-06
 - Added: SceneReference.LoadSceneAsync method
 - Changed: Image.SetAlpha changed to more generic Graphic.SetAlpha
+- Changed: WarningsPool now allows to write any log type, not just warnings
 - Fix: Build exception because of CollectionWrapperBase
 
 
