@@ -2,6 +2,7 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
+- Added: MyReflection extensions, with HasMethod, HasField and HasProperty object extensions
 - Changed: ButtonMethodAttribute - new setting to draw button before or after inspector
 ! wip AttributeBase
 
