@@ -155,7 +155,7 @@ namespace MyBox.Internal
 				warning += " on behaviour <color=brown>" + fieldInfo.DeclaringType.Name + "</color>";
 			warning += " caused: " + log;
 
-			WarningsPool.Log(warning, property.serializedObject.targetObject);
+			WarningsPool.LogWarning(warning, property.serializedObject.targetObject);
 		}
 
 
@@ -374,7 +374,7 @@ namespace MyBox.Internal
 				var who = "Property <color=brown>" + arrayProp.name + "</color> in object <color=brown>" + target.name + "</color> caused: ";
 				var warning = who + "Array fields is not supported by [ConditionalFieldAttribute]";
 
-				WarningsPool.Log(warning, target);
+				WarningsPool.LogWarning(warning, target);
 
 				return null;
 			}

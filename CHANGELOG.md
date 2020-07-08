@@ -2,11 +2,14 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
+- Added: MyReflection extensions, with HasMethod, HasField and HasProperty object extensions
+- Changed: ButtonMethodAttribute - new setting to draw button before or after inspector
 ! wip AttributeBase
 
 ## [1.4.1] - 2020-06-06
 - Added: SceneReference.LoadSceneAsync method
 - Changed: Image.SetAlpha changed to more generic Graphic.SetAlpha
+- Changed: WarningsPool now allows to write any log type, not just warnings
 - Fix: Build exception because of CollectionWrapperBase
 
 

@@ -13,6 +13,18 @@ namespace MyBox
 	[AttributeUsage(AttributeTargets.Method)]
 	public class ButtonMethodAttribute : PropertyAttribute
 	{
+		public readonly ButtonMethodDrawOrder DrawOrder;
+
+		public ButtonMethodAttribute(ButtonMethodDrawOrder drawOrder = ButtonMethodDrawOrder.AfterInspector)
+		{
+			DrawOrder = drawOrder;
+		}
+	}
+
+	public enum ButtonMethodDrawOrder
+	{
+		BeforeInspector, 
+		AfterInspector
 	}
 }
 
@@ -26,7 +38,7 @@ namespace MyBox.Internal
 	
 	public class ButtonMethodHandler
 	{
-		public readonly List<(MethodInfo Method, string Name)> TargetMethods;
+		public readonly List<(MethodInfo Method, string Name, ButtonMethodDrawOrder order)> TargetMethods;
 		public int Amount => TargetMethods?.Count ?? 0;
 		
 		private readonly Object _target;
@@ -46,19 +58,36 @@ namespace MyBox.Internal
 				
 				if (IsValidMember(method, member))
 				{
-					if (TargetMethods == null) TargetMethods = new List<(MethodInfo, string)>();
-					TargetMethods.Add((method, method.Name.SplitCamelCase()));
+					var attribute = (ButtonMethodAttribute)Attribute.GetCustomAttribute(method, typeof(ButtonMethodAttribute));
+					if (TargetMethods == null) TargetMethods = new List<(MethodInfo, string, ButtonMethodDrawOrder)>();
+					TargetMethods.Add((method, method.Name.SplitCamelCase(), attribute.DrawOrder));
 				}
 			}
 		}
 
-		public void OnInspectorGUI()
+		public void OnBeforeInspectorGUI()
+		{
+			if (TargetMethods == null) return;
+
+			foreach (var method in TargetMethods)
+			{
+				if (method.order != ButtonMethodDrawOrder.BeforeInspector) continue;
+				
+				if (GUILayout.Button(method.Name)) InvokeMethod(_target, method.Method);
+			}
+			
+			EditorGUILayout.Space();
+		}
+
+		public void OnAfterInspectorGUI()
 		{
 			if (TargetMethods == null) return;
 			EditorGUILayout.Space();
 
 			foreach (var method in TargetMethods)
 			{
+				if (method.order != ButtonMethodDrawOrder.AfterInspector) continue;
+				
 				if (GUILayout.Button(method.Name)) InvokeMethod(_target, method.Method);
 			}
 		}

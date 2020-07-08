@@ -1,3 +1,4 @@
+using MyBox.Internal;
 using UnityEngine;
 
 namespace MyBox
@@ -65,7 +66,7 @@ namespace MyBox
 				GameCamera = Camera.main;
 				if (GameCamera == null)
 				{
-					Debug.LogError(name + ".UIFollow Caused: Main Camera not found. Assign Camera manually", this);
+					WarningsPool.LogWarning(name + ".UIFollow Caused: Main Camera not found. Assign Camera manually", this);
 					return;
 				}
 			}
