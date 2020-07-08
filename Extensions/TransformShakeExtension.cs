@@ -15,7 +15,6 @@ namespace MyBox
 		/// Coroutine and Initial Position for transform 
 		/// </summary>
 		private static Dictionary<Transform, Tuple<Coroutine, Vector3>> _activeShakingTransforms;
-		private static float _shakeAmplitude = .15f;
 		
 		/// <summary>
 		/// Shake transform, like for screenshake on camera transform
@@ -57,8 +56,8 @@ namespace MyBox
 				elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
 				float elapsedRate = 1 - elapsed / shakeTime; 
 				
-				float xShake = Random.value * _shakeAmplitude * 2 - _shakeAmplitude;
-				float yShake = Random.value * _shakeAmplitude * 2 - _shakeAmplitude;
+				float xShake = Random.value * bounds * 2 - bounds;
+				float yShake = Random.value * bounds * 2 - bounds;
 				
 				Vector3 newPosition = transform.position;
 				newPosition.x += xShake;
@@ -67,7 +66,7 @@ namespace MyBox
 				bounds = fadeBounds ? initialBounds * elapsedRate : initialBounds;
 				newPosition.x = Mathf.Clamp(newPosition.x, initialPosition.x - bounds, initialPosition.x + bounds);
 				newPosition.y = Mathf.Clamp(newPosition.y, initialPosition.y - bounds, initialPosition.y + bounds);
-
+				
 				transform.position = newPosition;
 			}
 

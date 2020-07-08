@@ -3,7 +3,8 @@ All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
 - Added: MyReflection extensions, with HasMethod, HasField and HasProperty object extensions
-- Changed: ButtonMethodAttribute - new setting to draw button before or after inspector
+- Changed: ButtonMethodAttribute — new setting to draw button before or after inspector
+- Fix: TransformShakeExtension — shake bounds wasn't worked
 ! wip AttributeBase
 
 ## [1.4.1] - 2020-06-06
