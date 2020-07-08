@@ -84,7 +84,7 @@ namespace MyBox.Internal
 			SerializedProperty maxProp = property.FindPropertyRelative("Max");
 			if (minProp == null || maxProp == null)
 			{
-				WarningsPool.Log("MinMaxRangeAttribute used on <color=brown>" +
+				WarningsPool.LogWarning("MinMaxRangeAttribute used on <color=brown>" +
 				                 property.name +
 				                 "</color>. Must be used on types with Min and Max fields",
 					property.serializedObject.targetObject);
@@ -96,7 +96,7 @@ namespace MyBox.Internal
 			var maxValid = maxProp.propertyType == SerializedPropertyType.Integer || maxProp.propertyType == SerializedPropertyType.Float;
 			if (!maxValid || !minValid || minProp.propertyType != maxProp.propertyType)
 			{
-				WarningsPool.Log("MinMaxRangeAttribute used on <color=brown>" +
+				WarningsPool.LogWarning("MinMaxRangeAttribute used on <color=brown>" +
 				                 property.name +
 				                 "</color>. Min and Max fields must be of int or float type",
 					property.serializedObject.targetObject);

@@ -23,6 +23,8 @@ namespace MyBox.Internal
 
         public override void OnInspectorGUI()
         {
+            _buttonMethod?.OnBeforeInspectorGUI();
+            
             if (_foldout != null)
             {
                 _foldout.Update();
@@ -30,7 +32,7 @@ namespace MyBox.Internal
                 else _foldout.OnInspectorGUI();
             }
 
-            _buttonMethod?.OnInspectorGUI();
+            _buttonMethod?.OnAfterInspectorGUI();
         }
     }
 }
