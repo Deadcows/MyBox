@@ -2,8 +2,16 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
-- Added: MyReflection extensions, with HasMethod, HasField and HasProperty object extensions
+- Added: WarningsPool, used to log repeated message only one time
+- Changed: MustBeAssigned attribute now will check fields on prefab when it is saved in prefab mode
+- Changed: AutoProperty attribute now will fill fields on prefab when it is saved in prefab mode
+- Changed: IPrepareFeature now have three Prepare events: OnPrepareBefore, OnPrepare, OnPrepareAfter for execution order control
+- Changed: IPrepareFeature now is in MyBox.EditorTools namespace
 - Changed: ButtonMethodAttribute — new setting to draw button before or after inspector
+- Extension: MyReflection extensions, with HasMethod, HasField and HasProperty object extensions
+- Extension: Dictionary.GetOrDefault to return default() value if key is not found
+- Extension: IEnumerable.ForEach, just like List.ForEach. Also takes Func<>!
+- Fix: Build exception (again!) because of internal WarningsPool
 - Fix: TransformShakeExtension — shake bounds wasn't worked
 ! wip AttributeBase
 

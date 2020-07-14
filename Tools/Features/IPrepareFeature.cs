@@ -12,7 +12,7 @@ namespace MyBox
 }
 
 #if UNITY_EDITOR
-namespace MyBox.Internal
+namespace MyBox.EditorTools
 {
 	using System.Collections.Generic;
 	using System.Linq;
@@ -26,11 +26,13 @@ namespace MyBox.Internal
 	{
 		public static bool IsEnabled = true;
 
+		public static Action OnPrepareBefore;
 		public static Action OnPrepare;
+		public static Action OnPrepareAfter;
 
 		static IPrepareFeature()
 		{
-			EditorTools.MyEditorEvents.BeforePlaymode += PrepareOnPlay;
+			MyEditorEvents.BeforePlaymode += PrepareOnPlay;
 		}
 
 		private static void PrepareOnPlay()
@@ -45,8 +47,10 @@ namespace MyBox.Internal
 		/// </summary>
 		public static void RunPrepare()
 		{
-			if (OnPrepare != null) OnPrepare();
-			
+			OnPrepareBefore?.Invoke();
+			OnPrepare?.Invoke();
+			OnPrepareAfter?.Invoke();
+
 			var toPrepare = MyExtensions.FindObjectsOfInterfaceAsComponents<IPrepare>();
 
 			HashSet<Scene> modifiedScenes = null;

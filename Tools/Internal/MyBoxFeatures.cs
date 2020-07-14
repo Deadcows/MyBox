@@ -24,7 +24,7 @@ namespace MyBox.Internal
 
 		private static bool AutoSaveIsEnabled
 		{
-			get { return MyBoxSettings.AutoSaveEnabled; }
+			get => MyBoxSettings.AutoSaveEnabled;
 			set
 			{
 				{
@@ -54,7 +54,7 @@ namespace MyBox.Internal
 
 		private static bool CleanupEmptyDirectoriesIsEnabled
 		{
-			get { return MyBoxSettings.CleanEmptyDirectoriesFeature; }
+			get => MyBoxSettings.CleanEmptyDirectoriesFeature;
 			set
 			{
 				{
@@ -84,12 +84,12 @@ namespace MyBox.Internal
 
 		private static bool IPrepareIsEnabled
 		{
-			get { return MyBoxSettings.PrepareOnPlaymode; }
+			get => MyBoxSettings.PrepareOnPlaymode;
 			set
 			{
 				{
 					MyBoxSettings.PrepareOnPlaymode = value;
-					IPrepareFeature.IsEnabled = value;
+					EditorTools.IPrepareFeature.IsEnabled = value;
 				}
 			}
 		}
@@ -114,7 +114,7 @@ namespace MyBox.Internal
 
 		private static bool CheckForUpdatesEnabled
 		{
-			get { return MyBoxSettings.CheckForUpdates; }
+			get => MyBoxSettings.CheckForUpdates;
 			set
 			{
 				{
