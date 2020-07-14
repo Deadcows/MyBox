@@ -11,7 +11,7 @@ namespace MyBox.Internal
 {
 	public class CleanEmptyDirectoriesFeature : UnityEditor.AssetModificationProcessor
 	{
-		public static bool IsEnabled = true;
+		public static bool IsEnabled = false;
 
 		
 		public static string[] OnWillSaveAssets(string[] paths)

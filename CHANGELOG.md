@@ -8,6 +8,7 @@ All notable changes to this package will be documented in this file.
 - Changed: IPrepareFeature now have three Prepare events: OnPrepareBefore, OnPrepare, OnPrepareAfter for execution order control
 - Changed: IPrepareFeature now is in MyBox.EditorTools namespace
 - Changed: ButtonMethodAttribute — new setting to draw button before or after inspector
+- Changed: Clean Empty Directories Feature is now  disabled by default
 - Extension: MyReflection extensions, with HasMethod, HasField and HasProperty object extensions
 - Extension: Dictionary.GetOrDefault to return default() value if key is not found
 - Extension: IEnumerable.ForEach, just like List.ForEach. Also takes Func<>!
