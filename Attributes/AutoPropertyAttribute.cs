@@ -17,6 +17,7 @@ namespace MyBox.Internal
 {
 	using UnityEditor;
 	using EditorTools;
+	using UnityEditor.Experimental.SceneManagement;
 	using Object = UnityEngine.Object;
 
 	[CustomPropertyDrawer(typeof(AutoPropertyAttribute))]
@@ -36,12 +37,24 @@ namespace MyBox.Internal
 	{
 		static AutoPropertyHandler()
 		{
-			MyEditorEvents.OnSave += CheckComponents;
+			// this event is for Gameobjects in the scene.
+			MyEditorEvents.OnSave += CheckComponentsInScene;
+			// this event is for prefabs saved in edit mode.
+			PrefabStage.prefabSaved += CheckComponentsInPrefab;
 		}
 
-		private static void CheckComponents()
+		private static void CheckComponentsInScene()
 		{
 			var autoProperties = MyEditor.GetFieldsWithAttribute<AutoPropertyAttribute>();
+			for (var i = 0; i < autoProperties.Length; i++)
+			{
+				FillProperty(autoProperties[i]);
+			}
+		}
+
+		private static void CheckComponentsInPrefab(GameObject prefab)
+		{
+			var autoProperties = MyEditor.GetFieldsWithAttribute<AutoPropertyAttribute>(prefab);
 			for (var i = 0; i < autoProperties.Length; i++)
 			{
 				FillProperty(autoProperties[i]);
