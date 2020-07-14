@@ -1,4 +1,3 @@
-using MyBox.Internal;
 using UnityEngine;
 
 namespace MyBox

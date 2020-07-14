@@ -1,11 +1,11 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MyBox.Internal
+namespace MyBox
 {
 	/// <summary>
-	/// This pool is used to prevent warning message spamming. 
+	/// This pool is used to prevent warning message spamming.
+	/// If something was logged once it wont be logged again
 	/// </summary>
 	public static class WarningsPool
 	{
@@ -45,4 +45,3 @@ namespace MyBox.Internal
 		private static readonly HashSet<string> Pool = new HashSet<string>();
 	}
 }
-#endif
