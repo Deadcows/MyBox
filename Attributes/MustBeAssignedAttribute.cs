@@ -18,32 +18,21 @@ namespace MyBox.Internal
 	using System.Linq;
 	using System.Reflection;
 	using UnityEditor;
-	using Object = UnityEngine.Object;
 	using UnityEditor.Experimental.SceneManagement;
 	using EditorTools;
 
 	[InitializeOnLoad]
 	public class MustBeAssignedAttributeChecker
 	{
+		/// <summary>
+		/// A way to conditionally disable MustBeAssigned check
+		/// </summary>
 		public static Func<FieldInfo, MonoBehaviour, bool> ExcludeFieldFilter;
 
 		static MustBeAssignedAttributeChecker()
 		{
 			MyEditorEvents.OnSave += AssertComponentsInScene;
 			PrefabStage.prefabSaved += AssertComponentsInPrefab;
-		}
-
-		private static bool FieldExcluded(FieldInfo field, MonoBehaviour behaviour)
-		{
-			if (ExcludeFieldFilter == null) return false;
-
-			foreach (var filterDelegate in ExcludeFieldFilter.GetInvocationList())
-			{
-				var filter = filterDelegate as Func<FieldInfo, MonoBehaviour, bool>;
-				if (filter != null && filter(field, behaviour)) return true;
-			}
-
-			return false;
 		}
 
 		private static void AssertComponentsInScene()
@@ -62,6 +51,7 @@ namespace MyBox.Internal
 		{
 			foreach (MonoBehaviour behaviour in components)
 			{
+				if (behaviour == null) continue;
 				Type typeOfScript = behaviour.GetType();
 				FieldInfo[] mustBeAssignedFields = typeOfScript
 					.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
@@ -73,41 +63,58 @@ namespace MyBox.Internal
 
 					// Used by external systems to exclude specific fields.
 					// Specifically for ConditionalFieldAttribute
-					if (FieldExcluded(field, behaviour)) continue;
+					if (FieldIsExcluded(field, behaviour)) continue;
 
-					// Value Type with default value
-					if (field.FieldType.IsValueType && Activator.CreateInstance(field.FieldType).Equals(propValue))
+					
+					bool valueTypeWithDefaultValue = field.FieldType.IsValueType && Activator.CreateInstance(field.FieldType).Equals(propValue);
+					if (valueTypeWithDefaultValue)
 					{
-						Debug.LogError(string.Format("{0} caused: {1} is Value Type with default value", typeOfScript.Name, field.Name),
+						Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is Value Type with default value",
 							behaviour.gameObject);
 						continue;
 					}
 
-					// Null reference type
-					if (propValue == null || propValue.Equals(null))
+					
+					bool nullReferenceType = propValue == null || propValue.Equals(null);
+					if (nullReferenceType)
 					{
-						Debug.LogError(string.Format("{0} caused: {1} is not assigned (null value)", typeOfScript.Name, field.Name),
+						Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is not assigned (null value)",
 							behaviour.gameObject);
 						continue;
 					}
 
-					// Empty string
-					if (field.FieldType == typeof(string) && (string) propValue == string.Empty)
+
+					bool emptyString = field.FieldType == typeof(string) && (string) propValue == string.Empty;
+					if (emptyString)
 					{
-						Debug.LogError(string.Format("{0} caused: {1} is not assigned (empty string)", typeOfScript.Name, field.Name),
+						Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is not assigned (empty string)",
 							behaviour.gameObject);
 						continue;
 					}
 
-					// Empty Array
+					
 					var arr = propValue as Array;
-					if (arr != null && arr.Length == 0)
+					bool emptyArray = arr != null && arr.Length == 0;
+					if (emptyArray)
 					{
-						Debug.LogError(string.Format("{0} caused: {1} is not assigned (empty array)", typeOfScript.Name, field.Name),
+						Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is not assigned (empty array)",
 							behaviour.gameObject);
 					}
 				}
 			}
+		}
+		
+		private static bool FieldIsExcluded(FieldInfo field, MonoBehaviour behaviour)
+		{
+			if (ExcludeFieldFilter == null) return false;
+
+			foreach (var filterDelegate in ExcludeFieldFilter.GetInvocationList())
+			{
+				var filter = filterDelegate as Func<FieldInfo, MonoBehaviour, bool>;
+				if (filter != null && filter(field, behaviour)) return true;
+			}
+
+			return false;
 		}
 	}
 }

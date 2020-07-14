@@ -12,6 +12,7 @@ All notable changes to this package will be documented in this file.
 - Extension: Dictionary.GetOrDefault to return default() value if key is not found
 - Extension: IEnumerable.ForEach, just like List.ForEach. Also takes Func<>!
 - Fix: Build exception (again!) because of internal WarningsPool
+- Fix: MustBeAssigned occasional NullReferenceException during build
 - Fix: TransformShakeExtension — shake bounds wasn't worked
 ! wip AttributeBase
 
