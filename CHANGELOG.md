@@ -2,6 +2,10 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
+! wip AttributeBase
+
+
+## [1.5.0] - 2020-07-15
 - Added: WarningsPool, used to log repeated message only one time
 - Changed: MustBeAssigned attribute now will check fields on prefab when it is saved in prefab mode
 - Changed: AutoProperty attribute now will fill fields on prefab when it is saved in prefab mode
@@ -15,7 +19,7 @@ All notable changes to this package will be documented in this file.
 - Fix: Build exception (again!) because of internal WarningsPool
 - Fix: MustBeAssigned occasional NullReferenceException during build
 - Fix: TransformShakeExtension — shake bounds wasn't worked
-! wip AttributeBase
+
 
 ## [1.4.1] - 2020-06-06
 - Added: SceneReference.LoadSceneAsync method
