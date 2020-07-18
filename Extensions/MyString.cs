@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System;
 
 namespace MyBox
 {
@@ -71,6 +72,12 @@ namespace MyBox
 		{
 			return string.Format("<i>{0}</i>", message);
 		}
+
+		/// <summary>
+		/// Convert a string value to an Enum value.
+		/// </summary>
+		public static T AsEnum<T>(this string source) =>
+			(T)Enum.Parse(typeof(T), source);
 	}
 
 	public enum Colors
