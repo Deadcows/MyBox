@@ -8,10 +8,10 @@ namespace MyBox
 		/// Take an object and pass it as an argument to a void function.
 		/// </summary>
 		public static T Pipe<T>(this T argument, Action<T> action)
-    {
-      action(argument);
-      return argument;
-    }
+		{
+			action(argument);
+			return argument;
+		}
 
 		/// <summary>
 		/// Take an object, pass it as an argument to a function, return the result.
