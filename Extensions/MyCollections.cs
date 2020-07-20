@@ -214,7 +214,7 @@ namespace MyBox
 		/// <summary>
 		/// Is Keys in MyDictionary is the same as some collection
 		/// </summary>
-		public static bool ContentsMatchKeys<T1, T2>(this MyDictionary<T1, T2> source, IEnumerable<T1> check)
+		public static bool ContentsMatchKeys<T1, T2>(this IDictionary<T1, T2> source, IEnumerable<T1> check)
 		{
 			if (source.IsNullOrEmpty() && check.IsNullOrEmpty()) return true;
 			if (source.IsNullOrEmpty() || check.IsNullOrEmpty()) return false;
@@ -225,7 +225,7 @@ namespace MyBox
 		/// <summary>
 		/// Is Values in MyDictionary is the same as some collection
 		/// </summary>
-		public static bool ContentsMatchValues<T1, T2>(this MyDictionary<T1, T2> source, IEnumerable<T2> check)
+		public static bool ContentsMatchValues<T1, T2>(this IDictionary<T1, T2> source, IEnumerable<T2> check)
 		{
 			if (source.IsNullOrEmpty() && check.IsNullOrEmpty()) return true;
 			if (source.IsNullOrEmpty() || check.IsNullOrEmpty()) return false;

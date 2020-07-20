@@ -26,13 +26,7 @@ namespace MyBox
 		/// <summary>
 		/// Returns the sign 1/-1 evaluated at the given value.
 		/// </summary>
-		public static int Sign(float x)
-		{
-			if (x > 0) return 1;
-			if (x < 0) return -1;
-
-			return 0;
-		}
+		public static int Sign(IComparable x) => x.CompareTo(0);
 		
 		/// <summary>
 		/// Shortcut for Mathf.Approximately
