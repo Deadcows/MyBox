@@ -76,8 +76,9 @@ namespace MyBox
 		/// <summary>
 		/// Convert a string value to an Enum value.
 		/// </summary>
-		public static T AsEnum<T>(this string source) =>
-			(T)Enum.Parse(typeof(T), source);
+		public static T AsEnum<T>(this string source, bool ignoreCase = true)
+			where T : System.Enum =>
+			(T)Enum.Parse(typeof(T), source, ignoreCase);
 	}
 
 	public enum Colors

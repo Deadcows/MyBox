@@ -443,5 +443,26 @@ namespace MyBox
 		}
 
 		#endregion
+
+		public static Vector4 To(this Vector4 source, Vector4 destination) =>
+			destination - source;
+
+		public static Vector3 To(this Vector3 source, Vector3 destination) =>
+			destination - source;
+
+		public static Vector2 To(this Vector2 source, Vector2 destination) =>
+			destination - source;
+
+		public static Vector3 To(this Component source, Component target) =>
+			source.transform.position.To(target.transform.position);
+
+		public static Vector3 To(this Component source, GameObject target) =>
+			source.transform.position.To(target.transform.position);
+
+		public static Vector3 To(this GameObject source, Component target) =>
+			source.transform.position.To(target.transform.position);
+
+		public static Vector3 To(this GameObject source, GameObject target) =>
+			source.transform.position.To(target.transform.position);
 	}
 }
