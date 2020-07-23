@@ -46,7 +46,8 @@ namespace MyBox.Internal
             }
             catch (HttpRequestException requestException)
             {
-                Debug.LogWarning("MyBox is unable to check version online :(. Exception is: " + requestException.Message);
+                //TODO: It's probably some internet connection issue at this point. Should I notify user about it?
+                //Debug.LogWarning("MyBox is unable to check version online :(. Exception is: " + requestException.Message);
             }
         }
 

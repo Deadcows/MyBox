@@ -13,7 +13,7 @@ namespace MyBox.Internal
 		private static MyBoxVersion _latestVersion;
 
 		private static EditorWindow _windowInstance;
-		
+
 
 		static MyBoxWindow()
 		{
@@ -26,14 +26,15 @@ namespace MyBox.Internal
 					if (!_installedVersion.VersionsMatch(_latestVersion))
 					{
 						var versions = "Installed version: " + _installedVersion.AsSting + ". Latest version: " + _latestVersion.AsSting;
-						Debug.Log("It's time to update MyBox :)! Use \"Tools/MyBox/Update MyBox\". " + versions);
+						var message = "It's time to update MyBox :)! Use \"Tools/MyBox/Update MyBox\". " + versions;
+						WarningsPool.Log(message);
 					}
 				});
 			}
 		}
 
 		[MenuItem("Tools/MyBox/MyBox Window", priority = 1)]
-		private static void MuBoxUpdateMenuItem()
+		private static void MyBoxWindowMenuItem()
 		{
 			_windowInstance = GetWindow<MyBoxWindow>();
 			_windowInstance.titleContent = new GUIContent("Update MyBox");
@@ -51,12 +52,12 @@ namespace MyBox.Internal
 			});
 		}
 
-		
+
 		private void OnGUI()
 		{
 			EditorGUILayout.LabelField("You are using " + (MyBoxUtilities.InstalledViaUPM ? "PackageManager version!" : "Git version!"));
 			if (!MyBoxUtilities.InstalledViaUPM) EditorGUILayout.LabelField("PackageManager version is easier to update ;)");
-			
+
 			EditorGUILayout.Space();
 			EditorGUILayout.LabelField("Current version: " + (_installedVersion == null ? "..." : _installedVersion.AsSting));
 			EditorGUILayout.LabelField("Latest version: " + (_latestVersion == null ? "..." : _latestVersion.AsSting));
@@ -65,7 +66,7 @@ namespace MyBox.Internal
 			{
 				if (GUILayout.Button("Update GIT packages", EditorStyles.toolbarButton))
 				{
-					if (!MyBoxUtilities.UpdateGitPackages()) 
+					if (!MyBoxUtilities.UpdateGitPackages())
 						ShowNotification(new GUIContent("There is no git packages installed"));
 				}
 
