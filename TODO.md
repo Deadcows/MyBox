@@ -1,5 +1,7 @@
 * #### Custom Editor Window for MyBox settings with logo and stuff ❤
 
+* #### Update check should be called once at startup. Currently it happens every time on recompile 
+
 * #### Add: MyDictionary, visible in inspector!!1
 
 * #### Add: SingleScriptableObject. No more messy Create/ with CreateAssetMenuAttribute for settings SO's

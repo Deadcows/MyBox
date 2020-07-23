@@ -8,7 +8,7 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public class AutoSaveFeature
 	{
-		public static bool IsEnabled = true;
+		public static bool IsEnabled = false;
 
 
 		static AutoSaveFeature()
