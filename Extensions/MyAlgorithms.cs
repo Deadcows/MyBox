@@ -13,15 +13,14 @@ namespace MyBox
 		/// <summary>
 		/// Check if this is a particular type.
 		/// </summary>
-		public static bool Is<R>(this System.Object source) => source is R;
+		public static bool Is<R>(this object source) => source is R;
 
 		/// <summary>
 		/// Cast to a different type, exception-safe.
 		/// </summary>
-		public static R As<R>(this System.Object source) where R : class
+		public static R As<R>(this object source) where R : class
 		{
-			if (source is R) return source as R;
-			return null;
+			return source as R;
 		}
 
 		/// <summary>
