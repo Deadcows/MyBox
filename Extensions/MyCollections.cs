@@ -302,6 +302,6 @@ namespace MyBox
 		public static T MinBy<T, S>(this IEnumerable<T> source, Func<T, S> selector)
 			where S : IComparable<S>
 			=> source.Aggregate(default(T),
-				(e, n) => selector(e).CompareTo(selector(n)) > 0 ? e : n);
+				(e, n) => selector(e).CompareTo(selector(n)) < 0 ? e : n);
 	}
 }
