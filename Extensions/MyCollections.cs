@@ -293,15 +293,27 @@ namespace MyBox
 		/// </summary>
 		public static T MaxBy<T, S>(this IEnumerable<T> source, Func<T, S> selector)
 			where S : IComparable<S>
-			=> source.Aggregate(default(T),
-				(e, n) => selector(e).CompareTo(selector(n)) > 0 ? e : n);
+		{
+			if (source.IsNullOrEmpty())
+			{
+				Debug.LogError("MaxBy Caused: source collection is null or empty");
+				return default(T);
+			}
+			return source.Aggregate((e, n) => selector(e).CompareTo(selector(n)) > 0 ? e : n);
+		}
 
 		/// <summary>
 		/// Find the element of a collection that has the lowest selected value.
 		/// </summary>
 		public static T MinBy<T, S>(this IEnumerable<T> source, Func<T, S> selector)
 			where S : IComparable<S>
-			=> source.Aggregate(default(T),
-				(e, n) => selector(e).CompareTo(selector(n)) < 0 ? e : n);
+		{
+			if (source.IsNullOrEmpty())
+			{
+				Debug.LogError("MinBy Caused: source collection is null or empty");
+				return default(T);
+			}
+			return source.Aggregate((e, n) => selector(e).CompareTo(selector(n)) < 0 ? e : n);
+		}
 	}
 }
