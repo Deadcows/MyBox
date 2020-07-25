@@ -12,6 +12,8 @@ namespace MyBox.Internal
         
         private void OnEnable()
         {
+            if (target == null) return;
+            
             _foldout = new FoldoutAttributeHandler(target, serializedObject);
             _buttonMethod = new ButtonMethodHandler(target);
         }
