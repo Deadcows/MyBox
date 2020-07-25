@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace MyBox
 {
@@ -72,7 +73,7 @@ namespace MyBox
 		/// </summary>
 		public static T GetRandom<T>(this T[] collection)
 		{
-			return collection[Random.Range(0, collection.Length)];
+			return collection[UnityEngine.Random.Range(0, collection.Length)];
 		}
 		
 		/// <summary>
@@ -80,7 +81,7 @@ namespace MyBox
 		/// </summary>
 		public static T GetRandom<T>(this IList<T> collection)
 		{
-			return collection[Random.Range(0, collection.Count)];
+			return collection[UnityEngine.Random.Range(0, collection.Count)];
 		}
 		
 		/// <summary>
@@ -88,7 +89,7 @@ namespace MyBox
 		/// </summary>
 		public static T GetRandom<T>(this IEnumerable<T> collection)
 		{
-			return collection.ElementAt(Random.Range(0, collection.Count()));
+			return collection.ElementAt(UnityEngine.Random.Range(0, collection.Count()));
 		}
 		
 		
@@ -106,7 +107,7 @@ namespace MyBox
 			
 			for (var i = 0; i < amount; i++)
 			{
-				var random = Random.Range(0, indexes.Count);
+				var random = UnityEngine.Random.Range(0, indexes.Count);
 				randoms[i] = collection[random];
 				indexes.RemoveAt(random);
 			}
@@ -234,10 +235,30 @@ namespace MyBox
 		}
 
 		/// <summary>
-		/// Gets the value associated with the specified key if it exists, or return the default value for the value type if it doesn't.
+		/// Gets the value associated with the specified key if it exists, or
+		/// return the default value for the value type if it doesn't.
 		/// </summary>
-		public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key) =>
-			source.IsNullOrEmpty() ? default(TValue) : source.ContainsKey(key) ? source[key] : default(TValue);
+		public static TValue GetOrDefault<TKey, TValue>(
+			this IDictionary<TKey, TValue> source,
+			TKey key,
+			TValue customDefault = default(TValue))
+		{
+			if (!source.ContainsKey(key)) source[key] = customDefault;
+			return source[key];
+		}
+
+		/// <summary>
+		/// Gets the value associated with the specified key if it exists, or
+		/// generate a value for the new key if it doesn't.
+		/// </summary>
+		public static TValue GetOrDefault<TKey, TValue>(
+			this IDictionary<TKey, TValue> source,
+			TKey key,
+			System.Func<TValue> customDefaultGenerator)
+		{
+			if (!source.ContainsKey(key)) source[key] = customDefaultGenerator();
+			return source[key];
+		}
 
 		/// <summary>
 		/// Performs an action on each element of a collection.
@@ -256,7 +277,7 @@ namespace MyBox
 		/// <summary>
 		/// Performs a function on each element of a collection.
 		/// </summary>
-		public static IEnumerable<T> ForEach<T, R>(this IEnumerable<T> source, System.Func<T, R> func)
+		public static IEnumerable<T> ForEach<T, R>(this IEnumerable<T> source, Func<T, R> func)
 		{
 			if (source.IsNullOrEmpty())
 			{
@@ -265,6 +286,34 @@ namespace MyBox
 			}
 			foreach (T element in source) func(element);
 			return source;
+		}
+
+		/// <summary>
+		/// Find the element of a collection that has the highest selected value.
+		/// </summary>
+		public static T MaxBy<T, S>(this IEnumerable<T> source, Func<T, S> selector)
+			where S : IComparable<S>
+		{
+			if (source.IsNullOrEmpty())
+			{
+				Debug.LogError("MaxBy Caused: source collection is null or empty");
+				return default(T);
+			}
+			return source.Aggregate((e, n) => selector(e).CompareTo(selector(n)) > 0 ? e : n);
+		}
+
+		/// <summary>
+		/// Find the element of a collection that has the lowest selected value.
+		/// </summary>
+		public static T MinBy<T, S>(this IEnumerable<T> source, Func<T, S> selector)
+			where S : IComparable<S>
+		{
+			if (source.IsNullOrEmpty())
+			{
+				Debug.LogError("MinBy Caused: source collection is null or empty");
+				return default(T);
+			}
+			return source.Aggregate((e, n) => selector(e).CompareTo(selector(n)) < 0 ? e : n);
 		}
 	}
 }
