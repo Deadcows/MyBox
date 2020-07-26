@@ -52,6 +52,7 @@ Tons of images below :point_down:
 **[PositiveValueOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#positivevalueonly)** — Prohibit values below zero<br />
 **[ReadOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#readonly)** — Draw property with disabled GUI<br />
 **[RequireTag and RequireLayer](https://github.com/Deadcows/MyBox/wiki/Attributes#requiretag-and-requirelayer)** — Automatically set Tag and Layer<br />
+**[Scene](//Need link)** — Pick scene from inspector<br />
 **[SearchableEnum](https://github.com/Deadcows/MyBox/wiki/Attributes#searchableenum)** — Nice UI for enums with lots of elements<br />
 **[Separator](https://github.com/Deadcows/MyBox/wiki/Attributes#separator)** — Draw separator with or without title<br />
 
