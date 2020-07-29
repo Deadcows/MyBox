@@ -71,8 +71,8 @@ namespace MyBox.EditorTools
 			
 			public static GUIContent Check => EditorGUIUtility.IconContent("FilterSelectedOnly");
 			public static GUIContent Cross => EditorGUIUtility.IconContent("d_winbtn_win_close");
-			public static GUIContent CheckGreen => EditorGUIUtility.IconContent("vcs_check");
-			public static GUIContent CrossRed => EditorGUIUtility.IconContent("vcs_delete");
+			
+			public static GUIContent Dropdown => EditorGUIUtility.IconContent("icon dropdown");
 			
 			public static GUIContent EyeOn => EditorGUIUtility.IconContent("d_VisibilityOn");
 			public static GUIContent EyeOff => EditorGUIUtility.IconContent("d_VisibilityOff");
