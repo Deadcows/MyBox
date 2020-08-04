@@ -38,6 +38,26 @@ namespace MyBox
 
 	public static class MinMaxExtensions
 	{
+		#region IsInRange
+
+		/// <summary>
+		/// Value is in range of min and max
+		/// </summary>
+		public static bool IsInRange(this MinMaxInt minMax, int value)
+		{
+			return value >= minMax.Min && value <= minMax.Max;
+		}
+		
+		/// <summary>
+		/// Value is in range of min and max
+		/// </summary>
+		public static bool IsInRange(this MinMaxFloat minMax, float value)
+		{
+			return value >= minMax.Min && value <= minMax.Max;
+		}
+
+		#endregion
+		
 		#region Clamp
 
 		/// <summary>
