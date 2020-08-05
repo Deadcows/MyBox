@@ -265,7 +265,6 @@ namespace MyBox
 		/// </summary>
 		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, System.Action<T> action)
 		{
-			if (source.IsNullOrEmpty()) return source;
 			foreach (T element in source) action(element);
 			return source;
 		}
@@ -275,7 +274,6 @@ namespace MyBox
 		/// </summary>
 		public static IEnumerable<T> ForEach<T, R>(this IEnumerable<T> source, Func<T, R> func)
 		{
-			if (source.IsNullOrEmpty()) return source;
 			foreach (T element in source) func(element);
 			return source;
 		}
