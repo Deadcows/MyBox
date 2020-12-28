@@ -20,7 +20,7 @@ openupm add com.domybest.mybox
 ### Install via Git URL
 You may install MyBox via <b>Unity Package Manager</b>:<br />
 Open Packages/manifest.json file in your project folder and put this line along with other dependencies<br />
-<pre>"com.mybox": "https://github.com/Deadcows/MyBox.git"</pre>
+<pre>"com.domybest.mybox": "https://github.com/Deadcows/MyBox.git"</pre>
 Note how the comma lies at the end of every line in dependencies, except of the last line!
 
 To update, use Tools->MyBox->MyBox Window<br />
