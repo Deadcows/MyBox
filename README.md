@@ -1,6 +1,6 @@
 # MyBox
 
-[![openupm](https://img.shields.io/npm/v/com.mybox?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.mybox/)
+[![openupm](https://img.shields.io/npm/v/com.domybest.mybox?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.domybest.mybox/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/Deadcows/MyBox/blob/master/LICENSE.md)
 
 MyBox is a set of tools, features and extensions for Unity.<br />
@@ -14,7 +14,7 @@ It is MyBox. Now it's yours too :raised_hands:<br />
 The package is available on the [openupm registry](https://openupm.com). You may install it via [openupm-cli](https://github.com/openupm/openupm-cli).
 
 ```
-openupm add com.mybox
+openupm add com.domybest.mybox
 ```
 
 ### Install via Git URL
