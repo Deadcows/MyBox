@@ -2,6 +2,8 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
+- Extension: MyString.Colored(UnityEngine.Color)
+- Extension: MyString.SurroundedWith()
 ! wip AttributeBase
 
 

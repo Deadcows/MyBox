@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System;
+using UnityEngine;
 
 namespace MyBox
 {
@@ -8,10 +9,7 @@ namespace MyBox
 		/// <summary>
 		/// "Camel case string" => "CamelCaseString" 
 		/// </summary>
-		public static string ToCamelCase(this string camelCaseString)
-		{
-			return Regex.Replace(camelCaseString, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ").Trim();
-		}
+		public static string ToCamelCase(this string message) => Regex.Replace(message, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ").Trim();
 
 		/// <summary>
 		/// "CamelCaseString" => "Camel Case String"
@@ -32,7 +30,12 @@ namespace MyBox
 
 			return firstLetter;
 		}
-		
+
+		/// <summary>
+		/// Convert a string value to an Enum value.
+		/// </summary>
+		public static T AsEnum<T>(this string source, bool ignoreCase = true) where T : Enum => (T) Enum.Parse(typeof(T), source, ignoreCase);
+
 
 		/// <summary>
 		/// Number presented in Roman numerals
@@ -54,58 +57,59 @@ namespace MyBox
 			if (i > 0) return "I" + ToRoman(i - 1);
 			return "";
 		}
+
+		/// <summary>
+		/// Get the "message" string with the "surround" string at the both sides 
+		/// </summary>
+		public static string SurroundedWith(this string message, string surround) => surround + message + surround;
 		
+		/// <summary>
+		/// Get the "message" string with the "start" at the beginning and "end" at the end of the string
+		/// </summary>
+		public static string SurroundedWith(this string message, string start, string end) => start + message + end;
 
 		/// <summary>
 		/// Surround string with "color" tag
 		/// </summary>
-		public static string Colored(this string message, Colors color)
-		{
-			return string.Format("<color={0}>{1}</color>", color, message);
-		}
+		public static string Colored(this string message, Colors color) => $"<color={color}>{message}</color>";
 
 		/// <summary>
 		/// Surround string with "color" tag
 		/// </summary>
-		public static string Colored(this string message, string colorCode)
-		{
-			return string.Format("<color={0}>{1}</color>", colorCode, message);
-		}
+		public static string Colored(this string message, Color color) => $"<color={color.ToHex()}>{message}</color>";
+
+		/// <summary>
+		/// Surround string with "color" tag
+		/// </summary>
+		public static string Colored(this string message, string colorCode) => $"<color={colorCode}>{message}</color>";
 
 		/// <summary>
 		/// Surround string with "size" tag
 		/// </summary>
-		public static string Sized(this string message, int size)
-		{
-			return string.Format("<size={0}>{1}</size>", size, message);
-		}
+		public static string Sized(this string message, int size) => $"<size={size}>{message}</size>";
+		
+		/// <summary>
+		/// Surround string with "u" tag
+		/// </summary>
+		public static string Underlined(this string message) => $"<u>{message}</u>";
 
 		/// <summary>
 		/// Surround string with "b" tag
 		/// </summary>
-		public static string Bold(this string message)
-		{
-			return string.Format("<b>{0}</b>", message);
-		}
+		public static string Bold(this string message) => $"<b>{message}</b>";
 
 		/// <summary>
 		/// Surround string with "i" tag
 		/// </summary>
-		public static string Italics(this string message)
-		{
-			return string.Format("<i>{0}</i>", message);
-		}
-
-		/// <summary>
-		/// Convert a string value to an Enum value.
-		/// </summary>
-		public static T AsEnum<T>(this string source, bool ignoreCase = true)
-			where T : System.Enum =>
-			(T) Enum.Parse(typeof(T), source, ignoreCase);
+		public static string Italics(this string message) => $"<i>{message}</i>";
 	}
 
+	/// <summary>
+	/// Represents list of supported by Unity Console color names
+	/// </summary>
 	public enum Colors
 	{
+		// ReSharper disable InconsistentNaming
 		aqua,
 		black,
 		blue,
@@ -126,6 +130,8 @@ namespace MyBox
 		silver,
 		teal,
 		white,
+
 		yellow
+		// ReSharper restore InconsistentNaming
 	}
 }
