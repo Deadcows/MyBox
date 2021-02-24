@@ -50,7 +50,7 @@ namespace MyBox.Internal
 
 				var propertyObject = new SerializedObject(property.objectReferenceValue).GetIterator();
 				propertyObject.Next(true);
-				propertyObject.NextVisible(true);
+				propertyObject.NextVisible(false);
 
 				var xPos = position.x + 10;
 				var width = position.width - 10;
