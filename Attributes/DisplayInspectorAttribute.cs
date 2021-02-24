@@ -85,7 +85,7 @@ namespace MyBox.Internal
 				}
 				
 				var bgRect = position;
-				bgRect.y = startY - 6;
+				bgRect.y = startY - 5;
 				bgRect.x = startX - 10;
 				bgRect.width = 10;
 				bgRect.height = position.y - startY;
