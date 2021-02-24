@@ -59,9 +59,18 @@ namespace MyBox.Internal
 					position.x = xPos + 10 * propertyObject.depth;
 					position.width = width - 10 * propertyObject.depth;
 
-					position.height = propertyObject.isExpanded ? 16 : EditorGUI.GetPropertyHeight(propertyObject);
-					EditorGUI.PropertyField(position, propertyObject);
-					position.y += propertyObject.isExpanded ? 20 : EditorGUI.GetPropertyHeight(propertyObject) + 4;
+					if (propertyObject.isArray && (propertyObject.IsAttributeDefined<SeparatorAttribute>() || propertyObject.IsAttributeDefined<HeaderAttribute>()) )
+					{ 
+						position.height = propertyObject.isExpanded ? 66 : EditorGUI.GetPropertyHeight(propertyObject);
+						EditorGUI.PropertyField(position, propertyObject);
+						position.y += propertyObject.isExpanded ? 70 : EditorGUI.GetPropertyHeight(propertyObject) + 4;
+					}
+					else
+					{
+						position.height = propertyObject.isExpanded ? 16 : EditorGUI.GetPropertyHeight(propertyObject);
+						EditorGUI.PropertyField(position, propertyObject);
+						position.y += propertyObject.isExpanded ? 20 : EditorGUI.GetPropertyHeight(propertyObject) + 4;
+					}
 				}
 
 				if (!_buttonMethods.TargetMethods.IsNullOrEmpty())
