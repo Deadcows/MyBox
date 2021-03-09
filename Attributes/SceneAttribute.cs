@@ -4,7 +4,8 @@ using UnityEngine;
 namespace MyBox
 {
     /// <summary>
-    /// Used to pick scene from inspector
+    /// Used to pick scene from inspector.
+    /// Consider to use <see cref="SceneReference"/> type instead as it is more flexible
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public class SceneAttribute : PropertyAttribute
