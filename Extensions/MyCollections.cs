@@ -265,11 +265,6 @@ namespace MyBox
 		/// </summary>
 		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, System.Action<T> action)
 		{
-			if (source.IsNullOrEmpty())
-			{
-				Debug.LogError("ForEach Caused: source collection is null or empty");
-				return null;
-			}
 			foreach (T element in source) action(element);
 			return source;
 		}
@@ -279,11 +274,6 @@ namespace MyBox
 		/// </summary>
 		public static IEnumerable<T> ForEach<T, R>(this IEnumerable<T> source, Func<T, R> func)
 		{
-			if (source.IsNullOrEmpty())
-			{
-				Debug.LogError("ForEach Caused: source collection is null or empty");
-				return null;
-			}
 			foreach (T element in source) func(element);
 			return source;
 		}
@@ -314,6 +304,37 @@ namespace MyBox
 				return default(T);
 			}
 			return source.Aggregate((e, n) => selector(e).CompareTo(selector(n)) < 0 ? e : n);
+		}
+
+		/// <summary>
+		/// Convert a single element into an enumerable with the source as the
+		/// single element.
+		/// </summary>
+		public static IEnumerable<T> AsEnumerable<T>(this T source) =>
+			Enumerable.Empty<T>().Append(source);
+
+		/// <summary>
+		/// First index of an item that matches a predicate.
+		/// </summary>
+		public static int FirstIndex<T>(this IList<T> source, Predicate<T> predicate)
+		{
+			for (int i = 0; i < source.Count; ++i)
+			{
+				if (predicate(source[i])) return i;
+			}
+			return -1;
+		}
+
+		/// <summary>
+		/// Last index of an item that matches a predicate.
+		/// </summary>
+		public static int LastIndex<T>(this IList<T> source, Predicate<T> predicate)
+		{
+			for (int i = source.Count - 1; i >=0; --i)
+			{
+				if (predicate(source[i])) return i;
+			}
+			return -1;
 		}
 	}
 }
