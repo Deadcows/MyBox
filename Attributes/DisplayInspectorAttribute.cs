@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using MyBox.EditorTools;
+using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -44,7 +45,7 @@ namespace MyBox.Internal
 			{
 				if (_buttonMethods == null) _buttonMethods = new ButtonMethodHandler(property.objectReferenceValue);
 				
-				var startY = position.y;
+				var startY = position.y - 2;
 				float startX = position.x;
 
 				var propertyObject = new SerializedObject(property.objectReferenceValue).GetIterator();
@@ -58,10 +59,19 @@ namespace MyBox.Internal
 				{
 					position.x = xPos + 10 * propertyObject.depth;
 					position.width = width - 10 * propertyObject.depth;
-
-					position.height = propertyObject.isExpanded ? 16 : EditorGUI.GetPropertyHeight(propertyObject);
-					EditorGUI.PropertyField(position, propertyObject);
-					position.y += propertyObject.isExpanded ? 20 : EditorGUI.GetPropertyHeight(propertyObject) + 4;
+					
+					if (propertyObject.isArray && propertyObject.propertyType != SerializedPropertyType.String && (propertyObject.IsAttributeDefined<SeparatorAttribute>() || propertyObject.IsAttributeDefined<HeaderAttribute>()) )
+					{
+						position.height = propertyObject.isExpanded ? 66 : EditorGUI.GetPropertyHeight(propertyObject);
+						EditorGUI.PropertyField(position, propertyObject);
+						position.y += propertyObject.isExpanded ? 70 : EditorGUI.GetPropertyHeight(propertyObject) + 4;
+					}
+					else
+					{
+						position.height = propertyObject.isExpanded ? 16 : EditorGUI.GetPropertyHeight(propertyObject);
+						EditorGUI.PropertyField(position, propertyObject);
+						position.y += propertyObject.isExpanded ? 20 : EditorGUI.GetPropertyHeight(propertyObject) + 4;
+					}
 				}
 
 				if (!_buttonMethods.TargetMethods.IsNullOrEmpty())
@@ -102,7 +112,13 @@ namespace MyBox.Internal
 
 			while (propertyObject.NextVisible(propertyObject.isExpanded))
 			{
-				height += propertyObject.isExpanded ? 20 : EditorGUI.GetPropertyHeight(propertyObject) + 4;
+				if (propertyObject.isArray && propertyObject.propertyType != SerializedPropertyType.String &&
+				    (propertyObject.IsAttributeDefined<SeparatorAttribute>() ||
+				     propertyObject.IsAttributeDefined<HeaderAttribute>()))
+				{
+					height += propertyObject.isExpanded ? 70 : EditorGUI.GetPropertyHeight(propertyObject) + 4;
+				}
+				else height += propertyObject.isExpanded ? 20 : EditorGUI.GetPropertyHeight(propertyObject) + 4;
 			}
 
 			if (_buttonMethods.Amount > 0) height += 4 + _buttonMethods.Amount * EditorGUIUtility.singleLineHeight;
