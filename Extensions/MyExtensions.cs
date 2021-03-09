@@ -42,6 +42,7 @@ namespace MyBox
 			return gameObject.GetComponent<T>() != null;
 		}
 
+		
 
 		/// <summary>
 		/// Get all components of specified Layer in childs
@@ -51,6 +52,22 @@ namespace MyBox
 			List<Transform> list = new List<Transform>();
 			CheckChildsOfLayer(gameObject.transform, layer, list);
 			return list;
+		}
+		
+		/// <summary>
+		/// Get all components of specified Layer in childs
+		/// </summary>
+		public static List<Transform> GetObjectsOfLayerInChilds(this GameObject gameObject, string layer)
+		{
+			return gameObject.GetObjectsOfLayerInChilds(LayerMask.NameToLayer(layer));
+		}
+		
+		/// <summary>
+		/// Get all components of specified Layer in childs
+		/// </summary>
+		public static List<Transform> GetObjectsOfLayerInChilds(this Component component, string layer)
+		{
+			return component.GetObjectsOfLayerInChilds(LayerMask.NameToLayer(layer));
 		}
 
 		/// <summary>

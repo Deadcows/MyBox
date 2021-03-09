@@ -4,7 +4,8 @@ All notable changes to this package will be documented in this file.
 ## [Unreleased]
 - Extension: MyString.Colored(UnityEngine.Color)
 - Extension: MyString.SurroundedWith()
-- Added: SceneAttribute to keep scene name in a string. Consider to use SceneReference type as it is more flexible  
+- Added: SceneAttribute to keep scene name in a string. Consider to use SceneReference type as it is more flexible
+- Extension: GetObjectsOfLayerInChilds now also receives layer as a string  
 - Fix: SeparatorAttribute works better with collections
 ! wip AttributeBase
 
