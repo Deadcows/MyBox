@@ -1,4 +1,9 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------- 
+// Author: Anton
+// https://github.com/antontidev
+// ----------------------------------------------------------------------------
+
+using System;
 using UnityEngine;
 
 namespace MyBox
