@@ -163,7 +163,7 @@ namespace MyBox
 		/// <summary>
 		/// Lerp from Min to Max
 		/// </summary>
-		public static float RandomInRange(this MinMaxInt minMax)
+		public static int RandomInRange(this MinMaxInt minMax)
 		{
 			return Random.Range(minMax.Min, minMax.Max);
 		}
