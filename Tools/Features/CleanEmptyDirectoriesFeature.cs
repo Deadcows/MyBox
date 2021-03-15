@@ -31,8 +31,6 @@ namespace MyBox.Internal
 			}
 
 			List<DirectoryInfo> emptyDirectories = GetEmptyDirectories();
-			if (emptyDirectories == null) return paths;
-			
 			foreach (var emptyDirectory in emptyDirectories) DeleteEmptyDirectory(emptyDirectory);
 
 			return paths;

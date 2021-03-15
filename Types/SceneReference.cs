@@ -217,8 +217,7 @@ namespace MyBox.Internal
 				{
 					if (scenes[i].guid.ToString() == sceneAssetGUID)
 					{
-						if (sceneIndex.intValue != i)
-							sceneIndex.intValue = i;
+						sceneIndex.intValue = i;
 						sceneEnabled.boolValue = scenes[i].enabled;
 						if (scenes[i].enabled)
 						{
@@ -338,8 +337,7 @@ namespace MyBox.Internal
 				{
 					if (scenes[i].guid.ToString() == sceneAssetGUID)
 					{
-						if (sceneIndex.intValue != i)
-							sceneIndex.intValue = i;
+						sceneIndex.intValue = i;
 						if (scenes[i].enabled)
 						{
 							if (sceneName.stringValue != sceneAsset.name)
