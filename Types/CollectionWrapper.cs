@@ -3,6 +3,9 @@ using MyBox.Internal;
 
 namespace MyBox
 {
+	/// <summary>
+	/// CollectionWrapper used to apply custom drawers to Array fields
+	/// </summary>
 	[Serializable]
 	public class CollectionWrapper<T> : CollectionWrapperBase
 	{

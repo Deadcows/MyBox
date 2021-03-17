@@ -284,7 +284,7 @@ namespace MyBox.Internal
 				var target = arrayProp.serializedObject.targetObject;
 
 				var who = "Property <color=brown>" + arrayProp.name + "</color> in object <color=brown>" + target.name + "</color> caused: ";
-				var warning = who + "Array fields is not supported by [ConditionalFieldAttribute]";
+				var warning = who + "Array fields is not supported by [ConditionalFieldAttribute]. Consider to use <color=blue>CollectionWrapper</color>";
 
 				WarningsPool.LogWarning(warning, target);
 
