@@ -10,6 +10,7 @@ All notable changes to this package will be documented in this file.
 - Fix: SeparatorAttribute works better with collections
 - Fix: SeparatorAttribute looks not as ugly as before :D  
 - Fix: ConditionalFieldAttribute optimizations and fixes
+- Fix: AnimationStateReference now works with collections
 ! wip AttributeBase
 
 
