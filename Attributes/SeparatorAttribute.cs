@@ -29,35 +29,29 @@ namespace MyBox.Internal
 	[CustomPropertyDrawer(typeof(SeparatorAttribute))]
 	public class SeparatorAttributeDrawer : DecoratorDrawer
 	{
-		private SeparatorAttribute Separator
-		{
-			get { return (SeparatorAttribute) attribute; }
-		}
-
+		private SeparatorAttribute Separator => (SeparatorAttribute) attribute;
+		
+		public override float GetHeight() => Separator.WithOffset ? 40 : Separator.Title.IsNullOrEmpty() ? 28 : 32;
+		
 		public override void OnGUI(Rect position)
 		{
 			var title = Separator.Title;
-			if (title == "")
+			if (title.IsNullOrEmpty())
 			{
 				position.height = 1;
-				position.y += 19;
-				GUI.Box(position, "");
+				position.y += 14;
+				GUI.Box(position, string.Empty);
 			}
 			else
 			{
 				Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(title));
-				float separatorWidth = (position.width - textSize.x) / 2.0f - 5.0f;
+				float separatorWidth = (position.width - textSize.x) / 2 - 5;
 				position.y += 19;
 
-				GUI.Box(new Rect(position.xMin, position.yMin, separatorWidth, 1), "");
-				GUI.Label(new Rect(position.xMin + separatorWidth + 5.0f, position.yMin - 8.0f, textSize.x, 20), title);
-				GUI.Box(new Rect(position.xMin + separatorWidth + 10.0f + textSize.x, position.yMin, separatorWidth, 1), "");
+				GUI.Box(new Rect(position.xMin, position.yMin, separatorWidth, 1), string.Empty);
+				GUI.Label(new Rect(position.xMin + separatorWidth + 5, position.yMin - 10, textSize.x, 20), title);
+				GUI.Box(new Rect(position.xMin + separatorWidth + 10 + textSize.x, position.yMin, separatorWidth, 1), "");
 			}
-		}
-
-		public override float GetHeight()
-		{
-			return Separator.WithOffset ? 36.0f : 26f;
 		}
 	}
 }

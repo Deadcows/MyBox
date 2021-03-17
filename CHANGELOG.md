@@ -8,6 +8,7 @@ All notable changes to this package will be documented in this file.
 - Added: SceneAttribute to keep scene name in a string. Consider to use SceneReference type as it is more flexible
 - Extension: GetObjectsOfLayerInChilds now also receives layer as a string  
 - Fix: SeparatorAttribute works better with collections
+- Fix: SeparatorAttribute looks not as ugly as before :D  
 - Fix: ConditionalFieldAttribute optimizations and fixes
 ! wip AttributeBase
 
