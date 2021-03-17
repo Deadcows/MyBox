@@ -150,11 +150,15 @@ namespace MyBox
 		
 		
 		/// <summary>
-		/// Get next index for circular array. i.e. -1 will result with last element index, Length + 1 is 0
-		///
+		/// Get next index for circular array. <br />
+		/// -1 will result with last element index, Length + 1 is 0. <br />
+		/// If step is more that 1, you will get correct offset <br />
+		/// 
+		/// <code>
 		/// Example (infinite loop first->last->first):
 		/// i = myArray.NextIndex(i++);
 		/// var nextItem = myArray[i];
+		/// </code>
 		/// </summary>
 		public static int NextIndexInCircle<T>(this T[] array, int desiredPosition)
 		{
@@ -163,11 +167,11 @@ namespace MyBox
 				Debug.LogError("NextIndexInCircle Caused: source array is null or empty");
 				return -1;
 			}
+
+			var length = array.Length;
+			if (length == 1) return 0;
 			
-			if (array.Length == 0) return 0;
-			if (desiredPosition < 0) return array.Length - 1;
-			if (desiredPosition > array.Length - 1) return 0;
-			return desiredPosition;
+			return (desiredPosition%length + length)%length;
 		}
 		
 		
@@ -176,9 +180,9 @@ namespace MyBox
 		/// </returns>
 		public static int IndexOfItem<T>(this IEnumerable<T> collection, T item)
 		{
-			if (collection.IsNullOrEmpty())
+			if (collection == null)
 			{
-				Debug.LogError("NextIndexInCircle Caused: source collection is null or empty");
+				Debug.LogError("IndexOfItem Caused: source collection is null");
 				return -1;
 			}
 			
