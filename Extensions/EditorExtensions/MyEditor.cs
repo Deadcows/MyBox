@@ -168,15 +168,9 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static ComponentField[] GetFieldsWithAttribute<T>(GameObject prefab = null) where T : Attribute
 		{
-			MonoBehaviour[] allComponents;
-			if (prefab == null)
-			{
-				allComponents = GetAllBehavioursInScenes();
-			}
-			else
-			{
-				allComponents = prefab.GetComponentsInChildren<MonoBehaviour>();
-			} 
+			var allComponents = prefab == null ? 
+				GetAllBehavioursInScenes() : 
+				prefab.GetComponentsInChildren<MonoBehaviour>(); 
 
 			var fields = new List<ComponentField>();
 

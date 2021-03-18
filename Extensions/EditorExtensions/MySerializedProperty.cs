@@ -119,6 +119,11 @@ namespace MyBox.EditorTools
 					return string.Empty;
 			}
 		}
+		
+		/// <summary>
+		/// Property path for collection without ".Array.data[x]" in it
+		/// </summary>
+		public static string GetFixedPropertyPath(this SerializedProperty property) => property.propertyPath.Replace(".Array.data[", "[");
 
 
 		/// <summary>
@@ -136,8 +141,52 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static object GetValue(this SerializedProperty property)
 		{
-			return GetFieldInfo(property).GetValue(property.serializedObject.targetObject);
+			if (property == null) return null;
+
+			object obj = property.serializedObject.targetObject;
+			var elements = property.GetFixedPropertyPath().Split('.');
+			foreach (var element in elements)
+			{
+				if (element.Contains("["))
+				{
+					var elementName = element.Substring(0, element.IndexOf("[", StringComparison.Ordinal));
+					var index = Convert.ToInt32(element.Substring(element.IndexOf("[", StringComparison.Ordinal)).Replace("[", "").Replace("]", ""));
+					obj = GetValueByArrayFieldName(obj, elementName, index);
+				}
+				else obj = GetValueByFieldName(obj, element);
+			}
+			return obj;
+			
+			
+			object GetValueByArrayFieldName(object source, string name, int index)
+			{
+				if (!(GetValueByFieldName(source, name) is IEnumerable enumerable)) return null;
+				var enumerator = enumerable.GetEnumerator();
+
+				for (var i = 0; i <= index; i++) if (!enumerator.MoveNext()) return null;
+				return enumerator.Current;
+			}
+			
+			// Search "source" object for a field with "name" and get it's value
+			object GetValueByFieldName(object source, string name)
+			{
+				if (source == null)  return null;
+				var type = source.GetType();
+
+				while (type != null)
+				{
+					var fieldInfo = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+					if (fieldInfo != null) return fieldInfo.GetValue(source);
+
+					var propertyInfo = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+					if (propertyInfo != null) return propertyInfo.GetValue(source, null);
+
+					type = type.BaseType;
+				}
+				return null;
+			}
 		}
+		
 		
 		/// <summary>
 		/// Set raw object value to the SerializedProperty
