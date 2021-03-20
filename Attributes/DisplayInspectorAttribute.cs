@@ -1,9 +1,4 @@
-using MyBox.EditorTools;
 using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace MyBox
 {
@@ -24,6 +19,9 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using EditorTools;
+	using UnityEditor;
+	
 	[CustomPropertyDrawer(typeof(DisplayInspectorAttribute))]
 	public class DisplayInspectorAttributeDrawer : PropertyDrawer
 	{
