@@ -7,8 +7,7 @@ All notable changes to this package will be documented in this file.
 - Changed: MyCollection.NextIndexInCircle() extension now works with offsets
 - Added: SceneAttribute to keep scene name in a string. Consider to use SceneReference type as it is more flexible
 - Extension: GetObjectsOfLayerInChilds now also receives layer as a string  
-- Extension: MySerializedProperty.GetValue() now works with collections 
-- Fix: MyBox Settings stored with ScriptableSingleton 
+- Extension: MySerializedProperty.GetValue() now works with collections  
 - Fix: SeparatorAttribute works better with collections
 - Fix: SeparatorAttribute looks not as ugly as before :D  
 - Fix: ConditionalFieldAttribute optimizations and fixes
