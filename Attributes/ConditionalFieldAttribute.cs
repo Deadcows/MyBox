@@ -134,6 +134,7 @@ namespace MyBox.Internal
 					var associatedType = drawerAttribute.ConstructorArguments.FirstOrDefault().Value as Type;
 					if (associatedType == null) continue;
 
+					if (_allPropertyDrawersInDomain.ContainsKey(associatedType)) continue;
 					_allPropertyDrawersInDomain.Add(associatedType, type);
 				}
 			}
