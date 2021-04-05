@@ -7,7 +7,8 @@ All notable changes to this package will be documented in this file.
 - Changed: MyCollection.NextIndexInCircle() extension now works with offsets
 - Added: SceneAttribute to keep scene name in a string. Consider to use SceneReference type as it is more flexible
 - Extension: GetObjectsOfLayerInChilds now also receives layer as a string  
-- Extension: MySerializedProperty.GetValue() now works with collections  
+- Extension: MySerializedProperty.GetValue() now works with collections
+- Fix: DisplayInspector now (finally) works right with Unity 2020.2 reorderable collections
 - Fix: SeparatorAttribute works better with collections
 - Fix: SeparatorAttribute looks not as ugly as before :D  
 - Fix: ConditionalFieldAttribute optimizations and fixes
