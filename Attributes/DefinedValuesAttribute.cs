@@ -1,9 +1,6 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace MyBox
 {
@@ -24,89 +21,64 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using UnityEditor;
+
 	[CustomPropertyDrawer(typeof(DefinedValuesAttribute))]
 	public class DefinedValuesAttributeDrawer : PropertyDrawer
 	{
-		private DefinedValuesAttribute _attribute;
-		private Type _variableType;
 		private string[] _values;
-		private int _selectedValueIndex = -1;
-
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			if (_attribute == null) Initialize(property);
-			if (_values == null || _values.Length == 0 || _selectedValueIndex < 0)
+			var values = ((DefinedValuesAttribute) attribute).ValuesArray;
+
+			if (values.IsNullOrEmpty() || !TypeMatch(values[0].GetType(), property))
 			{
 				EditorGUI.PropertyField(position, property, label);
 				return;
 			}
 
+			if (_values.IsNullOrEmpty()) _values = values.Select(v => v.ToString()).ToArray();
+
+			var valType = values[0].GetType();
+			bool isString = valType == typeof(string);
+			bool isInt = valType == typeof(int);
+			bool isFloat = valType == typeof(float);
+
 			EditorGUI.BeginChangeCheck();
-			_selectedValueIndex = EditorGUI.Popup(position, label.text, _selectedValueIndex, _values);
-			if (EditorGUI.EndChangeCheck()) ApplyNewValue(property);
-		}
-
-		private void Initialize(SerializedProperty property)
-		{
-			_attribute = (DefinedValuesAttribute) attribute;
-			if (_attribute.ValuesArray == null || _attribute.ValuesArray.Length == 0) return;
-			_variableType = _attribute.ValuesArray[0].GetType();
-			if (TypeMismatch(property)) return;
+			var newIndex = EditorGUI.Popup(position, label.text, GetSelectedIndex(), _values);
+			if (EditorGUI.EndChangeCheck()) ApplyNewValue(_values[newIndex]);
 
 
-			_values = new string[_attribute.ValuesArray.Length];
-			for (int i = 0; i < _attribute.ValuesArray.Length; i++)
+			int GetSelectedIndex()
 			{
-				_values[i] = _attribute.ValuesArray[i].ToString();
+				for (var i = 0; i < _values.Length; i++)
+				{
+					if (isString && property.stringValue == _values[i]) return i;
+					if (isInt && property.intValue == Convert.ToInt32(_values[i])) return i;
+					if (isFloat && Mathf.Approximately(property.floatValue, Convert.ToSingle(_values[i]))) return i;
+				}
+
+				return 0;
 			}
 
-			_selectedValueIndex = GetSelectedIndex(property);
-		}
-
-		private int GetSelectedIndex(SerializedProperty property)
-		{
-			for (var i = 0; i < _values.Length; i++)
+			void ApplyNewValue(string newValue)
 			{
-				if (IsString && property.stringValue == _values[i]) return i;
-				if (IsInt && property.intValue == Convert.ToInt32(_values[i])) return i;
-				if (IsFloat && Mathf.Approximately(property.floatValue, Convert.ToSingle(_values[i]))) return i;
-			}
+				if (isString) property.stringValue = newValue;
+				if (isInt) property.intValue = Convert.ToInt32(newValue);
+				if (isFloat) property.floatValue = Convert.ToSingle(newValue);
 
-			return 0;
+				property.serializedObject.ApplyModifiedProperties();
+			}
 		}
 
-		private bool TypeMismatch(SerializedProperty property)
+		private bool TypeMatch(Type valType, SerializedProperty property)
 		{
-			if (IsString && property.propertyType != SerializedPropertyType.String) return true;
-			if (IsInt && property.propertyType != SerializedPropertyType.Integer) return true;
-			if (IsFloat && property.propertyType != SerializedPropertyType.Float) return true;
+			if (valType == typeof(string) && property.propertyType == SerializedPropertyType.String) return true;
+			if (valType == typeof(int) && property.propertyType == SerializedPropertyType.Integer) return true;
+			if (valType == typeof(float) && property.propertyType == SerializedPropertyType.Float) return true;
 
 			return false;
-		}
-
-		private void ApplyNewValue(SerializedProperty property)
-		{
-			if (IsString) property.stringValue = _values[_selectedValueIndex];
-			else if (IsInt) property.intValue = Convert.ToInt32(_values[_selectedValueIndex]);
-			else if (IsFloat) property.floatValue = Convert.ToSingle(_values[_selectedValueIndex]);
-
-			property.serializedObject.ApplyModifiedProperties();
-		}
-
-		private bool IsString
-		{
-			get { return _variableType == typeof(string); }
-		}
-
-		private bool IsInt
-		{
-			get { return _variableType == typeof(int); }
-		}
-
-		private bool IsFloat
-		{
-			get { return _variableType == typeof(float); }
 		}
 	}
 }
