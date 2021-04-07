@@ -5,25 +5,14 @@ using UnityEngine;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-using UnityEditor;
 
 namespace MyBox.Internal
 {
     public static class MyBoxUtilities
     {
-        private static readonly string ReleasesURL = "https://github.com/Deadcows/MyBox/releases";
         private static readonly string MyBoxPackageInfoURL = "https://raw.githubusercontent.com/Deadcows/MyBox/master/package.json";
+        private static readonly string MyBoxPackageTag = "com.domybest.mybox";
 
-        private static readonly string MyBoxPackageTag = "com.mybox";
-        //public static readonly string MyBoxRepoLink = "https://github.com/Deadcows/MyBox.git";
-
-        public static void OpenMyBoxGitInBrowser()
-        {
-            Application.OpenURL(ReleasesURL);
-        }
-
-
-        #region Get Current / Latest Versions
 
         public static async void GetMyBoxLatestVersionAsync(Action<MyBoxVersion> onVersionRetrieved)
         {
@@ -46,8 +35,7 @@ namespace MyBox.Internal
             }
             catch (HttpRequestException)
             {
-                //TODO: It's probably some internet connection issue at this point. Should I notify user about it?
-                //Debug.LogWarning("MyBox is unable to check version online :(. Exception is: " + requestException.Message);
+                //It's probably some internet connection issue at this point.
             }
         }
 
@@ -82,59 +70,10 @@ namespace MyBox.Internal
 
             return matches[1].Value.Trim('"');
         }
+        
 
-        #endregion
-
-
-        #region Update Git Packages
-
-        /// <summary>
-        /// Remove lock {} section out of manifest.json
-        /// </summary>
-        /// <returns>is there were any git packages</returns>
-        public static bool UpdateGitPackages()
-        {
-            var manifestFilePath = ManifestJsonPath;
-            var manifest = File.ReadAllLines(manifestFilePath).ToList();
-
-            var cutFrom = -1;
-            for (int i = 0; i < manifest.Count; i++)
-            {
-                if (!manifest[i].Contains("\"lock\": {")) continue;
-
-                cutFrom = i;
-                break;
-            }
-
-            if (cutFrom <= 0) return false;
-
-            manifest[cutFrom - 1] = "}";
-            var removeLinesCount = manifest.Count - cutFrom - 1;
-            manifest.RemoveRange(cutFrom, removeLinesCount);
-
-            try
-            {
-                using (StreamWriter sr = new StreamWriter(manifestFilePath))
-                {
-                    for (int i = 0; i < manifest.Count; i++)
-                        sr.WriteLine(manifest[i]);
-                }
-
-                AssetDatabase.Refresh(ImportAssetOptions.Default);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning("MyBox is unable to rewrite packages.json to update git packages :(. Exception is: " + ex.Message);
-            }
-
-            return true;
-        }
-
-        #endregion
-
-
-        #region Installed Via UPM
-
+        #region Is Installed Via UPM
+        
         public static bool InstalledViaUPM
         {
             get
@@ -158,7 +97,7 @@ namespace MyBox.Internal
         private static bool _installedViaUPMChecked;
 
         #endregion
-
+        
 
         #region Package Json Path
 
