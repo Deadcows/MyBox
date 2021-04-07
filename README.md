@@ -9,9 +9,6 @@ It is MyBox. Now it's yours too :raised_hands:<br />
 
 ## [Installation](https://github.com/Deadcows/MyBox/wiki/Installation)
 
---------
-
-MyBox is mostly the code, bot for some features check out "<b>Tools/MyBox/MyBox Window</b>"<br />
 
 Tons of images in docks below :point_down:
 
