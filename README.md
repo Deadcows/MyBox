@@ -10,7 +10,7 @@ It is MyBox. Now it's yours too :raised_hands:<br />
 ## [Installation](https://github.com/Deadcows/MyBox/wiki/Installation)
 
 
-Tons of images in docks below :point_down:
+Tons of images in docs below :point_down:
 
 ## [Attributes](https://github.com/Deadcows/MyBox/wiki/Attributes)
 **[AutoProperty](https://github.com/Deadcows/MyBox/wiki/Attributes#autoproperty)** — Assign fields automatically<br />
