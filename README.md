@@ -7,31 +7,9 @@ MyBox is a set of tools, features and extensions for Unity.<br />
 It is MyBox. Now it's yours too :raised_hands:<br />
 
 
-## Installation:
+## [Installation](https://github.com/Deadcows/MyBox/wiki/Installation)
 
-### Install via OpenUPM
-
-The package is available on the [openupm registry](https://openupm.com). You may install it via [openupm-cli](https://github.com/openupm/openupm-cli).
-
-```
-openupm add com.domybest.mybox
-```
-
-### Install via Git URL
-You may install MyBox via <b>Unity Package Manager</b>:<br />
-Open Packages/manifest.json file in your project folder and put this line along with other dependencies<br />
-<pre>"com.domybest.mybox": "https://github.com/Deadcows/MyBox.git"</pre>
-Note how the comma lies at the end of every line in dependencies, except of the last line!
-
-To update, use Tools->MyBox->MyBox Window<br />
-MyBox will notify on new versions 🤗 <br /><br />
-
-❕If you got problems with update process simply remove "lock" section at the end of your Packages/manifest.json file.
-This will force Unity to redownload all git packages: <br />
-![](https://habrastorage.org/webt/zz/39/gd/zz39gd953fyel_zlvmonde-psva.png)
-
-
-...or simply put MyBox folder downloaded from git somewhere under your Assets folder 🤨<br />
+MyBox is mostly the code, bot for some features check out "<b>Tools/MyBox/MyBox Window</b>
 
 --------
 
