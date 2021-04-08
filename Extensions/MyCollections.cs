@@ -23,7 +23,7 @@ namespace MyBox
 				Debug.LogError("Index exceeds array length. Array is not modified");
 				return array;
 			}
-			
+
 			T[] newArray = new T[array.Length - 1];
 			int index1 = 0;
 			for (int index2 = 0; index2 < array.Length; ++index2)
@@ -53,7 +53,7 @@ namespace MyBox
 				Debug.LogError("Index exceeds array length. Array is not modified");
 				return array;
 			}
-			
+
 			T[] newArray = new T[array.Length + 1];
 			int index1 = 0;
 			for (int index2 = 0; index2 < newArray.Length; ++index2)
@@ -67,7 +67,7 @@ namespace MyBox
 			return newArray;
 		}
 
-		
+
 		/// <summary>
 		/// Returns random element from collection
 		/// </summary>
@@ -75,7 +75,7 @@ namespace MyBox
 		{
 			return collection[UnityEngine.Random.Range(0, collection.Length)];
 		}
-		
+
 		/// <summary>
 		/// Returns random element from collection
 		/// </summary>
@@ -83,7 +83,7 @@ namespace MyBox
 		{
 			return collection[UnityEngine.Random.Range(0, collection.Count)];
 		}
-		
+
 		/// <summary>
 		/// Returns random element from collection
 		/// </summary>
@@ -91,8 +91,8 @@ namespace MyBox
 		{
 			return collection.ElementAt(UnityEngine.Random.Range(0, collection.Count()));
 		}
-		
-		
+
+
 
 		public static T[] GetRandomCollection<T>(this IList<T> collection, int amount)
 		{
@@ -104,7 +104,7 @@ namespace MyBox
 
 			var randoms = new T[amount];
 			var indexes = Enumerable.Range(0, amount).ToList();
-			
+
 			for (var i = 0; i < amount; i++)
 			{
 				var random = UnityEngine.Random.Range(0, indexes.Count);
@@ -114,8 +114,8 @@ namespace MyBox
 
 			return randoms;
 		}
-		
-		
+
+
 
 		/// <summary>
 		/// Is array null or empty
@@ -126,7 +126,7 @@ namespace MyBox
 
 			return collection.Length == 0;
 		}
-		
+
 		/// <summary>
 		/// Is list null or empty
 		/// </summary>
@@ -136,7 +136,7 @@ namespace MyBox
 
 			return collection.Count == 0;
 		}
-		
+
 		/// <summary>
 		/// Is collection null or empty. IEnumerable is relatively slow. Use Array or List implementation if possible
 		/// </summary>
@@ -147,8 +147,8 @@ namespace MyBox
 			return !collection.Any();
 		}
 
-		
-		
+
+
 		/// <summary>
 		/// Get next index for circular array. <br />
 		/// -1 will result with last element index, Length + 1 is 0. <br />
@@ -170,11 +170,11 @@ namespace MyBox
 
 			var length = array.Length;
 			if (length == 1) return 0;
-			
-			return (desiredPosition%length + length)%length;
+
+			return (desiredPosition % length + length) % length;
 		}
-		
-		
+
+
 		/// <returns>
 		/// Returns -1 if none found
 		/// </returns>
@@ -185,17 +185,17 @@ namespace MyBox
 				Debug.LogError("IndexOfItem Caused: source collection is null");
 				return -1;
 			}
-			
+
 			var index = 0;
 			foreach (var i in collection)
 			{
 				if (Equals(i, item)) return index;
 				++index;
 			}
-			
+
 			return -1;
 		}
-		
+
 		/// <summary>
 		/// Is Elements in two collections are the same
 		/// </summary>
@@ -203,7 +203,7 @@ namespace MyBox
 		{
 			if (first.IsNullOrEmpty() && second.IsNullOrEmpty()) return true;
 			if (first.IsNullOrEmpty() || second.IsNullOrEmpty()) return false;
-			
+
 			var firstCount = first.Count();
 			var secondCount = second.Count();
 			if (firstCount != secondCount) return false;
@@ -215,7 +215,7 @@ namespace MyBox
 
 			return true;
 		}
-		
+
 		/// <summary>
 		/// Is Keys in MyDictionary is the same as some collection
 		/// </summary>
@@ -223,10 +223,10 @@ namespace MyBox
 		{
 			if (source.IsNullOrEmpty() && check.IsNullOrEmpty()) return true;
 			if (source.IsNullOrEmpty() || check.IsNullOrEmpty()) return false;
-			
+
 			return source.Keys.ContentsMatch(check);
 		}
-			
+
 		/// <summary>
 		/// Is Values in MyDictionary is the same as some collection
 		/// </summary>
@@ -234,7 +234,7 @@ namespace MyBox
 		{
 			if (source.IsNullOrEmpty() && check.IsNullOrEmpty()) return true;
 			if (source.IsNullOrEmpty() || check.IsNullOrEmpty()) return false;
-			
+
 			return source.Values.ContentsMatch(check);
 		}
 
@@ -330,15 +330,89 @@ namespace MyBox
 		}
 
 		/// <summary>
+		/// First index of an item that matches a predicate.
+		/// </summary>
+		public static int FirstIndex<T>(this IEnumerable<T> source, Predicate<T> predicate)
+		{
+			int index = 0;
+			foreach (T e in source)
+			{
+				if (predicate(e)) return index;
+				++index;
+			}
+			return -1;
+		}
+
+		/// <summary>
 		/// Last index of an item that matches a predicate.
 		/// </summary>
 		public static int LastIndex<T>(this IList<T> source, Predicate<T> predicate)
 		{
-			for (int i = source.Count - 1; i >=0; --i)
+			for (int i = source.Count - 1; i >= 0; --i)
 			{
 				if (predicate(source[i])) return i;
 			}
 			return -1;
 		}
+
+		/// <summary>
+		/// Projects each element of a sequence into a new form, with its index
+		/// passed along the selector.
+		/// </summary>
+		public static IEnumerable<R> SelectWithIndex<T, R>(this IEnumerable<T> source,
+			Func<T, int, R> selector)
+		{
+			int index = 0;
+			return source.Select(e =>
+			{
+				var result = selector(e, index);
+				++index;
+				return result;
+			});
+		}
+
+		/// <summary>
+		/// Projects each element of a sequence to an IEnumerable<T> and flattens
+		/// the resulting sequences into one sequence, with each element's index
+		/// passed along the selector.
+		/// </summary>
+		public static IEnumerable<R> SelectManyWithIndex<T, R>(this IEnumerable<T> source,
+			Func<T, int, IEnumerable<R>> selector)
+		{
+			int index = 0;
+			return source.SelectMany(e =>
+			{
+				var result = selector(e, index);
+				++index;
+				return result;
+			});
+		}
+
+		/// <summary>
+		/// Returns random index from collection with weighted probabilities.
+		/// </summary>
+		public static int GetWeightedRandomIndex<T>(this IEnumerable<T> source,
+			Func<T, float> weightSelector)
+		{
+			var weights = source.Select(weightSelector);
+			var weightStages = weights
+				.SelectWithIndex((w, i) => weights.Take(i + 1).Sum());
+			var roll = UnityEngine.Random.Range(0, weights.Sum());
+			return weightStages.FirstIndex(ws => ws > roll);
+		}
+
+		/// <summary>
+		/// Returns random element from collection with weighted probabilities.
+		/// </summary>
+		public static T GetWeightedRandom<T>(this IList<T> source,
+			Func<T, float> weightSelector) =>
+			source[source.GetWeightedRandomIndex(weightSelector)];
+
+		/// <summary>
+		/// Returns random element from collection with weighted probabilities.
+		/// </summary>
+		public static T GetWeightedRandom<T>(this IEnumerable<T> source,
+			Func<T, float> weightSelector) =>
+			source.ElementAt(source.GetWeightedRandomIndex(weightSelector));
 	}
 }
