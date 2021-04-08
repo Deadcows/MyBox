@@ -133,14 +133,14 @@ namespace MyBox.Internal
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				EditorGUILayout.Space(leftOffset);
-				MyBoxSettings.CleanEmptyDirectoriesFeature = EditorGUILayout.Toggle("Clean Empty Folders: ", MyBoxSettings.AutoSaveEnabled);
+				MyBoxSettings.CleanEmptyDirectoriesFeature = EditorGUILayout.Toggle("Clean Empty Folders: ", MyBoxSettings.CleanEmptyDirectoriesFeature);
 				GUILayout.FlexibleSpace();
 			}
 
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				EditorGUILayout.Space(leftOffset);
-				MyBoxSettings.PrepareOnPlaymode = EditorGUILayout.Toggle("Prepare on Playmode: ", MyBoxSettings.AutoSaveEnabled);
+				MyBoxSettings.PrepareOnPlaymode = EditorGUILayout.Toggle("Prepare on Playmode: ", MyBoxSettings.PrepareOnPlaymode);
 				if (GUILayout.Button(MyGUI.EditorIcons.Help, EditorStyles.label, GUILayout.Height(18))) Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#iprepare");
 				GUILayout.FlexibleSpace();
 			}

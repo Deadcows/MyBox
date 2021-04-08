@@ -4,6 +4,9 @@ All notable changes to this package will be documented in this file.
 ## [Unreleased]
 ! wip AttributeBase
 
+## [1.6.2] - 2021-04-08
+- Fix: MyBox Window settings were not applied correctly
+
 ## [1.6.1] - 2021-04-07
 - Changed: MyBox Window now contains all settings and some useful links
 - Fix: MyBox Updater now should properly update UPM version
