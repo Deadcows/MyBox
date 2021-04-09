@@ -2,6 +2,6 @@
 {
 	public class MyCommonConstants
 	{
-		public static System.Random SystemRandom = new System.Random();
+		public static readonly System.Random SystemRandom = new System.Random();
 	}
 }
