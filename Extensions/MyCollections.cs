@@ -356,6 +356,20 @@ namespace MyBox
 		}
 
 		/// <summary>
+		/// First index of an item that matches a predicate.
+		/// </summary>
+		public static int LastIndex<T>(this IEnumerable<T> source, Predicate<T> predicate)
+		{
+			int index = 0;
+			foreach (T e in source)
+			{
+				if (!predicate(e)) return index - 1;
+				++index;
+			}
+			return -1;
+		}
+
+		/// <summary>
 		/// Projects each element of a sequence into a new form, with its index
 		/// passed along the selector.
 		/// </summary>
@@ -394,10 +408,10 @@ namespace MyBox
 		public static int GetWeightedRandomIndex<T>(this IEnumerable<T> source,
 			Func<T, float> weightSelector)
 		{
-			var weights = source.Select(weightSelector).Where(w => w > 0);
+			var weights = source.Select(weightSelector).Select(w => w < 0 ? 0 : w);
 			var weightStages = weights
 				.SelectWithIndex((w, i) => weights.Take(i + 1).Sum());
-			var roll = UnityEngine.Random.Range(0, weights.Sum());
+			var roll = MyCommonConstants.SystemRandom.NextDouble() * weights.Sum();
 			return weightStages.FirstIndex(ws => ws > roll);
 		}
 
