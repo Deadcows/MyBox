@@ -406,7 +406,7 @@ namespace MyBox
 		/// Returns random index from collection with weighted probabilities.
 		/// </summary>
 		public static int GetWeightedRandomIndex<T>(this IEnumerable<T> source,
-			Func<T, float> weightSelector)
+			Func<T, double> weightSelector)
 		{
 			var weights = source.Select(weightSelector).Select(w => w < 0 ? 0 : w);
 			var weightStages = weights
@@ -419,14 +419,14 @@ namespace MyBox
 		/// Returns random element from collection with weighted probabilities.
 		/// </summary>
 		public static T GetWeightedRandom<T>(this IList<T> source,
-			Func<T, float> weightSelector) =>
+			Func<T, double> weightSelector) =>
 			source[source.GetWeightedRandomIndex(weightSelector)];
 
 		/// <summary>
 		/// Returns random element from collection with weighted probabilities.
 		/// </summary>
 		public static T GetWeightedRandom<T>(this IEnumerable<T> source,
-			Func<T, float> weightSelector) =>
+			Func<T, double> weightSelector) =>
 			source.ElementAt(source.GetWeightedRandomIndex(weightSelector));
 	}
 }
