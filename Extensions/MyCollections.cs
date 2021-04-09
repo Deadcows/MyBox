@@ -356,20 +356,6 @@ namespace MyBox
 		}
 
 		/// <summary>
-		/// First index of an item that matches a predicate.
-		/// </summary>
-		public static int LastIndex<T>(this IEnumerable<T> source, Predicate<T> predicate)
-		{
-			int index = 0;
-			foreach (T e in source)
-			{
-				if (!predicate(e)) return index - 1;
-				++index;
-			}
-			return -1;
-		}
-
-		/// <summary>
 		/// Projects each element of a sequence into a new form, with its index
 		/// passed along the selector.
 		/// </summary>
