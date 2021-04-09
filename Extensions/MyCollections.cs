@@ -283,6 +283,30 @@ namespace MyBox
 		}
 
 		/// <summary>
+		/// Performs an action on each element of a collection with its index
+		/// passed along.
+		/// </summary>
+		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source,
+			System.Action<T, int> action)
+		{
+			int index = 0;
+			foreach (T element in source) { action(element, index); ++index; }
+			return source;
+		}
+
+		/// <summary>
+		/// Performs an action on each element of a collection with its index
+		/// passed along.
+		/// </summary>
+		public static IEnumerable<T> ForEach<T, R>(this IEnumerable<T> source,
+			Func<T, int, R> func)
+		{
+			int index = 0;
+			foreach (T element in source) { func(element, index); ++index; }
+			return source;
+		}
+
+		/// <summary>
 		/// Find the element of a collection that has the highest selected value.
 		/// </summary>
 		public static T MaxBy<T, S>(this IEnumerable<T> source, Func<T, S> selector)
