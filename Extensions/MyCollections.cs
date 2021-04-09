@@ -394,7 +394,7 @@ namespace MyBox
 		public static int GetWeightedRandomIndex<T>(this IEnumerable<T> source,
 			Func<T, float> weightSelector)
 		{
-			var weights = source.Select(weightSelector);
+			var weights = source.Select(weightSelector).Where(w => w > 0);
 			var weightStages = weights
 				.SelectWithIndex((w, i) => weights.Take(i + 1).Sum());
 			var roll = UnityEngine.Random.Range(0, weights.Sum());
