@@ -53,10 +53,9 @@ namespace MyBox
 		/// </summary>
 		public static string ToHex(this Color color)
 		{
-			return string.Format("#{0:X2}{1:X2}{2:X2}", (int) (color.r * 255), (int) (color.g * 255), (int) (color.b * 255));
+			return string.Format("#{0:X2}{1:X2}{2:X2}", (int)(color.r * 255), (int)(color.g * 255), (int)(color.b * 255));
 		}
 
-		
 		private const float LightOffset = 0.0625f;
 		private const float DarkerFactor = 0.9f;
 		/// <summary>
@@ -87,7 +86,6 @@ namespace MyBox
 				color.a);
 		}
 
-		
 		/// <summary>
 		/// Brightness offset with 1 is brightest and -1 is darkest
 		/// </summary>
@@ -98,6 +96,17 @@ namespace MyBox
 				color.g + offset,
 				color.b + offset,
 				color.a);
+		}
+
+		/// <summary>
+		/// Converts a HTML color string into UnityEngine.Color. See
+		/// UnityEngine.ColorUtility.TryParseHtmlString for conversion conditions.
+		/// </summary>
+		public static Color ToUnityColor(this string source)
+		{
+			Color res;
+			ColorUtility.TryParseHtmlString(source, out res);
+			return res;
 		}
 	}
 }
