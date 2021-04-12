@@ -7,6 +7,7 @@ All notable changes to this package will be documented in this file.
 - Extensions: MyCollections.FirstIndex - more generalized version 
 - Extensions: MyCollections.SelectWithIndex and SelectManyWithIndex - like LINQ.Select, but with index passed along the item into selector
 - Extensions: MyCollections.GetWeightedRandom and GetWeightedRandomIndex
+- Changed: MyBox will only check for updates when editor opens
 
 ## [1.6.2] - 2021-04-08
 - Fix: MyBox Window settings were not applied correctly

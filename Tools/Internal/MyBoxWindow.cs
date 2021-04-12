@@ -24,21 +24,25 @@ namespace MyBox.Internal
 
 		static MyBoxWindow()
 		{
-			if (AutoUpdateCheckIsEnabled)
-			{
-				MyBoxUtilities.GetMyBoxLatestVersionAsync(version =>
-				{
-					_installedVersion = MyBoxUtilities.GetMyBoxInstalledVersion();
-					_latestVersion = version;
-					if (!_installedVersion.VersionsMatch(_latestVersion))
-					{
-						var versions = "Installed version: " + _installedVersion.AsSting + ". Latest version: " + _latestVersion.AsSting;
-						var message = "It's time to update MyBox :)! Use \"Tools/MyBox/Update MyBox\". " + versions;
-						WarningsPool.Log(message);
-					}
-				});
-			}
+			if (AutoUpdateCheckIsEnabled) MyEditorEvents.OnEditorStarts += CheckForUpdates;
 		}
+
+		private static void CheckForUpdates()
+		{
+			MyEditorEvents.OnEditorStarts -= CheckForUpdates;
+			MyBoxUtilities.GetMyBoxLatestVersionAsync(version =>
+			{
+				_installedVersion = MyBoxUtilities.GetMyBoxInstalledVersion();
+				_latestVersion = version;
+				if (!_installedVersion.VersionsMatch(_latestVersion))
+				{
+					var versions = "Installed version: " + _installedVersion.AsSting + ". Latest version: " + _latestVersion.AsSting;
+					var message = "It's time to update MyBox :)! Use \"Tools/MyBox/Update MyBox\". " + versions;
+					WarningsPool.Log(message);
+				}
+			});
+		}
+
 
 		[MenuItem("Tools/MyBox/MyBox Window", priority = 1)]
 		private static void MyBoxWindowMenuItem()
@@ -113,7 +117,7 @@ namespace MyBox.Internal
 			}
 
 			MyGUI.DrawLine(Color.white, true);
-			
+
 			EditorGUILayout.LabelField("MyBox Settings", new GUIStyle(EditorStyles.centeredGreyMiniLabel));
 
 			using (new EditorGUILayout.HorizontalScope())
@@ -129,7 +133,7 @@ namespace MyBox.Internal
 				MyBoxSettings.AutoSaveEnabled = EditorGUILayout.Toggle("AutoSave on Play: ", MyBoxSettings.AutoSaveEnabled);
 				GUILayout.FlexibleSpace();
 			}
-			
+
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				EditorGUILayout.Space(leftOffset);
@@ -141,7 +145,8 @@ namespace MyBox.Internal
 			{
 				EditorGUILayout.Space(leftOffset);
 				MyBoxSettings.PrepareOnPlaymode = EditorGUILayout.Toggle("Prepare on Playmode: ", MyBoxSettings.PrepareOnPlaymode);
-				if (GUILayout.Button(MyGUI.EditorIcons.Help, EditorStyles.label, GUILayout.Height(18))) Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#iprepare");
+				if (GUILayout.Button(MyGUI.EditorIcons.Help, EditorStyles.label, GUILayout.Height(18)))
+					Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#iprepare");
 				GUILayout.FlexibleSpace();
 			}
 
@@ -179,11 +184,12 @@ namespace MyBox.Internal
 						_updateRequest = UnityEditor.PackageManager.Client.Add("https://github.com/Deadcows/MyBox.git");
 					}
 				}
+
 				GUI.enabled = true;
 
 				if (GUILayout.Button("  How to Update ↗", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Installation");
-				
+
 				if (GUILayout.Button("  Releases ↗", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/releases");
 
