@@ -7,7 +7,7 @@ using System.Reflection;
 namespace MyBox
 {
 	/// <summary>
-	/// Conditionally Show/Hide field in inspector, based on some other field value 
+	/// Conditionally Show/Hide field in inspector, based on some other field value
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field)]
 	public class ConditionalFieldAttribute : PropertyAttribute
@@ -54,9 +54,9 @@ namespace MyBox.Internal
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
 			if (!(attribute is ConditionalFieldAttribute conditional)) return 0;
-			
+
 			Initialize(property);
-			
+
 			var propertyToCheck = ConditionalFieldUtility.FindRelativeProperty(property, conditional.FieldToCheck);
 			_toShow = ConditionalFieldUtility.PropertyIsVisible(propertyToCheck, conditional.Inverse, conditional.CompareValues);
 			if (!_toShow) return 0;
@@ -74,8 +74,8 @@ namespace MyBox.Internal
 			if (_customAttributeDrawer != null) TryUseAttributeDrawer();
 			else if (_customTypeDrawer != null) TryUseTypeDrawer();
 			else EditorGUI.PropertyField(position, property, label, true);
-		
-			
+
+
 			void TryUseAttributeDrawer()
 			{
 				try
@@ -102,7 +102,7 @@ namespace MyBox.Internal
 				}
 			}
 		}
-		
+
 
 		private void Initialize(SerializedProperty property)
 		{
@@ -115,7 +115,7 @@ namespace MyBox.Internal
 
 			_initialized = true;
 
-			
+
 			void CacheAllDrawersInDomain()
 			{
 				if (!_allPropertyDrawersInDomain.IsNullOrEmpty()) return;
@@ -134,7 +134,6 @@ namespace MyBox.Internal
 					var associatedType = drawerAttribute.ConstructorArguments.FirstOrDefault().Value as Type;
 					if (associatedType == null) continue;
 
-					if (_allPropertyDrawersInDomain.ContainsKey(associatedType)) continue;
 					_allPropertyDrawersInDomain.Add(associatedType, type);
 				}
 			}
@@ -150,12 +149,12 @@ namespace MyBox.Internal
 
 				//Get the associated attribute drawer
 				if (!_allPropertyDrawersInDomain.ContainsKey(genericAttributeType)) return;
-				
+
 				var customAttributeDrawerType = _allPropertyDrawersInDomain[genericAttributeType];
 				var customAttributeData = fieldInfo.GetCustomAttributesData().FirstOrDefault(a => a.AttributeType == secondAttribute.GetType());
 				if (customAttributeData == null) return;
 
-				
+
 				//Create drawer for custom attribute
 				try
 				{
@@ -174,8 +173,8 @@ namespace MyBox.Internal
 				if (fieldInfo == null) return;
 				// Skip checks for mscorlib.dll
 				if (fieldInfo.FieldType.Module.ScopeName.Equals(typeof(int).Module.ScopeName)) return;
-				
-				
+
+
 				// Of all property drawers in the assembly we need to find one that affects target type
 				// or one of the base types of target type
 				Type fieldDrawerType = null;
@@ -235,7 +234,7 @@ namespace MyBox.Internal
 
 			if (compareAgainst != null && compareAgainst.Length > 0)
 			{
-				var matchAny = CompareAgainstValues(asString, compareAgainst);
+				var matchAny = CompareAgainstValues(asString, compareAgainst, IsFlagsEnum());
 				if (inverse) matchAny = !matchAny;
 				return matchAny;
 			}
@@ -244,23 +243,39 @@ namespace MyBox.Internal
 			if (someValueAssigned) return !inverse;
 
 			return inverse;
+			
+			
+			bool IsFlagsEnum()
+			{
+				if (property.propertyType != SerializedPropertyType.Enum) return false;
+				var value = property.GetValue();
+				if (value == null) return false;
+				return value.GetType().GetCustomAttribute<FlagsAttribute>() != null;
+			}
 		}
 
+		
 		/// <summary>
 		/// True if the property value matches any of the values in '_compareValues'
 		/// </summary>
-		private static bool CompareAgainstValues(string propertyValueAsString, string[] compareAgainst)
+		private static bool CompareAgainstValues(string propertyValueAsString, string[] compareAgainst, bool handleFlags)
 		{
-			for (var i = 0; i < compareAgainst.Length; i++)
+			if (!handleFlags) return ValueMatches(propertyValueAsString);
+			
+			var separateFlags = propertyValueAsString.Split(',');
+			foreach (var flag in separateFlags)
 			{
-				bool valueMatches = compareAgainst[i] == propertyValueAsString;
-
-				// One of the value is equals to the property value.
-				if (valueMatches) return true;
+				if (ValueMatches(flag.Trim())) return true;
 			}
 
-			// None of the value is equals to the property value.
 			return false;
+
+			
+			bool ValueMatches(string value)
+			{
+				foreach (var compare in compareAgainst) if (value == compare) return true;
+				return false;
+			}
 		}
 
 		#endregion

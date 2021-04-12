@@ -43,7 +43,7 @@ namespace MyBox.EditorTools
 		}
 
 		/// <summary>
-		/// Replace array contents of SerializedProperty with another array 
+		/// Replace array contents of SerializedProperty with another array
 		/// </summary>
 		public static void ReplaceArray(this SerializedProperty property, Object[] newElements)
 		{
@@ -113,13 +113,13 @@ namespace MyBox.EditorTools
 					return property.boolValue.ToString();
 
 				case SerializedPropertyType.Enum:
-					return property.enumNames[property.enumValueIndex];
+                    return property.GetValue().ToString();
 
-				default:
+                default:
 					return string.Empty;
 			}
 		}
-		
+
 		/// <summary>
 		/// Property path for collection without ".Array.data[x]" in it
 		/// </summary>
@@ -135,7 +135,7 @@ namespace MyBox.EditorTools
 			var targetType = targetObject.GetType();
 			return targetType.GetField(property.propertyPath);
 		}
-		
+
 		/// <summary>
 		/// Get raw object value out of the SerializedProperty
 		/// </summary>
@@ -156,8 +156,8 @@ namespace MyBox.EditorTools
 				else obj = GetValueByFieldName(obj, element);
 			}
 			return obj;
-			
-			
+
+
 			object GetValueByArrayFieldName(object source, string name, int index)
 			{
 				if (!(GetValueByFieldName(source, name) is IEnumerable enumerable)) return null;
@@ -166,7 +166,7 @@ namespace MyBox.EditorTools
 				for (var i = 0; i <= index; i++) if (!enumerator.MoveNext()) return null;
 				return enumerator.Current;
 			}
-			
+
 			// Search "source" object for a field with "name" and get it's value
 			object GetValueByFieldName(object source, string name)
 			{
@@ -186,8 +186,8 @@ namespace MyBox.EditorTools
 				return null;
 			}
 		}
-		
-		
+
+
 		/// <summary>
 		/// Set raw object value to the SerializedProperty
 		/// </summary>
