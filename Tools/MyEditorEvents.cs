@@ -1,9 +1,11 @@
 #if UNITY_EDITOR
 using System;
+using MyBox.Internal;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEngine;
 using UnityEditor.Build.Reporting;
+using Object = UnityEngine.Object;
 
 namespace MyBox.EditorTools
 {
@@ -13,24 +15,31 @@ namespace MyBox.EditorTools
 		/// <summary>
 		/// Occurs on Scenes/Assets Save
 		/// </summary>
-		public static Action OnSave;
+		public static event Action OnSave;
 
 		/// <summary>
 		/// Occurs on first frame in Playmode
 		/// </summary>
-		public static Action OnFirstFrame;
+		public static event Action OnFirstFrame;
 
-		public static Action BeforePlaymode;
+		public static event Action BeforePlaymode;
 
-		public static Action BeforeBuild;
+		public static event Action BeforeBuild;
 
+		/// <summary>
+		/// Occurs on second frame after editor starts
+		/// (to notify all scripts subscribed with [InitializeOnLoad])
+		/// </summary>
+		public static event Action OnEditorStarts;
+
+		
 
 		static MyEditorEvents()
 		{
-			EditorApplication.update += CheckOnce;
+			EditorApplication.update += CheckOnceOnEditorStart;
+			EditorApplication.update += CheckOnceOnPlaymode;
 			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 		}
-
 
 		/// <summary>
 		/// On Editor Save
@@ -40,20 +49,38 @@ namespace MyBox.EditorTools
 			// Prefab creation enforces SaveAsset and this may cause unwanted dir cleanup
 			if (paths.Length == 1 && (paths[0] == null || paths[0].EndsWith(".prefab"))) return paths;
 
-			if (OnSave != null) OnSave();
+			OnSave?.Invoke();
 
 			return paths;
 		}
 
+		private static void CheckOnceOnEditorStart()
+		{
+			if (!_skipFrameOnEditorStart)
+			{
+				_skipFrameOnEditorStart = true;
+				return;
+			}
+			
+			EditorApplication.update -= CheckOnceOnEditorStart;
+			var startupAssetInstance = Object.FindObjectOfType<MyBoxStartupAsset>();
+			if (startupAssetInstance != null) return;
+
+			ScriptableObject.CreateInstance<MyBoxStartupAsset>();
+			OnEditorStarts?.Invoke();
+		}
+		private static bool _skipFrameOnEditorStart;
+		
+
 		/// <summary>
 		/// On First Frame
 		/// </summary>
-		private static void CheckOnce()
+		private static void CheckOnceOnPlaymode()
 		{
 			if (Application.isPlaying)
 			{
-				EditorApplication.update -= CheckOnce;
-				if (OnFirstFrame != null) OnFirstFrame();
+				EditorApplication.update -= CheckOnceOnPlaymode;
+				OnFirstFrame?.Invoke();
 			}
 		}
 
@@ -68,15 +95,9 @@ namespace MyBox.EditorTools
 		/// <summary>
 		/// Before Build
 		/// </summary>
-		public void OnPreprocessBuild(BuildReport report)
-		{
-			if (BeforeBuild != null) BeforeBuild();
-		}
+		public void OnPreprocessBuild(BuildReport report) => BeforeBuild?.Invoke();
 
-		public int callbackOrder
-		{
-			get { return 0; }
-		}
+		public int callbackOrder => 0;
 	}
 }
 #endif

@@ -2,10 +2,11 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
+- Added: ConditionalFields supports Enum Flag as conditions! Thanks to Dietmar Puschmann for this addition
+- Added: MyEditorEvents.OnEditorStarts event
 - Extensions: MyCollections.FirstIndex - more generalized version 
 - Extensions: MyCollections.SelectWithIndex and SelectManyWithIndex - like LINQ.Select, but with index passed along the item into selector
 - Extensions: MyCollections.GetWeightedRandom and GetWeightedRandomIndex
-- Changed: ConditionalFields now might be used with Enum Flag as condition! Thanks to Dietmar Puschmann for this addition
 
 ## [1.6.2] - 2021-04-08
 - Fix: MyBox Window settings were not applied correctly
