@@ -61,17 +61,24 @@ namespace MyBox.Internal
 					.GetComponentsInParent(property.Field.FieldType.GetElementType(), true),
 				[AutoPropertyMode.Scene] = property => Object
 					.FindObjectsOfType(property.Field.FieldType.GetElementType()),
-				[AutoPropertyMode.Asset] = property => Resources
-					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
-					.Where(obj =>
-					{
-						var prefabType = PrefabUtility.GetPrefabAssetType(obj);
-						return prefabType == PrefabAssetType.Regular
-							|| prefabType == PrefabAssetType.Model;
-					})
-					.ToArray(),
-				[AutoPropertyMode.Any] = property => Resources
-					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
+				[AutoPropertyMode.Asset] = property =>
+				{
+					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
+					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
+						.Where(obj =>
+						{
+							var prefabType = PrefabUtility.GetPrefabAssetType(obj);
+							return prefabType == PrefabAssetType.Regular
+								|| prefabType == PrefabAssetType.Model;
+						})
+						.ToArray();
+				},
+				[AutoPropertyMode.Any] = property =>
+				{
+					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
+					return Resources
+						.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType());
+				}
 			};
 
 		static readonly Dictionary<int, Func<MyEditor.ComponentField, Object>> SingularObjectGetters
@@ -84,18 +91,24 @@ namespace MyBox.Internal
 					.FirstOrDefault(),
 				[AutoPropertyMode.Scene] = property => Object
 					.FindObjectOfType(property.Field.FieldType),
-				[AutoPropertyMode.Asset] = property => Resources
-					.FindObjectsOfTypeAll(property.Field.FieldType)
-					.Where(obj =>
-					{
-						var prefabType = PrefabUtility.GetPrefabAssetType(obj);
-						return prefabType == PrefabAssetType.Regular
-							|| prefabType == PrefabAssetType.Model;
-					})
-					.FirstOrDefault(),
-				[AutoPropertyMode.Any] = property => Resources
-					.FindObjectsOfTypeAll(property.Field.FieldType)
-					.FirstOrDefault()
+				[AutoPropertyMode.Asset] = property =>
+				{
+					MyEditor.LoadAllAssetsOfType(property.Field.FieldType);
+					return Resources.FindObjectsOfTypeAll(property.Field.FieldType)
+						.Where(obj =>
+						{
+							var prefabType = PrefabUtility.GetPrefabAssetType(obj);
+							return prefabType == PrefabAssetType.Regular
+								|| prefabType == PrefabAssetType.Model;
+						})
+						.FirstOrDefault();
+				},
+				[AutoPropertyMode.Any] = property =>
+				{
+					MyEditor.LoadAllAssetsOfType(property.Field.FieldType);
+					return Resources.FindObjectsOfTypeAll(property.Field.FieldType)
+						.FirstOrDefault();
+				}
 			};
 
 		static AutoPropertyHandler()
