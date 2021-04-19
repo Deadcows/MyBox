@@ -4,11 +4,26 @@ using UnityEngine;
 namespace MyBox
 {
 	/// <summary>
-	/// Automatically assign components from this GO to this Property.
+	/// Automatically assign components to this Property.
+	/// It searches for components from this GO or its children by default.
+	/// Pass in an <c>AutoPropertyMode</c> to override this behaviour.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field)]
 	public class AutoPropertyAttribute : PropertyAttribute
 	{
+		public int Mode;
+
+		public AutoPropertyAttribute(int mode = AutoPropertyMode.Children) =>
+			Mode = mode;
+	}
+
+	public class AutoPropertyMode
+	{
+		public const int Children = 0;
+		public const int Parent = 1;
+		public const int Scene = 2;
+		public const int Asset = 3;
+		public const int Any = 4;
 	}
 }
 
@@ -19,6 +34,8 @@ namespace MyBox.Internal
 	using EditorTools;
 	using UnityEditor.Experimental.SceneManagement;
 	using Object = UnityEngine.Object;
+	using System.Collections.Generic;
+	using System.Linq;
 
 	[CustomPropertyDrawer(typeof(AutoPropertyAttribute))]
 	public class AutoPropertyDrawer : PropertyDrawer
@@ -30,11 +47,57 @@ namespace MyBox.Internal
 			GUI.enabled = true;
 		}
 	}
-	
+
 
 	[InitializeOnLoad]
 	public static class AutoPropertyHandler
 	{
+		static readonly Dictionary<int, Func<MyEditor.ComponentField, Object[]>> MultipleObjectsGetters
+			= new Dictionary<int, Func<MyEditor.ComponentField, Object[]>>
+			{
+				[AutoPropertyMode.Children] = property => property.Component
+					.GetComponentsInChildren(property.Field.FieldType.GetElementType(), true),
+				[AutoPropertyMode.Parent] = property => property.Component
+					.GetComponentsInParent(property.Field.FieldType.GetElementType(), true),
+				[AutoPropertyMode.Scene] = property => Object
+					.FindObjectsOfType(property.Field.FieldType.GetElementType()),
+				[AutoPropertyMode.Asset] = property => Resources
+					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
+					.Where(obj =>
+					{
+						var prefabType = PrefabUtility.GetPrefabAssetType(obj);
+						return prefabType == PrefabAssetType.Regular
+							|| prefabType == PrefabAssetType.Model;
+					})
+					.ToArray(),
+				[AutoPropertyMode.Any] = property => Resources
+					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
+			};
+
+		static readonly Dictionary<int, Func<MyEditor.ComponentField, Object>> SingularObjectGetters
+			= new Dictionary<int, Func<MyEditor.ComponentField, Object>>
+			{
+				[AutoPropertyMode.Children] = property => property.Component
+					.GetComponentInChildren(property.Field.FieldType, true),
+				[AutoPropertyMode.Parent] = property => property.Component
+					.GetComponentsInParent(property.Field.FieldType, true)
+					.FirstOrDefault(),
+				[AutoPropertyMode.Scene] = property => Object
+					.FindObjectOfType(property.Field.FieldType),
+				[AutoPropertyMode.Asset] = property => Resources
+					.FindObjectsOfTypeAll(property.Field.FieldType)
+					.Where(obj =>
+					{
+						var prefabType = PrefabUtility.GetPrefabAssetType(obj);
+						return prefabType == PrefabAssetType.Regular
+							|| prefabType == PrefabAssetType.Model;
+					})
+					.FirstOrDefault(),
+				[AutoPropertyMode.Any] = property => Resources
+					.FindObjectsOfTypeAll(property.Field.FieldType)
+					.FirstOrDefault()
+			};
+
 		static AutoPropertyHandler()
 		{
 			// this event is for Gameobjects in the scene.
@@ -60,15 +123,16 @@ namespace MyBox.Internal
 				FillProperty(autoProperties[i]);
 			}
 		}
-		
+
 		private static void FillProperty(MyEditor.ComponentField property)
 		{
-			var propertyType = property.Field.FieldType;
+			var apAttribute = property.Field
+				.GetCustomAttributes(typeof(AutoPropertyAttribute), true)
+				.FirstOrDefault() as AutoPropertyAttribute;
 
 			if (property.Field.FieldType.IsArray)
 			{
-				var underlyingType = propertyType.GetElementType();
-				Object[] components = property.Component.GetComponentsInChildren(underlyingType, true);
+				Object[] components = MultipleObjectsGetters[apAttribute.Mode].Invoke(property);
 				if (components != null && components.Length > 0)
 				{
 					var serializedObject = new SerializedObject(property.Component);
@@ -80,7 +144,7 @@ namespace MyBox.Internal
 			}
 			else
 			{
-				var component = property.Component.GetComponentInChildren(propertyType, true);
+				var component = SingularObjectGetters[apAttribute.Mode].Invoke(property);
 				if (component != null)
 				{
 					var serializedObject = new SerializedObject(property.Component);
