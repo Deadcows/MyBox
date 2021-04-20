@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System;
+using System.Globalization;
 using UnityEngine;
 
 namespace MyBox
@@ -9,7 +10,12 @@ namespace MyBox
 		/// <summary>
 		/// "Camel case string" => "CamelCaseString" 
 		/// </summary>
-		public static string ToCamelCase(this string message) => Regex.Replace(message, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ").Trim();
+		public static string ToCamelCase(this string message) {
+			message = message.Replace("-", " ").Replace("_", " ");
+			message = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(message);
+			message = message.Replace(" ", "");
+			return message;
+		}
 
 		/// <summary>
 		/// "CamelCaseString" => "Camel Case String"
