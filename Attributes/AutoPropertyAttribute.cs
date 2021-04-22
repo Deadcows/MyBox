@@ -19,10 +19,26 @@ namespace MyBox
 
 	public class AutoPropertyMode
 	{
+		/// <summary>
+		/// Search for Components from this GO or its children.
+		/// </summary>
 		public const int Children = 0;
+		/// <summary>
+		/// Search for Components from this GO or its parents.
+		/// </summary>
 		public const int Parent = 1;
+		/// <summary>
+		/// Search for Components from this GO's current scene.
+		/// </summary>
 		public const int Scene = 2;
+		/// <summary>
+		/// Search for Objects from this project's asset folder.
+		/// </summary>
 		public const int Asset = 3;
+		/// <summary>
+		/// Search for Objects from anywhere in the project.
+		/// Combines the results of Scene and Asset modes.
+		/// </summary>
 		public const int Any = 4;
 	}
 }
