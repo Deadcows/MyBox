@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace MyBox.EditorTools
@@ -137,7 +138,7 @@ namespace MyBox.EditorTools
 		}
 
 		/// <summary>
-		/// Get raw object value out of the SerializedProperty
+		/// Get raw object value out of the object that the SerializedProperty refers to.
 		/// </summary>
 		public static object GetValue(this SerializedProperty property)
 		{
@@ -209,6 +210,122 @@ namespace MyBox.EditorTools
 			return Attribute.IsDefined(fieldInfo, typeof(T));
 		}
 
+
+		/// <summary>
+		/// Gets the object that the property is a member of
+		/// /// </summary>
+		/// <param name="property"></param> 
+		/// <returns></returns>
+		public static object GetObjectWithProperty(this SerializedProperty prop)
+		{
+			string path = prop.propertyPath.Replace(".Array.data[", "[");
+			object obj = prop.serializedObject.targetObject;
+			string[] elements = path.Split('.');
+			foreach (string element in elements.Take(elements.Length - 1))
+			{
+				if (element.Contains("["))
+				{
+					string elementName = element.Substring(0, element.IndexOf("["));
+					var index = Convert.ToInt32(element.Substring(element.IndexOf("[")).Replace("[", "")
+						.Replace("]", ""));
+					obj = GetValueImp2(obj, elementName, index);
+				}
+				else
+				{
+					obj = GetValueImp(obj, element);
+				}
+			}
+
+			return obj;
+
+
+			static object GetValueImp(object source, string name)
+			{
+				if (source == null)
+					return null;
+				Type type = source.GetType();
+
+				while (type != null)
+				{
+					FieldInfo f = type.GetField(name,
+						BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+					if (f != null)
+						return f.GetValue(source);
+
+					PropertyInfo p = type.GetProperty(name,
+						BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+					if (p != null)
+						return p.GetValue(source, null);
+
+					type = type.BaseType;
+				}
+
+				return null;
+			}
+			
+			static object GetValueImp2(object source, string name, int index)
+			{
+				var enumerable = GetValueImp(source, name) as IEnumerable;
+				if (enumerable == null) return null;
+				IEnumerator enm = enumerable.GetEnumerator();
+
+				for (var i = 0; i <= index; i++)
+				{
+					if (!enm.MoveNext()) return null;
+				}
+				return enm.Current;
+			}
+		}
+		
+		/// <summary>
+		/// Get raw object value out of the SerializedProperty
+		/// </summary>
+		public static object GetPropertyValue(this SerializedProperty prop)
+		{
+			if (prop == null) throw new ArgumentNullException("prop");
+
+			switch (prop.propertyType)
+			{
+				case SerializedPropertyType.Integer:
+					return prop.intValue;
+				case SerializedPropertyType.Boolean:
+					return prop.boolValue;
+				case SerializedPropertyType.Float:
+					return prop.floatValue;
+				case SerializedPropertyType.String:
+					return prop.stringValue;
+				case SerializedPropertyType.Color:
+					return prop.colorValue;
+				case SerializedPropertyType.ObjectReference:
+					return prop.objectReferenceValue;
+				case SerializedPropertyType.LayerMask:
+					return (LayerMask)prop.intValue;
+				case SerializedPropertyType.Enum:
+					return prop.enumValueIndex;
+				case SerializedPropertyType.Vector2:
+					return prop.vector2Value;
+				case SerializedPropertyType.Vector3:
+					return prop.vector3Value;
+				case SerializedPropertyType.Vector4:
+					return prop.vector4Value;
+				case SerializedPropertyType.Rect:
+					return prop.rectValue;
+				case SerializedPropertyType.ArraySize:
+					return prop.arraySize;
+				case SerializedPropertyType.Character:
+					return (char)prop.intValue;
+				case SerializedPropertyType.AnimationCurve:
+					return prop.animationCurveValue;
+				case SerializedPropertyType.Bounds:
+					return prop.boundsValue;
+				case SerializedPropertyType.Gradient:
+					throw new InvalidOperationException("Can not handle Gradient types.");
+
+			}
+
+			return null;
+		}
+		
 		#region SerializedProperty Get Parent
 
 		// Found here http://answers.unity.com/answers/425602/view.html
