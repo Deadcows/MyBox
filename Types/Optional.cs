@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MyBox.Internal;
 using UnityEngine;
 
@@ -55,14 +56,39 @@ namespace MyBox
 namespace MyBox.Internal
 {
 	[Serializable]
-	public class Optional<T> : OptionalParent
+	public class Optional<T> : OptionalParent, IEquatable<T>, IEquatable<Optional<T>>
 	{
 		public bool IsSet;
 		public T Value;
+		 
+		public static explicit operator T(Optional<T> val) => val.Value;
+
+		public static implicit operator Optional<T>(T val) => new Optional<T>() {Value = val};
+
+		public override string ToString() => Value.ToString();
+		public bool Equals(T other) => Value.Equals(other);
+
+		public bool Equals(Optional<T> other) =>
+			IsSet == other.IsSet && Value.Equals(other.Value);
+
+		public override bool Equals(object obj)
+		{
+			if (obj is Optional<T> ot) return Equals(ot);
+			if (obj is T t) return Equals(t);
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				return (IsSet.GetHashCode() * 397) ^ EqualityComparer<T>.Default.GetHashCode(Value);
+			}
+		}
 	}
 
 	[Serializable]
-	public class OptionalParent
+	public abstract class OptionalParent
 	{
 	}
 }
