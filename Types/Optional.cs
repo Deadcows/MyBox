@@ -13,8 +13,6 @@ namespace MyBox
 		{
 			return new OptionalFloat {IsSet = true, Value = value};
 		}
-		
-		public static implicit operator OptionalFloat(float val) => new OptionalFloat() {Value = val};
 	}
 
 	[Serializable]
@@ -24,7 +22,6 @@ namespace MyBox
 		{
 			return new OptionalInt {IsSet = true, Value = value};
 		}
-		public static implicit operator OptionalInt(int val) => new OptionalInt() {Value = val};
 	}
 
 	[Serializable]
@@ -34,7 +31,6 @@ namespace MyBox
 		{
 			return new OptionalString {IsSet = true, Value = value};
 		}
-		public static implicit operator OptionalString(string val) => new OptionalString() {Value = val};
 	}
 
 	[Serializable]
@@ -44,19 +40,16 @@ namespace MyBox
 		{
 			return new OptionalKeyCode {IsSet = true, Value = value};
 		}
-		public static implicit operator OptionalKeyCode(KeyCode val) => new OptionalKeyCode() {Value = val};
 	}
 
 	[Serializable]
 	public class OptionalGameObject : Optional<GameObject>
 	{
-		public static implicit operator OptionalGameObject(GameObject val) => new OptionalGameObject() {Value = val};
 	}
 
 	[Serializable]
 	public class OptionalComponent : Optional<Component>
 	{
-		public static implicit operator OptionalComponent(Component val) => new OptionalComponent() {Value = val};
 	}
 }
 
