@@ -4,25 +4,25 @@ namespace MyBox
 {
 	public class OverrideLabelAttribute : PropertyAttribute
 	{
-		public string NewName;
+		public readonly string NewLabel;
 
-		public OverrideLabelAttribute(string newName) => NewName = newName;
+		public OverrideLabelAttribute(string newLabel) => NewLabel = newLabel;
 	}
+}
 
 #if UNITY_EDITOR
-	namespace Internal
-	{
-		using UnityEditor;
+namespace MyBox.Internal
+{
+	using UnityEditor;
 
-		[CustomPropertyDrawer(typeof(OverrideLabelAttribute))]
-		public class OverrideLabelDrawer : PropertyDrawer
+	[CustomPropertyDrawer(typeof(OverrideLabelAttribute))]
+	public class OverrideLabelDrawer : PropertyDrawer
+	{
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-			{
-				label.text = (attribute as OverrideLabelAttribute).NewName;
-				EditorGUI.PropertyField(position, property, label);
-			}
+			label.text = ((OverrideLabelAttribute)attribute).NewLabel;
+			EditorGUI.PropertyField(position, property, label);
 		}
 	}
-#endif
 }
+#endif
