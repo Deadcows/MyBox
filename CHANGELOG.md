@@ -2,12 +2,14 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
+- Added: OverrideLabelAttribute // TODO: DONT FORGET TO ADD DOCS MAN!
 - Added: ConditionalFields supports Enum Flag as conditions! Thanks to Dietmar Puschmann for this addition
 - Added: MyEditorEvents.OnEditorStarts event
 - Extensions: MyCollections.FirstIndex - more generalized version 
 - Extensions: MyCollections.SelectWithIndex and SelectManyWithIndex - like LINQ.Select, but with index passed along the item into selector
 - Extensions: MyCollections.GetWeightedRandom and GetWeightedRandomIndex
 - Changed: MyBox will only check for updates when editor opens
+- Fix: MyString.ToCamelCase() extension works better now, thanks to @derfium!
 
 ## [1.6.2] - 2021-04-08
 - Fix: MyBox Window settings were not applied correctly
