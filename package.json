@@ -10,6 +10,7 @@
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.physics2d": "1.0.0"
 },
+"documentationUrl": "https://github.com/Deadcows/MyBox/wiki",
 
 "keywords": ["attributes", "extensions", "editor tools"],
 "author": { "name" : "Andrew Rumak",
