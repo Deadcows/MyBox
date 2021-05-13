@@ -289,7 +289,7 @@ namespace MyBox
 		{
 			return new Vector3(vector.x, vector.y);
 		}
-		
+
 
 		public static Vector2Int ToVector2Int(this Vector2 vector)
 		{
@@ -387,7 +387,7 @@ namespace MyBox
 
 		#endregion
 
-		
+
 		#region Approximately
 
 		public static bool Approximately(this Vector3 vector, Vector3 compared, float threshold = 0.1f)
@@ -398,7 +398,7 @@ namespace MyBox
 
 			return xDiff <= threshold && yDiff <= threshold && zDiff <= threshold;
 		}
-		
+
 		public static bool Approximately(this Vector2 vector, Vector2 compared, float threshold = 0.1f)
 		{
 			var xDiff = Mathf.Abs(vector.x - compared.x);
@@ -406,9 +406,9 @@ namespace MyBox
 
 			return xDiff <= threshold && yDiff <= threshold;
 		}
-		
+
 		#endregion
-		
+
 
 		#region Get Closest 
 
@@ -444,51 +444,75 @@ namespace MyBox
 
 		#endregion
 
-		
+
 		#region To
-		
+
 		/// <summary>
-		/// Get vector between source and destination
+		/// Get vector from source to destination
 		/// </summary>
 		public static Vector4 To(this Vector4 source, Vector4 destination) =>
 			destination - source;
 
 		/// <summary>
-		/// Get vector between source and destination
+		/// Get vector from source to destination
 		/// </summary>
 		public static Vector3 To(this Vector3 source, Vector3 destination) =>
 			destination - source;
 
 		/// <summary>
-		/// Get vector between source and destination
+		/// Get vector from source to destination
 		/// </summary>
 		public static Vector2 To(this Vector2 source, Vector2 destination) =>
 			destination - source;
 
 		/// <summary>
-		/// Get vector between source and target
+		/// Get vector from source to target
 		/// </summary>
 		public static Vector3 To(this Component source, Component target) =>
 			source.transform.position.To(target.transform.position);
 
 		/// <summary>
-		/// Get vector between source and target
+		/// Get vector from source to target
 		/// </summary>
 		public static Vector3 To(this Component source, GameObject target) =>
 			source.transform.position.To(target.transform.position);
 
 		/// <summary>
-		/// Get vector between source and target
+		/// Get vector from source to target
 		/// </summary>
 		public static Vector3 To(this GameObject source, Component target) =>
 			source.transform.position.To(target.transform.position);
 
 		/// <summary>
-		/// Get vector between source and target
+		/// Get vector from source to target
 		/// </summary>
 		public static Vector3 To(this GameObject source, GameObject target) =>
 			source.transform.position.To(target.transform.position);
-		
+
+		/// <summary>
+		/// Get vector from source to target
+		/// </summary>
+		public static Vector3 To(this Vector3 source, GameObject target) =>
+			source.To(target.transform.position);
+
+		/// <summary>
+		/// Get vector from source to target
+		/// </summary>
+		public static Vector3 To(this Vector3 source, Component target) =>
+			source.To(target.transform.position);
+
+		/// <summary>
+		/// Get vector from source to destination
+		/// </summary>
+		public static Vector3 To(this GameObject source, Vector3 destination) =>
+			source.transform.position.To(destination);
+
+		/// <summary>
+		/// Get vector from source to destination
+		/// </summary>
+		public static Vector3 To(this Component source, Vector3 destination) =>
+			source.transform.position.To(destination);
+
 		#endregion
 	}
 }
