@@ -239,9 +239,9 @@ namespace MyBox
 		}
 
 		/// <summary>
-		/// Adds a key/value pair to the IDictionary<TKey,TValue> if the key does
-		/// not already exist. Returns the new value, or the existing value if the
-		/// key exists.
+		/// Adds a key/value pair to the IDictionary&lt;TKey,TValue&gt; if the
+		/// key does not already exist. Returns the new value, or the existing
+		/// value if the key exists.
 		/// </summary>
 		public static TValue GetOrAdd<TKey, TValue>(
 			this IDictionary<TKey, TValue> source,
@@ -253,9 +253,9 @@ namespace MyBox
 		}
 
 		/// <summary>
-		/// Adds a key/value pair to the IDictionary<TKey,TValue> by using the
-		/// specified function if the key does not already exist. Returns the new
-		/// value, or the existing value if the key exists.
+		/// Adds a key/value pair to the IDictionary&lt;TKey,TValue&gt; by using
+		/// the specified function if the key does not already exist. Returns
+		/// the new value, or the existing value if the key exists.
 		/// </summary>
 		public static TValue GetOrAdd<TKey, TValue>(
 			this IDictionary<TKey, TValue> source,
@@ -267,9 +267,9 @@ namespace MyBox
 		}
 
 		/// <summary>
-		/// Adds a key/value pair to the IDictionary<TKey,TValue> by using the
-		/// specified function and an argument if the key does not already exist, or
-		/// returns the existing value if the key exists.
+		/// Adds a key/value pair to the IDictionary&lt;TKey,TValue&gt; by using
+		/// the specified function and an argument if the key does not already
+		/// exist, or returns the existing value if the key exists.
 		/// </summary>
 		public static TValue GetOrAdd<TKey, TValue, TArg>(
 			this IDictionary<TKey, TValue> source,
