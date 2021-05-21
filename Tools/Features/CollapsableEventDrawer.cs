@@ -109,6 +109,11 @@ namespace MyBox.Internal
 		/// </summary>
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
+			if (!property.isExpanded)
+			{
+				return EditorGUIUtility.singleLineHeight;
+			}
+			
 			_hasPersistentCalls = HasPersistentCalls(property);
 
 			ReorderableList list = GetList(property);
@@ -138,20 +143,31 @@ namespace MyBox.Internal
 				_styles = new Styles();
 			}
 
-			base.OnGUI(position, property, label);
-
-			if (!_hasPersistentCalls)
+			SerializedProperty elements = property.FindPropertyRelative("m_PersistentCalls.m_Calls");
+			float h = position.height;
+			position.height = EditorGUIUtility.singleLineHeight;
+            		property.isExpanded = EditorGUI.BeginFoldoutHeaderGroup(position, property.isExpanded,
+						$"[{elements.arraySize}] {property.displayName} ()");
+			if (property.isExpanded)
 			{
-				position.x += position.width - BUTTON_SPACING;
-				position.width = BUTTON_WIDTH;
-				if (GUI.Button(position, _styles.iconToolbarPlus, _styles.preButton))
+				position.height = h;
+                		base.OnGUI(position, property, label);
+
+				if (!_hasPersistentCalls)
 				{
-					State state = GetState(property);
-					ReorderableList list = GetReorderableListFromState(state);
-					list.onAddCallback(list);
-					state.lastSelectedIndex = 0;
+					position.x += position.width - BUTTON_SPACING;
+					position.width = BUTTON_WIDTH;
+					if (GUI.Button(position, _styles.iconToolbarPlus, _styles.preButton))
+					{
+						State state = GetState(property);
+						ReorderableList list = GetReorderableListFromState(state);
+						list.onAddCallback(list);
+						state.lastSelectedIndex = 0;
+					}
 				}
 			}
+
+			EditorGUI.EndFoldoutHeaderGroup();
 		}
 
 
