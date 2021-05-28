@@ -5,6 +5,7 @@ using UnityEditor;
 using MyBox.EditorTools;
 #endif
 
+#pragma warning disable 0414
 namespace MyBox
 {
 	public class MinValueAttribute : AttributeBase
@@ -13,9 +14,7 @@ namespace MyBox
 		private readonly float _y;
 		private readonly float _z;
 
-#if UNITY_EDITOR
 		private readonly bool _vectorValuesSet;
-#endif
 
 		public MinValueAttribute(float value)
 		{
@@ -27,9 +26,7 @@ namespace MyBox
 			_x = x;
 			_y = y;
 			_z = z;
-#if UNITY_EDITOR
 			_vectorValuesSet = true;
-#endif
 		}
 
 #if UNITY_EDITOR
