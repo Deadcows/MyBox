@@ -239,28 +239,46 @@ namespace MyBox
 		}
 
 		/// <summary>
-		/// Gets the value associated with the specified key if it exists, or
-		/// return the default value for the value type if it doesn't.
+		/// Adds a key/value pair to the IDictionary&lt;TKey,TValue&gt; if the
+		/// key does not already exist. Returns the new value, or the existing
+		/// value if the key exists.
 		/// </summary>
-		public static TValue GetOrDefault<TKey, TValue>(
+		public static TValue GetOrAdd<TKey, TValue>(
 			this IDictionary<TKey, TValue> source,
 			TKey key,
-			TValue customDefault = default(TValue))
+			TValue value)
 		{
-			if (!source.ContainsKey(key)) source[key] = customDefault;
+			if (!source.ContainsKey(key)) source[key] = value;
 			return source[key];
 		}
 
 		/// <summary>
-		/// Gets the value associated with the specified key if it exists, or
-		/// generate a value for the new key if it doesn't.
+		/// Adds a key/value pair to the IDictionary&lt;TKey,TValue&gt; by using
+		/// the specified function if the key does not already exist. Returns
+		/// the new value, or the existing value if the key exists.
 		/// </summary>
-		public static TValue GetOrDefault<TKey, TValue>(
+		public static TValue GetOrAdd<TKey, TValue>(
 			this IDictionary<TKey, TValue> source,
 			TKey key,
-			System.Func<TValue> customDefaultGenerator)
+			System.Func<TKey, TValue> valueFactory)
 		{
-			if (!source.ContainsKey(key)) source[key] = customDefaultGenerator();
+			if (!source.ContainsKey(key)) source[key] = valueFactory(key);
+			return source[key];
+		}
+
+		/// <summary>
+		/// Adds a key/value pair to the IDictionary&lt;TKey,TValue&gt; by using
+		/// the specified function and an argument if the key does not already
+		/// exist, or returns the existing value if the key exists.
+		/// </summary>
+		public static TValue GetOrAdd<TKey, TValue, TArg>(
+			this IDictionary<TKey, TValue> source,
+			TKey key,
+			System.Func<TKey, TArg, TValue> valueFactory,
+			TArg factoryArgument)
+		{
+			if (!source.ContainsKey(key))
+				source[key] = valueFactory(key, factoryArgument);
 			return source[key];
 		}
 
@@ -338,7 +356,7 @@ namespace MyBox
 		/// Convert a single element into an enumerable with the source as the
 		/// single element.
 		/// </summary>
-		public static IEnumerable<T> AsEnumerable<T>(this T source) =>
+		public static IEnumerable<T> SingleToEnumerable<T>(this T source) =>
 			Enumerable.Empty<T>().Append(source);
 
 		/// <summary>
@@ -380,47 +398,13 @@ namespace MyBox
 		}
 
 		/// <summary>
-		/// Projects each element of a sequence into a new form, with its index
-		/// passed along the selector.
-		/// </summary>
-		public static IEnumerable<R> SelectWithIndex<T, R>(this IEnumerable<T> source,
-			Func<T, int, R> selector)
-		{
-			int index = 0;
-			return source.Select(e =>
-			{
-				var result = selector(e, index);
-				++index;
-				return result;
-			});
-		}
-
-		/// <summary>
-		/// Projects each element of a sequence to an IEnumerable<T> and flattens
-		/// the resulting sequences into one sequence, with each element's index
-		/// passed along the selector.
-		/// </summary>
-		public static IEnumerable<R> SelectManyWithIndex<T, R>(this IEnumerable<T> source,
-			Func<T, int, IEnumerable<R>> selector)
-		{
-			int index = 0;
-			return source.SelectMany(e =>
-			{
-				var result = selector(e, index);
-				++index;
-				return result;
-			});
-		}
-
-		/// <summary>
 		/// Returns random index from collection with weighted probabilities.
 		/// </summary>
 		public static int GetWeightedRandomIndex<T>(this IEnumerable<T> source,
 			Func<T, double> weightSelector)
 		{
 			var weights = source.Select(weightSelector).Select(w => w < 0 ? 0 : w);
-			var weightStages = weights
-				.SelectWithIndex((w, i) => weights.Take(i + 1).Sum());
+			var weightStages = weights.Select((w, i) => weights.Take(i + 1).Sum());
 			var roll = MyCommonConstants.SystemRandom.NextDouble() * weights.Sum();
 			return weightStages.FirstIndex(ws => ws > roll);
 		}

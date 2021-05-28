@@ -104,8 +104,7 @@ namespace MyBox
 		/// </summary>
 		public static Color ToUnityColor(this string source)
 		{
-			Color res;
-			ColorUtility.TryParseHtmlString(source, out res);
+			ColorUtility.TryParseHtmlString(source, out Color res);
 			return res;
 		}
 	}
