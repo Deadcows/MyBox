@@ -2,6 +2,9 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
+- Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
+- Breaking Changes: MyCollections.GetOrDefault renamed to GetOrAdd
+- Breaking Changes: MyCollections.SelectWithIndex and SelectManyWithIndex removed (Linq.Select and SelectMany functionality duplication)
 - Added: OverrideLabelAttribute // TODO: DONT FORGET TO ADD DOCS MAN!
 - Added: ConditionalFields supports Enum Flag as conditions! Thanks to Dietmar Puschmann for this addition
 - Added: MyEditorEvents.OnEditorStarts event
