@@ -5,6 +5,7 @@ using UnityEditor;
 using MyBox.EditorTools;
 #endif
 
+#pragma warning disable 0414
 namespace MyBox
 {
 	public class MaxValueAttribute : AttributeBase

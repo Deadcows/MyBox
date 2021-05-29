@@ -1,7 +1,3 @@
-* #### Custom Editor Window for MyBox settings with logo and stuff ❤
-
-* #### Update check should be called once at startup. Currently it happens every time on recompile 
-
 * #### Add: MyDictionary, visible in inspector!!1
 
 * #### Add: SingleScriptableObject. No more messy Create/ with CreateAssetMenuAttribute for settings SO's
@@ -20,11 +16,11 @@
   * stores latest sync version in EditorPrefs
   * if EditorPref value changed, compare EditorPrefs version with asset export version
 
+* #### Add: Separator type to draw separator after the field..?
 
 * #### Change: ConstantsSelectionAttribute — Allow to set custom value
 * #### Change: ReorderableCollection - add dropdown area to assign bunch of objects via drag-n-drop
 
----
 
 * #### Allow Commentary to be a type (to be shown and edited inside of other inspector) +   
   * Statically assign via script
