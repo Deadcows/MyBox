@@ -109,20 +109,23 @@ namespace MyBox.Internal
 		/// </summary>
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
-			_hasPersistentCalls = HasPersistentCalls(property);
-			if (!property.isExpanded)
-			{
-				return EditorGUIUtility.singleLineHeight;
-			}
-
 			ReorderableList list = GetList(property);
-
+			_hasPersistentCalls = HasPersistentCalls(property);
 			if (!_hasPersistentCalls)
 			{
+				property.isExpanded = false;
 				list.elementHeight = 0;
 				list.displayAdd = false;
 				list.displayRemove = false;
 				return EditorGUIUtility.singleLineHeight * 2f;
+			}
+
+			if (!property.isExpanded)
+			{
+				list.elementHeight = 0;
+				list.displayAdd = false;
+				list.displayRemove = false;
+				return EditorGUIUtility.singleLineHeight;
 			}
 
 			list.elementHeight = 43;
@@ -156,6 +159,7 @@ namespace MyBox.Internal
 					ReorderableList list = GetReorderableListFromState(state);
 					list.onAddCallback(list);
 					state.lastSelectedIndex = 0;
+					property.isExpanded = true;
 				}
 
 				return;
