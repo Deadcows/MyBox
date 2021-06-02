@@ -8,6 +8,7 @@ All notable changes to this package will be documented in this file.
 - Added: OverrideLabelAttribute // TODO: DONT FORGET TO ADD DOCS MAN!
 - Added: ConditionalFields supports Enum Flag as conditions! Thanks to Dietmar Puschmann for this addition
 - Added: MyEditorEvents.OnEditorStarts event
+- Added: UnityEvent inspector now is foldable, thanks to @karsion!
 - Extensions: MyCollections.FirstIndex - more generalized version 
 - Extensions: MyCollections.SelectWithIndex and SelectManyWithIndex - like LINQ.Select, but with index passed along the item into selector
 - Extensions: MyCollections.GetWeightedRandom and GetWeightedRandomIndex
