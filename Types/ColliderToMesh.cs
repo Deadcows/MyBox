@@ -13,7 +13,7 @@ namespace MyBox
 			FillShape();
 		}
 
-
+		[ButtonMethod]
 		public void FillShape()
 		{
 			PolygonCollider2D pc2 = gameObject.GetComponent<PolygonCollider2D>();
@@ -38,6 +38,7 @@ namespace MyBox
 			mf.sharedMesh.RecalculateBounds();
 		}
 
+		[ButtonMethod]
 		public void ClearShape()
 		{
 			MeshFilter mf = GetComponent<MeshFilter>();
