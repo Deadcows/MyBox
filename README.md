@@ -54,6 +54,7 @@ Tons of images in docs below :point_down:
 **[AssetPath and AssetFolderPath](https://github.com/Deadcows/MyBox/wiki/Types#assetpath-and-assetfolderpath)** — Inspector button to browse for folder or asset under Assets folder<br />
 **[Billboard Component](https://github.com/Deadcows/MyBox/wiki/Types#billboard-component)** — Force object to always face camera<br />
 **[ColliderGizmo Component](https://github.com/Deadcows/MyBox/wiki/Types#collidergizmo-component)** — Highlight colliders and triggers in SceneView<br />
+**[ColliderToMesh Component](https://github.com/Deadcows/MyBox/wiki/Types#collidertomesh)** — Generate Mesh from PolygonCollider2D data on the fly<br />
 **[FPSCounter Component](https://github.com/Deadcows/MyBox/wiki/Types#fpscounter)** — Display FPS counter on Playmode<br />
 **[MyCursor](https://github.com/Deadcows/MyBox/wiki/Types#mycursor)** — Nice way to set cursor with hotspot<br />
 **[MyDictionary](https://github.com/Deadcows/MyBox/wiki/Types#mydictionary)** — Serializable Dictionary<br />
