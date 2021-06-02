@@ -109,16 +109,23 @@ namespace MyBox.Internal
 		/// </summary>
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
-			_hasPersistentCalls = HasPersistentCalls(property);
-
 			ReorderableList list = GetList(property);
-
+			_hasPersistentCalls = HasPersistentCalls(property);
 			if (!_hasPersistentCalls)
 			{
+				property.isExpanded = false;
 				list.elementHeight = 0;
 				list.displayAdd = false;
 				list.displayRemove = false;
 				return EditorGUIUtility.singleLineHeight * 2f;
+			}
+
+			if (!property.isExpanded)
+			{
+				list.elementHeight = 0;
+				list.displayAdd = false;
+				list.displayRemove = false;
+				return EditorGUIUtility.singleLineHeight;
 			}
 
 			list.elementHeight = 43;
@@ -138,10 +145,12 @@ namespace MyBox.Internal
 				_styles = new Styles();
 			}
 
-			base.OnGUI(position, property, label);
-
+			SerializedProperty elements = property.FindPropertyRelative(CALLS_PROPERTY_PATH);
+			float heightTemp = position.height;
+			position.height = EditorGUIUtility.singleLineHeight;
 			if (!_hasPersistentCalls)
 			{
+				base.OnGUI(position, property, label);
 				position.x += position.width - BUTTON_SPACING;
 				position.width = BUTTON_WIDTH;
 				if (GUI.Button(position, _styles.iconToolbarPlus, _styles.preButton))
@@ -150,11 +159,22 @@ namespace MyBox.Internal
 					ReorderableList list = GetReorderableListFromState(state);
 					list.onAddCallback(list);
 					state.lastSelectedIndex = 0;
+					property.isExpanded = true;
 				}
+
+				return;
 			}
+
+			property.isExpanded = EditorGUI.BeginFoldoutHeaderGroup(position, property.isExpanded,
+						$"[{elements.arraySize}] {property.displayName} ()");
+			position.height = heightTemp;
+			if (property.isExpanded)
+			{
+				base.OnGUI(position, property, label);
+			}
+
+			EditorGUI.EndFoldoutHeaderGroup();
 		}
-
-
 		/// <summary>
 		/// Gets the internal instance of the <see cref="ReorderableList"/> that exists
 		/// in the state. 
