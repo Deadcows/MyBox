@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MyBox
@@ -25,8 +26,21 @@ namespace MyBox.Internal
 	[CustomPropertyDrawer(typeof(DisplayInspectorAttribute))]
 	public class DisplayInspectorAttributeDrawer : PropertyDrawer
 	{
-		private SerializedObject _target;
 		private ButtonMethodHandler _buttonMethods;
+
+		private readonly Dictionary<Object, SerializedObject> _targets = new Dictionary<Object, SerializedObject>();
+		private SerializedObject GetTargetSO(Object targetObject)
+		{
+			SerializedObject target;
+			if (_targets.ContainsKey(targetObject)) target = _targets[targetObject];
+			else
+			{
+				_targets.Add(targetObject, new SerializedObject(targetObject));
+				target = _targets[targetObject];
+			}
+			target.Update();
+			return target;
+		}
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -35,62 +49,61 @@ namespace MyBox.Internal
 				position.height = EditorGUI.GetPropertyHeight(property);
 				EditorGUI.PropertyField(position, property, label);
 				position.y += EditorGUI.GetPropertyHeight(property) + 4;
+				if (GUI.changed) property.serializedObject.ApplyModifiedProperties();
 			}
+			if (property.objectReferenceValue == null) return;
+			
+			
+			if (_buttonMethods == null) _buttonMethods = new ButtonMethodHandler(property.objectReferenceValue);
 
-			if (property.objectReferenceValue != null)
+			var startY = position.y - 2;
+			float startX = position.x;
+
+			var target = GetTargetSO(property.objectReferenceValue);
+			var propertyObject = target.GetIterator();
+			propertyObject.Next(true);
+			propertyObject.NextVisible(true);
+
+			var xPos = position.x + 10;
+			var width = position.width - 10;
+
+			bool expandedReorderable = false;
+			while (propertyObject.NextVisible(propertyObject.isExpanded && !expandedReorderable))
 			{
-				if (_buttonMethods == null) _buttonMethods = new ButtonMethodHandler(property.objectReferenceValue);
-
-				var startY = position.y - 2;
-				float startX = position.x;
-
-				if (_target == null) _target = new SerializedObject(property.objectReferenceValue);
-				var propertyObject = _target.GetIterator();
-				propertyObject.Next(true);
-				propertyObject.NextVisible(false);
-
-				var xPos = position.x + 10;
-				var width = position.width - 10;
-
-				bool expandedReorderable = false;
-				while (propertyObject.NextVisible(propertyObject.isExpanded && !expandedReorderable))
-				{
 #if UNITY_2020_2_OR_NEWER
-					expandedReorderable = propertyObject.isExpanded && propertyObject.isArray &&
-					                      !propertyObject.IsAttributeDefined<NonReorderableAttribute>();
+				expandedReorderable = propertyObject.isExpanded && propertyObject.isArray &&
+				                      !propertyObject.IsAttributeDefined<NonReorderableAttribute>();
 #endif
+				position.x = xPos + 10 * propertyObject.depth;
+				position.width = width - 10 * propertyObject.depth;
 
-					position.x = xPos + 10 * propertyObject.depth;
-					position.width = width - 10 * propertyObject.depth;
-
-					position.height = EditorGUI.GetPropertyHeight(propertyObject, expandedReorderable);
-					EditorGUI.PropertyField(position, propertyObject);
-					position.y += position.height + 4;
-				}
-
-				if (!_buttonMethods.TargetMethods.IsNullOrEmpty())
-				{
-					foreach (var method in _buttonMethods.TargetMethods)
-					{
-						position.height = EditorGUIUtility.singleLineHeight;
-						if (GUI.Button(position, method.Name)) _buttonMethods.Invoke(method.Method);
-						position.y += position.height;
-					}
-				}
-
-				var bgRect = position;
-				bgRect.y = startY - 5;
-				bgRect.x = startX - 10;
-				bgRect.width = 10;
-				bgRect.height = position.y - startY;
-				if (_buttonMethods.Amount > 0) bgRect.height += 5;
-
-				DrawColouredRect(bgRect, new Color(.6f, .6f, .8f, .5f));
-
-
-				_target.ApplyModifiedProperties();
+				position.height = EditorGUI.GetPropertyHeight(propertyObject, expandedReorderable);
+				EditorGUI.PropertyField(position, propertyObject);
+				
+				position.y += position.height + 4;
 			}
 
+			if (!_buttonMethods.TargetMethods.IsNullOrEmpty())
+			{
+				foreach (var method in _buttonMethods.TargetMethods)
+				{
+					position.height = EditorGUIUtility.singleLineHeight;
+					if (GUI.Button(position, method.Name)) _buttonMethods.Invoke(method.Method);
+					position.y += position.height;
+				}
+			}
+
+			var bgRect = position;
+			bgRect.y = startY - 5;
+			bgRect.x = startX - 10;
+			bgRect.width = 10;
+			bgRect.height = position.y - startY;
+			if (_buttonMethods.Amount > 0) bgRect.height += 5;
+
+			DrawColouredRect(bgRect, new Color(.6f, .6f, .8f, .5f));
+
+
+			target.ApplyModifiedProperties();
 			property.serializedObject.ApplyModifiedProperties();
 		}
 
@@ -101,7 +114,8 @@ namespace MyBox.Internal
 
 			float height = ((DisplayInspectorAttribute)attribute).DisplayScript ? EditorGUI.GetPropertyHeight(property) + 4 : 0;
 
-			var propertyObject = new SerializedObject(property.objectReferenceValue).GetIterator();
+			var target = GetTargetSO(property.objectReferenceValue);
+			var propertyObject = target.GetIterator();
 			propertyObject.Next(true);
 			propertyObject.NextVisible(true);
 

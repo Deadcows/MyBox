@@ -14,6 +14,7 @@ All notable changes to this package will be documented in this file.
 - Extensions: MyCollections.SelectWithIndex and SelectManyWithIndex - like LINQ.Select, but with index passed along the item into selector
 - Extensions: MyCollections.GetWeightedRandom and GetWeightedRandomIndex
 - Changed: MyBox will only check for updates when editor opens
+- Fix: DisplayInspectorAttribute works better with (and inside of) collections
 - Fix: MyString.ToCamelCase() extension works better now, thanks to @derfium!
 - Fix: MinValue/MaxValueAttribute build warnings fixed
 
