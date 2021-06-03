@@ -49,7 +49,8 @@ namespace MyBox.Internal
 		{
 			_windowInstance = GetWindow<MyBoxWindow>();
 			_windowInstance.titleContent = new GUIContent("MyBox");
-			_windowInstance.minSize = new Vector2(590, 350);
+			_windowInstance.minSize = new Vector2(590, 520);
+			_windowInstance.maxSize = new Vector2(590, 520);
 		}
 
 		private void OnEnable()
@@ -227,6 +228,15 @@ namespace MyBox.Internal
 				GUI.contentColor = c;
 				GUILayout.FlexibleSpace();
 			}
+
+			EditorGUILayout.Space(40);
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				GUILayout.FlexibleSpace();
+				if (GUILayout.Button(SponsorButton, EditorStyles.label, GUILayout.Height(32)))
+					Application.OpenURL("https://www.buymeacoffee.com/andrewrumak");
+				GUILayout.FlexibleSpace();
+			}
 		}
 
 		private void DrawColors()
@@ -350,6 +360,12 @@ namespace MyBox.Internal
 			content.tooltip = "MyGUI.EditorIcons.CircleRed";
 			EditorGUILayout.LabelField(content, GUILayout.Width(width));
 		}
+
+		private Texture2D SponsorButton => _sponsorButton != null ? _sponsorButton : 
+			_sponsorButton = ImageStringConverter.ImageFromString(SponsorButtonString, 160, 32);
+		private Texture2D _sponsorButton;
+		private const string SponsorButtonString =
+			"iVBORw0KGgoAAAANSUhEUgAAAKAAAAAgCAMAAACioYPHAAABI1BMVEUAAAAAABgBABcBABgAABgFBRYAABcAABcAABcBABcBABcAABgBABcAABcAABcAABcAABgBABcAABcAABcAABcAABcBABcBABcBABcAABcAAhcBABcBABcAABcAABcBABgAABgBABcAABgAABcBABcBABcEBhYAABcAABcBABgGBBYAABcAABcAABcBABcBABcBARcAABgBARcBABcBABcBABcHBhUBABgAABgBABf//QABABf42gCMjQD/+QASEhT02wD//wAAACP/5AD/5gD/3gD/9gBtcgD9+QDl2wCLhAB9bQD/8gAAACL//wD/5wD/+QD+1QAcJg62qwAxPwr//wCpnwD//QAAABf/3wD/3QAAABwAACH/8AD//gD/5wD/1gDodj3PAAAAWHRSTlMAdHvn4xLEkzLuSCmkmi6JIhzy1dBgPRdqXFKNZDoE/PnMqaCBTTYK2oUHrG9XRLA/9si8jyUNurVB3b6HVIxlYfLJx6uil2ZYUENANu3GiXFxamhXSTsb7IcgmAAABIRJREFUWMPt19dy2kAYBeCj3guI3qvpxQXs9N57PzGkvP9TRBIhcW5M8PiCmeSbQSCttHv+HXYH8N8/ZVysG4wkU04bu8chUw1HO9Ic+4BsYucEpJNrT8vTds6bqvSxazq9FNcUnSZ2UdYqjzNuFlB4hN2SVRloQiGju64+HfUmZLOPXTKgKvGMayoF7BIeAlm9nR8KQi5vugqQDLDWH/Uxx+UxEwDGM2yDagJ/mCUNrGV40GW3gEvi0gMSW+5kTZLdw2axJYq9I1tNdckW1kakOiH3cDnyHAJjethKyWkYXFks96uU8vhFoAns0cHlENiOUqaxHSWDrG/pmbLfB6Z/LJEiw0s+WyjngfIQyPsIVRDRM8g3RsBwUEZIk4sVxKxeSemsM0lNBcAVUSvO4TETpSxEg57IJcCUUz42anDd2/MPn/YWOfxmV9ExA7mDLisIiCtxfPsgTnItOSQ5LZE1C9BImohkSMopBZE0ZR4BIkM2bFpR0VE9KslKluQxNuot9uJ0N69+/na/sGifzV7t7pN1gAE6lGFTBxRKcUAvbHEDg80rYYYsBwkO45UvsyDQWBWdDKIviEn7muqwc8IsMOAMYaU5k4pH/ziJjUrLGw8fPLj3+fT087dXt8K0v51QmvQcTixqyNBBMupOYOvn7FCHSFbAJvJM6IwfzVNEmQ4iLof+voluDapt0T2sVgCVCuAQLfalQxgn2Ki9vPHy++fYt9dvF2d3HSNAnKjINESOQBWAzBzmShTwIGobYMxe2CqGp74FHDMBjWlkGz5GzMNCnzYGtZaRDWQAQQ3hTfvhA+CgQbeycY/Ql49unsb5Tr++67GPXzq0V1OlUkeKFqLzIjlF/RDIRTMpsgSBOXhkkIXcAKT98EUdafpIxwvC5BCWwWSjegJMaylAl8gB5iRLyBEbJCi8+XK6CvioYfzRIgIoV7saw89M5KjOREq1kUcBaLENONSh0YKUzESVlAG5poishu8qkIlqcGtRXeG1JJ2ZRjb8HlmPl4uXBWoqNqjQu70OeONugN/2aLTEY9JNMxeQMiWSWns/PMSr3wJSVFBkoUgmMOIkXjtVpljy6AIViZ7NQZOeWNt3E1WSTTk8aqoECFE3yt/8AE3avwI+fXENv1lyPcmqY8ElaYo8SmiHbaXOpAisssEsRXWQRxK7rPcBdGwp16mTeYQyEg0RmJB1HTNKHEAyWI9Kl9nTGET3bZQ6ePwz4J2PyybOUDD3K/FAgh6dRSSyhIg+xk+F4hj6YUo482CpjFh/tirVQrS3FNJsc2hyjHxKLQBFuelisxPpyc+AV58uWzjfMVtM40LavIKazRLoYCvO8tmdOOC3e4VFCecq03Np4kIKzMCYsABOsBVx+ezqKuD99GLD4DbhMYsL2aOZoMjcnB62kl7euPo9Dvjw1kLHubqGzxQupmJIBrMHSZkutmIu3t/8+iX09fGtxYbZ0UhmcEEFUkCZ7GE7Cd6d374eeqLIBs7X0eojXJjlAvB1bEujLAiiIAi1Hf1XjFyXCy4WVMfYET8Aukjku5lK/zUAAAAASUVORK5CYII=";
 	}
 }
 #endif
