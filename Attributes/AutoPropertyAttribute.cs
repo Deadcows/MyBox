@@ -11,35 +11,34 @@ namespace MyBox
 	[AttributeUsage(AttributeTargets.Field)]
 	public class AutoPropertyAttribute : PropertyAttribute
 	{
-		public int Mode;
+		public readonly AutoPropertyMode Mode;
 
-		public AutoPropertyAttribute(int mode = AutoPropertyMode.Children) =>
-			Mode = mode;
+		public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children) => Mode = mode;
 	}
 
-	public class AutoPropertyMode
+	public enum AutoPropertyMode
 	{
 		/// <summary>
 		/// Search for Components from this GO or its children.
 		/// </summary>
-		public const int Children = 0;
+		Children = 0,
 		/// <summary>
 		/// Search for Components from this GO or its parents.
 		/// </summary>
-		public const int Parent = 1;
+		Parent = 1,
 		/// <summary>
 		/// Search for Components from this GO's current scene.
 		/// </summary>
-		public const int Scene = 2;
+		Scene = 2,
 		/// <summary>
 		/// Search for Objects from this project's asset folder.
 		/// </summary>
-		public const int Asset = 3;
+		Asset = 3,
 		/// <summary>
 		/// Search for Objects from anywhere in the project.
 		/// Combines the results of Scene and Asset modes.
 		/// </summary>
-		public const int Any = 4;
+		Any = 4
 	}
 }
 
@@ -68,8 +67,8 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public static class AutoPropertyHandler
 	{
-		static readonly Dictionary<int, Func<MyEditor.ComponentField, Object[]>> MultipleObjectsGetters
-			= new Dictionary<int, Func<MyEditor.ComponentField, Object[]>>
+		static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object[]>> MultipleObjectsGetters
+			= new Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object[]>>
 			{
 				[AutoPropertyMode.Children] = property => property.Component
 					.GetComponentsInChildren(property.Field.FieldType.GetElementType(), true),
@@ -97,8 +96,8 @@ namespace MyBox.Internal
 				}
 			};
 
-		static readonly Dictionary<int, Func<MyEditor.ComponentField, Object>> SingularObjectGetters
-			= new Dictionary<int, Func<MyEditor.ComponentField, Object>>
+		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object>> SingularObjectGetters
+			= new Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object>>
 			{
 				[AutoPropertyMode.Children] = property => property.Component
 					.GetComponentInChildren(property.Field.FieldType, true),
@@ -110,6 +109,7 @@ namespace MyBox.Internal
 				[AutoPropertyMode.Asset] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType);
+					var match = Resources.FindObjectsOfTypeAll(property.Field.FieldType);
 					return Resources.FindObjectsOfTypeAll(property.Field.FieldType)
 						.Where(obj =>
 						{
@@ -158,6 +158,7 @@ namespace MyBox.Internal
 			var apAttribute = property.Field
 				.GetCustomAttributes(typeof(AutoPropertyAttribute), true)
 				.FirstOrDefault() as AutoPropertyAttribute;
+			if (apAttribute == null) return;
 
 			if (property.Field.FieldType.IsArray)
 			{
