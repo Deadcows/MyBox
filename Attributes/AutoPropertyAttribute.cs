@@ -67,7 +67,7 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public static class AutoPropertyHandler
 	{
-		static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object[]>> MultipleObjectsGetters
+		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object[]>> MultipleObjectsGetters
 			= new Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object[]>>
 			{
 				[AutoPropertyMode.Children] = property => property.Component
@@ -79,20 +79,12 @@ namespace MyBox.Internal
 				[AutoPropertyMode.Asset] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
-					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
-						.Where(obj =>
-						{
-							var prefabType = PrefabUtility.GetPrefabAssetType(obj);
-							return prefabType == PrefabAssetType.Regular
-								|| prefabType == PrefabAssetType.Model;
-						})
-						.ToArray();
+					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType()).Where(AssetDatabase.Contains).ToArray();
 				},
 				[AutoPropertyMode.Any] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
-					return Resources
-						.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType());
+					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType());
 				}
 			};
 
@@ -109,15 +101,7 @@ namespace MyBox.Internal
 				[AutoPropertyMode.Asset] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType);
-					var match = Resources.FindObjectsOfTypeAll(property.Field.FieldType);
-					return Resources.FindObjectsOfTypeAll(property.Field.FieldType)
-						.Where(obj =>
-						{
-							var prefabType = PrefabUtility.GetPrefabAssetType(obj);
-							return prefabType == PrefabAssetType.Regular
-								|| prefabType == PrefabAssetType.Model;
-						})
-						.FirstOrDefault();
+					return Resources.FindObjectsOfTypeAll(property.Field.FieldType).FirstOrDefault(AssetDatabase.Contains);
 				},
 				[AutoPropertyMode.Any] = property =>
 				{
@@ -129,7 +113,7 @@ namespace MyBox.Internal
 
 		static AutoPropertyHandler()
 		{
-			// this event is for Gameobjects in the scene.
+			// this event is for GameObjects in the scene.
 			MyEditorEvents.OnSave += CheckComponentsInScene;
 			// this event is for prefabs saved in edit mode.
 			PrefabStage.prefabSaved += CheckComponentsInPrefab;
@@ -185,8 +169,7 @@ namespace MyBox.Internal
 				}
 			}
 
-			Debug.LogError(string.Format("{0} caused: {1} is failed to Auto Assign property. No match",
-					property.Component.name, property.Field.Name),
+			Debug.LogError($"{property.Component.name} caused: {property.Field.Name} is failed to Auto Assign property. No match", 
 				property.Component.gameObject);
 		}
 	}
