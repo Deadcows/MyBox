@@ -7,7 +7,7 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MyCollections.SelectWithIndex and SelectManyWithIndex removed (Linq.Select and SelectMany functionality duplication)
 - Added: TransformData type to store and restore position, rotation and scale // TODO: DONT FORGET TO ADD DOCS MAN!
 - Added: OverrideLabelAttribute // TODO: DONT FORGET TO ADD DOCS MAN!
-- Added: Ability to use AutoPropertyAttribute to assign from parent, scene of asset folder, thanks to @tonygiang!
+- Added: Ability to use AutoPropertyAttribute to assign from parent, scene of asset folder, thanks to @tonygiang!  // TODO: DONT FORGET TO UPDATE DOCS MAN!
 - Added: ConditionalFields supports Enum Flag as conditions! Thanks to Dietmar Puschmann for this addition
 - Added: MyEditorEvents.OnEditorStarts event
 - Added: UnityEvent inspector now is foldable, thanks to @karsion!
