@@ -117,6 +117,7 @@ namespace MyBox.Internal
 			MyEditorEvents.OnSave += CheckComponentsInScene;
 			// this event is for prefabs saved in edit mode.
 			PrefabStage.prefabSaved += CheckComponentsInPrefab;
+			PrefabStage.prefabStageOpened += stage => CheckComponentsInPrefab(stage.prefabContentsRoot);
 		}
 
 		private static void CheckComponentsInScene()
