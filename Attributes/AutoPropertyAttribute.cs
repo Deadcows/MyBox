@@ -79,11 +79,13 @@ namespace MyBox.Internal
 				[AutoPropertyMode.Asset] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
+					MyEditor.LoadAllAssetsOfType("Prefab");
 					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType()).Where(AssetDatabase.Contains).ToArray();
 				},
 				[AutoPropertyMode.Any] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
+					MyEditor.LoadAllAssetsOfType("Prefab");
 					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType());
 				}
 			};
@@ -101,11 +103,13 @@ namespace MyBox.Internal
 				[AutoPropertyMode.Asset] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType);
+					MyEditor.LoadAllAssetsOfType("Prefab");
 					return Resources.FindObjectsOfTypeAll(property.Field.FieldType).FirstOrDefault(AssetDatabase.Contains);
 				},
 				[AutoPropertyMode.Any] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType);
+					MyEditor.LoadAllAssetsOfType("Prefab");
 					return Resources.FindObjectsOfTypeAll(property.Field.FieldType)
 						.FirstOrDefault();
 				}
@@ -170,7 +174,7 @@ namespace MyBox.Internal
 				}
 			}
 
-			Debug.LogError($"{property.Component.name} caused: {property.Field.Name} is failed to Auto Assign property. No match", 
+			Debug.LogError($"{property.Component.name} caused: {property.Field.Name} is failed to Auto Assign property. No match",
 				property.Component.gameObject);
 		}
 	}
