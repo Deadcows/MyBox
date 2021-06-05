@@ -79,11 +79,13 @@ namespace MyBox.Internal
 				[AutoPropertyMode.Asset] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
+					MyEditor.LoadAllAssetsOfType("Prefab");
 					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType()).Where(AssetDatabase.Contains).ToArray();
 				},
 				[AutoPropertyMode.Any] = property =>
 				{
 					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
+					MyEditor.LoadAllAssetsOfType("Prefab");
 					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType());
 				}
 			};
