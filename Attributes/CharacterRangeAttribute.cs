@@ -10,9 +10,20 @@ namespace MyBox
 	{
 		public readonly string Characters;
 		public readonly bool AllowMode;
+		public readonly bool IgnoreCase;
 
-		public CharacterRangeAttribute(string characters, bool allowMode = true)
-		{ Characters = characters; AllowMode = allowMode; }
+		public CharacterRangeAttribute(string characters, bool allowMode = true, bool ignoreCase = true)
+		{
+			Characters = characters;
+			AllowMode = allowMode;
+			IgnoreCase = ignoreCase;
+		}
+	}
+
+	public static class Characters
+	{
+		public const string Numbers = "0123456789.";
+		public const string HexValue = "1234567890abcdefABCDEF";
 	}
 }
 
@@ -35,10 +46,19 @@ namespace MyBox.Internal
 			}
 			else
 			{
-				var crAttribute = attribute as CharacterRangeAttribute;
+				var crAttribute = (CharacterRangeAttribute)attribute;
+
+				var ignoreCase = crAttribute.IgnoreCase;
+				var testChars = crAttribute.Characters;
+				if (ignoreCase) testChars = testChars.ToUpper();
+				
 				var disallowedCharacters = property.stringValue.Distinct()
-					.Where(c => crAttribute.Characters.Contains(c)
-						^ crAttribute.AllowMode);
+					.Where(c =>
+					{
+						if (ignoreCase) c = char.ToUpper(c);
+						return testChars.Contains(c)
+						       ^ crAttribute.AllowMode;
+					});
 				property.stringValue = disallowedCharacters.Aggregate(
 					property.stringValue,
 					(p, c) => p.Replace(c.ToString(), ""));
