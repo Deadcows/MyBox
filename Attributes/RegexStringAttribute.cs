@@ -11,33 +11,21 @@ namespace MyBox
 	public class RegexStringAttribute : PropertyAttribute
 	{
 		public readonly Regex Regex;
-		public readonly Mode AttributeMode;
+		public readonly RegexStringMode AttributeMode;
 
-		public RegexStringAttribute(string regex, Mode mode = Mode.Match, RegexOptions options = RegexOptions.None)
+		public RegexStringAttribute(string regex, RegexStringMode mode = RegexStringMode.Match, RegexOptions options = RegexOptions.None)
 		{
 			Regex = new Regex(regex, options);
 			AttributeMode = mode;
 		}
-
-		public enum Mode
-		{
-			Match,
-			Replace,
-			WarningIfMatch,
-			WarningIfNotMatch
-		}
-
-		public static class Expression
-		{
-			public const string WholeNumbers = @"^\d+$";
-			public const string WholeAndDecimalNumbers = @"^\d*(\.\d+)?$";
-
-			public const string AlphanumericWithoutSpace = @"^[a-zA-Z0-9]*$";
-			public const string AlphanumericWihSpace = @"^[a-zA-Z0-9 ]*$";
-
-			public const string Email = @"^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$";
-			public const string URL = @"(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)";
-		}
+	}
+	
+	public enum RegexStringMode
+	{
+		Match,
+		Replace,
+		WarningIfMatch,
+		WarningIfNotMatch
 	}
 }
 
@@ -68,20 +56,19 @@ namespace MyBox.Internal
 				property.stringValue = EditorGUI.DelayedTextField(position, label, property.stringValue);
 				DrawTooltip();
 
-				if (mode == RegexStringAttribute.Mode.Replace) OnReplace();
-				if (mode == RegexStringAttribute.Mode.Match) OnKeepMatching();
+				if (mode == RegexStringMode.Replace) OnReplace();
+				if (mode == RegexStringMode.Match) OnKeepMatching();
 
 				property.serializedObject.ApplyModifiedProperties();
 
 
 				void OnReplace() => property.stringValue = regex.Regex.Replace(property.stringValue, "");
-				void OnKeepMatching() => property.stringValue = regex.Regex.Matches(property.stringValue).Cast<Match>()
-					.Aggregate(string.Empty, (a, m) => a + m.Value);
+				void OnKeepMatching() => property.stringValue = regex.Regex.KeepMatching(property.stringValue);
 
 				void DrawWarning()
 				{
-					bool ifMatch = mode == RegexStringAttribute.Mode.WarningIfMatch;
-					bool ifNotMatch = mode == RegexStringAttribute.Mode.WarningIfNotMatch;
+					bool ifMatch = mode == RegexStringMode.WarningIfMatch;
+					bool ifNotMatch = mode == RegexStringMode.WarningIfNotMatch;
 					if (!ifMatch && !ifNotMatch) return;
 
 					bool anyMatching = regex.Regex.IsMatch(property.stringValue);
@@ -92,7 +79,7 @@ namespace MyBox.Internal
 				void DrawTooltip()
 				{
 					string tooltip = "Regex field: ";
-					if (mode == RegexStringAttribute.Mode.Match || mode == RegexStringAttribute.Mode.WarningIfNotMatch) tooltip += "match expression";
+					if (mode == RegexStringMode.Match || mode == RegexStringMode.WarningIfNotMatch) tooltip += "match expression";
 					else tooltip += "remove expression";
 					tooltip += $"\n[{regex.Regex}]";
 

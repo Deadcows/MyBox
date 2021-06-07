@@ -19,12 +19,6 @@ namespace MyBox
 			IgnoreCase = ignoreCase;
 		}
 	}
-
-	public static class Characters
-	{
-		public const string Numbers = "0123456789.";
-		public const string HexValue = "1234567890abcdefABCDEF";
-	}
 }
 
 #if UNITY_EDITOR
