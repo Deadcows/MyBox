@@ -6,13 +6,13 @@ namespace MyBox
 	/// Validate a string field to only allow or disallow a set of pre-defined
 	/// characters on typing.
 	/// </summary>
-	public class CharacterRangeAttribute : PropertyAttribute
+	public class CharactersRangeAttribute : PropertyAttribute
 	{
 		public readonly string Characters;
 		public readonly CharacterRangeMode Mode;
 		public readonly bool IgnoreCase;
 
-		public CharacterRangeAttribute(string characters, CharacterRangeMode mode = CharacterRangeMode.Allow,
+		public CharactersRangeAttribute(string characters, CharacterRangeMode mode = CharacterRangeMode.Allow,
 			bool ignoreCase = true)
 		{
 			Characters = characters;
@@ -37,7 +37,7 @@ namespace MyBox.Internal
 	using EditorTools;
 	using System.Linq;
 
-	[CustomPropertyDrawer(typeof(CharacterRangeAttribute))]
+	[CustomPropertyDrawer(typeof(CharactersRangeAttribute))]
 	public class CharacterRangeAttributeDrawer : PropertyDrawer
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -49,7 +49,7 @@ namespace MyBox.Internal
 			}
 			else
 			{
-				var charactersRange = (CharacterRangeAttribute) attribute;
+				var charactersRange = (CharactersRangeAttribute) attribute;
 				var mode = charactersRange.Mode;
 				var ignoreCase = charactersRange.IgnoreCase;
 				var filter = charactersRange.Characters;

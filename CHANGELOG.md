@@ -6,6 +6,8 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MyCollections.GetOrDefault renamed to GetOrAdd
 - Breaking Changes: MyCollections.SelectWithIndex and SelectManyWithIndex removed (Linq.Select and SelectMany functionality duplication)
 - Added: TransformData type to store and restore position, rotation and scale
+- Added: CharactersRange Attribute to validate string by set of characters
+- Added: RegexString Attribute to validate string by Regular Expression
 - Added: OverrideLabelAttribute
 - Added: Ability to use AutoPropertyAttribute to assign from parent, scene of asset folder, thanks to @tonygiang!
 - Added: ConditionalFields supports Enum Flag as conditions! Thanks to Dietmar Puschmann for this addition
