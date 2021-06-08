@@ -6,22 +6,9 @@ namespace MyBox
 {
 	public class CoroutineGroup
 	{
-		private readonly List<Coroutine> _activeCoroutines = new List<Coroutine>();
+		public int ActiveCoroutinesAmount => _activeCoroutines.Count;
+		public bool AnyProcessing => _activeCoroutines.Count > 0;
 
-		public int ActiveCoroutinesAmount
-		{
-			get { return _activeCoroutines.Count; }
-		}
-		public bool AnyProcessing
-		{
-			get
-			{
-				return _activeCoroutines.Count > 0;
-			}
-		}
-			
-		private readonly MonoBehaviour _owner;
-			
 		public CoroutineGroup(MonoBehaviour owner)
 		{
 			_owner = owner;
@@ -37,6 +24,9 @@ namespace MyBox
 			for (var i = 0; i < _activeCoroutines.Count; i++)
 				_owner.StopCoroutine(_activeCoroutines[i]);
 		}
+		
+		private readonly MonoBehaviour _owner;
+		private readonly List<Coroutine> _activeCoroutines = new List<Coroutine>();
 			
 		private IEnumerator DoStart(IEnumerator coroutine)
 		{
