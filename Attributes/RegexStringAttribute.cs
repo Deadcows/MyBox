@@ -52,7 +52,6 @@ namespace MyBox.Internal
 
 				DrawWarning();
 				position.width -= 20;
-				GUI.SetNextControlName("FilteredField");
 				EditorGUI.PropertyField(position, property, label, true);
 				DrawTooltip();
 
@@ -70,16 +69,13 @@ namespace MyBox.Internal
 
 				void DrawWarning()
 				{
-					var focused = GUI.GetNameOfFocusedControl() == "FilteredField";
 					bool ifMatch = mode == RegexStringMode.WarningIfMatch;
 					bool ifNotMatch = mode == RegexStringMode.WarningIfNotMatch;
 					if (!ifMatch && !ifNotMatch) return;
 
 					bool anyMatching = regex.Regex.IsMatch(property.stringValue);
 					bool warn = (ifMatch && anyMatching) || (ifNotMatch && !anyMatching);
-					if (warn) MyGUI.DrawColouredRect(position, MyGUI.Colors.Yellow);
-					
-					if (focused) GUI.FocusControl("FilteredField");
+					MyGUI.DrawColouredRect(position, warn ? MyGUI.Colors.Yellow : Color.clear);
 				}
 				
 				void DrawTooltip()

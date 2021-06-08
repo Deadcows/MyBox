@@ -63,21 +63,18 @@ namespace MyBox.Internal
 						if (ignoreCase) c = char.ToUpper(c);
 						return filter.Contains(c) ^ allow;
 					});
-
+				
 				DrawWarning();
 				position.width -= 20;
-				GUI.SetNextControlName("FilteredField");
-				EditorGUI.PropertyField(position, property, label, true);
+				
+				property.stringValue = EditorGUI.TextField(position, label, property.stringValue);
 				DrawTooltip();
-
-				if (GUI.changed)
+				
+				if (!warning)
 				{
-					if (!warning)
-					{
-						property.stringValue = filteredCharacters.Aggregate(
-							property.stringValue,
-							(p, c) => p.Replace(c.ToString(), ""));
-					}
+					property.stringValue = filteredCharacters.Aggregate(
+						property.stringValue,
+						(p, c) => p.Replace(c.ToString(), ""));
 				}
 
 				property.serializedObject.ApplyModifiedProperties();
@@ -85,16 +82,16 @@ namespace MyBox.Internal
 
 				void DrawWarning()
 				{
-					var focused = GUI.GetNameOfFocusedControl() == "FilteredField";
+					if (!warning) return;
+
 					bool ifMatch = mode == CharacterRangeMode.WarningIfAny;
 					bool ifNotMatch = mode == CharacterRangeMode.WarningIfNotMatch;
-					if (!ifMatch && !ifNotMatch) return;
-
-					bool valueNotMatching = !filteredCharacters.Any();
-					bool warn = (ifMatch && valueNotMatching) || (ifNotMatch && !valueNotMatching);
-					if (warn) MyGUI.DrawColouredRect(position, MyGUI.Colors.Yellow);
-
-					if (focused) GUI.FocusControl("FilteredField");
+					
+					bool anyFiltered = filteredCharacters.Any();
+					bool warn = (ifMatch && anyFiltered || ifNotMatch && anyFiltered);
+					if (property.stringValue.Length == 0) warn = false;
+					
+					MyGUI.DrawColouredRect(position, warn ? MyGUI.Colors.Yellow : Color.clear);
 				}
 				
 				void DrawTooltip()
