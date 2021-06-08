@@ -34,7 +34,6 @@ namespace MyBox.Internal
 {
 	using UnityEditor;
 	using EditorTools;
-	using System.Linq;
 
 	[CustomPropertyDrawer(typeof(RegexStringAttribute))]
 	public class RegexStringAttributeDrawer : PropertyDrawer

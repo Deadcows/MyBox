@@ -5,8 +5,8 @@ namespace MyBox
 {
 	public static class MyRegex
 	{
-		public const string WholeNumbers = @"^\d+$";
-		public const string WholeAndDecimalNumbers = @"^\d*(\.\d+)?$";
+		public const string WholeNumber = @"^-?\d+$";
+		public const string FloatingNumber = @"^-?\d*(\.\d+)?$";
 
 		public const string AlphanumericWithoutSpace = @"^[a-zA-Z0-9]*$";
 		public const string AlphanumericWihSpace = @"^[a-zA-Z0-9 ]*$";
