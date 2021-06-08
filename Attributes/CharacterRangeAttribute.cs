@@ -9,15 +9,24 @@ namespace MyBox
 	public class CharacterRangeAttribute : PropertyAttribute
 	{
 		public readonly string Characters;
-		public readonly bool AllowMode;
+		public readonly CharacterRangeMode Mode;
 		public readonly bool IgnoreCase;
 
-		public CharacterRangeAttribute(string characters, bool allowMode = true, bool ignoreCase = true)
+		public CharacterRangeAttribute(string characters, CharacterRangeMode mode = CharacterRangeMode.Allow,
+			bool ignoreCase = true)
 		{
 			Characters = characters;
-			AllowMode = allowMode;
+			Mode = mode;
 			IgnoreCase = ignoreCase;
 		}
+	}
+
+	public enum CharacterRangeMode
+	{
+		Allow,
+		Disallow,
+		WarningIfAny,
+		WarningIfNotMatch
 	}
 }
 
@@ -40,26 +49,68 @@ namespace MyBox.Internal
 			}
 			else
 			{
-				var crAttribute = (CharacterRangeAttribute)attribute;
+				var charactersRange = (CharacterRangeAttribute) attribute;
+				var mode = charactersRange.Mode;
+				var ignoreCase = charactersRange.IgnoreCase;
+				var filter = charactersRange.Characters;
+				var allow = mode == CharacterRangeMode.Allow || mode == CharacterRangeMode.WarningIfNotMatch;
+				var warning = mode == CharacterRangeMode.WarningIfAny || mode == CharacterRangeMode.WarningIfNotMatch;
 
-				var ignoreCase = crAttribute.IgnoreCase;
-				var testChars = crAttribute.Characters;
-				if (ignoreCase) testChars = testChars.ToUpper();
-				
-				var disallowedCharacters = property.stringValue.Distinct()
+				if (ignoreCase) filter = filter.ToUpper();
+				var filteredCharacters = property.stringValue.Distinct()
 					.Where(c =>
 					{
 						if (ignoreCase) c = char.ToUpper(c);
-						return testChars.Contains(c)
-						       ^ crAttribute.AllowMode;
+						return filter.Contains(c) ^ allow;
 					});
-				property.stringValue = disallowedCharacters.Aggregate(
-					property.stringValue,
-					(p, c) => p.Replace(c.ToString(), ""));
-				property.serializedObject.ApplyModifiedProperties();
-			}
 
-			EditorGUI.PropertyField(position, property, label, true);
+				DrawWarning();
+				position.width -= 20;
+				GUI.SetNextControlName("FilteredField");
+				EditorGUI.PropertyField(position, property, label, true);
+				DrawTooltip();
+
+				if (GUI.changed)
+				{
+					if (!warning)
+					{
+						property.stringValue = filteredCharacters.Aggregate(
+							property.stringValue,
+							(p, c) => p.Replace(c.ToString(), ""));
+					}
+				}
+
+				property.serializedObject.ApplyModifiedProperties();
+
+
+				void DrawWarning()
+				{
+					var focused = GUI.GetNameOfFocusedControl() == "FilteredField";
+					bool ifMatch = mode == CharacterRangeMode.WarningIfAny;
+					bool ifNotMatch = mode == CharacterRangeMode.WarningIfNotMatch;
+					if (!ifMatch && !ifNotMatch) return;
+
+					bool valueNotMatching = !filteredCharacters.Any();
+					bool warn = (ifMatch && valueNotMatching) || (ifNotMatch && !valueNotMatching);
+					if (warn) MyGUI.DrawColouredRect(position, MyGUI.Colors.Yellow);
+
+					if (focused) GUI.FocusControl("FilteredField");
+				}
+				
+				void DrawTooltip()
+				{
+					string tooltip = "Characters range ";
+					if (mode == CharacterRangeMode.Allow || mode == CharacterRangeMode.WarningIfNotMatch) tooltip += "is allowed:";
+					else tooltip += "not allowed:";
+					tooltip += $"\n[{filter}]";
+
+					position.x += position.width + 2;
+					position.width = 18;
+					var tooltipContent = new GUIContent(MyGUI.EditorIcons.Help);
+					tooltipContent.tooltip = tooltip;
+					EditorGUI.LabelField(position, tooltipContent, EditorStyles.label);
+				}
+			}
 		}
 	}
 }

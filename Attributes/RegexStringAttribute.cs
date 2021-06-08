@@ -52,11 +52,15 @@ namespace MyBox.Internal
 
 				DrawWarning();
 				position.width -= 20;
-				property.stringValue = EditorGUI.DelayedTextField(position, label, property.stringValue);
+				GUI.SetNextControlName("FilteredField");
+				EditorGUI.PropertyField(position, property, label, true);
 				DrawTooltip();
 
-				if (mode == RegexStringMode.Replace) OnReplace();
-				if (mode == RegexStringMode.Match) OnKeepMatching();
+				if (GUI.changed)
+				{
+					if (mode == RegexStringMode.Replace) OnReplace();
+					if (mode == RegexStringMode.Match) OnKeepMatching();
+				}
 
 				property.serializedObject.ApplyModifiedProperties();
 
@@ -66,6 +70,7 @@ namespace MyBox.Internal
 
 				void DrawWarning()
 				{
+					var focused = GUI.GetNameOfFocusedControl() == "FilteredField";
 					bool ifMatch = mode == RegexStringMode.WarningIfMatch;
 					bool ifNotMatch = mode == RegexStringMode.WarningIfNotMatch;
 					if (!ifMatch && !ifNotMatch) return;
@@ -73,6 +78,8 @@ namespace MyBox.Internal
 					bool anyMatching = regex.Regex.IsMatch(property.stringValue);
 					bool warn = (ifMatch && anyMatching) || (ifNotMatch && !anyMatching);
 					if (warn) MyGUI.DrawColouredRect(position, MyGUI.Colors.Yellow);
+					
+					if (focused) GUI.FocusControl("FilteredField");
 				}
 				
 				void DrawTooltip()
