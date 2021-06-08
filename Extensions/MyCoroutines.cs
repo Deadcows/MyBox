@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using MyBox.Internal;
 using UnityEngine;
 
@@ -66,55 +65,11 @@ namespace MyBox
 			return new CoroutineGroup(owner != null ? owner : CoroutineOwner);
 		}
 		
-
+		
 		private static IEnumerator StartNextCoroutine(Coroutine coroutine, IEnumerator nextCoroutine)
 		{
 			yield return coroutine;
 			yield return StartCoroutine(nextCoroutine);
-		}
-	}
-	
-	public class CoroutineGroup
-	{
-		private readonly List<Coroutine> _activeCoroutines = new List<Coroutine>();
-
-		public int ActiveCoroutinesAmount
-		{
-			get { return _activeCoroutines.Count; }
-		}
-		public bool AnyProcessing
-		{
-			get
-			{
-				return _activeCoroutines.Count > 0;
-			}
-		}
-			
-		private readonly MonoBehaviour _owner;
-			
-		public CoroutineGroup(MonoBehaviour owner)
-		{
-			_owner = owner;
-		}
-
-		public Coroutine StartCoroutine(IEnumerator coroutine)
-		{
-			return _owner.StartCoroutine(DoStart(coroutine));
-		}
-
-		public void StopAll()
-		{
-			for (var i = 0; i < _activeCoroutines.Count; i++)
-				_owner.StopCoroutine(_activeCoroutines[i]);
-		}
-			
-		private IEnumerator DoStart(IEnumerator coroutine)
-		{
-			var started = _owner.StartCoroutine(coroutine);
-			
-			_activeCoroutines.Add(started);
-			yield return started;
-			_activeCoroutines.Remove(started);
 		}
 	}
 }
