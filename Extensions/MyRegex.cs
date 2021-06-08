@@ -9,7 +9,7 @@ namespace MyBox
 		public const string FloatingNumber = @"^-?\d*(\.\d+)?$";
 
 		public const string AlphanumericWithoutSpace = @"^[a-zA-Z0-9]*$";
-		public const string AlphanumericWihSpace = @"^[a-zA-Z0-9 ]*$";
+		public const string AlphanumericWithSpace = @"^[a-zA-Z0-9 ]*$";
 
 		public const string Email = @"^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$";
 		public const string URL = @"(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)";

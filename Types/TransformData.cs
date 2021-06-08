@@ -140,5 +140,5 @@ namespace MyBox.Internal
 			return height;
 		}
 	}
-#endif
 }
+#endif
