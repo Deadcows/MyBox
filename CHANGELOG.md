@@ -6,6 +6,7 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MyCollections.GetOrDefault renamed to GetOrAdd
 - Breaking Changes: MyCollections.SelectWithIndex and SelectManyWithIndex removed (Linq.Select and SelectMany functionality duplication)
 - Breaking Changes: MonoSingleton class is removed, its functionality combined with Singleton class
+- Breaking Changes: WaitForUnscaledSeconds is removed since we have WaitForSecondsRealtime (whow, it's here since Unity 5.4! Nostalgic memories :D)
 - Breaking Changes: UIImageBasedToggle removed. Unity's Toggle able to do same things this days
 - Added: Donation button in MyBox window ;)
 - Added: TransformData type to store and restore position, rotation and scale
