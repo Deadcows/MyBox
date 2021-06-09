@@ -23,9 +23,21 @@ namespace MyBox
 
 	public enum CharacterRangeMode
 	{
+		/// <summary>
+		/// Only characters in range will be allowed
+		/// </summary>
 		Allow,
+		/// <summary>
+		/// Characters in range will be removed from the string
+		/// </summary>
 		Disallow,
+		/// <summary>
+		/// Highlight the field if any of the specified characters were fould
+		/// </summary>
 		WarningIfAny,
+		/// <summary>
+		/// Highlight the field if some characters in string are not the characters from specified range
+		/// </summary>
 		WarningIfNotMatch
 	}
 }

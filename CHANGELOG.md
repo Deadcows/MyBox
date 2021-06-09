@@ -5,6 +5,7 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
 - Breaking Changes: MyCollections.GetOrDefault renamed to GetOrAdd
 - Breaking Changes: MyCollections.SelectWithIndex and SelectManyWithIndex removed (Linq.Select and SelectMany functionality duplication)
+- Added: Donation button in MyBox window ;)
 - Added: TransformData type to store and restore position, rotation and scale
 - Added: CharactersRange Attribute to validate string by set of characters
 - Added: RegexString Attribute to validate string by Regular Expression

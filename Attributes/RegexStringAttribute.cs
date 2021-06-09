@@ -22,9 +22,21 @@ namespace MyBox
 	
 	public enum RegexStringMode
 	{
+		/// <summary>
+		/// Keep only parts of the string that Match the Expression
+		/// </summary>
 		Match,
+		/// <summary>
+		/// Remove from the string parts that not match the Expression
+		/// </summary>
 		Replace,
+		/// <summary>
+		/// Highlight the field if any of the parts of the string matching the Expression
+		/// </summary>
 		WarningIfMatch,
+		/// <summary>
+		/// Highlight the field if some parts of the string not matching the Expression
+		/// </summary>
 		WarningIfNotMatch
 	}
 }
