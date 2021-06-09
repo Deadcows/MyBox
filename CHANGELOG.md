@@ -2,6 +2,9 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
+
+
+## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
 - Breaking Changes: MyCollections.GetOrDefault renamed to GetOrAdd
 - Breaking Changes: MyCollections.SelectWithIndex and SelectManyWithIndex removed (Linq.Select and SelectMany functionality duplication)
