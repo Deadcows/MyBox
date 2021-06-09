@@ -50,20 +50,28 @@ Tons of images in docs below :point_down:
 --------
 
 ## [Types](https://github.com/Deadcows/MyBox/wiki/Types)
-**[Guid Component](https://github.com/Deadcows/MyBox/wiki/Types#guidcomponent)** — Generate unique and persistent IDs<br />
-**[SceneReference](https://github.com/Deadcows/MyBox/wiki/Types#scenereference)** — Reference scene with Scene asset in inspector<br />
 **[ActivateOnStart Component](https://github.com/Deadcows/MyBox/wiki/Types#activestateonstart-component)** — Set state of specific GO on game start<br />
 **[AnimationStateReference](https://github.com/Deadcows/MyBox/wiki/Types#animationstatereference)** — Specify AnimationClip on object with Animator<br />
 **[AssetPath and AssetFolderPath](https://github.com/Deadcows/MyBox/wiki/Types#assetpath-and-assetfolderpath)** — Inspector button to browse for folder or asset under Assets folder<br />
 **[Billboard Component](https://github.com/Deadcows/MyBox/wiki/Types#billboard-component)** — Force object to always face camera<br />
 **[ColliderGizmo Component](https://github.com/Deadcows/MyBox/wiki/Types#collidergizmo-component)** — Highlight colliders and triggers in SceneView<br />
 **[ColliderToMesh Component](https://github.com/Deadcows/MyBox/wiki/Types#collidertomesh)** — Generate Mesh from PolygonCollider2D data on the fly<br />
+**[Commentary Component](https://github.com/Deadcows/MyBox/wiki/Types#commentary-component)** — Add text commentary to your GameObjects<br />
+**[CoroutineGroup](https://github.com/Deadcows/MyBox/wiki/Types#coroutine-group)** — Wraps up bunch of coroutines to know when they all is completed<br />
 **[FPSCounter Component](https://github.com/Deadcows/MyBox/wiki/Types#fpscounter)** — Display FPS counter on Playmode<br />
+**[Guid Component](https://github.com/Deadcows/MyBox/wiki/Types#guidcomponent)** — Generate unique and persistent IDs<br />
+**[MinMaxInt and MinMaxFloat](https://github.com/Deadcows/MyBox/wiki/Types#minmaxint-and-minmaxfloat)** — Asserts that Max => Min with handy inspector drawer<br />
 **[MyCursor](https://github.com/Deadcows/MyBox/wiki/Types#mycursor)** — Nice way to set cursor with hotspot<br />
 **[MyDictionary](https://github.com/Deadcows/MyBox/wiki/Types#mydictionary)** — Serializable Dictionary<br />
-**[MinMaxInt and MinMaxFloat](https://github.com/Deadcows/MyBox/wiki/Types#minmaxint-and-minmaxfloat)** — Asserts that Max => Min with handy inspector drawer<br />
 **[Optional and OptionalMinMax](https://github.com/Deadcows/MyBox/wiki/Types#optional-and-optionalminmax)** — Optionally assignable values<br />
 **[Reorderable Collections](https://github.com/Deadcows/MyBox/wiki/Types#reorderable-collections)** — Reorder your collections in inspector<br />
+**[SceneReference Component](https://github.com/Deadcows/MyBox/wiki/Types#scenereference)** — Reference scene with Scene asset in inspector<br />
+**[Singleton](https://github.com/Deadcows/MyBox/wiki/Types#singleton)** — Cache and access instance of MonoBehaviour<br />
+**[TransformData](https://github.com/Deadcows/MyBox/wiki/Types#transformdata)** — Type to store and apply position, rotation and scale <br />
+**[UIFollow Component](https://github.com/Deadcows/MyBox/wiki/Types#uifollow-component)** — RectTransform will follow specified Transform<br />
+**[UIImageBasedButton Component](https://github.com/Deadcows/MyBox/wiki/Types#uiimagebasedbutton-component)** — Used to create toggle button behaviour<br />
+**[UIRelativePosition Component](https://github.com/Deadcows/MyBox/wiki/Types#uirelativeposition-component)** — Position one RectTransform relatively to another, regardless of hierarchy<br />
+**[UISizeBy Component](https://github.com/Deadcows/MyBox/wiki/Types#uisizeby-component)** — Size one RectTransform relatively to another<br />
 
 
 --------
