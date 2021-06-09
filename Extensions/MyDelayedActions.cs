@@ -12,7 +12,7 @@ namespace MyBox
 		/// </summary>
 		public static IEnumerator DelayedAction(float waitSeconds, Action action, bool unscaled = false)
 		{
-			if (unscaled) yield return new WaitForUnscaledSeconds(waitSeconds);
+			if (unscaled) yield return new WaitForSecondsRealtime(waitSeconds);
 			else yield return new WaitForSeconds(waitSeconds);
 
 			if (action != null) action.Invoke();
