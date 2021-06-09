@@ -17,17 +17,17 @@ namespace MyBox
 		}
 		private static T _instance;
 
-		/// <summary>
-		/// Is DontDestroyOnLoad should be applied to initialized singleton
-		/// </summary>
-		protected virtual bool PersistentSingleton => true;
 		
-		protected void InitializeSingleton()
+		/// <summary>
+		/// Use this function to cache instance and destroy duplicate objects.
+		/// Also use DontDestroyOnLoad if "persistent" is not set to false
+		/// </summary>
+		protected void InitializeSingleton(bool persistent = true)
 		{
 			if (_instance == null)
 			{
 				_instance = (T)Convert.ChangeType(this, typeof(T));
-				if (PersistentSingleton) DontDestroyOnLoad(_instance);
+				if (persistent) DontDestroyOnLoad(_instance);
 			}
 			else
 			{
