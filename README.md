@@ -19,17 +19,20 @@ Tons of images in docs below :point_down:
 ## [Attributes](https://github.com/Deadcows/MyBox/wiki/Attributes)
 **[AutoProperty](https://github.com/Deadcows/MyBox/wiki/Attributes#autoproperty)** — Assign fields automatically<br />
 **[ButtonMethod](https://github.com/Deadcows/MyBox/wiki/Attributes#buttonmethod)** — Display button in inspector<br />
+**[CharacterRange](https://github.com/Deadcows/MyBox/wiki/Attributes#characterrange)** — Filter string field by the set of characters<br/>
 **[ConditionalField](https://github.com/Deadcows/MyBox/wiki/Attributes#conditionalfield)** — Conditionally display property in inspector, based on some other property value<br />
 **[ConstantsSelection](https://github.com/Deadcows/MyBox/wiki/Attributes#constantsselection)** — Popup of const, readonly or static fields and properties<br />
 **[DefinedValues](https://github.com/Deadcows/MyBox/wiki/Attributes#definedvalues)** — Display Dropdown with predefined values<br />
 **[DisplayInspector](https://github.com/Deadcows/MyBox/wiki/Attributes#displayinspector)** — Display one inspector inside of another<br />
 **[Foldout](https://github.com/Deadcows/MyBox/wiki/Attributes#foldout)** — Group your fields in inspector<br />
-**[InitializeField](https://github.com/Deadcows/MyBox/wiki/Attributes#initializefield)** — Field that is not editable in playmode<br />
+**[InitializationField](https://github.com/Deadcows/MyBox/wiki/Attributes#initializationfield)** — Field that is not editable in playmode<br />
 **[Tag, Layer, SpriteLayer](https://github.com/Deadcows/MyBox/wiki/Attributes#tag-layer-spritelayer)** — Dropdown with Tags, Layers or SpriteLayers<br />
 **[MinMaxRange, RangedFloat and RangedInt](https://github.com/Deadcows/MyBox/wiki/Attributes#minmaxrange-rangedfloat-and-rangedint)** — Ranged sliders<br />
+**[MaxValue, MinValue and PositiveValueOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#maxvalue-minvalue-and-positivevalueonly)** — Validation for numbers and vectors<br />
 **[MustBeAssigned](https://github.com/Deadcows/MyBox/wiki/Attributes#mustbeassigned)** — Automatically checks if field is assigned<br />
-**[PositiveValueOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#positivevalueonly)** — Prohibit values below zero<br />
+**[OverrideLabel](https://github.com/Deadcows/MyBox/wiki/Attributes#overridelabel)** — Change visible in Inspector field name<br />
 **[ReadOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#readonly)** — Draw property with disabled GUI<br />
+**[RegexString](https://github.com/Deadcows/MyBox/wiki/Attributes#regexstring)** — Filter string field by the Regular Expression<br />
 **[RequireTag and RequireLayer](https://github.com/Deadcows/MyBox/wiki/Attributes#requiretag-and-requirelayer)** — Automatically set Tag and Layer<br />
 **[Scene](https://github.com/Deadcows/MyBox/wiki/Attributes#scene)** — Friendly way to keep Scene name as a string. See also [SceneReference type](https://github.com/Deadcows/MyBox/wiki/Types#scenereference)<br />
 **[SearchableEnum](https://github.com/Deadcows/MyBox/wiki/Attributes#searchableenum)** — Nice UI for enums with lots of elements<br />
