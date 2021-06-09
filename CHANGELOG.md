@@ -5,6 +5,7 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
 - Breaking Changes: MyCollections.GetOrDefault renamed to GetOrAdd
 - Breaking Changes: MyCollections.SelectWithIndex and SelectManyWithIndex removed (Linq.Select and SelectMany functionality duplication)
+- Breaking Changes: MonoSingleton class is removed, its functionality combined with Singleton class
 - Added: Donation button in MyBox window ;)
 - Added: TransformData type to store and restore position, rotation and scale
 - Added: CharactersRange Attribute to validate string by set of characters
@@ -19,6 +20,7 @@ All notable changes to this package will be documented in this file.
 - Extensions: MyCollections.GetWeightedRandom and GetWeightedRandomIndex
 - Changed: AutoPropertyAttribute will also check prefabs on prefab mode open
 - Changed: MyBox will only check for updates when editor opens
+- Changed: Singleton now might be used as parent class of MonoBehaviour to cache and remove duplicating instances
 - Fix: DisplayInspectorAttribute works better with (and inside of) collections
 - Fix: MyString.ToCamelCase() extension works better now, thanks to @derfium!
 - Fix: MinValue/MaxValueAttribute build warnings fixed
