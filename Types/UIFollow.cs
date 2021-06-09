@@ -2,11 +2,20 @@ using UnityEngine;
 
 namespace MyBox
 {
+	/// <summary>
+	/// Used on object with RectTransform to follow Transform on the scene
+	/// </summary>
 	[ExecuteInEditMode]
 	public class UIFollow : MonoBehaviour
 	{
 		public Transform ToFollow;
+		/// <summary>
+		/// Follow Offset in Units
+		/// </summary>
 		public Vector2 Offset;
+		/// <summary>
+		/// Used Camera (Camera.main by default)
+		/// </summary>
 		public Camera GameCamera;
 
 #pragma warning disable 0649
@@ -19,15 +28,9 @@ namespace MyBox
 		[SerializeField] private bool _editTime = true;
 
 		
-		public bool IsOffscreen
-		{
-			get { return OffscreenOffset != Vector2.zero; }
-		}
-		
-		private RectTransform Transform
-		{
-			get { return _transform ? _transform : _transform = transform as RectTransform; }
-		}
+		public bool IsOffscreen => OffscreenOffset != Vector2.zero;
+
+		private RectTransform Transform => _transform ? _transform : _transform = transform as RectTransform;
 		private RectTransform _transform;
 
 		public Vector2 OffscreenOffset
