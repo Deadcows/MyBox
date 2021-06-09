@@ -7,7 +7,6 @@ All notable changes to this package will be documented in this file.
 ## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
 - Breaking Changes: MyCollections.GetOrDefault renamed to GetOrAdd
-- Breaking Changes: MyCollections.SelectWithIndex and SelectManyWithIndex removed (Linq.Select and SelectMany functionality duplication)
 - Breaking Changes: MonoSingleton class is removed, its functionality combined with Singleton class
 - Breaking Changes: WaitForUnscaledSeconds is removed since we have WaitForSecondsRealtime (whow, it's here since Unity 5.4! Nostalgic memories :D)
 - Breaking Changes: UIImageBasedToggle removed. Unity's Toggle able to do same things this days
@@ -21,7 +20,6 @@ All notable changes to this package will be documented in this file.
 - Added: MyEditorEvents.OnEditorStarts event
 - Added: UnityEvent inspector now is foldable, thanks to @karsion!
 - Extensions: MyCollections.FirstIndex - more generalized version 
-- Extensions: MyCollections.SelectWithIndex and SelectManyWithIndex - like LINQ.Select, but with index passed along the item into selector
 - Extensions: MyCollections.GetWeightedRandom and GetWeightedRandomIndex
 - Changed: AutoPropertyAttribute will also check prefabs on prefab mode open
 - Changed: MyBox will only check for updates when editor opens
