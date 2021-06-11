@@ -422,5 +422,78 @@ namespace MyBox
 		public static T GetWeightedRandom<T>(this IEnumerable<T> source,
 			Func<T, double> weightSelector) =>
 			source.ElementAt(source.GetWeightedRandomIndex(weightSelector));
+
+		/// <summary>
+		/// Returns an array of elements with the length equal to the source
+		/// value.
+		/// </summary>
+		public static T[] AsLengthMakeArray<T>(this int source) => new T[source];
+
+		/// <summary>
+		/// Fills a collection with values generated using a factory function that
+		/// passes along their index numbers.
+		/// </summary>
+		public static IList<T> FillBy<T>(this IList<T> source,
+			Func<int, T> valueFactory)
+		{
+			for (int i = 0; i < source.Count; ++i) source[i] = valueFactory(i);
+			return source;
+		}
+
+		/// <summary>
+		/// Fills an array with values generated using a factory function that
+		/// passes along their index numbers.
+		/// </summary>
+		public static T[] FillBy<T>(this T[] source,
+			Func<int, T> valueFactory)
+		{
+			for (int i = 0; i < source.Length; ++i) source[i] = valueFactory(i);
+			return source;
+		}
+
+		/// <summary>
+		/// Randomly samples a non-repeating number of elements from the source
+		/// collection.
+		/// </summary>
+		public static T[] ExclusiveSample<T>(this IList<T> source,
+			int sampleNumber)
+		{
+			var results = new T[sampleNumber];
+			int resultIndex = 0;
+			for (int i = 0; i < source.Count && resultIndex < sampleNumber; ++i)
+			{
+				var probability = (double)(sampleNumber - resultIndex)
+					/ (source.Count - i);
+				if (MyCommonConstants.SystemRandom.NextDouble() < probability)
+				{ results[resultIndex] = source[i]; ++resultIndex; }
+			}
+			return results;
+		}
+
+		/// <summary>
+		/// Swaps 2 elements at the specified index positions in place.
+		/// </summary>
+		public static IList<T> SwapInPlace<T>(this IList<T> source,
+			int index1,
+			int index2)
+		{
+			var e1 = source[index1];
+			source[index1] = source[index2];
+			source[index2] = e1;
+			return source;
+		}
+
+		/// <summary>
+		/// Shuffles a collection in place using the Knuth algorithm.
+		/// </summary>
+		public static IList<T> ShuffleKnuth<T>(this IList<T> source)
+		{
+			for (int i = 0; i < source.Count - 1; ++i)
+			{
+				var indexToSwap = MyCommonConstants.SystemRandom.Next(i, source.Count);
+				source.SwapInPlace(i, indexToSwap);
+			}
+			return source;
+		}
 	}
 }
