@@ -33,6 +33,13 @@ namespace MyBox
 			Scale = transform.localScale;
 			OnSaved?.Invoke();
 		}
+
+		public static TransformData FromTransform(Transform transform)
+		{
+			var data = new TransformData();
+			data.Save(transform);
+			return data;
+		}
 	}
 }
 
