@@ -458,6 +458,8 @@ namespace MyBox
 		public static T[] ExclusiveSample<T>(this IList<T> source,
 			int sampleNumber)
 		{
+			if (sampleNumber > source.Count)
+				throw new ArgumentOutOfRangeException("Cannot sample more elements than what the source collection contains");
 			var results = new T[sampleNumber];
 			int resultIndex = 0;
 			for (int i = 0; i < source.Count && resultIndex < sampleNumber; ++i)
