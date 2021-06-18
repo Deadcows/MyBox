@@ -10,30 +10,32 @@ namespace MyBox
 		/// <summary>
 		/// Invoke Action on Delay
 		/// </summary>
-		public static IEnumerator DelayedAction(float waitSeconds, Action action, bool unscaled = false)
+		public static Coroutine DelayedAction(float waitSeconds, Action action, bool unscaled = false)
 		{
-			if (unscaled) yield return new WaitForSecondsRealtime(waitSeconds);
-			else yield return new WaitForSeconds(waitSeconds);
-
-			if (action != null) action.Invoke();
+			return DelayedActionCoroutine(waitSeconds, action, unscaled).StartCoroutine();
 		}
+		
+		
+		/// <summary>
+		/// Invoke Action next frame
+		/// </summary>
+		public static void DelayedAction(Action action)
+		{
+			Coroutine().StartCoroutine();
 
+			IEnumerator Coroutine()
+			{
+				yield return null;
+				action?.Invoke();
+			}
+		}
+		
 		/// <summary>
 		/// Invoke Action on Delay
 		/// </summary>
 		public static Coroutine DelayedAction(this MonoBehaviour invoker, float waitSeconds, Action action, bool unscaled = false)
 		{
-			return invoker.StartCoroutine(DelayedAction(waitSeconds, action, unscaled));
-		}
-
-		/// <summary>
-		/// Invoke Action next frame
-		/// </summary>
-		public static IEnumerator DelayedAction(Action action)
-		{
-			yield return null;
-
-			if (action != null) action.Invoke();
+			return invoker.StartCoroutine(DelayedActionCoroutine(waitSeconds, action, unscaled));
 		}
 
 		/// <summary>
@@ -41,7 +43,13 @@ namespace MyBox
 		/// </summary>
 		public static Coroutine DelayedAction(this MonoBehaviour invoker, Action action)
 		{
-			return invoker.StartCoroutine(DelayedAction(action));
+			return invoker.StartCoroutine(Coroutine());
+			
+			IEnumerator Coroutine()
+			{
+				yield return null;
+				action?.Invoke();
+			}
 		}
 
 
@@ -61,6 +69,15 @@ namespace MyBox
 		public static Coroutine DelayedUiSelection(this MonoBehaviour invoker, GameObject objectToSelect)
 		{
 			return invoker.StartCoroutine(DelayedUiSelection(objectToSelect));
+		}
+		
+		
+		private static IEnumerator DelayedActionCoroutine(float waitSeconds, Action action, bool unscaled = false)
+		{
+			if (unscaled) yield return new WaitForSecondsRealtime(waitSeconds);
+			else yield return new WaitForSeconds(waitSeconds);
+
+			if (action != null) action.Invoke();
 		}
 	}
 }
