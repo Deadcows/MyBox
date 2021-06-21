@@ -34,10 +34,13 @@ namespace MyBox
 			OnSaved?.Invoke();
 		}
 
-		public static TransformData FromTransform(Transform transform)
+		public static TransformData FromTransform(Transform transform, bool savePosition = true, bool saveRotation = true, bool saveScale = true)
 		{
 			var data = new TransformData();
 			data.Save(transform);
+			data.SavePosition = savePosition;
+			data.SaveRotation = saveRotation;
+			data.SaveScale = saveScale;
 			return data;
 		}
 	}
@@ -55,14 +58,17 @@ namespace MyBox.Internal
 	{
 		private static GUIContent PositionIcon =>
 			_positionIcon ?? (_positionIcon = new GUIContent(EditorGUIUtility.IconContent("MoveTool").image, "Save Position"));
+
 		private static GUIContent _positionIcon;
 
 		private static GUIContent RotationIcon =>
 			_rotationIcon ?? (_rotationIcon = new GUIContent(EditorGUIUtility.IconContent("RotateTool").image, "Save Rotation"));
+
 		private static GUIContent _rotationIcon;
 
 		private static GUIContent ScaleIcon =>
 			_scaleIcon ?? (_scaleIcon = new GUIContent(EditorGUIUtility.IconContent("ScaleTool").image, "Save Scale"));
+
 		private static GUIContent _scaleIcon;
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -78,21 +84,21 @@ namespace MyBox.Internal
 			position.height = EditorGUIUtility.singleLineHeight;
 			EditorGUI.LabelField(position, label);
 
-			if (property.GetParent() is MonoBehaviour mb)
+			var bRect = position;
+			bRect.x += bRect.width - 220;
+			bRect.width = 30;
+			savePosition.boolValue = GUI.Toggle(bRect, savePosition.boolValue, PositionIcon, EditorStyles.miniButtonLeft);
+			bRect.x += 30;
+			saveRotation.boolValue = GUI.Toggle(bRect, saveRotation.boolValue, RotationIcon, EditorStyles.miniButtonMid);
+			bRect.x += 30;
+			saveScale.boolValue = GUI.Toggle(bRect, saveScale.boolValue, ScaleIcon, EditorStyles.miniButtonRight);
+
+			var mb = property.GetParent() as MonoBehaviour;
+			using (new ConditionallyEnabledGUIBlock(mb != null))
 			{
-				var bRect = position;
-
-				bRect.x += bRect.width - 220;
-				bRect.width = 30;
-				savePosition.boolValue = GUI.Toggle(bRect, savePosition.boolValue, PositionIcon, EditorStyles.miniButtonLeft);
-				bRect.x += 30;
-				saveRotation.boolValue = GUI.Toggle(bRect, saveRotation.boolValue, RotationIcon, EditorStyles.miniButtonMid);
-				bRect.x += 30;
-				saveScale.boolValue = GUI.Toggle(bRect, saveScale.boolValue, ScaleIcon, EditorStyles.miniButtonRight);
-
 				bRect.x += 44;
 				bRect.width = 56;
-				if (GUI.Button(bRect, "Bake"))
+				if (GUI.Button(bRect, "Bake") && mb != null)
 				{
 					var owner = mb.transform;
 					var data = (TransformData) property.GetValue();
@@ -101,7 +107,7 @@ namespace MyBox.Internal
 				}
 
 				bRect.x += 60;
-				if (GUI.Button(bRect, "Restore"))
+				if (GUI.Button(bRect, "Restore") && mb != null)
 				{
 					var owner = mb.transform;
 					var data = (TransformData) property.GetValue();
