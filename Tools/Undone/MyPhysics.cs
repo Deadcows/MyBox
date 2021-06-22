@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace MyBox
 {
-	public class MyPhysics
+	public static partial class MyPhysics
 	{
 		public static readonly RaycastHit2D[] Hits = new RaycastHit2D[20];
 		public static readonly Collider2D[] Colliders = new Collider2D[20];
