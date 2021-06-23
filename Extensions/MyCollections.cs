@@ -492,7 +492,7 @@ namespace MyBox
 		{
 			for (int i = 0; i < source.Count - 1; ++i)
 			{
-				var indexToSwap = MyCommonConstants.SystemRandom.Next(i, source.Count);
+				var indexToSwap = UnityEngine.Random.Range(i, source.Count);
 				source.SwapInPlace(i, indexToSwap);
 			}
 			return source;
