@@ -11,8 +11,7 @@ namespace MyBox
 			RigidbodyConstraints constraints,
 			bool state)
 		{
-			if (state) source.constraints = source.constraints | constraints;
-			else source.constraints = source.constraints & ~constraints;
+			source.constraints = source.constraints.BitwiseToggle(constraints, state);
 			return source;
 		}
 
@@ -23,8 +22,7 @@ namespace MyBox
 			RigidbodyConstraints2D constraints,
 			bool state)
 		{
-			if (state) source.constraints = source.constraints | constraints;
-			else source.constraints = source.constraints & ~constraints;
+			source.constraints = source.constraints.BitwiseToggle(constraints, state);
 			return source;
 		}
 	}

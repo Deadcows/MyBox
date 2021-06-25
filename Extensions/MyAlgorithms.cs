@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine.Events;
+using UnityEngine;
 
 namespace MyBox
 {
@@ -128,6 +129,32 @@ namespace MyBox
 			};
 			source.AddListener(wrapperAction);
 			return source;
+		}
+
+		/// <summary>
+		/// Sets the state of the source enum, chosen by the 1-bits in the specified
+		/// bit mask.
+		/// </summary>
+		public static RigidbodyConstraints BitwiseToggle(
+			this RigidbodyConstraints source,
+			RigidbodyConstraints bitMask,
+			bool state)
+		{
+			if (state) return source | bitMask;
+			else return source & ~bitMask;
+		}
+
+		/// <summary>
+		/// Sets the state of the source enum, chosen by the 1-bits in the specified
+		/// bit mask.
+		/// </summary>
+		public static RigidbodyConstraints2D BitwiseToggle(
+			this RigidbodyConstraints2D source,
+			RigidbodyConstraints2D bitMask,
+			bool state)
+		{
+			if (state) return source | bitMask;
+			else return source & ~bitMask;
 		}
 	}
 }
