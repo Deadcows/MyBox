@@ -2,7 +2,7 @@
 
 namespace MyBox
 {
-	public static partial class MyPhysics
+	public static class MyPhysics
 	{
 		/// <summary>
 		/// Sets the state of constraints for the source Rigidbody.
