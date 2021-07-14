@@ -93,30 +93,6 @@ namespace MyBox
 		}
 
 
-
-		public static T[] GetRandomCollection<T>(this IList<T> collection, int amount)
-		{
-			if (amount > collection.Count)
-			{
-				Debug.LogError("GetRandomCollection Caused: source collection items count is less than randoms count");
-				return null;
-			}
-
-			var randoms = new T[amount];
-			var indexes = Enumerable.Range(0, amount).ToList();
-
-			for (var i = 0; i < amount; i++)
-			{
-				var random = UnityEngine.Random.Range(0, indexes.Count);
-				randoms[i] = collection[random];
-				indexes.RemoveAt(random);
-			}
-
-			return randoms;
-		}
-
-
-
 		/// <summary>
 		/// Is array null or empty
 		/// </summary>
@@ -422,12 +398,7 @@ namespace MyBox
 		public static T GetWeightedRandom<T>(this IEnumerable<T> source,
 			Func<T, double> weightSelector) =>
 			source.ElementAt(source.GetWeightedRandomIndex(weightSelector));
-
-		/// <summary>
-		/// Returns an array of elements with the length equal to the source
-		/// value.
-		/// </summary>
-		public static T[] AsLengthMakeArray<T>(this int source) => new T[source];
+		
 
 		/// <summary>
 		/// Fills a collection with values generated using a factory function that
@@ -488,7 +459,7 @@ namespace MyBox
 		/// <summary>
 		/// Shuffles a collection in place using the Knuth algorithm.
 		/// </summary>
-		public static IList<T> ShuffleKnuth<T>(this IList<T> source)
+		public static IList<T> Shuffle<T>(this IList<T> source)
 		{
 			for (int i = 0; i < source.Count - 1; ++i)
 			{

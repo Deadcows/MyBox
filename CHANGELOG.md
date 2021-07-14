@@ -4,6 +4,11 @@ All notable changes to this package will be documented in this file.
 ## [Unreleased]
 - Breaking Changes: MyDelayedActions.DelayedAction methods now start themselves automatically
 - Breaking Changes: MinMaxFloat.RandomInRangeInclusive was redundant, removed
+- Breaking Changes: Extension IList.GetRandomCollection is removed, replaced with IList.ExclusiveSample
+- Extensions: collection.FillBy(index => { }) allows to use factory method to fill up the collection. Thanks to @tonygiang!
+- Extensions: IList.SwapInPlace(a, b) swaps two elements in collection. Thanks to @tonygiang!
+- Extensions: IList.Shuffle() shuffles elements in collection. Thanks to @tonygiang!
+- Extensions: IList.ExclusiveSample() returns collection of random elements. Thanks to @tonygiang!
 
 ## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
