@@ -3,6 +3,7 @@ All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
 - Breaking Changes: MyDelayedActions.DelayedAction methods now start themselves automatically
+- Breaking Changes: MinMaxFloat.RandomInRangeInclusive was redundant, removed
 
 ## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable

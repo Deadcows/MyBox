@@ -169,7 +169,7 @@ namespace MyBox
 		}
 		
 		/// <summary>
-		/// Return a random int within [minInclusive..maxExclusive)
+		/// Return a random int within [minInclusive..maxInclusive]
 		/// </summary>
 		public static float RandomInRange(this MinMaxFloat minMax)
 		{
@@ -180,14 +180,6 @@ namespace MyBox
 		/// Return a random int within [minInclusive..maxInclusive]
 		/// </summary>
 		public static int RandomInRangeInclusive(this MinMaxInt minMax)
-		{
-			return Random.Range(minMax.Min, minMax.Max + 1);
-		}
-		
-		/// <summary>
-		/// Return a random int within [minInclusive..maxInclusive]
-		/// </summary>
-		public static float RandomInRangeInclusive(this MinMaxFloat minMax)
 		{
 			return Random.Range(minMax.Min, minMax.Max + 1);
 		}
