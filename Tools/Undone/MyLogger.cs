@@ -34,7 +34,7 @@ namespace MyBox.Internal
             Log("Initialized. " + version);
         } 
         
-        public static void Log(string text)
+        public static void Log(string text, bool withStackTrace = false)
         {
             if (Application.isEditor) return;
             if (Disabled) return;
@@ -42,7 +42,7 @@ namespace MyBox.Internal
             string path = Path.Combine(Application.dataPath, LogFile);
 
             if (text.Length > MaxMessageLength) text = text.Substring(0, MaxMessageLength) + "...<trimmed>";
-
+            if (withStackTrace) text += Environment.NewLine + Environment.StackTrace;
             try
             {
                 if (!File.Exists(path))
