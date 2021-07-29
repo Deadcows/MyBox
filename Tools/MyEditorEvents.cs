@@ -32,13 +32,26 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static event Action OnEditorStarts;
 
-		
+		public static event Action<Event> OnEditorInput;
+
 
 		static MyEditorEvents()
 		{
 			EditorApplication.update += CheckOnceOnEditorStart;
 			EditorApplication.update += CheckOnceOnPlaymode;
 			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+			RegisterRawInputHandler();
+
+
+			void RegisterRawInputHandler()
+			{
+				var globalEventHandler = typeof(EditorApplication).GetField("globalEventHandler",
+					System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+				if (globalEventHandler == null) return;
+				var callback = (EditorApplication.CallbackFunction)globalEventHandler.GetValue(null);
+				callback += RawInputHandler;
+				globalEventHandler.SetValue(null, callback);
+			}
 		}
 
 		/// <summary>
@@ -61,7 +74,7 @@ namespace MyBox.EditorTools
 				_skipFrameOnEditorStart = true;
 				return;
 			}
-			
+
 			EditorApplication.update -= CheckOnceOnEditorStart;
 			var startupAssetInstance = Object.FindObjectOfType<MyBoxStartupAsset>();
 			if (startupAssetInstance != null) return;
@@ -69,8 +82,9 @@ namespace MyBox.EditorTools
 			ScriptableObject.CreateInstance<MyBoxStartupAsset>();
 			OnEditorStarts?.Invoke();
 		}
+
 		private static bool _skipFrameOnEditorStart;
-		
+
 
 		/// <summary>
 		/// On First Frame
@@ -90,6 +104,14 @@ namespace MyBox.EditorTools
 		private static void OnPlayModeStateChanged(PlayModeStateChange state)
 		{
 			if (state == PlayModeStateChange.ExitingEditMode && BeforePlaymode != null) BeforePlaymode();
+		}
+
+		private static void RawInputHandler()
+		{
+			var e = Event.current;
+			if (e.type != EventType.KeyDown || e.keyCode == KeyCode.None) return;
+
+			OnEditorInput?.Invoke(e);
 		}
 
 		/// <summary>
