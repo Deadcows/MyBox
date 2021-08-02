@@ -166,7 +166,7 @@ namespace MyBox.EditorTools
 		/// <summary>
 		/// Get all fields with specified attribute on all Unity Objects
 		/// </summary>
-		public static ObjectField[] GetFieldsWithAttribute<T>(
+		public static IEnumerable<ObjectField> GetFieldsWithAttribute<T>(
 			GameObject prefab = null) where T : Attribute
 		{
 			var allObjects = prefab == null ?
@@ -178,8 +178,7 @@ namespace MyBox.EditorTools
 						| BindingFlags.NonPublic
 						| BindingFlags.Instance)
 					.Where(field => field.IsDefined(typeof(T), false))
-					.Select(field => new ObjectField(field, obj)))
-				.ToArray();
+					.Select(field => new ObjectField(field, obj)));
 		}
 
 		/// <summary>

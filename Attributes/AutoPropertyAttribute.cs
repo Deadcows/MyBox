@@ -113,23 +113,13 @@ namespace MyBox.Internal
 			PrefabStage.prefabStageOpened += stage => CheckComponentsInPrefab(stage.prefabContentsRoot);
 		}
 
-		private static void CheckAssets()
-		{
-			var autoProperties = MyEditor.GetFieldsWithAttribute<AutoPropertyAttribute>();
-			for (var i = 0; i < autoProperties.Length; i++)
-			{
-				FillProperty(autoProperties[i]);
-			}
-		}
+		private static void CheckAssets() => MyEditor
+			.GetFieldsWithAttribute<AutoPropertyAttribute>()
+			.ForEach(FillProperty);
 
-		private static void CheckComponentsInPrefab(GameObject prefab)
-		{
-			var autoProperties = MyEditor.GetFieldsWithAttribute<AutoPropertyAttribute>(prefab);
-			for (var i = 0; i < autoProperties.Length; i++)
-			{
-				FillProperty(autoProperties[i]);
-			}
-		}
+		private static void CheckComponentsInPrefab(GameObject prefab) => MyEditor
+			.GetFieldsWithAttribute<AutoPropertyAttribute>(prefab)
+			.ForEach(FillProperty);
 
 		private static void FillProperty(MyEditor.ObjectField property)
 		{
