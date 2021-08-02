@@ -76,18 +76,11 @@ namespace MyBox.Internal
 					?.GetComponentsInParent(property.Field.FieldType.GetElementType(), true),
 				[AutoPropertyMode.Scene] = property => Object
 					.FindObjectsOfType(property.Field.FieldType.GetElementType()),
-				[AutoPropertyMode.Asset] = property =>
-				{
-					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
-					MyEditor.LoadAllAssetsOfType("Prefab");
-					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType()).Where(AssetDatabase.Contains).ToArray();
-				},
-				[AutoPropertyMode.Any] = property =>
-				{
-					MyEditor.LoadAllAssetsOfType(property.Field.FieldType.GetElementType());
-					MyEditor.LoadAllAssetsOfType("Prefab");
-					return Resources.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType());
-				}
+				[AutoPropertyMode.Asset] = property => Resources
+					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
+					.Where(AssetDatabase.Contains).ToArray(),
+				[AutoPropertyMode.Any] = property => Resources
+					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
 			};
 
 		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Object>> SingularObjectGetters
@@ -100,19 +93,12 @@ namespace MyBox.Internal
 					.FirstOrDefault(),
 				[AutoPropertyMode.Scene] = property => Object
 					.FindObjectOfType(property.Field.FieldType),
-				[AutoPropertyMode.Asset] = property =>
-				{
-					MyEditor.LoadAllAssetsOfType(property.Field.FieldType);
-					MyEditor.LoadAllAssetsOfType("Prefab");
-					return Resources.FindObjectsOfTypeAll(property.Field.FieldType).FirstOrDefault(AssetDatabase.Contains);
-				},
-				[AutoPropertyMode.Any] = property =>
-				{
-					MyEditor.LoadAllAssetsOfType(property.Field.FieldType);
-					MyEditor.LoadAllAssetsOfType("Prefab");
-					return Resources.FindObjectsOfTypeAll(property.Field.FieldType)
-						.FirstOrDefault();
-				}
+				[AutoPropertyMode.Asset] = property => Resources
+					.FindObjectsOfTypeAll(property.Field.FieldType)
+					.FirstOrDefault(AssetDatabase.Contains),
+				[AutoPropertyMode.Any] = property => Resources
+					.FindObjectsOfTypeAll(property.Field.FieldType)
+					.FirstOrDefault()
 			};
 
 		static AutoPropertyHandler()
@@ -151,24 +137,24 @@ namespace MyBox.Internal
 
 			if (property.Field.FieldType.IsArray)
 			{
-				Object[] components = MultipleObjectsGetters[apAttribute.Mode].Invoke(property);
-				if (components != null && components.Length > 0)
+				var objects = MultipleObjectsGetters[apAttribute.Mode].Invoke(property);
+				if (objects != null && objects.Length > 0)
 				{
 					var serializedObject = new SerializedObject(property.Context);
 					var serializedProperty = serializedObject.FindProperty(property.Field.Name);
-					serializedProperty.ReplaceArray(components);
+					serializedProperty.ReplaceArray(objects);
 					serializedObject.ApplyModifiedProperties();
 					return;
 				}
 			}
 			else
 			{
-				var component = SingularObjectGetters[apAttribute.Mode].Invoke(property);
-				if (component != null)
+				var obj = SingularObjectGetters[apAttribute.Mode].Invoke(property);
+				if (obj != null)
 				{
 					var serializedObject = new SerializedObject(property.Context);
 					var serializedProperty = serializedObject.FindProperty(property.Field.Name);
-					serializedProperty.objectReferenceValue = component;
+					serializedProperty.objectReferenceValue = obj;
 					serializedObject.ApplyModifiedProperties();
 					return;
 				}
