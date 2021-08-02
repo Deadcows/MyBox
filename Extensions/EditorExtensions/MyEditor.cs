@@ -166,14 +166,17 @@ namespace MyBox.EditorTools
 		/// <summary>
 		/// Get all fields with specified attribute on all Unity Objects
 		/// </summary>
-		public static ObjectField[] GetFieldsWithAttribute<T>(GameObject prefab = null) where T : Attribute
+		public static ObjectField[] GetFieldsWithAttribute<T>(
+			GameObject prefab = null) where T : Attribute
 		{
 			var allObjects = prefab == null ?
 				GetAllUnityObjects() :
 				prefab.GetComponentsInChildren<MonoBehaviour>();
 			return allObjects.Where(obj => obj != null)
 				.SelectMany(obj => obj.GetType()
-					.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+					.GetFields(BindingFlags.Public
+						| BindingFlags.NonPublic
+						| BindingFlags.Instance)
 					.Where(field => field.IsDefined(typeof(T), false))
 					.Select(field => new ObjectField(field, obj)))
 				.ToArray();
@@ -183,8 +186,7 @@ namespace MyBox.EditorTools
 		/// Get all Components in the same scene as a specified GameObject,
 		/// including inactive components.
 		/// </summary>
-		public static IEnumerable<Component> GetAllComponentsInSceneOf(
-			Object obj,
+		public static IEnumerable<Component> GetAllComponentsInSceneOf(Object obj,
 			Type type)
 		{
 			GameObject contextGO = null;
