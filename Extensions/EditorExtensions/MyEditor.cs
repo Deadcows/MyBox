@@ -179,6 +179,23 @@ namespace MyBox.EditorTools
 				.ToArray();
 		}
 
+		/// <summary>
+		/// Get all Components in the same scene as a specified GameObject,
+		/// including inactive components.
+		/// </summary>
+		public static IEnumerable<Component> GetAllComponentsInSceneOf(
+			Object obj,
+			Type type)
+		{
+			GameObject contextGO = null;
+			if (obj is Component comp) contextGO = comp.gameObject;
+			else if (obj is GameObject go) contextGO = go;
+			else return Array.Empty<Component>();
+			if (contextGO.scene.isLoaded) return contextGO.scene.GetRootGameObjects()
+				.SelectMany(rgo => rgo.GetComponentsInChildren(type));
+			return Array.Empty<Component>();
+		}
+
 		public struct ObjectField
 		{
 			public readonly FieldInfo Field;

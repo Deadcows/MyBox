@@ -74,8 +74,9 @@ namespace MyBox.Internal
 					?.GetComponentsInChildren(property.Field.FieldType.GetElementType(), true),
 				[AutoPropertyMode.Parent] = property => property.Context.As<Component>()
 					?.GetComponentsInParent(property.Field.FieldType.GetElementType(), true),
-				[AutoPropertyMode.Scene] = property => Object
-					.FindObjectsOfType(property.Field.FieldType.GetElementType()),
+				[AutoPropertyMode.Scene] = property => MyEditor
+					.GetAllComponentsInSceneOf(property.Context,
+						property.Field.FieldType.GetElementType()).ToArray(),
 				[AutoPropertyMode.Asset] = property => Resources
 					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
 					.Where(AssetDatabase.Contains).ToArray(),
@@ -91,8 +92,10 @@ namespace MyBox.Internal
 				[AutoPropertyMode.Parent] = property => property.Context.As<Component>()
 					?.GetComponentsInParent(property.Field.FieldType, true)
 					.FirstOrDefault(),
-				[AutoPropertyMode.Scene] = property => Object
-					.FindObjectOfType(property.Field.FieldType),
+				[AutoPropertyMode.Scene] = property => MyEditor
+					.GetAllComponentsInSceneOf(property.Context,
+						property.Field.FieldType.GetElementType())
+					.FirstOrDefault(),
 				[AutoPropertyMode.Asset] = property => Resources
 					.FindObjectsOfTypeAll(property.Field.FieldType)
 					.FirstOrDefault(AssetDatabase.Contains),
