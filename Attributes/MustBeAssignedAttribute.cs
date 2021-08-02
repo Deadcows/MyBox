@@ -27,7 +27,7 @@ namespace MyBox.Internal
 		/// <summary>
 		/// A way to conditionally disable MustBeAssigned check
 		/// </summary>
-		public static Func<FieldInfo, MonoBehaviour, bool> ExcludeFieldFilter;
+		public static Func<FieldInfo, UnityEngine.Object, bool> ExcludeFieldFilter;
 
 		static MustBeAssignedAttributeChecker()
 		{
@@ -37,8 +37,7 @@ namespace MyBox.Internal
 
 		private static void AssertComponentsInScene()
 		{ 
-			var components = MyEditor.GetAllBehavioursInScenes();
-			AssertComponent(components);
+			AssertComponent(MyEditor.GetAllUnityObjects());
 		}
 
 		private static void AssertComponentsInPrefab(GameObject prefab)
@@ -47,30 +46,30 @@ namespace MyBox.Internal
 			AssertComponent(components);
 		}
 
-		private static void AssertComponent(MonoBehaviour[] components)
+		private static void AssertComponent(UnityEngine.Object[] objects)
 		{
-			foreach (MonoBehaviour behaviour in components)
+			foreach (var obj in objects)
 			{
-				if (behaviour == null) continue;
-				Type typeOfScript = behaviour.GetType();
+				if (obj == null) continue;
+				Type typeOfScript = obj.GetType();
 				FieldInfo[] mustBeAssignedFields = typeOfScript
 					.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 					.Where(field => field.IsDefined(typeof(MustBeAssignedAttribute), false)).ToArray();
 
 				foreach (FieldInfo field in mustBeAssignedFields)
 				{
-					object propValue = field.GetValue(behaviour);
+					object propValue = field.GetValue(obj);
 
 					// Used by external systems to exclude specific fields.
 					// Specifically for ConditionalFieldAttribute
-					if (FieldIsExcluded(field, behaviour)) continue;
+					if (FieldIsExcluded(field, obj)) continue;
 
 					
 					bool valueTypeWithDefaultValue = field.FieldType.IsValueType && Activator.CreateInstance(field.FieldType).Equals(propValue);
 					if (valueTypeWithDefaultValue)
 					{
 						Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is Value Type with default value",
-							behaviour.gameObject);
+							obj);
 						continue;
 					}
 
@@ -79,7 +78,7 @@ namespace MyBox.Internal
 					if (nullReferenceType)
 					{
 						Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is not assigned (null value)",
-							behaviour.gameObject);
+							obj);
 						continue;
 					}
 
@@ -88,7 +87,7 @@ namespace MyBox.Internal
 					if (emptyString)
 					{
 						Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is not assigned (empty string)",
-							behaviour.gameObject);
+							obj);
 						continue;
 					}
 
@@ -98,19 +97,19 @@ namespace MyBox.Internal
 					if (emptyArray)
 					{
 						Debug.LogError($"{typeOfScript.Name} caused: {field.Name} is not assigned (empty array)",
-							behaviour.gameObject);
+							obj);
 					}
 				}
 			}
 		}
 		
-		private static bool FieldIsExcluded(FieldInfo field, MonoBehaviour behaviour)
+		private static bool FieldIsExcluded(FieldInfo field, UnityEngine.Object behaviour)
 		{
 			if (ExcludeFieldFilter == null) return false;
 
 			foreach (var filterDelegate in ExcludeFieldFilter.GetInvocationList())
 			{
-				var filter = filterDelegate as Func<FieldInfo, MonoBehaviour, bool>;
+				var filter = filterDelegate as Func<FieldInfo, UnityEngine.Object, bool>;
 				if (filter != null && filter(field, behaviour)) return true;
 			}
 

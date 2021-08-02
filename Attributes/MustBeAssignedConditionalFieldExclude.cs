@@ -17,7 +17,7 @@ namespace MyBox.Internal
 		
 		private static readonly Type _conditionallyVisibleType = typeof(ConditionalFieldAttribute);
 		
-		private static bool ExcludeCheckIfConditionalFieldHidden(FieldInfo field, MonoBehaviour behaviour)
+		private static bool ExcludeCheckIfConditionalFieldHidden(FieldInfo field, UnityEngine.Object obj)
 		{
 			if (_conditionallyVisibleType == null) return false;
 			if (!field.IsDefined(_conditionallyVisibleType, false)) return false;
@@ -28,7 +28,7 @@ namespace MyBox.Internal
 				.SingleOrDefault();
 
 			return conditionalFieldAttribute != null &&
-			       !ConditionalFieldUtility.BehaviourPropertyIsVisible(behaviour, field.Name, conditionalFieldAttribute);
+			       !ConditionalFieldUtility.BehaviourPropertyIsVisible(obj, field.Name, conditionalFieldAttribute);
 		}
 	}
 }

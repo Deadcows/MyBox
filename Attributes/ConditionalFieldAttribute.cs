@@ -343,11 +343,11 @@ namespace MyBox.Internal
 
 		#region Behaviour Property Is Visible
 
-		public static bool BehaviourPropertyIsVisible(MonoBehaviour behaviour, string propertyName, ConditionalFieldAttribute appliedAttribute)
+		public static bool BehaviourPropertyIsVisible(UnityEngine.Object obj, string propertyName, ConditionalFieldAttribute appliedAttribute)
 		{
 			if (string.IsNullOrEmpty(appliedAttribute.FieldToCheck)) return true;
 
-			var so = new SerializedObject(behaviour);
+			var so = new SerializedObject(obj);
 			var property = so.FindProperty(propertyName);
 			var targetProperty = FindRelativeProperty(property, appliedAttribute.FieldToCheck);
 

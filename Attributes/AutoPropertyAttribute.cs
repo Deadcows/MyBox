@@ -67,13 +67,13 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public static class AutoPropertyHandler
 	{
-		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object[]>> MultipleObjectsGetters
-			= new Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object[]>>
+		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Object[]>> MultipleObjectsGetters
+			= new Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Object[]>>
 			{
-				[AutoPropertyMode.Children] = property => property.Component
-					.GetComponentsInChildren(property.Field.FieldType.GetElementType(), true),
-				[AutoPropertyMode.Parent] = property => property.Component
-					.GetComponentsInParent(property.Field.FieldType.GetElementType(), true),
+				[AutoPropertyMode.Children] = property => property.Context.As<Component>()
+					?.GetComponentsInChildren(property.Field.FieldType.GetElementType(), true),
+				[AutoPropertyMode.Parent] = property => property.Context.As<Component>()
+					?.GetComponentsInParent(property.Field.FieldType.GetElementType(), true),
 				[AutoPropertyMode.Scene] = property => Object
 					.FindObjectsOfType(property.Field.FieldType.GetElementType()),
 				[AutoPropertyMode.Asset] = property =>
@@ -90,13 +90,13 @@ namespace MyBox.Internal
 				}
 			};
 
-		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object>> SingularObjectGetters
-			= new Dictionary<AutoPropertyMode, Func<MyEditor.ComponentField, Object>>
+		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Object>> SingularObjectGetters
+			= new Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Object>>
 			{
-				[AutoPropertyMode.Children] = property => property.Component
-					.GetComponentInChildren(property.Field.FieldType, true),
-				[AutoPropertyMode.Parent] = property => property.Component
-					.GetComponentsInParent(property.Field.FieldType, true)
+				[AutoPropertyMode.Children] = property => property.Context.As<Component>()
+					?.GetComponentInChildren(property.Field.FieldType, true),
+				[AutoPropertyMode.Parent] = property => property.Context.As<Component>()
+					?.GetComponentsInParent(property.Field.FieldType, true)
 					.FirstOrDefault(),
 				[AutoPropertyMode.Scene] = property => Object
 					.FindObjectOfType(property.Field.FieldType),
@@ -142,7 +142,7 @@ namespace MyBox.Internal
 			}
 		}
 
-		private static void FillProperty(MyEditor.ComponentField property)
+		private static void FillProperty(MyEditor.ObjectField property)
 		{
 			var apAttribute = property.Field
 				.GetCustomAttributes(typeof(AutoPropertyAttribute), true)
@@ -154,7 +154,7 @@ namespace MyBox.Internal
 				Object[] components = MultipleObjectsGetters[apAttribute.Mode].Invoke(property);
 				if (components != null && components.Length > 0)
 				{
-					var serializedObject = new SerializedObject(property.Component);
+					var serializedObject = new SerializedObject(property.Context);
 					var serializedProperty = serializedObject.FindProperty(property.Field.Name);
 					serializedProperty.ReplaceArray(components);
 					serializedObject.ApplyModifiedProperties();
@@ -166,7 +166,7 @@ namespace MyBox.Internal
 				var component = SingularObjectGetters[apAttribute.Mode].Invoke(property);
 				if (component != null)
 				{
-					var serializedObject = new SerializedObject(property.Component);
+					var serializedObject = new SerializedObject(property.Context);
 					var serializedProperty = serializedObject.FindProperty(property.Field.Name);
 					serializedProperty.objectReferenceValue = component;
 					serializedObject.ApplyModifiedProperties();
@@ -174,8 +174,8 @@ namespace MyBox.Internal
 				}
 			}
 
-			Debug.LogError($"{property.Component.name} caused: {property.Field.Name} is failed to Auto Assign property. No match",
-				property.Component.gameObject);
+			Debug.LogError($"{property.Context.name} caused: {property.Field.Name} is failed to Auto Assign property. No match",
+				property.Context);
 		}
 	}
 }

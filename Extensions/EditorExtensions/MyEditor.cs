@@ -29,7 +29,7 @@ namespace MyBox.EditorTools
 			EditorApplication.ExecuteMenuItem("Window/General/Hierarchy");
 			var window = EditorWindow.focusedWindow;
 
-			methodInfo.Invoke(window, new object[] {go.GetInstanceID(), expand});
+			methodInfo.Invoke(window, new object[] { go.GetInstanceID(), expand });
 		}
 
 		/// <summary>
@@ -142,8 +142,8 @@ namespace MyBox.EditorTools
 
 			var egu = typeof(EditorGUIUtility);
 			var flags = BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.NonPublic;
-			var args = new object[] {gameObject, icons[iconIndex].image};
-			var setIconMethod = egu.GetMethod("SetIconForObject", flags, null, new[] {typeof(Object), typeof(Texture2D)}, null);
+			var args = new object[] { gameObject, icons[iconIndex].image };
+			var setIconMethod = egu.GetMethod("SetIconForObject", flags, null, new[] { typeof(Object), typeof(Texture2D) }, null);
 			if (setIconMethod != null) setIconMethod.Invoke(null, args);
 		}
 
@@ -164,69 +164,46 @@ namespace MyBox.EditorTools
 		#region Get Fields With Attribute
 
 		/// <summary>
-		/// Get all fields with specified attribute on all Components on scene/prefab
+		/// Get all fields with specified attribute on all Unity Objects
 		/// </summary>
-		public static ComponentField[] GetFieldsWithAttribute<T>(GameObject prefab = null) where T : Attribute
+		public static ObjectField[] GetFieldsWithAttribute<T>(GameObject prefab = null) where T : Attribute
 		{
-			var allComponents = prefab == null ? 
-				GetAllBehavioursInScenes() : 
-				prefab.GetComponentsInChildren<MonoBehaviour>(); 
-
-			var fields = new List<ComponentField>();
-
-			foreach (var component in allComponents)
-			{
-				if (component == null) continue;
-			
-				Type typeOfScript = component.GetType();
-				var matchingFields = typeOfScript
+			var allObjects = prefab == null ?
+				GetAllUnityObjects() :
+				prefab.GetComponentsInChildren<MonoBehaviour>();
+			return allObjects.Where(obj => obj != null)
+				.SelectMany(obj => obj.GetType()
 					.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-					.Where(field => field.IsDefined(typeof(T), false));
-				foreach (var matchingField in matchingFields) fields.Add(new ComponentField(matchingField, component));
-			}
-
-			return fields.ToArray();
+					.Where(field => field.IsDefined(typeof(T), false))
+					.Select(field => new ObjectField(field, obj)))
+				.ToArray();
 		}
 
-		public struct ComponentField
+		public struct ObjectField
 		{
 			public readonly FieldInfo Field;
-			public readonly Component Component;
+			public readonly Object Context;
 
-			public ComponentField(FieldInfo field, Component component)
+			public ObjectField(FieldInfo field, Object context)
 			{
 				Field = field;
-				Component = component;
+				Context = context;
 			}
 		}
 
 		/// <summary>
-		/// It's like FindObjectsOfType, but allows to get disabled objects
+		/// Get every assets possible, including lazily-loaded assets.
 		/// </summary>
-		/// <returns></returns>
-		public static MonoBehaviour[] GetAllBehavioursInScenes()
+		public static Object[] GetAllUnityObjects()
 		{
-			var components = new List<MonoBehaviour>();
-
-			for (var i = 0; i < SceneManager.sceneCount; i++)
-			{
-				var scene = SceneManager.GetSceneAt(i);
-				if (!scene.isLoaded) continue;
-				
-				var root = scene.GetRootGameObjects();
-				foreach (var gameObject in root)
-				{
-					var behaviours = gameObject.GetComponentsInChildren<MonoBehaviour>(true);
-					foreach (var behaviour in behaviours) components.Add(behaviour);
-				}
-			}
-
-			return components.ToArray();
+			LoadAllAssetsOfType(typeof(ScriptableObject));
+			LoadAllAssetsOfType("Prefab");
+			return Resources.FindObjectsOfTypeAll(typeof(Object));
 		}
 
 		#endregion
 
-		
+
 		#region Get Script Asseet Path
 
 		/// <summary>
@@ -246,7 +223,7 @@ namespace MyBox.EditorTools
 			var assetsPath = GetRelativeScriptAssetsPath(so);
 			return new FileInfo(assetsPath).DirectoryName;
 		}
-		
+
 		/// <summary>
 		/// Get relative to Assets folder path to script file location
 		/// </summary>
