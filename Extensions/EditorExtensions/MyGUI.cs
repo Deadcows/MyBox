@@ -150,6 +150,22 @@ namespace MyBox.EditorTools
 
 		private static GUIStyle _borderlessToolbarButton;
 
+		
+		/// <summary>
+		/// Style for a toggle button
+		/// </summary>
+		public static GUIStyle ButtonToggledStyle(bool toggled)
+		{
+			if (!toggled) return EditorStyles.miniButton;
+			
+			if (_buttonToggledStyle != null) return _buttonToggledStyle;
+			_buttonToggledStyle = new GUIStyle(EditorStyles.miniButton);
+			_buttonToggledStyle.normal.background = _buttonToggledStyle.active.background;
+			return _buttonToggledStyle;
+		}
+		private static GUIStyle _buttonToggledStyle;
+		
+
 		/// <summary>
 		/// MiniButtonLeft/Middle/Right style based on array index
 		/// </summary>
@@ -163,6 +179,7 @@ namespace MyBox.EditorTools
 			if (index == collection.Length - 1) return EditorStyles.miniButtonRight;
 			return EditorStyles.miniButtonMid;
 		}
+
 
 		#endregion
 
