@@ -93,8 +93,7 @@ namespace MyBox.Internal
 					?.GetComponentsInParent(property.Field.FieldType, true)
 					.FirstOrDefault(),
 				[AutoPropertyMode.Scene] = property => MyEditor
-					.GetAllComponentsInSceneOf(property.Context,
-						property.Field.FieldType.GetElementType())
+					.GetAllComponentsInSceneOf(property.Context, property.Field.FieldType)
 					.FirstOrDefault(),
 				[AutoPropertyMode.Asset] = property => Resources
 					.FindObjectsOfTypeAll(property.Field.FieldType)
