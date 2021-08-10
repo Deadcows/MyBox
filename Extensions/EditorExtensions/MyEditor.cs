@@ -193,7 +193,7 @@ namespace MyBox.EditorTools
 			else if (obj is GameObject go) contextGO = go;
 			else return Array.Empty<Component>();
 			if (contextGO.scene.isLoaded) return contextGO.scene.GetRootGameObjects()
-				.SelectMany(rgo => rgo.GetComponentsInChildren(type));
+				.SelectMany(rgo => rgo.GetComponentsInChildren(type, true));
 			return Array.Empty<Component>();
 		}
 
