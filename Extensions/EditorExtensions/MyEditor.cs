@@ -167,11 +167,11 @@ namespace MyBox.EditorTools
 		/// Get all fields with specified attribute on all Unity Objects
 		/// </summary>
 		public static IEnumerable<ObjectField> GetFieldsWithAttribute<T>(
-			GameObject prefab = null) where T : Attribute
+			GameObject parent = null) where T : Attribute
 		{
-			var allObjects = prefab == null ?
+			var allObjects = parent == null ?
 				GetAllUnityObjects() :
-				prefab.GetComponentsInChildren<MonoBehaviour>();
+				parent.GetComponentsInChildren<MonoBehaviour>();
 			return allObjects.Where(obj => obj != null)
 				.SelectMany(obj => obj.GetType()
 					.GetFields(BindingFlags.Public
@@ -214,6 +214,7 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static Object[] GetAllUnityObjects()
 		{
+			// TODO: First call after Domain Reload is extremely slow, should be optimized
 			LoadAllAssetsOfType(typeof(ScriptableObject));
 			LoadAllAssetsOfType("Prefab");
 			return Resources.FindObjectsOfTypeAll(typeof(Object));

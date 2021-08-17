@@ -112,6 +112,7 @@ namespace MyBox.Internal
 			PrefabStage.prefabStageOpened += stage => CheckComponentsInPrefab(stage.prefabContentsRoot);
 		}
 
+		// TODO: GetFieldsWithAttribute is slow, should be optimized
 		private static void CheckAssets() => MyEditor
 			.GetFieldsWithAttribute<AutoPropertyAttribute>()
 			.ForEach(FillProperty);

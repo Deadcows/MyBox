@@ -36,26 +36,33 @@ namespace MyBox.Internal
 		}
 
 		private static void AssertComponentsInScene()
-		{ 
-			AssertComponent(MyEditor.GetAllUnityObjects());
+		{
+			//TODO: Optimize here, we need to check only instantiated behaviours AND ScriptableObject assets
+			AssertComponent(MyEditor.GetAllUnityObjects(), true);
 		}
 
 		private static void AssertComponentsInPrefab(GameObject prefab)
 		{
 			MonoBehaviour[] components = prefab.GetComponentsInChildren<MonoBehaviour>();
-			AssertComponent(components);
+			// ReSharper disable once CoVariantArrayConversion
+			AssertComponent(components, false);
 		}
 
-		private static void AssertComponent(UnityEngine.Object[] objects)
+		private static void AssertComponent(UnityEngine.Object[] objects, bool excludePrefabs)
 		{
 			foreach (var obj in objects)
 			{
 				if (obj == null) continue;
+				if (!(obj.Is<MonoBehaviour>() || obj.Is<ScriptableObject>())) continue;
+				
 				Type typeOfScript = obj.GetType();
 				FieldInfo[] mustBeAssignedFields = typeOfScript
 					.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 					.Where(field => field.IsDefined(typeof(MustBeAssignedAttribute), false)).ToArray();
+				if (mustBeAssignedFields.IsNullOrEmpty()) continue;
 
+				if (excludePrefabs && PrefabUtility.IsPartOfPrefabAsset(obj)) continue;
+				
 				foreach (FieldInfo field in mustBeAssignedFields)
 				{
 					object propValue = field.GetValue(obj);
