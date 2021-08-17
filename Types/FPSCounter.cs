@@ -69,7 +69,7 @@ public class FPSCounter : MonoBehaviour
 	
 	private void Update()
 	{
-		if (EditorOnly && Application.isEditor) return;
+		if (EditorOnly && !Application.isEditor) return;
 
 		if (_idleTime > 0)
 		{
@@ -93,7 +93,7 @@ public class FPSCounter : MonoBehaviour
 
 	private void OnGUI()
 	{
-		if (EditorOnly && Application.isEditor) return;
+		if (EditorOnly && !Application.isEditor) return;
 
 		var defaultColor = GUI.color;
 		var color = _goodColor;
