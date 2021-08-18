@@ -270,7 +270,7 @@ namespace MyBox.Internal
             Foldout.onHover.background = uiTex_in_on;
 
             Box = new GUIStyle(GUI.skin.box);
-            Box.padding = new RectOffset(10, 0, 10, 0);
+            Box.padding = new RectOffset(15, 0, 5, 5);
 
             BoxChild = new GUIStyle(GUI.skin.box);
             BoxChild.active.textColor = c_on;
