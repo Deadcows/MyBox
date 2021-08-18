@@ -166,19 +166,26 @@ namespace MyBox.EditorTools
 		/// <summary>
 		/// Get all fields with specified attribute on all Unity Objects
 		/// </summary>
-		public static IEnumerable<ObjectField> GetFieldsWithAttribute<T>(
-			GameObject parent = null) where T : Attribute
+		public static List<ObjectField> GetFieldsWithAttribute<T>(GameObject parent = null) where T : Attribute
 		{
 			var allObjects = parent == null ?
 				GetAllUnityObjects() :
 				parent.GetComponentsInChildren<MonoBehaviour>();
-			return allObjects.Where(obj => obj != null)
-				.SelectMany(obj => obj.GetType()
-					.GetFields(BindingFlags.Public
-						| BindingFlags.NonPublic
-						| BindingFlags.Instance)
-					.Where(field => field.IsDefined(typeof(T), false))
-					.Select(field => new ObjectField(field, obj)));
+
+			var desiredAttribute = typeof(T);
+			var result = new List<ObjectField>();
+			foreach (var o in allObjects)
+			{
+				if (o == null) continue;
+				var fields = o.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+				foreach (var field in fields)
+				{
+					if (!field.IsDefined(desiredAttribute, false)) continue;
+					result.Add(new ObjectField(field, o));
+				}
+			}
+
+			return result;
 		}
 
 		/// <summary>
