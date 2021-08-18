@@ -214,7 +214,6 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static Object[] GetAllUnityObjects()
 		{
-			// TODO: First call after Domain Reload is extremely slow, should be optimized
 			LoadAllAssetsOfType(typeof(ScriptableObject));
 			LoadAllAssetsOfType("Prefab");
 			return Resources.FindObjectsOfTypeAll(typeof(Object));
@@ -268,16 +267,14 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static void LoadAllAssetsOfType(Type type) => AssetDatabase
 			.FindAssets($"t:{type.FullName}")
-			.Select(AssetDatabase.GUIDToAssetPath)
-			.ForEach(p => AssetDatabase.LoadAssetAtPath(p, type));
+			.ForEach(p => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(p), type));
 
 		/// <summary>
 		/// Force Unity Editor to load lazily-loaded types such as ScriptableObject.
 		/// </summary>
 		public static void LoadAllAssetsOfType(string typeName) => AssetDatabase
 			.FindAssets($"t:{typeName}")
-			.Select(AssetDatabase.GUIDToAssetPath)
-			.ForEach(p => AssetDatabase.LoadAssetAtPath(p, typeof(UnityEngine.Object)));
+			.ForEach(p => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(p), typeof(UnityEngine.Object)));
 
 		public static void CopyToClipboard(string text)
 		{
