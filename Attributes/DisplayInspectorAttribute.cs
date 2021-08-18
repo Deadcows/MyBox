@@ -78,7 +78,7 @@ namespace MyBox.Internal
 				position.width = width - 10 * propertyObject.depth;
 
 				position.height = EditorGUI.GetPropertyHeight(propertyObject, expandedReorderable);
-				EditorGUI.PropertyField(position, propertyObject);
+				EditorGUI.PropertyField(position, propertyObject, expandedReorderable);
 				
 				position.y += position.height + 4;
 			}
@@ -119,7 +119,15 @@ namespace MyBox.Internal
 			propertyObject.Next(true);
 			propertyObject.NextVisible(true);
 
-			while (propertyObject.NextVisible(false)) height += EditorGUI.GetPropertyHeight(propertyObject) + 4;
+			bool expandedReorderable = false;
+			while (propertyObject.NextVisible(propertyObject.isExpanded && !expandedReorderable))
+			{
+#if UNITY_2020_2_OR_NEWER
+				expandedReorderable = propertyObject.isExpanded && propertyObject.isArray &&
+				                      !propertyObject.IsAttributeDefined<NonReorderableAttribute>();
+#endif
+				height += EditorGUI.GetPropertyHeight(propertyObject, expandedReorderable) + 4;
+			}
 
 			if (_buttonMethods.Amount > 0) height += 4 + _buttonMethods.Amount * EditorGUIUtility.singleLineHeight;
 			return height;
