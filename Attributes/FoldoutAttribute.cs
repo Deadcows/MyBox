@@ -12,16 +12,16 @@ namespace MyBox
 {
     public class FoldoutAttribute : PropertyAttribute
     {
-        public readonly string name;
-        public readonly bool foldEverything;
+        public readonly string Name;
+        public readonly bool FoldEverything;
 
         /// <summary>Adds the property to the specified foldout group.</summary>
         /// <param name="name">Name of the foldout group.</param>
         /// <param name="foldEverything">Toggle to put all properties to the specified group</param>
         public FoldoutAttribute(string name, bool foldEverything = false)
         {
-            this.foldEverything = foldEverything;
-            this.name = name;
+            FoldEverything = foldEverything;
+            Name = name;
         }
     }
 }
@@ -37,67 +37,62 @@ namespace MyBox.Internal
 
     public class FoldoutAttributeHandler
     {
-        Dictionary<string, CacheFoldProp> cacheFolds = new Dictionary<string, CacheFoldProp>();
-        List<SerializedProperty> props = new List<SerializedProperty>();
-        bool initialized;
+        
+        
+        private readonly Dictionary<string, CacheFoldProp> _cacheFoldouts = new Dictionary<string, CacheFoldProp>();
+        private readonly List<SerializedProperty> _props = new List<SerializedProperty>();
+        private bool _initialized;
 
-        private UnityEngine.Object target;
-        private SerializedObject serializedObject;
+        private readonly UnityEngine.Object _target;
+        private readonly SerializedObject _serializedObject;
 
-        //===============================//
-        // Logic
-        //===============================//
-
+        
+        public bool OverrideInspector => _props.Count > 0;
+        
         public FoldoutAttributeHandler(UnityEngine.Object target, SerializedObject serializedObject)
         {
-            this.target = target;
-            this.serializedObject = serializedObject;
+            _target = target;
+            _serializedObject = serializedObject;
         }
-
 
         public void OnDisable()
         {
-            if (target == null) return;
+            if (_target == null) return;
 
-            foreach (var c in cacheFolds)
+            foreach (var c in _cacheFoldouts)
             {
-                EditorPrefs.SetBool(string.Format($"{c.Value.atr.name}{c.Value.props[0].name}{target.name}"), c.Value.expanded);
+                EditorPrefs.SetBool(string.Format($"{c.Value.Attribute.Name}{c.Value.Properties[0].name}{_target.name}"), c.Value.Expanded);
                 c.Value.Dispose();
             }
         }
 
         public void Update()
         {
-            serializedObject.Update();
+            _serializedObject.Update();
             Setup();
         }
 
-        public bool OverrideInspector
-        {
-            get { return props.Count > 0; }
-        }
-        
         public void OnInspectorGUI()
         {
             Header();
             Body();
 
-            serializedObject.ApplyModifiedProperties();
+            _serializedObject.ApplyModifiedProperties();
         }
 
         private void Header()
         {
-            using (new EditorGUI.DisabledScope("m_Script" == props[0].propertyPath))
+            using (new EditorGUI.DisabledScope("m_Script" == _props[0].propertyPath))
             {
                 EditorGUILayout.Space();
-                EditorGUILayout.PropertyField(props[0], true);
+                EditorGUILayout.PropertyField(_props[0], true);
                 EditorGUILayout.Space();
             }
         }
 
         private void Body()
         {
-            foreach (var pair in cacheFolds)
+            foreach (var pair in _cacheFoldouts)
             {
                 EditorGUILayout.BeginVertical(StyleFramework.Box);
                 Foldout(pair.Value);
@@ -108,9 +103,9 @@ namespace MyBox.Internal
 
             EditorGUILayout.Space();
 
-            for (var i = 1; i < props.Count; i++)
+            for (var i = 1; i < _props.Count; i++)
             {
-                EditorGUILayout.PropertyField(props[i], true);
+                EditorGUILayout.PropertyField(_props[i], true);
             }
 
             EditorGUILayout.Space();
@@ -118,17 +113,22 @@ namespace MyBox.Internal
 
         private void Foldout(CacheFoldProp cache)
         {
-            cache.expanded = EditorGUILayout.Foldout(cache.expanded, cache.atr.name, true,
-                StyleFramework.Foldout);
-
-            if (cache.expanded)
+            cache.Expanded = EditorGUILayout.Foldout(cache.Expanded, cache.Attribute.Name, true, StyleFramework.FoldoutHeader);
+            var rect = GUILayoutUtility.GetLastRect();
+            rect.x -= 18;
+            rect.y -= 4;
+            rect.height += 8;
+            rect.width += 22;
+            EditorGUI.LabelField(rect, GUIContent.none, EditorStyles.helpBox);
+            
+            if (cache.Expanded)
             {
-                EditorGUI.indentLevel = 1;
-
-                for (int i = 0; i < cache.props.Count; i++)
+                EditorGUILayout.Space(2);
+                
+                foreach (var property in cache.Properties)
                 {
                     EditorGUILayout.BeginVertical(StyleFramework.BoxChild);
-                    EditorGUILayout.PropertyField(cache.props[i], new GUIContent(cache.props[i].name.FirstLetterToUpperCase()), true);
+                    EditorGUILayout.PropertyField(property, new GUIContent(ObjectNames.NicifyVariableName(property.name)), true);
                     EditorGUILayout.EndVertical();
                 }
             }
@@ -136,12 +136,11 @@ namespace MyBox.Internal
         
         private void Setup()
         {
-            if (initialized) return;
+            if (_initialized) return;
 
-            List<FieldInfo> objectFields;
             FoldoutAttribute prevFold = default;
 
-            var length = EditorTypes.Get(target, out objectFields);
+            var length = EditorTypes.Get(_target, out var objectFields);
 
             for (var i = 0; i < length; i++)
             {
@@ -151,16 +150,16 @@ namespace MyBox.Internal
                 CacheFoldProp c;
                 if (fold == null)
                 {
-                    if (prevFold != null && prevFold.foldEverything)
+                    if (prevFold != null && prevFold.FoldEverything)
                     {
-                        if (!cacheFolds.TryGetValue(prevFold.name, out c))
+                        if (!_cacheFoldouts.TryGetValue(prevFold.Name, out c))
                         {
-                            cacheFolds.Add(prevFold.name,
-                                new CacheFoldProp {atr = prevFold, types = new HashSet<string> {objectFields[i].Name}});
+                            _cacheFoldouts.Add(prevFold.Name,
+                                new CacheFoldProp {Attribute = prevFold, Types = new HashSet<string> {objectFields[i].Name}});
                         }
                         else
                         {
-                            c.types.Add(objectFields[i].Name);
+                            c.Types.Add(objectFields[i].Name);
                         }
                     }
 
@@ -169,18 +168,18 @@ namespace MyBox.Internal
 
                 prevFold = fold;
 
-                if (!cacheFolds.TryGetValue(fold.name, out c))
+                if (!_cacheFoldouts.TryGetValue(fold.Name, out c))
                 {
-                    var expanded = EditorPrefs.GetBool(string.Format($"{fold.name}{objectFields[i].Name}{target.name}"), false);
-                    cacheFolds.Add(fold.name,
-                        new CacheFoldProp {atr = fold, types = new HashSet<string> {objectFields[i].Name}, expanded = expanded});
+                    var expanded = EditorPrefs.GetBool(string.Format($"{fold.Name}{objectFields[i].Name}{_target.name}"), false);
+                    _cacheFoldouts.Add(fold.Name,
+                        new CacheFoldProp {Attribute = fold, Types = new HashSet<string> {objectFields[i].Name}, Expanded = expanded});
                 }
-                else c.types.Add(objectFields[i].Name);
+                else c.Types.Add(objectFields[i].Name);
 
                 #endregion
             }
 
-            var property = serializedObject.GetIterator();
+            var property = _serializedObject.GetIterator();
             var next = property.NextVisible(true);
             if (next)
             {
@@ -190,20 +189,20 @@ namespace MyBox.Internal
                 } while (property.NextVisible(false));
             }
 
-            initialized = true;
+            _initialized = true;
         }
 
         private void HandleFoldProp(SerializedProperty prop)
         {
             bool shouldBeFolded = false;
 
-            foreach (var pair in cacheFolds)
+            foreach (var pair in _cacheFoldouts)
             {
-                if (pair.Value.types.Contains(prop.name))
+                if (pair.Value.Types.Contains(prop.name))
                 {
                     var pr = prop.Copy();
                     shouldBeFolded = true;
-                    pair.Value.props.Add(pr);
+                    pair.Value.Properties.Add(pr);
 
                     break;
                 }
@@ -212,22 +211,22 @@ namespace MyBox.Internal
             if (shouldBeFolded == false)
             {
                 var pr = prop.Copy();
-                props.Add(pr);
+                _props.Add(pr);
             }
         }
 
-        class CacheFoldProp
+        private class CacheFoldProp
         {
-            public HashSet<string> types = new HashSet<string>();
-            public List<SerializedProperty> props = new List<SerializedProperty>();
-            public FoldoutAttribute atr;
-            public bool expanded;
+            public HashSet<string> Types = new HashSet<string>();
+            public readonly List<SerializedProperty> Properties = new List<SerializedProperty>();
+            public FoldoutAttribute Attribute;
+            public bool Expanded;
 
             public void Dispose()
             {
-                props.Clear();
-                types.Clear();
-                atr = null;
+                Properties.Clear();
+                Types.Clear();
+                Attribute = null;
             }
         }
     }
@@ -237,80 +236,45 @@ namespace MyBox.Internal
     {
         public static readonly GUIStyle Box;
         public static readonly GUIStyle BoxChild;
-        public static readonly GUIStyle Foldout;
+        public static readonly GUIStyle FoldoutHeader;
 
         static StyleFramework()
         {
-            bool pro = EditorGUIUtility.isProSkin;
-
-            var uiTex_in = Resources.Load<Texture2D>("IN foldout focus-6510");
-            var uiTex_in_on = Resources.Load<Texture2D>("IN foldout focus on-5718");
-
-            var c_on = pro ? Color.white : new Color(51 / 255f, 102 / 255f, 204 / 255f, 1);
-
-            Foldout = new GUIStyle(EditorStyles.foldout);
-
-            Foldout.overflow = new RectOffset(-10, 0, 3, 0);
-            Foldout.padding = new RectOffset(25, 0, -3, 0);
-
-            Foldout.active.textColor = c_on;
-            Foldout.active.background = uiTex_in;
-            Foldout.onActive.textColor = c_on;
-            Foldout.onActive.background = uiTex_in_on;
-
-            Foldout.focused.textColor = c_on;
-            Foldout.focused.background = uiTex_in;
-            Foldout.onFocused.textColor = c_on;
-            Foldout.onFocused.background = uiTex_in_on;
-
-            Foldout.hover.textColor = c_on;
-            Foldout.hover.background = uiTex_in;
-
-            Foldout.onHover.textColor = c_on;
-            Foldout.onHover.background = uiTex_in_on;
+            FoldoutHeader = new GUIStyle(EditorStyles.foldout);
+            FoldoutHeader.overflow = new RectOffset(-10, 0, 3, 0);
+            FoldoutHeader.padding = new RectOffset(20, 0, 0, 0);
+            FoldoutHeader.border = new RectOffset(2, 2, 2, 2);
 
             Box = new GUIStyle(GUI.skin.box);
-            Box.padding = new RectOffset(15, 0, 5, 5);
+            Box.padding = new RectOffset(18, 0, 4, 4);
 
             BoxChild = new GUIStyle(GUI.skin.box);
-            BoxChild.active.textColor = c_on;
-            BoxChild.active.background = uiTex_in;
-            BoxChild.onActive.textColor = c_on;
-            BoxChild.onActive.background = uiTex_in_on;
-
-            BoxChild.focused.textColor = c_on;
-            BoxChild.focused.background = uiTex_in;
-            BoxChild.onFocused.textColor = c_on;
-            BoxChild.onFocused.background = uiTex_in_on;
-
-            EditorStyles.foldout.active.textColor = c_on;
-            EditorStyles.foldout.active.background = uiTex_in;
-            EditorStyles.foldout.onActive.textColor = c_on;
-            EditorStyles.foldout.onActive.background = uiTex_in_on;
-
-            EditorStyles.foldout.focused.textColor = c_on;
-            EditorStyles.foldout.focused.background = uiTex_in;
-            EditorStyles.foldout.onFocused.textColor = c_on;
-            EditorStyles.foldout.onFocused.background = uiTex_in_on;
-
-            EditorStyles.foldout.hover.textColor = c_on;
-            EditorStyles.foldout.hover.background = uiTex_in;
-
-            EditorStyles.foldout.onHover.textColor = c_on;
-            EditorStyles.foldout.onHover.background = uiTex_in_on;
         }
+    }
 
-        public static string FirstLetterToUpperCase(this string s)
+    static class EditorTypes
+    {
+        private static readonly Dictionary<int, List<FieldInfo>> Fields = new Dictionary<int, List<FieldInfo>>(FastComparable.Default);
+
+        public static int Get(Object target, out List<FieldInfo> objectFields)
         {
-            if (string.IsNullOrEmpty(s))
-                return string.Empty;
+            var t = target.GetType();
+            var hash = t.GetHashCode();
 
-            var a = s.ToCharArray();
-            a[0] = char.ToUpper(a[0]);
-            return new string(a);
+            if (!Fields.TryGetValue(hash, out objectFields))
+            {
+                var typeTree = GetTypeTree(t);
+                objectFields = target.GetType()
+                    .GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.NonPublic)
+                    .OrderByDescending(x => typeTree.IndexOf(x.DeclaringType))
+                    .ToList();
+                Fields.Add(hash, objectFields);
+            }
+
+            return objectFields.Count;
         }
-
-        public static IList<Type> GetTypeTree(this Type t)
+        
+        static IList<Type> GetTypeTree(Type t)
         {
             var types = new List<Type>();
             while (t.BaseType != null)
@@ -323,33 +287,10 @@ namespace MyBox.Internal
         }
     }
 
-    static class EditorTypes
+
+    internal class FastComparable : IEqualityComparer<int>
     {
-        public static Dictionary<int, List<FieldInfo>> fields = new Dictionary<int, List<FieldInfo>>(FastComparable.Default);
-
-        public static int Get(Object target, out List<FieldInfo> objectFields)
-        {
-            var t = target.GetType();
-            var hash = t.GetHashCode();
-
-            if (!fields.TryGetValue(hash, out objectFields))
-            {
-                var typeTree = t.GetTypeTree();
-                objectFields = target.GetType()
-                    .GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.NonPublic)
-                    .OrderByDescending(x => typeTree.IndexOf(x.DeclaringType))
-                    .ToList();
-                fields.Add(hash, objectFields);
-            }
-
-            return objectFields.Count;
-        }
-    }
-
-
-    class FastComparable : IEqualityComparer<int>
-    {
-        public static FastComparable Default = new FastComparable();
+        public static readonly FastComparable Default = new FastComparable();
 
         public bool Equals(int x, int y)
         {

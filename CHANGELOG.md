@@ -14,6 +14,7 @@ All notable changes to this package will be documented in this file.
 - Extensions: IList.ExclusiveSample() returns collection of random elements. Thanks to @tonygiang!
 - Extensions: Rigidbody.ToggleConstraints extension. Thanks to @tonygiang!
 - Fix: FPSCounter now works correctly if EditorOnly is toggled. Thanks to @TheWalruzz!
+- Fix: FoldoutAttribute visual improvements
 
 ## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
