@@ -4,18 +4,19 @@
 // ----------------------------------------------------------------------------
 
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace MyBox
 {
-    /// <summary>
-    /// Used to pick scene from inspector.
-    /// Consider to use <see cref="SceneReference"/> type instead as it is more flexible
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field)]
-    public class SceneAttribute : PropertyAttribute
-    {
-    }
+	/// <summary>
+	/// Used to pick scene from inspector.
+	/// Consider to use <see cref="SceneReference"/> type instead as it is more flexible
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Field)]
+	public class SceneAttribute : PropertyAttribute
+	{
+	}
 }
 
 #if UNITY_EDITOR
@@ -23,54 +24,53 @@ namespace MyBox.Internal
 {
 	using UnityEditor;
 
-    [CustomPropertyDrawer(typeof(SceneAttribute))]
+	[CustomPropertyDrawer(typeof(SceneAttribute))]
 	public class SceneDrawer : PropertyDrawer
 	{
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
+		private SceneAttribute _attribute;
+		private string[] _scenesInBuild;
+		private int _index;
 
-            if (property.propertyType == SerializedPropertyType.String)
-            {
-                var sceneObject = GetSceneObject(property.stringValue);
-                var scene = EditorGUI.ObjectField(position, label, sceneObject, typeof(SceneAsset), true);
-                if (scene == null)
-                {
-                    property.stringValue = "";
-                }
-                else if (scene.name != property.stringValue)
-                {
-                    var sceneObj = GetSceneObject(scene.name);
-                    if (sceneObj == null)
-                    {
-                        Debug.LogWarning("The scene " + scene.name + " cannot be used. To use this scene add it to the build settings for the project");
-                    }
-                    else
-                    {
-                        property.stringValue = scene.name;
-                    }
-                }
-            }
-            else
-                EditorGUI.LabelField(position, label.text, "Use [Scene] with strings.");
-        }
-        protected SceneAsset GetSceneObject(string sceneObjectName)
-        {
-            if (string.IsNullOrEmpty(sceneObjectName))
-            {
-                return null;
-            }
+		private void Initialize(string initialValue)
+		{
+			if (_attribute != null) return;
 
-            foreach (var editorScene in EditorBuildSettings.scenes)
-            {
-                if (editorScene.path.IndexOf(sceneObjectName) != -1)
-                {
-                    return AssetDatabase.LoadAssetAtPath(editorScene.path, typeof(SceneAsset)) as SceneAsset;
-                }
-            }
-            Debug.LogWarning("Scene [" + sceneObjectName + "] cannot be used. Add this scene to the 'Scenes in the Build' in build settings.");
-            return null;
-        }
-    }
+			_attribute = (SceneAttribute)attribute;
+			
+			_scenesInBuild = new string[EditorBuildSettings.scenes.Length + 1];
+
+			_index = 0;
+			for (var i = 0; i < EditorBuildSettings.scenes.Length; i++)
+			{
+				var formatted = EditorBuildSettings.scenes[i].path.Split('/').Last().Replace(".unity", string.Empty);
+				if (initialValue == formatted) _index = i + 1;
+				formatted += $" [{i}]";
+				_scenesInBuild[i + 1] = formatted;
+			}
+
+			var defaultValue = initialValue.IsNullOrEmpty() || _index > 0 ? "NULL" : "NOT FOUND: " + initialValue;
+			_scenesInBuild[0] = defaultValue;
+		}
+		
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+		{
+			if (property.propertyType != SerializedPropertyType.String)
+			{
+				EditorGUI.LabelField(position, label.text, "Use [Scene] with strings.");
+				return;
+			}
+			
+			Initialize(property.stringValue);
+			
+			var newIndex = EditorGUI.Popup(position, label.text, _index, _scenesInBuild);
+			if (newIndex != _index)
+			{
+				_index = newIndex;
+				var value = _scenesInBuild[_index];
+				property.stringValue = newIndex == 0 ? string.Empty : value.Substring(0, value.Length - 6);
+				property.serializedObject.ApplyModifiedProperties();
+			}
+		}
+	}
 }
 #endif
-

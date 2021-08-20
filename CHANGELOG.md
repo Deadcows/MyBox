@@ -8,14 +8,15 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: Removed bunch of methods from MyPhysics class 
 - Changed: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
 - Changed: AutoProperty and MustBeAssigned attributes now work fine with ScriptableObjects! Thanks to @tonygiang for the addition!
+TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings
 - Extensions: collection.FillBy(index => { }) allows to use factory method to fill up the collection. Thanks to @tonygiang!
 - Extensions: IList.SwapInPlace(a, b) swaps two elements in collection. Thanks to @tonygiang!
 - Extensions: IList.Shuffle() shuffles elements in collection using the Knuth algorithm. Thanks to @tonygiang!
 - Extensions: IList.ExclusiveSample() returns collection of random elements. Thanks to @tonygiang!
 - Extensions: Rigidbody.ToggleConstraints extension. Thanks to @tonygiang!
 - Fix: FPSCounter now works correctly if EditorOnly is toggled. Thanks to @TheWalruzz!
-- Fix: DisplayInspector now will show warning if used on property of the wrong type
-- Fix: FoldoutAttribute visual improvements
+TODO Docs - Fix: DisplayInspector now will show warning if used on property of the wrong type
+TODO Docs - Fix: FoldoutAttribute visual improvements
 
 ## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
