@@ -78,6 +78,6 @@ namespace MyBox
 		/// Effectively the parent-relative size of the RectTransform.
 		/// </summary>
 		public static Vector2 GetAnchorDelta(this RectTransform source) =>
-      source.anchorMax - source.anchorMin;
+			source.anchorMax - source.anchorMin;
 	}
 }
