@@ -44,6 +44,13 @@ namespace MyBox.Internal
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
+			bool notValidType = property.propertyType != SerializedPropertyType.ObjectReference;
+			if (notValidType)
+			{
+				EditorGUI.LabelField(position, label.text, "Use [DisplayInspector] with MB or SO");
+				return;
+			}
+			
 			if (((DisplayInspectorAttribute)attribute).DisplayScript || property.objectReferenceValue == null)
 			{
 				position.height = EditorGUI.GetPropertyHeight(property);
@@ -109,7 +116,8 @@ namespace MyBox.Internal
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
-			if (property.objectReferenceValue == null) return base.GetPropertyHeight(property, label);
+			bool notValidType = property.propertyType != SerializedPropertyType.ObjectReference;
+			if (notValidType || property.objectReferenceValue == null) return base.GetPropertyHeight(property, label);
 			if (_buttonMethods == null) _buttonMethods = new ButtonMethodHandler(property.objectReferenceValue);
 
 			float height = ((DisplayInspectorAttribute)attribute).DisplayScript ? EditorGUI.GetPropertyHeight(property) + 4 : 0;
