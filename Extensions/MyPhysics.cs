@@ -54,5 +54,28 @@ namespace MyBox
 				scaleFactorsToTarget);
 			return source;
 		}
+
+		/// <summary>
+		/// Sets a layer to the source's attached GameObject and all of its children
+		/// in the hierarchy.
+		/// </summary>
+		public static T SetLayerRecursively<T>(this T source, int layer)
+			where T : Component
+		{
+			source.gameObject.SetLayerRecursively(layer);
+			return source;
+		}
+
+		/// <summary>
+		/// Sets a layer to the source GameObject and all of its children in the
+		/// hierarchy.
+		/// </summary>
+		public static GameObject SetLayerRecursively(this GameObject source,
+			int layer)
+		{
+			var allTransforms = source.GetComponentsInChildren<Transform>(true);
+			foreach (var tf in allTransforms) tf.gameObject.layer = layer;
+			return source;
+		}
 	}
 }
