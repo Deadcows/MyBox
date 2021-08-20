@@ -48,7 +48,8 @@ namespace MyBox.Internal
 				_scenesInBuild[i + 1] = formatted;
 			}
 
-			var defaultValue = initialValue.IsNullOrEmpty() || _index > 0 ? "NULL" : "NOT FOUND: " + initialValue;
+			var defaultValue = "NULL";
+			if (initialValue.NotNullOrEmpty() && _index == 0) defaultValue = "NOT FOUND: " + initialValue;
 			_scenesInBuild[0] = defaultValue;
 		}
 		
@@ -67,7 +68,7 @@ namespace MyBox.Internal
 			{
 				_index = newIndex;
 				var value = _scenesInBuild[_index];
-				property.stringValue = newIndex == 0 ? string.Empty : value.Substring(0, value.Length - 6);
+				property.stringValue = newIndex == 0 ? string.Empty : value.Substring(0, value.IndexOf('[') - 1);
 				property.serializedObject.ApplyModifiedProperties();
 			}
 		}
