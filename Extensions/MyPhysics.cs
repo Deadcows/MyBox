@@ -46,12 +46,8 @@ namespace MyBox
 		public static Transform SetLossyScale(this Transform source,
 			Vector3 targetLossyScale)
 		{
-			var scaleFactorsToTarget = Vector3.Scale(targetLossyScale,
-				new Vector3(1f / source.lossyScale.x,
-					1f / source.lossyScale.y,
-					1f / source.lossyScale.z));
-			source.localScale = Vector3.Scale(source.localScale,
-				scaleFactorsToTarget);
+			source.localScale = source.lossyScale.Pow(-1).ScaleBy(targetLossyScale)
+				.ScaleBy(source.localScale);
 			return source;
 		}
 

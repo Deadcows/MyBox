@@ -514,5 +514,50 @@ namespace MyBox
 			source.transform.position.To(destination);
 
 		#endregion
+
+		/// <summary>
+		/// Raise each component of the source Vector2 to the specified power.
+		/// </summary>
+		public static Vector2 Pow(this Vector2 source, float exponent) =>
+			new Vector2(Mathf.Pow(source.x, exponent),
+				Mathf.Pow(source.y, exponent));
+
+		/// <summary>
+		/// Raise each component of the source Vector3 to the specified power.
+		/// </summary>
+		public static Vector3 Pow(this Vector3 source, float exponent) =>
+			new Vector3(Mathf.Pow(source.x, exponent),
+				Mathf.Pow(source.y, exponent),
+				Mathf.Pow(source.z, exponent));
+
+		/// <summary>
+		/// Raise each component of the source Vector3 to the specified power.
+		/// </summary>
+		public static Vector4 Pow(this Vector4 source, float exponent) =>
+			new Vector4(Mathf.Pow(source.x, exponent),
+				Mathf.Pow(source.y, exponent),
+				Mathf.Pow(source.z, exponent),
+				Mathf.Pow(source.w, exponent));
+
+		/// <summary>
+		/// Immutably returns the result of the source vector multiplied with
+		/// another vector component-wise.
+		/// </summary>
+		public static Vector2 ScaleBy(this Vector2 source, Vector2 right) =>
+			Vector2.Scale(source, right);
+
+		/// <summary>
+		/// Immutably returns the result of the source vector multiplied with
+		/// another vector component-wise.
+		/// </summary>
+		public static Vector3 ScaleBy(this Vector3 source, Vector3 right) =>
+			Vector3.Scale(source, right);
+
+		/// <summary>
+		/// Immutably returns the result of the source vector multiplied with
+		/// another vector component-wise.
+		/// </summary>
+		public static Vector4 ScaleBy(this Vector4 source, Vector4 right) =>
+			Vector4.Scale(source, right);
 	}
 }
