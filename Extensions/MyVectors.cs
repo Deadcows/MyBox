@@ -410,7 +410,7 @@ namespace MyBox
 		#endregion
 
 
-		#region Get Closest 
+		#region Get Closest
 
 		/// <summary>
 		/// Finds the position closest to the given one.
@@ -515,6 +515,9 @@ namespace MyBox
 
 		#endregion
 
+
+		#region Pow
+
 		/// <summary>
 		/// Raise each component of the source Vector2 to the specified power.
 		/// </summary>
@@ -539,6 +542,11 @@ namespace MyBox
 				Mathf.Pow(source.z, exponent),
 				Mathf.Pow(source.w, exponent));
 
+		#endregion
+
+
+		#region ScaleBy
+
 		/// <summary>
 		/// Immutably returns the result of the source vector multiplied with
 		/// another vector component-wise.
@@ -559,5 +567,7 @@ namespace MyBox
 		/// </summary>
 		public static Vector4 ScaleBy(this Vector4 source, Vector4 right) =>
 			Vector4.Scale(source, right);
+
+		#endregion
 	}
 }

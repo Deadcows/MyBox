@@ -19,9 +19,9 @@ namespace MyBox
 		/// <summary>
 		/// Toggle CanvasGroup Alpha, Interactable and BlocksRaycasts settings
 		/// </summary>
-		public static void SetState(this CanvasGroup _canvas, bool isOn)
+		public static void SetState(this CanvasGroup canvas, bool isOn)
 		{
-			SetCanvasState(_canvas, isOn);
+			SetCanvasState(canvas, isOn);
 		}
 
 
