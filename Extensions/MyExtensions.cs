@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -67,8 +67,11 @@ namespace MyBox
 		/// in the hierarchy.
 		/// </summary>
 		public static T SetLayerRecursively<T>(this T source, string layerName)
-			where T : Component =>
+			where T : Component
+		{
 			source.gameObject.SetLayerRecursively(LayerMask.NameToLayer(layerName));
+			return source;
+		}
 
 		/// <summary>
 		/// Sets a layer to the source's attached GameObject and all of its children
