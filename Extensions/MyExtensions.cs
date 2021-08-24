@@ -21,7 +21,7 @@ namespace MyBox
 			var position = camera.WorldToViewportPoint(point);
 			return position.x > 0 && position.y > 0;
 		}
-		
+
 		/// <summary>
 		/// Gets a point with the same screen point as the source point,
 		/// but at the specified distance from camera.
@@ -35,7 +35,7 @@ namespace MyBox
 			return camera.ScreenToWorldPoint(screenPoint.SetZ(distanceFromCamera),
 				eye);
 		}
-		
+
 		/// <summary>
 		/// Gets a point with the same screen point on the specified Camera as the
 		/// source point, but at the specified distance from said Camera.
@@ -49,8 +49,8 @@ namespace MyBox
 			return projectingCamera.ScreenToWorldPoint(screenPoint.SetZ(distance),
 				eye);
 		}
-		
-		
+
+
 		/// <summary>
 		/// Sets the lossy scale of the source Transform.
 		/// </summary>
@@ -61,17 +61,14 @@ namespace MyBox
 				.ScaleBy(source.localScale);
 			return source;
 		}
-		
+
 		/// <summary>
 		/// Sets a layer to the source's attached GameObject and all of its children
 		/// in the hierarchy.
 		/// </summary>
-		public static T SetLayerRecursively<T>(this T source, string layer)
-			where T : Component
-		{
-			source.gameObject.SetLayerRecursively(LayerMask.NameToLayer(layer));
-			return source;
-		}
+		public static T SetLayerRecursively<T>(this T source, string layerName)
+			where T : Component =>
+			source.gameObject.SetLayerRecursively(LayerMask.NameToLayer(layerName));
 
 		/// <summary>
 		/// Sets a layer to the source's attached GameObject and all of its children
@@ -83,7 +80,18 @@ namespace MyBox
 			source.gameObject.SetLayerRecursively(layer);
 			return source;
 		}
-		
+
+		/// <summary>
+		/// Sets a layer to the source GameObject and all of its children in the
+		/// hierarchy.
+		/// </summary>
+		public static GameObject SetLayerRecursively(this GameObject source,
+			string layerName)
+		{
+			source.SetLayerRecursively(LayerMask.NameToLayer(layerName));
+			return source;
+		}
+
 		/// <summary>
 		/// Sets a layer to the source GameObject and all of its children in the
 		/// hierarchy.
@@ -116,7 +124,7 @@ namespace MyBox
 			return gameObject.GetComponent<T>() != null;
 		}
 
-		
+
 
 		/// <summary>
 		/// Get all components of specified Layer in childs
@@ -127,7 +135,7 @@ namespace MyBox
 			CheckChildsOfLayer(gameObject.transform, layer, list);
 			return list;
 		}
-		
+
 		/// <summary>
 		/// Get all components of specified Layer in childs
 		/// </summary>
@@ -135,7 +143,7 @@ namespace MyBox
 		{
 			return gameObject.GetObjectsOfLayerInChilds(LayerMask.NameToLayer(layer));
 		}
-		
+
 		/// <summary>
 		/// Get all components of specified Layer in childs
 		/// </summary>
