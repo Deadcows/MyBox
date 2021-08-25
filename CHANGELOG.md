@@ -14,6 +14,14 @@ TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from
 - Extensions: IList.Shuffle() shuffles elements in collection using the Knuth algorithm. Thanks to @tonygiang!
 - Extensions: IList.ExclusiveSample() returns collection of random elements. Thanks to @tonygiang!
 - Extensions: Rigidbody.ToggleConstraints extension. Thanks to @tonygiang!
+- Extensions: Transform.SetLossyScale. Thanks to @tonygiang!
+- Extensions: Camera.WorldPointOffsetByDepth to keep point position on screen but with specified distance from camera. Thanks to @tonygiang!
+- Extensions: Component/GameObject.SetLayerRecursively. Thanks to @tonygiang!
+- Extensions: RectTransform.ShiftAnchor to offset anchor. Thanks to @tonygiang!
+- Extensions: RectTransform.GetAnchorCenter to get mid point between anchorMin and anchorMax. Thanks to @tonygiang!
+- Extensions: RectTransform.GetAnchorDelta to get parent-relative size of the RectTransform. Thanks to @tonygiang!
+- Extensions: Vector.Pow to raise each component of the source Vector to the specified power. Thanks to @tonygiang!
+- Extensions: Vector.ScaleBy immutably returns the result of the source vector multiplied with another vector. Thanks to @tonygiang!
 - Fix: FPSCounter now works correctly if EditorOnly is toggled. Thanks to @TheWalruzz!
 TODO Docs - Fix: DisplayInspector now will show warning if used on property of the wrong type
 TODO Docs - Fix: FoldoutAttribute visual improvements
