@@ -36,20 +36,6 @@ namespace MyBox
 				eye);
 		}
 
-		/// <summary>
-		/// Gets a point with the same screen point on the specified Camera as the
-		/// source point, but at the specified distance from said Camera.
-		/// </summary>
-		public static Vector3 SetCameraDepthFrom(this Vector3 worldPos,
-			Camera projectingCamera,
-			float distance,
-			Camera.MonoOrStereoscopicEye eye = Camera.MonoOrStereoscopicEye.Mono)
-		{
-			var screenPoint = projectingCamera.WorldToScreenPoint(worldPos, eye);
-			return projectingCamera.ScreenToWorldPoint(screenPoint.SetZ(distance),
-				eye);
-		}
-
 
 		/// <summary>
 		/// Sets the lossy scale of the source Transform.
