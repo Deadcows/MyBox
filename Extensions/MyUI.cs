@@ -19,9 +19,9 @@ namespace MyBox
 		/// <summary>
 		/// Toggle CanvasGroup Alpha, Interactable and BlocksRaycasts settings
 		/// </summary>
-		public static void SetState(this CanvasGroup _canvas, bool isOn)
+		public static void SetState(this CanvasGroup canvas, bool isOn)
 		{
-			SetCanvasState(_canvas, isOn);
+			SetCanvasState(canvas, isOn);
 		}
 
 
@@ -45,5 +45,39 @@ namespace MyBox
 		{
 			trigger.triggers.Add(entry);
 		}
+
+		/// <summary>
+		/// Adds the specified amount to the source RectTransform's both anchors.
+		/// </summary>
+		public static RectTransform ShiftAnchor(this RectTransform source,
+			float x,
+			float y) => source.ShiftAnchor(new Vector2(x, y));
+
+		/// <summary>
+		/// Adds the specified amount as Vector2 to the source RectTransform's both
+		/// anchors.
+		/// </summary>
+		public static RectTransform ShiftAnchor(this RectTransform source,
+			Vector2 delta)
+		{
+			source.anchorMin += delta;
+			source.anchorMax += delta;
+			return source;
+		}
+
+		/// <summary>
+		/// Gets the average of the sum of the source RectTransform's anchors.
+		/// Effectively the parent-relative position of the RectTransform.
+		/// </summary>
+		public static Vector2 GetAnchorCenter(this RectTransform source) =>
+			(source.anchorMin + source.anchorMax) / 2;
+
+		/// <summary>
+		/// Gets the result of the source RectTransform's anchorMax subtracted by its
+		/// anchorMin.
+		/// Effectively the parent-relative size of the RectTransform.
+		/// </summary>
+		public static Vector2 GetAnchorDelta(this RectTransform source) =>
+			source.anchorMax - source.anchorMin;
 	}
 }
