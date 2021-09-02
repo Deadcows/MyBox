@@ -19,15 +19,15 @@ namespace MyBox
 	public class AutoPropertyAttribute : PropertyAttribute
 	{
 		public readonly AutoPropertyMode Mode;
-		public Type TargetType = null;
+		public Type PredicateMethodTarget = null;
 		public string PredicateMethodName = null;
 
 		public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children,
-			Type targetType = null,
+			Type predicateMethodTarget = null,
 			string predicateMethodName = null)
 		{
 			Mode = mode;
-			TargetType = targetType;
+			PredicateMethodTarget = predicateMethodTarget;
 			PredicateMethodName = predicateMethodName;
 		}
 	}
@@ -129,12 +129,12 @@ namespace MyBox.Internal
 				.GetCustomAttributes(typeof(AutoPropertyAttribute), true)
 				.FirstOrDefault() as AutoPropertyAttribute;
 			if (apAttribute == null) return;
-			Func<Object, bool> predicateMethod = (apAttribute.TargetType == null
+			Func<Object, bool> predicateMethod = (apAttribute.PredicateMethodTarget == null
 				|| apAttribute.PredicateMethodName == null) ?
 				_ => true :
 				(Func<Object, bool>)Delegate.CreateDelegate(
 					typeof(Func<Object, bool>),
-					apAttribute.TargetType,
+					apAttribute.PredicateMethodTarget,
 					apAttribute.PredicateMethodName);
 
 			var matchedObjects = ObjectsGetters[apAttribute.Mode]
