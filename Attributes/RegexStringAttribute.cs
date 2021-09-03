@@ -19,7 +19,7 @@ namespace MyBox
 			AttributeMode = mode;
 		}
 	}
-	
+
 	public enum RegexStringMode
 	{
 		/// <summary>
@@ -59,8 +59,13 @@ namespace MyBox.Internal
 			}
 			else
 			{
-				var regex = (RegexStringAttribute) attribute;
+				var regex = (RegexStringAttribute)attribute;
 				var mode = regex.AttributeMode;
+				bool ifMatch = mode == RegexStringMode.WarningIfMatch;
+				bool ifNotMatch = mode == RegexStringMode.WarningIfNotMatch;
+				bool anyMatching = regex.Regex.IsMatch(property.stringValue);
+				bool warn = (ifMatch && anyMatching) || (ifNotMatch && !anyMatching);
+				var originalPosition = position;
 
 				DrawWarning();
 				position.width -= 20;
@@ -73,6 +78,17 @@ namespace MyBox.Internal
 					if (mode == RegexStringMode.Match) OnKeepMatching();
 				}
 
+				if (warn)
+				{
+					GUILayoutUtility.GetRect(GUIContent.none, EditorStyles.objectField);
+					position = originalPosition;
+					position.y += EditorGUIUtility.singleLineHeight;
+					DrawWarning();
+					position.x += EditorGUIUtility.labelWidth;
+					var warningContent = new GUIContent("Regex rule violated!");
+					EditorGUI.LabelField(position, warningContent, EditorStyles.miniBoldLabel);
+				}
+
 				property.serializedObject.ApplyModifiedProperties();
 
 
@@ -81,15 +97,10 @@ namespace MyBox.Internal
 
 				void DrawWarning()
 				{
-					bool ifMatch = mode == RegexStringMode.WarningIfMatch;
-					bool ifNotMatch = mode == RegexStringMode.WarningIfNotMatch;
 					if (!ifMatch && !ifNotMatch) return;
-
-					bool anyMatching = regex.Regex.IsMatch(property.stringValue);
-					bool warn = (ifMatch && anyMatching) || (ifNotMatch && !anyMatching);
 					MyGUI.DrawColouredRect(position, warn ? MyGUI.Colors.Yellow : Color.clear);
 				}
-				
+
 				void DrawTooltip()
 				{
 					string tooltip = "Regex field: ";
