@@ -37,14 +37,16 @@ namespace MyBox.Internal
 
 		private static void AssertComponentsInScene()
 		{
-			var behaviours = Object.FindObjectsOfType<MonoBehaviour>();
+			var behaviours = Object.FindObjectsOfType<MonoBehaviour>(true);
 			// ReSharper disable once CoVariantArrayConversion
 			AssertComponents(behaviours);
-			
-			// TODO: Allow to disable SO check
-			var scriptableObjects = MyScriptableObject.LoadAssets<ScriptableObject>();
-			// ReSharper disable once CoVariantArrayConversion
-			AssertComponents(scriptableObjects);
+
+			if (MyBoxSettings.EnableSOCheck)
+			{
+				var scriptableObjects = MyScriptableObject.LoadAssets<ScriptableObject>();
+				// ReSharper disable once CoVariantArrayConversion
+				AssertComponents(scriptableObjects);
+			}
 		}
 
 		private static void AssertComponentsInPrefab(GameObject prefab)
