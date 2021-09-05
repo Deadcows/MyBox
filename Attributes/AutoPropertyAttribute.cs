@@ -9,22 +9,24 @@ namespace MyBox
 	/// It searches for components from this GO or its children by default.
 	/// Pass in an <c>AutoPropertyMode</c> to override this behaviour.
 	/// <para></para>
-	/// Advanced usage: Filter found objects with a static method. To do
-	/// that, create a static method with the same method signature as a
-	/// Func&lt;UnityEngine.Object, bool&gt;, then pass in the typeof class that
-	/// contains said method as the second argument and the nameof said static
-	/// method as the third argument.
+	/// Advanced usage: Filter found objects with a method. To do that, create a 
+	/// static method or member method of the current class with the same method
+	/// signature as a Func&lt;UnityEngine.Object, bool&gt;.
+	/// If your predicate method is a member method of the current class, pass in
+	/// the nameof that method as the second argument.
+	/// If your predicate method is a static method, pass in the typeof class that
+	/// contains said method as the third argument.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field)]
 	public class AutoPropertyAttribute : PropertyAttribute
 	{
 		public readonly AutoPropertyMode Mode;
-		public Type PredicateMethodTarget = null;
 		public string PredicateMethodName = null;
+		public Type PredicateMethodTarget = null;
 
 		public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children,
-			Type predicateMethodTarget = null,
-			string predicateMethodName = null)
+			string predicateMethodName = null,
+			Type predicateMethodTarget = null)
 		{
 			Mode = mode;
 			PredicateMethodTarget = predicateMethodTarget;
@@ -129,11 +131,13 @@ namespace MyBox.Internal
 				.GetCustomAttributes(typeof(AutoPropertyAttribute), true)
 				.FirstOrDefault() as AutoPropertyAttribute;
 			if (apAttribute == null) return;
-			Func<Object, bool> predicateMethod = (apAttribute.PredicateMethodTarget == null
-				|| apAttribute.PredicateMethodName == null) ?
+			Func<Object, bool> predicateMethod = apAttribute.PredicateMethodTarget == null ?
+				apAttribute.PredicateMethodName == null ?
 				_ => true :
-				(Func<Object, bool>)Delegate.CreateDelegate(
-					typeof(Func<Object, bool>),
+				(Func<Object, bool>)Delegate.CreateDelegate(typeof(Func<Object, bool>),
+					property.Context,
+					apAttribute.PredicateMethodName) :
+				(Func<Object, bool>)Delegate.CreateDelegate(typeof(Func<Object, bool>),
 					apAttribute.PredicateMethodTarget,
 					apAttribute.PredicateMethodName);
 
