@@ -11,7 +11,8 @@ namespace MyBox
 	/// <para></para>
 	/// Advanced usage: Filter found objects with a method. To do that, create a 
 	/// static method or member method of the current class with the same method
-	/// signature as a Func&lt;UnityEngine.Object, bool&gt;.
+	/// signature as a Func&lt;UnityEngine.Object, bool&gt;. Your predicate method
+	/// can be private.
 	/// If your predicate method is a member method of the current class, pass in
 	/// the nameof that method as the second argument.
 	/// If your predicate method is a static method, pass in the typeof class that
