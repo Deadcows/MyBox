@@ -6,6 +6,8 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MinMaxFloat.RandomInRangeInclusive was redundant, removed
 - Breaking Changes: Extension IList.GetRandomCollection is removed, replaced with IList.ExclusiveSample
 - Breaking Changes: Removed bunch of methods from MyPhysics class 
+TODO Docs - Added: Ability to disable performant features of MyBox in MyBox Window
+TODO Docs - Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector3 types
 - Changed: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
 - Changed: AutoProperty and MustBeAssigned attributes now work fine with ScriptableObjects! Thanks to @tonygiang for the addition!
 TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings

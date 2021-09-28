@@ -166,15 +166,43 @@ namespace MyBox.EditorTools
 		/// <summary>
 		/// Get all fields with specified attribute on all Unity Objects
 		/// </summary>
-		public static List<ObjectField> GetFieldsWithAttribute<T>(GameObject parent = null) where T : Attribute
+		public static List<ObjectField> GetFieldsWithAttributeFromScenes<T>() where T : Attribute
 		{
-			var allObjects = parent == null ?
-				GetAllUnityObjects() :
-				parent.GetComponentsInChildren<MonoBehaviour>();
+			var allObjects = GetAllBehavioursInScenes();
 
+			// ReSharper disable once CoVariantArrayConversion
+			return GetFieldsWithAttribute<T>(allObjects);
+		}
+		
+		/// <summary>
+		/// Get all fields with specified attribute on all Unity Objects
+		/// </summary>
+		public static List<ObjectField> GetFieldsWithAttributeFromAll<T>() where T : Attribute
+		{
+			var allObjects = GetAllUnityObjects();
+
+			return GetFieldsWithAttribute<T>(allObjects);
+		}
+		
+		/// <summary>
+		/// Get all fields with specified attribute from Prefab Root GO
+		/// </summary>
+		public static List<ObjectField> GetFieldsWithAttribute<T>(GameObject root) where T : Attribute
+		{
+			var allObjects = root.GetComponentsInChildren<MonoBehaviour>();
+
+			// ReSharper disable once CoVariantArrayConversion
+			return GetFieldsWithAttribute<T>(allObjects);
+		}
+
+		/// <summary>
+		/// Get all fields with specified attribute from set of Unity Objects
+		/// </summary>
+		public static List<ObjectField> GetFieldsWithAttribute<T>(Object[] objects) where T : Attribute
+		{
 			var desiredAttribute = typeof(T);
 			var result = new List<ObjectField>();
-			foreach (var o in allObjects)
+			foreach (var o in objects)
 			{
 				if (o == null) continue;
 				var fields = o.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -195,7 +223,7 @@ namespace MyBox.EditorTools
 		public static IEnumerable<Component> GetAllComponentsInSceneOf(Object obj,
 			Type type)
 		{
-			GameObject contextGO = null;
+			GameObject contextGO;
 			if (obj is Component comp) contextGO = comp.gameObject;
 			else if (obj is GameObject go) contextGO = go;
 			else return Array.Empty<Component>();
@@ -224,6 +252,29 @@ namespace MyBox.EditorTools
 			LoadAllAssetsOfType(typeof(ScriptableObject));
 			LoadAllAssetsOfType("Prefab");
 			return Resources.FindObjectsOfTypeAll(typeof(Object));
+		}
+		
+		/// <summary>
+		/// It's like FindObjectsOfType, but allows to get disabled objects
+		/// </summary>
+		public static MonoBehaviour[] GetAllBehavioursInScenes()
+		{
+			var components = new List<MonoBehaviour>();
+
+			for (var i = 0; i < SceneManager.sceneCount; i++)
+			{
+				var scene = SceneManager.GetSceneAt(i);
+				if (!scene.isLoaded) continue;
+				
+				var root = scene.GetRootGameObjects();
+				foreach (var gameObject in root)
+				{
+					var behaviours = gameObject.GetComponentsInChildren<MonoBehaviour>(true);
+					foreach (var behaviour in behaviours) components.Add(behaviour);
+				}
+			}
+
+			return components.ToArray();
 		}
 
 		#endregion

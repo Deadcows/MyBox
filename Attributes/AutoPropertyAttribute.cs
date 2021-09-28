@@ -105,17 +105,20 @@ namespace MyBox.Internal
 
 		static AutoPropertyHandler()
 		{
-			// this event is for GameObjects in the scene.
+			// this event is for GameObjects in the project.
 			MyEditorEvents.OnSave += CheckAssets;
 			// this event is for prefabs saved in edit mode.
 			PrefabStage.prefabSaved += CheckComponentsInPrefab;
 			PrefabStage.prefabStageOpened += stage => CheckComponentsInPrefab(stage.prefabContentsRoot);
 		}
 
-		// TODO: GetFieldsWithAttribute is slow, should be optimized
-		private static void CheckAssets() => MyEditor
-			.GetFieldsWithAttribute<AutoPropertyAttribute>()
-			.ForEach(FillProperty);
+		private static void CheckAssets()
+		{
+			var toFill = MyBoxSettings.EnableSOCheck ? 
+				MyEditor.GetFieldsWithAttributeFromAll<AutoPropertyAttribute>() : 
+				MyEditor.GetFieldsWithAttributeFromScenes<AutoPropertyAttribute>();
+			toFill.ForEach(FillProperty);
+		}
 
 		private static void CheckComponentsInPrefab(GameObject prefab) => MyEditor
 			.GetFieldsWithAttribute<AutoPropertyAttribute>(prefab)

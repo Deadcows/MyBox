@@ -40,6 +40,17 @@ namespace MyBox.Internal
 			}
 		}
 
+		public static bool EnableSOCheck
+		{
+			get => Data.EnableSOCheck;
+			set
+			{
+				if (Data.EnableSOCheck == value) return;
+				Data.EnableSOCheck = value;
+				SaveData(Data);
+			}
+		}
+
 		public static bool CheckForUpdates
 		{
 			get => Data.CheckForUpdates;
@@ -59,6 +70,7 @@ namespace MyBox.Internal
 			public bool AutoSaveEnabled = true;
 			public bool CleanEmptyDirectoriesFeature;
 			public bool PrepareOnPlaymode = true;
+			public bool EnableSOCheck = true;
 			public bool CheckForUpdates = true;
 			// ReSharper restore MemberHidesStaticFromOuterClass
 		}
