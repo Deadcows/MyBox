@@ -9,12 +9,18 @@ namespace MyBox
 	{
 		public int Value
 		{
-			get => PlayerPrefs.GetInt(Key, 0);
+			get => PlayerPrefs.GetInt(Key, DefaultValue);
 			set => PlayerPrefs.SetInt(Key, value);
 		}
-		
-		public static PlayerPrefsInt WithKey(string key) => new PlayerPrefsInt(key);
 
-		public PlayerPrefsInt(string key) => Key = key;
+		public int DefaultValue;
+		
+		public static PlayerPrefsInt WithKey(string key, int defaultValue = 0) => new PlayerPrefsInt(key, defaultValue);
+
+		public PlayerPrefsInt(string key, int defaultValue = 0)
+		{
+			Key = key;
+			DefaultValue = defaultValue;
+		}
 	}
 }
