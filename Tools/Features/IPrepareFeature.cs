@@ -37,20 +37,18 @@ namespace MyBox.EditorTools
 
 		private static void PrepareOnPlay()
 		{
-			if (!IsEnabled) return;
+			OnPrepareBefore?.Invoke();
+			OnPrepare?.Invoke();
+			OnPrepareAfter?.Invoke();
 			
-			RunPrepare();
+			if (IsEnabled) RunIPrepare();
 		}
 		
 		/// <summary>
 		/// Calls Prepare() on any MonoBehaviour with IPrepare interface. If Prepare() returns true, parent scene will be marked dirty
 		/// </summary>
-		public static void RunPrepare()
+		public static void RunIPrepare()
 		{
-			OnPrepareBefore?.Invoke();
-			OnPrepare?.Invoke();
-			OnPrepareAfter?.Invoke();
-
 			var toPrepare = MyExtensions.FindObjectsOfInterfaceAsComponents<IPrepare>();
 
 			HashSet<Scene> modifiedScenes = null;
