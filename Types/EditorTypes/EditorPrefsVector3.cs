@@ -10,7 +10,10 @@ namespace MyBox.EditorTools
 	{
 		public Vector3 Value
 		{
-			get => new Vector3(EditorPrefs.GetFloat(Key+"x", 0), EditorPrefs.GetFloat(Key+"y", 0), EditorPrefs.GetFloat(Key+"z", 0));
+			get => new Vector3(
+				EditorPrefs.GetFloat(Key+"x", DefaultValue.x), 
+				EditorPrefs.GetFloat(Key+"y", DefaultValue.y), 
+				EditorPrefs.GetFloat(Key+"z", DefaultValue.z));
 			set
 			{
 				EditorPrefs.SetFloat(Key+"x", value.x);
@@ -18,10 +21,16 @@ namespace MyBox.EditorTools
 				EditorPrefs.SetFloat(Key+"z", value.z);
 			}
 		}
+
+		public Vector3 DefaultValue;
 		
-		public EditorPrefsVector3(string key) => Key = key;
+		public static EditorPrefsVector3 WithKey(string key, Vector3 defaultValue = new Vector3()) => new EditorPrefsVector3(key, defaultValue);
 		
-		public static EditorPrefsVector3 WithKey(string key) => new EditorPrefsVector3(key);
+		public EditorPrefsVector3(string key, Vector3 defaultValue = new Vector3())
+		{
+			Key = key;
+			DefaultValue = defaultValue;
+		}
 	}
 }
 #endif

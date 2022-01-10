@@ -9,13 +9,19 @@ namespace MyBox.EditorTools
 	{
 		public bool Value
 		{
-			get => EditorPrefs.GetBool(Key);
+			get => EditorPrefs.GetBool(Key, DefaultValue);
 			set => EditorPrefs.SetBool(Key, value);
 		}
+
+		public bool DefaultValue;
 		
-		public EditorPrefsBool(string key) => Key = key;
-		
-		public static EditorPrefsBool WithKey(string key) => new EditorPrefsBool(key);
+		public static EditorPrefsBool WithKey(string key, bool defaultValue = false) => new EditorPrefsBool(key, defaultValue);
+
+		public EditorPrefsBool(string key, bool defaultValue = false)
+		{
+			Key = key;
+			DefaultValue = defaultValue;
+		} 
 	}
 }
 #endif
