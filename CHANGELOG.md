@@ -25,6 +25,7 @@ TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from
 - Extensions: Vector.Pow to raise each component of the source Vector to the specified power. Thanks to @tonygiang!
 - Extensions: Vector.ScaleBy immutably returns the result of the source vector multiplied with another vector. Thanks to @tonygiang!
 - Fix: FPSCounter now works correctly if EditorOnly is toggled. Thanks to @TheWalruzz!
+- Fix: AnimationStateReference now working with AnimatorOverrideControllers
 TODO Docs - Fix: DisplayInspector now will show warning if used on property of the wrong type
 TODO Docs - Fix: FoldoutAttribute visual improvements
 
