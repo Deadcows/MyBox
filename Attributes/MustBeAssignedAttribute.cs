@@ -18,7 +18,11 @@ namespace MyBox.Internal
 {
 	using System.Reflection;
 	using UnityEditor;
+#if UNITY_2021_2_OR_NEWER
+	using UnityEditor.SceneManagement;
+#else
 	using UnityEditor.Experimental.SceneManagement;
+#endif
 	using EditorTools;
 
 	[InitializeOnLoad]
