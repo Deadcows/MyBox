@@ -19,7 +19,8 @@ namespace MyBox.Internal
 				if (preset.Preset == null) continue;
 				if (!preset.Sample(assetPath)) continue;
 				if (!preset.Preset.CanBeAppliedTo(assetImporter)) continue;
-				
+
+				context.DependsOnSourceAsset(assetPath);
 				preset.Preset.ApplyTo(assetImporter, preset.PropertiesToApply);
 				return;
 			}

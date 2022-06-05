@@ -45,6 +45,7 @@ All notable changes to this package will be documented in this file.
 - Fix: FPSCounter now works correctly if EditorOnly is toggled. Thanks to @TheWalruzz!
 - Fix: IPrepareFeature now works with prefab instances
 - Fix: AnimationStateReference now working with AnimatorOverrideControllers
+- Fix: AssetPresetPreprocessor improvement to prevent unneeded reimports 
 - Fix: Unity 2021.2+ compatibility (UnityEditor.Experimental.SceneManagement namespace became UnityEditor.SceneManagement). Thanks to @I_Jemin!
 - TODO Docs - Fix: DisplayInspector now will show warning if used on property of the wrong type
 - TODO Docs - Fix: FoldoutAttribute visual improvements
