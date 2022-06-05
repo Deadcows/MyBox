@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MyBox
 {
@@ -7,13 +8,31 @@ namespace MyBox
 	/// Automatically assign components to this Property.
 	/// It searches for components from this GO or its children by default.
 	/// Pass in an <c>AutoPropertyMode</c> to override this behaviour.
+	/// <para></para>
+	/// Advanced usage: Filter found objects with a method. To do that, create a 
+	/// static method or member method of the current class with the same method
+	/// signature as a Func&lt;UnityEngine.Object, bool&gt;. Your predicate method
+	/// can be private.
+	/// If your predicate method is a member method of the current class, pass in
+	/// the nameof that method as the second argument.
+	/// If your predicate method is a static method, pass in the typeof class that
+	/// contains said method as the third argument.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field)]
 	public class AutoPropertyAttribute : PropertyAttribute
 	{
 		public readonly AutoPropertyMode Mode;
+		public string PredicateMethodName = null;
+		public Type PredicateMethodTarget = null;
 
-		public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children) => Mode = mode;
+		public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children,
+			string predicateMethodName = null,
+			Type predicateMethodTarget = null)
+		{
+			Mode = mode;
+			PredicateMethodTarget = predicateMethodTarget;
+			PredicateMethodName = predicateMethodName;
+		}
 	}
 
 	public enum AutoPropertyMode
@@ -71,40 +90,27 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public static class AutoPropertyHandler
 	{
-		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Object[]>> MultipleObjectsGetters
-			= new Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Object[]>>
+		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Func<Object, bool>, Object[]>> ObjectsGetters
+			= new Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Func<Object, bool>, Object[]>>
 			{
-				[AutoPropertyMode.Children] = property => property.Context.As<Component>()
-					?.GetComponentsInChildren(property.Field.FieldType.GetElementType(), true),
-				[AutoPropertyMode.Parent] = property => property.Context.As<Component>()
-					?.GetComponentsInParent(property.Field.FieldType.GetElementType(), true),
-				[AutoPropertyMode.Scene] = property => MyEditor
+				[AutoPropertyMode.Children] = (property, pred) => property.Context
+					.As<Component>()
+					?.GetComponentsInChildren(property.Field.FieldType.GetElementType(), true)
+					.Where(pred).ToArray(),
+				[AutoPropertyMode.Parent] = (property, pred) => property.Context.As<Component>()
+					?.GetComponentsInParent(property.Field.FieldType.GetElementType(), true)
+					.Where(pred).ToArray(),
+				[AutoPropertyMode.Scene] = (property, pred) => MyEditor
 					.GetAllComponentsInSceneOf(property.Context,
-						property.Field.FieldType.GetElementType()).ToArray(),
-				[AutoPropertyMode.Asset] = property => Resources
+						property.Field.FieldType.GetElementType())
+					.Where(pred).ToArray(),
+				[AutoPropertyMode.Asset] = (property, pred) => Resources
 					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
-					.Where(AssetDatabase.Contains).ToArray(),
-				[AutoPropertyMode.Any] = property => Resources
+					.Where(AssetDatabase.Contains)
+					.Where(pred).ToArray(),
+				[AutoPropertyMode.Any] = (property, pred) => Resources
 					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
-			};
-
-		private static readonly Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Object>> SingularObjectGetters
-			= new Dictionary<AutoPropertyMode, Func<MyEditor.ObjectField, Object>>
-			{
-				[AutoPropertyMode.Children] = property => property.Context.As<Component>()
-					?.GetComponentInChildren(property.Field.FieldType, true),
-				[AutoPropertyMode.Parent] = property => property.Context.As<Component>()
-					?.GetComponentsInParent(property.Field.FieldType, true)
-					.FirstOrDefault(),
-				[AutoPropertyMode.Scene] = property => MyEditor
-					.GetAllComponentsInSceneOf(property.Context, property.Field.FieldType)
-					.FirstOrDefault(),
-				[AutoPropertyMode.Asset] = property => Resources
-					.FindObjectsOfTypeAll(property.Field.FieldType)
-					.FirstOrDefault(AssetDatabase.Contains),
-				[AutoPropertyMode.Any] = property => Resources
-					.FindObjectsOfTypeAll(property.Field.FieldType)
-					.FirstOrDefault()
+					.Where(pred).ToArray()
 			};
 
 		static AutoPropertyHandler()
@@ -134,22 +140,33 @@ namespace MyBox.Internal
 				.GetCustomAttributes(typeof(AutoPropertyAttribute), true)
 				.FirstOrDefault() as AutoPropertyAttribute;
 			if (apAttribute == null) return;
+			Func<Object, bool> predicateMethod = apAttribute.PredicateMethodTarget == null ?
+				apAttribute.PredicateMethodName == null ?
+				_ => true :
+				(Func<Object, bool>)Delegate.CreateDelegate(typeof(Func<Object, bool>),
+					property.Context,
+					apAttribute.PredicateMethodName) :
+				(Func<Object, bool>)Delegate.CreateDelegate(typeof(Func<Object, bool>),
+					apAttribute.PredicateMethodTarget,
+					apAttribute.PredicateMethodName);
+
+			var matchedObjects = ObjectsGetters[apAttribute.Mode]
+				.Invoke(property, predicateMethod);
 
 			if (property.Field.FieldType.IsArray)
 			{
-				var objects = MultipleObjectsGetters[apAttribute.Mode].Invoke(property);
-				if (objects != null && objects.Length > 0)
+				if (matchedObjects != null && matchedObjects.Length > 0)
 				{
 					var serializedObject = new SerializedObject(property.Context);
 					var serializedProperty = serializedObject.FindProperty(property.Field.Name);
-					serializedProperty.ReplaceArray(objects);
+					serializedProperty.ReplaceArray(matchedObjects);
 					serializedObject.ApplyModifiedProperties();
 					return;
 				}
 			}
 			else
 			{
-				var obj = SingularObjectGetters[apAttribute.Mode].Invoke(property);
+				var obj = matchedObjects.FirstOrDefault();
 				if (obj != null)
 				{
 					var serializedObject = new SerializedObject(property.Context);
