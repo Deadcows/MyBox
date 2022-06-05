@@ -18,6 +18,7 @@ namespace MyBox
 		
 		public readonly string[] FieldsToCheckMultiple;
 		public readonly bool[] InverseMultiple;
+		public readonly string[] CompareValuesMultiple;
 
 		/// <param name="fieldToCheck">String name of field to check value</param>
 		/// <param name="inverse">Inverse check result</param>
@@ -26,13 +27,11 @@ namespace MyBox
 			=> (FieldToCheck, Inverse, CompareValues) = 
 				(fieldToCheck, inverse, compareValues.Select(c => c.ToString().ToUpper()).ToArray());
 
-		public ConditionalFieldAttribute(string[] fieldToCheck, bool[] inverse = null) =>
-			(FieldsToCheckMultiple, InverseMultiple) =
-			(fieldToCheck, inverse);
+		public ConditionalFieldAttribute(string[] fieldToCheck, bool[] inverse = null, params object[] compare) =>
+			(FieldsToCheckMultiple, InverseMultiple, CompareValuesMultiple) =
+			(fieldToCheck, inverse, compare.Select(c => c.ToString().ToUpper()).ToArray());
 		
-		public ConditionalFieldAttribute(params string[] fieldToCheck) =>
-			(FieldsToCheckMultiple, InverseMultiple) =
-			(fieldToCheck, null);
+		public ConditionalFieldAttribute(params string[] fieldToCheck) => FieldsToCheckMultiple = fieldToCheck;
 	}
 }
 
@@ -247,10 +246,11 @@ namespace MyBox.Internal
 			{
 				var propertyToCheck = FindRelativeProperty(property, conditional.FieldsToCheckMultiple[i]);
 				bool withInverseValue = conditional.InverseMultiple != null && conditional.InverseMultiple.Length - 1 >= i;
-
+				bool withCompareValue = conditional.CompareValuesMultiple != null && conditional.CompareValuesMultiple.Length - 1 >= i;
 				var inverse = withInverseValue && conditional.InverseMultiple[i];
+				var compare = withCompareValue ? new [] {conditional.CompareValuesMultiple[i]} : null;
 				
-				if (!PropertyIsVisible(propertyToCheck, inverse, null)) return false;
+				if (!PropertyIsVisible(propertyToCheck, inverse, compare)) return false;
 			}
 			return true;
 		}
