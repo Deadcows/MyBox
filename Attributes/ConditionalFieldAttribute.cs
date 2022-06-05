@@ -263,6 +263,11 @@ namespace MyBox.Internal
 		{
 			if (!handleFlags) return ValueMatches(propertyValueAsString);
 			
+            if (propertyValueAsString == "-1") //Handle Everything
+                return true;
+            if (propertyValueAsString == "0") //Handle Nothing
+                return false;
+
 			var separateFlags = propertyValueAsString.Split(',');
 			foreach (var flag in separateFlags)
 			{
