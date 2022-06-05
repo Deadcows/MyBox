@@ -62,6 +62,8 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public Func<int, bool> CustomRemove;
 
+		public Func<int, string> CustomElementName;
+
 
 		private ReorderableList _list;
 		private SerializedProperty _property;
@@ -142,8 +144,11 @@ namespace MyBox.EditorTools
 					rect.width -= 14;
 					var genericsLabel = rect;
 					genericsLabel.height = EditorGUIUtility.singleLineHeight;
-					
-					EditorGUI.LabelField(genericsLabel, element.displayName);
+
+					string displayName = CustomElementName != null ? 
+						CustomElementName.Invoke(index) : 
+						element.displayName;
+					EditorGUI.LabelField(genericsLabel, displayName);
 				}
 				EditorGUI.PropertyField(rect, property, GUIContent.none, true);
 			}

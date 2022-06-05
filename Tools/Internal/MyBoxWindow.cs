@@ -123,33 +123,63 @@ namespace MyBox.Internal
 
 			using (new EditorGUILayout.HorizontalScope())
 			{
-				EditorGUILayout.Space(leftOffset);
-				MyBoxSettings.CheckForUpdates = EditorGUILayout.Toggle("Check for Updates: ", MyBoxSettings.CheckForUpdates);
 				GUILayout.FlexibleSpace();
-			}
+				using (new EditorGUILayout.VerticalScope())
+				{
+					using (new EditorGUILayout.HorizontalScope())
+					{
+						EditorGUILayout.Space(leftOffset);
+						MyBoxSettings.CheckForUpdates = EditorGUILayout.Toggle("Check for Updates: ", MyBoxSettings.CheckForUpdates);
+						GUILayout.FlexibleSpace();
+					}
 
-			using (new EditorGUILayout.HorizontalScope())
-			{
-				EditorGUILayout.Space(leftOffset);
-				MyBoxSettings.AutoSaveEnabled = EditorGUILayout.Toggle("AutoSave on Play: ", MyBoxSettings.AutoSaveEnabled);
-				GUILayout.FlexibleSpace();
-			}
+					using (new EditorGUILayout.HorizontalScope())
+					{
+						var label = new GUIContent("AutoSave on Play: ", "Save changes in opened scenes before Playmode. " +
+						                                                 "\nUnity crasher from time to time you know...");
+						EditorGUILayout.Space(leftOffset);
+						MyBoxSettings.AutoSaveEnabled = EditorGUILayout.Toggle(label, MyBoxSettings.AutoSaveEnabled);
+						GUILayout.FlexibleSpace();
+					}
 
-			using (new EditorGUILayout.HorizontalScope())
-			{
-				EditorGUILayout.Space(leftOffset);
-				MyBoxSettings.CleanEmptyDirectoriesFeature = EditorGUILayout.Toggle("Clean Empty Folders: ", MyBoxSettings.CleanEmptyDirectoriesFeature);
-				GUILayout.FlexibleSpace();
-			}
+					using (new EditorGUILayout.HorizontalScope())
+					{
+						var label = new GUIContent("Clean Empty Folders: ", "Delete empty folders in project on Save. " +
+						                                                    "\nIt handles VCS issue with .meta files for empty folders");
+						EditorGUILayout.Space(leftOffset);
+						MyBoxSettings.CleanEmptyDirectoriesFeature = EditorGUILayout.Toggle(label, MyBoxSettings.CleanEmptyDirectoriesFeature);
+						GUILayout.FlexibleSpace();
+					}
+				}
 
-			using (new EditorGUILayout.HorizontalScope())
-			{
-				EditorGUILayout.Space(leftOffset);
-				MyBoxSettings.PrepareOnPlaymode = EditorGUILayout.Toggle("Prepare on Playmode: ", MyBoxSettings.PrepareOnPlaymode);
-				if (GUILayout.Button(MyGUI.EditorIcons.Help, EditorStyles.label, GUILayout.Height(18)))
-					Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#iprepare");
+				EditorGUILayout.Space(80);
+				using (new EditorGUILayout.VerticalScope())
+				{
+					EditorGUILayout.LabelField("Performance settings", EditorStyles.miniLabel);
+					
+					using (new EditorGUILayout.HorizontalScope())
+					{
+						var label = new GUIContent("Prepare on Playmode: ", "Allows to use IPrepare interface with Prepare() method called automatically." +
+						                                                    "\nSlightly increases project Save time.");
+						MyBoxSettings.PrepareOnPlaymode = EditorGUILayout.Toggle(label, MyBoxSettings.PrepareOnPlaymode);
+						if (GUILayout.Button(MyGUI.EditorIcons.Help, EditorStyles.label, GUILayout.Height(18)))
+							Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#iprepare");
+						GUILayout.FlexibleSpace();
+					}
+					
+					using (new EditorGUILayout.HorizontalScope())
+					{
+						var label = new GUIContent("SO processing: ", "Allows [AutoProperty] and [MustBeAssigned] Attributes to work with Scriptable Objects." +
+						                                              "\nMight increase project Save time for a few seconds.");
+						MyBoxSettings.EnableSOCheck = EditorGUILayout.Toggle(label, MyBoxSettings.EnableSOCheck);
+						GUILayout.FlexibleSpace();
+					}
+				}
 				GUILayout.FlexibleSpace();
 			}
+			
+			
+
 
 			MyGUI.DrawLine(Color.white, true);
 

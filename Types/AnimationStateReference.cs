@@ -104,7 +104,15 @@ namespace MyBox.Internal
 				if (animatorProperty.objectReferenceValue == null) return _empty;
 				var animator = (Animator) animatorProperty.objectReferenceValue;
 				var controller = animator.runtimeAnimatorController as AnimatorController;
-				if (controller == null) return _empty;
+				if (controller == null)
+				{
+					var overrideController = animator.runtimeAnimatorController as AnimatorOverrideController;
+					if (overrideController == null) return _empty;
+
+					controller = overrideController.runtimeAnimatorController as AnimatorController;
+					if (controller == null) return _empty;
+				}
+				
 				
 				var statesInAnimator = controller.layers.SelectMany(l => l.stateMachine.states)
 					.Select(s => (s.state.name)).Distinct();

@@ -61,7 +61,7 @@ namespace MyBox.Internal
 			}
 			else
 			{
-				var charactersRange = (CharactersRangeAttribute) attribute;
+				var charactersRange = (CharactersRangeAttribute)attribute;
 				var mode = charactersRange.Mode;
 				var ignoreCase = charactersRange.IgnoreCase;
 				var filter = charactersRange.Characters;
@@ -75,18 +75,34 @@ namespace MyBox.Internal
 						if (ignoreCase) c = char.ToUpper(c);
 						return filter.Contains(c) ^ allow;
 					});
-				
+				bool ifMatch = mode == CharacterRangeMode.WarningIfAny;
+				bool ifNotMatch = mode == CharacterRangeMode.WarningIfNotMatch;
+				bool anyFiltered = filteredCharacters.Any();
+				bool warn = (ifMatch && anyFiltered || ifNotMatch && anyFiltered);
+				var originalPosition = position;
+
 				DrawWarning();
 				position.width -= 20;
-				
+
 				property.stringValue = EditorGUI.TextField(position, label, property.stringValue);
 				DrawTooltip();
-				
+
 				if (!warning)
 				{
 					property.stringValue = filteredCharacters.Aggregate(
 						property.stringValue,
 						(p, c) => p.Replace(c.ToString(), ""));
+				}
+
+				if (warn)
+				{
+					GUILayoutUtility.GetRect(GUIContent.none, EditorStyles.objectField);
+					position = originalPosition;
+					position.y += EditorGUIUtility.singleLineHeight;
+					DrawWarning();
+					position.x += EditorGUIUtility.labelWidth;
+					var warningContent = new GUIContent("Containing disallowed characters!");
+					EditorGUI.LabelField(position, warningContent, EditorStyles.miniBoldLabel);
 				}
 
 				property.serializedObject.ApplyModifiedProperties();
@@ -95,17 +111,10 @@ namespace MyBox.Internal
 				void DrawWarning()
 				{
 					if (!warning) return;
-
-					bool ifMatch = mode == CharacterRangeMode.WarningIfAny;
-					bool ifNotMatch = mode == CharacterRangeMode.WarningIfNotMatch;
-					
-					bool anyFiltered = filteredCharacters.Any();
-					bool warn = (ifMatch && anyFiltered || ifNotMatch && anyFiltered);
 					if (property.stringValue.Length == 0) warn = false;
-					
 					MyGUI.DrawColouredRect(position, warn ? MyGUI.Colors.Yellow : Color.clear);
 				}
-				
+
 				void DrawTooltip()
 				{
 					string tooltip = "Characters range ";

@@ -18,7 +18,11 @@ namespace MyBox.Internal
 {
 	using System.Reflection;
 	using UnityEditor;
+#if UNITY_2021_2_OR_NEWER
+	using UnityEditor.SceneManagement;
+#else
 	using UnityEditor.Experimental.SceneManagement;
+#endif
 	using EditorTools;
 
 	[InitializeOnLoad]
@@ -37,14 +41,20 @@ namespace MyBox.Internal
 
 		private static void AssertComponentsInScene()
 		{
+			#if UNITY_2020_1_OR_NEWER
+			var behaviours = Object.FindObjectsOfType<MonoBehaviour>(true);
+			#else
 			var behaviours = Object.FindObjectsOfType<MonoBehaviour>();
+			#endif
 			// ReSharper disable once CoVariantArrayConversion
 			AssertComponents(behaviours);
-			
-			// TODO: Allow to disable SO check
-			var scriptableObjects = MyScriptableObject.LoadAssets<ScriptableObject>();
-			// ReSharper disable once CoVariantArrayConversion
-			AssertComponents(scriptableObjects);
+
+			if (MyBoxSettings.EnableSOCheck)
+			{
+				var scriptableObjects = MyScriptableObject.LoadAssets<ScriptableObject>();
+				// ReSharper disable once CoVariantArrayConversion
+				AssertComponents(scriptableObjects);
+			}
 		}
 
 		private static void AssertComponentsInPrefab(GameObject prefab)
