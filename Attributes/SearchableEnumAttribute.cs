@@ -4,13 +4,8 @@
 // Source: https://github.com/roboryantron/UnityEditorJunkie
 // ----------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace MyBox
 {
@@ -19,15 +14,38 @@ namespace MyBox
 	/// MonoBehaviour or ScriptableObject to get an improved enum selector
 	/// popup. The enum list is scrollable and can be filtered by typing.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Field)]
 	public class SearchableEnumAttribute : PropertyAttribute
 	{
 	}
 }
 
 #if UNITY_EDITOR
+namespace MyBox.EditorTools
+{
+	using UnityEditor;
+	
+	/// <summary>
+	/// Base class to easily create searchable enum types
+	/// </summary>
+	public class SearchableEnumDrawer : PropertyDrawer
+	{
+		private Internal.SearchableEnumAttributeDrawer _drawer;
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+		{
+			if (_drawer == null) _drawer = new Internal.SearchableEnumAttributeDrawer();
+			GUIContent content = new GUIContent(property.displayName);
+			Rect drawerRect = EditorGUILayout.GetControlRect(true, _drawer.GetPropertyHeight(property, content));
+			_drawer.OnGUI(drawerRect, property, content);
+		}
+	}
+}
+
 namespace MyBox.Internal
 {
+	using UnityEditor;
+	using System;
+	using System.Collections.Generic;
+	
 	/// <summary>
 	/// Draws the custom enum selector popup for enum fields using the
 	/// SearchableEnumAttribute.
@@ -304,9 +322,10 @@ namespace MyBox.Internal
 		// the current skin which will be the editor skin and lets us get some
 		// built-in styles.
 
-		private static readonly GUIStyle SearchBox = "ToolbarSearchTextField";
-		private static readonly GUIStyle CancelButton = "ToolbarSearchCancelButton";
-		private static readonly GUIStyle DisabledCancelButton = "ToolbarSearchCancelButtonEmpty";
+		// Yeah, "Seach" instead of "Search", it's Unity's typo
+		private static readonly GUIStyle SearchBox = "ToolbarSeachTextField";
+		private static readonly GUIStyle CancelButton = "ToolbarSeachCancelButton";
+		private static readonly GUIStyle DisabledCancelButton = "ToolbarSeachCancelButtonEmpty";
 		private static readonly GUIStyle Selection = "SelectionRect";
 
 		#endregion -- GUI Styles ----------------------------------------------

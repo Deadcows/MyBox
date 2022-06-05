@@ -6,6 +6,19 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MinMaxFloat.RandomInRangeInclusive was redundant, removed
 - Breaking Changes: Extension IList.GetRandomCollection is removed, replaced with IList.ExclusiveSample
 - Breaking Changes: Removed bunch of methods from MyPhysics class 
+- TODO Docs - Added: SearchableEnumDrawer type for fast creation of Searchable Enums instead of SearchableEnumAttribute usage
+
+---
+
+	public enum TestEnum {A, B, C, D}
+	
+	#if UNITY_EDITOR
+	[UnityEditor.CustomPropertyDrawer(typeof(TestEnum))] 
+	public class TestEnumDrawer : MyBox.EditorTools.SearchableEnumDrawer {}
+	#endif
+
+---
+
 - TODO Docs - Added: Ability to disable performant features of MyBox in MyBox Window
 - TODO Docs - Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector3 types
 - TODO Docs - Added: Ability to fold DisplayInspector
@@ -14,18 +27,15 @@ All notable changes to this package will be documented in this file.
 - Changed: AutoProperty and MustBeAssigned attributes now work fine with ScriptableObjects! Thanks to @tonygiang for the addition!
 - TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings
 - TODO Docs - Added: ConditionalField - multiple conditions per attribute
+
 ---
-  [ConditionalField(nameof(A))]  public string IsA;
 
-  [ConditionalField(nameof(B), true)]  public string NotB;
-
-  [ConditionalField(nameof(A), nameof(B))]  public string AandB;
-
-  [ConditionalField(new []{nameof(A), nameof(B)}, new []{true})]   public string NotAandB;
-
-  [ConditionalField(new []{nameof(A), nameof(B)}, new []{false, true})]  public string AnotB;
-
-  [ConditionalField(new []{nameof(A), nameof(B)}, new []{true, true})]  public string NotAandNotB;
+	[ConditionalField(nameof(A))]  public string IsA;
+	[ConditionalField(nameof(B), true)]  public string NotB;
+	[ConditionalField(nameof(A), nameof(B))]  public string AandB;
+	[ConditionalField(new []{nameof(A), nameof(B)}, new []{true})]   public string NotAandB;
+	[ConditionalField(new []{nameof(A), nameof(B)}, new []{false, true})]  public string AnotB;
+	[ConditionalField(new []{nameof(A), nameof(B)}, new []{true, true})]  public string NotAandNotB;
 
 ---
 
