@@ -27,8 +27,10 @@ namespace MyBox.Internal
 	public class DisplayInspectorAttributeDrawer : PropertyDrawer
 	{
 		private ButtonMethodHandler _buttonMethods;
+		private EditorPrefsBool _foldout;
 
 		private readonly Dictionary<Object, SerializedObject> _targets = new Dictionary<Object, SerializedObject>();
+
 		private SerializedObject GetTargetSO(Object targetObject)
 		{
 			SerializedObject target;
@@ -38,10 +40,11 @@ namespace MyBox.Internal
 				_targets.Add(targetObject, new SerializedObject(targetObject));
 				target = _targets[targetObject];
 			}
+
 			target.Update();
 			return target;
 		}
-
+		
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			bool notValidType = property.propertyType != SerializedPropertyType.ObjectReference;
@@ -51,18 +54,33 @@ namespace MyBox.Internal
 				return;
 			}
 			
-			if (((DisplayInspectorAttribute)attribute).DisplayScript || property.objectReferenceValue == null)
+			position.height = EditorGUIUtility.singleLineHeight;
+			bool displayScript = ((DisplayInspectorAttribute)attribute).DisplayScript;
+			if (displayScript || property.objectReferenceValue == null)
 			{
-				position.height = EditorGUI.GetPropertyHeight(property);
-				EditorGUI.PropertyField(position, property, label);
-				position.y += EditorGUI.GetPropertyHeight(property) + 4;
-				if (GUI.changed) property.serializedObject.ApplyModifiedProperties();
+				// Draw foldout only if Script line drawn and there is content to hide (ref assigned)
+				if (property.objectReferenceValue != null)
+				{
+					// Workaround to make label clickable, accurately aligned and property field click is not triggering foldout
+					var foldRect = new Rect(position);
+					foldRect.width = EditorGUIUtility.labelWidth;
+					_foldout.Value = EditorGUI.Foldout(foldRect, _foldout.Value, new GUIContent(""), true, StyleFramework.FoldoutHeader);
+					EditorGUI.PropertyField(position, property, label);
+					if (GUI.changed) property.serializedObject.ApplyModifiedProperties();
+					
+					if (!_foldout.Value) return;
+				}
+				else
+				{
+					EditorGUI.PropertyField(position, property, label);
+					if (GUI.changed) property.serializedObject.ApplyModifiedProperties();
+				}
 			}
 			if (property.objectReferenceValue == null) return;
-			
-			
+
 			if (_buttonMethods == null) _buttonMethods = new ButtonMethodHandler(property.objectReferenceValue);
 
+			if (displayScript) position.y += position.height + 4;
 			var startY = position.y - 2;
 			float startX = position.x;
 
@@ -86,7 +104,7 @@ namespace MyBox.Internal
 
 				position.height = EditorGUI.GetPropertyHeight(propertyObject, expandedReorderable);
 				EditorGUI.PropertyField(position, propertyObject, expandedReorderable);
-				
+
 				position.y += position.height + 4;
 			}
 
@@ -101,9 +119,9 @@ namespace MyBox.Internal
 			}
 
 			var bgRect = position;
-			bgRect.y = startY - 5;
-			bgRect.x = startX - 10;
-			bgRect.width = 10;
+			bgRect.y = startY;
+			bgRect.x = startX - 12;
+			bgRect.width = 11;
 			bgRect.height = position.y - startY;
 			if (_buttonMethods.Amount > 0) bgRect.height += 5;
 
@@ -114,13 +132,22 @@ namespace MyBox.Internal
 			property.serializedObject.ApplyModifiedProperties();
 		}
 
+		private bool IsFolded(SerializedProperty property)
+		{
+			_foldout ??= new EditorPrefsBool("DisplayInspectorFoldout" +
+			                                 property.GetParent().GetType().Name +
+			                                 property.propertyPath);
+			return _foldout.Value;
+		}
+		
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
 			bool notValidType = property.propertyType != SerializedPropertyType.ObjectReference;
-			if (notValidType || property.objectReferenceValue == null) return base.GetPropertyHeight(property, label);
+			bool displayScript = ((DisplayInspectorAttribute)attribute).DisplayScript;
+			if (notValidType || property.objectReferenceValue == null || (displayScript && !IsFolded(property))) return base.GetPropertyHeight(property, label);
+			
 			if (_buttonMethods == null) _buttonMethods = new ButtonMethodHandler(property.objectReferenceValue);
-
-			float height = ((DisplayInspectorAttribute)attribute).DisplayScript ? EditorGUI.GetPropertyHeight(property) + 4 : 0;
+			float height = displayScript ? EditorGUI.GetPropertyHeight(property) + 4 : 0;
 
 			var target = GetTargetSO(property.objectReferenceValue);
 			var propertyObject = target.GetIterator();

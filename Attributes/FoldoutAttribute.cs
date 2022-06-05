@@ -37,15 +37,12 @@ namespace MyBox.Internal
 
     public class FoldoutAttributeHandler
     {
-        
-        
         private readonly Dictionary<string, CacheFoldProp> _cacheFoldouts = new Dictionary<string, CacheFoldProp>();
         private readonly List<SerializedProperty> _props = new List<SerializedProperty>();
         private bool _initialized;
 
         private readonly UnityEngine.Object _target;
         private readonly SerializedObject _serializedObject;
-
         
         public bool OverrideInspector => _props.Count > 0;
         
