@@ -6,12 +6,29 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MinMaxFloat.RandomInRangeInclusive was redundant, removed
 - Breaking Changes: Extension IList.GetRandomCollection is removed, replaced with IList.ExclusiveSample
 - Breaking Changes: Removed bunch of methods from MyPhysics class 
-TODO Docs - Added: Ability to disable performant features of MyBox in MyBox Window
-TODO Docs - Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector3 types
+- TODO Docs - Added: Ability to disable performant features of MyBox in MyBox Window
+- TODO Docs - Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector3 types
+- TODO Docs - Added: Ability to fold DisplayInspector
 - Changed: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
-TODO Docs - AutoProperty now allows to specify predicate method to filter out the lookup. Thanks to @tonygiang for the addition!
+- TODO Docs - AutoProperty now allows to specify predicate method to filter out the lookup. Thanks to @tonygiang for the addition!
 - Changed: AutoProperty and MustBeAssigned attributes now work fine with ScriptableObjects! Thanks to @tonygiang for the addition!
-TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings
+- TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings
+- TODO Docs - Added: ConditionalField - multiple conditions per attribute
+---
+  [ConditionalField(nameof(A))]  public string IsA;
+
+  [ConditionalField(nameof(B), true)]  public string NotB;
+
+  [ConditionalField(nameof(A), nameof(B))]  public string AandB;
+
+  [ConditionalField(new []{nameof(A), nameof(B)}, new []{true})]   public string NotAandB;
+
+  [ConditionalField(new []{nameof(A), nameof(B)}, new []{false, true})]  public string AnotB;
+
+  [ConditionalField(new []{nameof(A), nameof(B)}, new []{true, true})]  public string NotAandNotB;
+
+---
+
 - Extensions: collection.FillBy(index => { }) allows to use factory method to fill up the collection. Thanks to @tonygiang!
 - Extensions: IList.SwapInPlace(a, b) swaps two elements in collection. Thanks to @tonygiang!
 - Extensions: IList.Shuffle() shuffles elements in collection using the Knuth algorithm. Thanks to @tonygiang!
@@ -29,8 +46,8 @@ TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from
 - Fix: IPrepareFeature now works with prefab instances
 - Fix: AnimationStateReference now working with AnimatorOverrideControllers
 - Fix: Unity 2021.2+ compatibility (UnityEditor.Experimental.SceneManagement namespace became UnityEditor.SceneManagement). Thanks to @I_Jemin!
-TODO Docs - Fix: DisplayInspector now will show warning if used on property of the wrong type
-TODO Docs - Fix: FoldoutAttribute visual improvements
+- TODO Docs - Fix: DisplayInspector now will show warning if used on property of the wrong type
+- TODO Docs - Fix: FoldoutAttribute visual improvements
 
 ## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable

@@ -31,13 +31,7 @@ namespace MyBox.Internal
         {
             if (!(attribute is ReadOnlyAttribute conditional)) return;
 
-            bool enabled = false;
-
-            if (!string.IsNullOrEmpty(conditional.FieldToCheck))
-            {
-                var propertyToCheck = ConditionalFieldUtility.FindRelativeProperty(property, conditional.FieldToCheck);
-                enabled = !ConditionalFieldUtility.PropertyIsVisible(propertyToCheck, conditional.Inverse, conditional.CompareValues);
-            }
+            bool enabled = !ConditionalFieldUtility.PropertyIsVisible(property, conditional);
 
             GUI.enabled = enabled;
             EditorGUI.PropertyField(position, property, label, true);

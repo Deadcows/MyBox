@@ -13,18 +13,26 @@ namespace MyBox
 	public class ConditionalFieldAttribute : PropertyAttribute
 	{
 		public readonly string FieldToCheck;
-		public readonly string[] CompareValues;
 		public readonly bool Inverse;
+		public readonly string[] CompareValues;
+		
+		public readonly string[] FieldsToCheckMultiple;
+		public readonly bool[] InverseMultiple;
 
 		/// <param name="fieldToCheck">String name of field to check value</param>
 		/// <param name="inverse">Inverse check result</param>
 		/// <param name="compareValues">On which values field will be shown in inspector</param>
 		public ConditionalFieldAttribute(string fieldToCheck, bool inverse = false, params object[] compareValues)
-		{
-			FieldToCheck = fieldToCheck;
-			Inverse = inverse;
-			CompareValues = compareValues.Select(c => c.ToString().ToUpper()).ToArray();
-		}
+			=> (FieldToCheck, Inverse, CompareValues) = 
+				(fieldToCheck, inverse, compareValues.Select(c => c.ToString().ToUpper()).ToArray());
+
+		public ConditionalFieldAttribute(string[] fieldToCheck, bool[] inverse = null) =>
+			(FieldsToCheckMultiple, InverseMultiple) =
+			(fieldToCheck, inverse);
+		
+		public ConditionalFieldAttribute(params string[] fieldToCheck) =>
+			(FieldsToCheckMultiple, InverseMultiple) =
+			(fieldToCheck, null);
 	}
 }
 
@@ -56,9 +64,8 @@ namespace MyBox.Internal
 			if (!(attribute is ConditionalFieldAttribute conditional)) return 0;
 
 			Initialize(property);
+			_toShow = ConditionalFieldUtility.PropertyIsVisible(property, conditional);
 
-			var propertyToCheck = ConditionalFieldUtility.FindRelativeProperty(property, conditional.FieldToCheck);
-			_toShow = ConditionalFieldUtility.PropertyIsVisible(propertyToCheck, conditional.Inverse, conditional.CompareValues);
 			if (!_toShow) return 0;
 
 			if (_customAttributeDrawer != null) return _customAttributeDrawer.GetPropertyHeight(property, label);
@@ -227,6 +234,27 @@ namespace MyBox.Internal
 	{
 		#region Property Is Visible
 
+		public static bool PropertyIsVisible(SerializedProperty property, ConditionalFieldAttribute conditional)
+		{
+			if (conditional.FieldToCheck.NotNullOrEmpty()) 
+				return PropertyIsVisible(
+					FindRelativeProperty(property, conditional.FieldToCheck),
+					conditional.Inverse, 
+					conditional.CompareValues);
+			
+			
+			for (var i = 0; i < conditional.FieldsToCheckMultiple.Length; i++)
+			{
+				var propertyToCheck = FindRelativeProperty(property, conditional.FieldsToCheckMultiple[i]);
+				bool withInverseValue = conditional.InverseMultiple != null && conditional.InverseMultiple.Length - 1 >= i;
+
+				var inverse = withInverseValue && conditional.InverseMultiple[i];
+				
+				if (!PropertyIsVisible(propertyToCheck, inverse, null)) return false;
+			}
+			return true;
+		}
+		
 		public static bool PropertyIsVisible(SerializedProperty property, bool inverse, string[] compareAgainst)
 		{
 			if (property == null) return true;
@@ -350,13 +378,10 @@ namespace MyBox.Internal
 
 		public static bool BehaviourPropertyIsVisible(UnityEngine.Object obj, string propertyName, ConditionalFieldAttribute appliedAttribute)
 		{
-			if (string.IsNullOrEmpty(appliedAttribute.FieldToCheck)) return true;
-
 			var so = new SerializedObject(obj);
 			var property = so.FindProperty(propertyName);
-			var targetProperty = FindRelativeProperty(property, appliedAttribute.FieldToCheck);
 
-			return PropertyIsVisible(targetProperty, appliedAttribute.Inverse, appliedAttribute.CompareValues);
+			return PropertyIsVisible(property, appliedAttribute);
 		}
 
 		#endregion
