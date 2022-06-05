@@ -62,6 +62,7 @@ namespace MyBox.EditorTools
 					modifiedScenes.Add(prepare.Component.gameObject.scene);
 
 					EditorUtility.SetDirty(prepare.Component);
+					PrefabUtility.RecordPrefabInstancePropertyModifications(prepare.Component);
 					Debug.Log(prepare.Component.name + "." + prepare.Component.GetType().Name + ": Changed on Prepare", prepare.Component);
 				}
 			}
