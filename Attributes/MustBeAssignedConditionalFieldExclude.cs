@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEngine;
 
 namespace MyBox.Internal
 {
@@ -15,20 +14,20 @@ namespace MyBox.Internal
 			MustBeAssignedAttributeChecker.ExcludeFieldFilter += ExcludeCheckIfConditionalFieldHidden;
 		}
 		
-		private static readonly Type _conditionallyVisibleType = typeof(ConditionalFieldAttribute);
+		private static readonly Type ConditionalType = typeof(ConditionalFieldAttribute);
 		
 		private static bool ExcludeCheckIfConditionalFieldHidden(FieldInfo field, UnityEngine.Object obj)
 		{
-			if (_conditionallyVisibleType == null) return false;
-			if (!field.IsDefined(_conditionallyVisibleType, false)) return false;
+			if (ConditionalType == null) return false;
+			if (!field.IsDefined(ConditionalType, false)) return false;
 
 			// Get a specific attribute of this field
-			var conditionalFieldAttribute = field.GetCustomAttributes(_conditionallyVisibleType, false)
+			var conditionalFieldAttribute = field.GetCustomAttributes(ConditionalType, false)
 				.Select(a => a as ConditionalFieldAttribute)
 				.SingleOrDefault();
 
 			return conditionalFieldAttribute != null &&
-			       !ConditionalFieldUtility.BehaviourPropertyIsVisible(obj, field.Name, conditionalFieldAttribute);
+			       !ConditionalUtility.IsBehaviourConditionMatch(obj, field.Name, conditionalFieldAttribute.Data);
 		}
 	}
 }

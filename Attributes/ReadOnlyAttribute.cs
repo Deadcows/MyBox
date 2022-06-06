@@ -5,12 +5,6 @@ namespace MyBox
     public class ReadOnlyAttribute : ConditionalFieldAttribute
     {
         public ReadOnlyAttribute() : base("") { }
-
-        /// <param name="fieldToCheck">String name of field to check value</param>
-        /// <param name="inverse">Inverse check result</param>
-        /// <param name="compareValues">On which values field will be shown in inspector</param>
-        public ReadOnlyAttribute(string fieldToCheck, bool inverse = false, params object[] compareValues)
-            : base(fieldToCheck, inverse, compareValues) { }
     }
 }
 
@@ -31,7 +25,7 @@ namespace MyBox.Internal
         {
             if (!(attribute is ReadOnlyAttribute conditional)) return;
 
-            bool enabled = !ConditionalFieldUtility.PropertyIsVisible(property, conditional);
+            bool enabled = !ConditionalUtility.IsPropertyConditionMatch(property, conditional.Data);
 
             GUI.enabled = enabled;
             EditorGUI.PropertyField(position, property, label, true);

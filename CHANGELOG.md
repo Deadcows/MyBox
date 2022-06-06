@@ -45,6 +45,16 @@ All notable changes to this package will be documented in this file.
 
 ---
 
+- TODO Docs - Added: ConditionalField - ability to use method call to dynamically check condition
+
+---
+
+	public int Value;
+	[ConditionalField(true, nameof(Predicate))] public string ValueIsEven;
+	private bool Predicate() => Value % 2 == 0;
+
+---
+
 - Extensions: collection.FillBy(index => { }) allows to use factory method to fill up the collection. Thanks to @tonygiang!
 - Extensions: IList.SwapInPlace(a, b) swaps two elements in collection. Thanks to @tonygiang!
 - Extensions: IList.Shuffle() shuffles elements in collection using the Knuth algorithm. Thanks to @tonygiang!

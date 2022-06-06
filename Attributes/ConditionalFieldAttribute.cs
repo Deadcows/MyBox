@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
+using MyBox.Internal;
 
 namespace MyBox
 {
@@ -12,26 +13,19 @@ namespace MyBox
 	[AttributeUsage(AttributeTargets.Field)]
 	public class ConditionalFieldAttribute : PropertyAttribute
 	{
-		public readonly string FieldToCheck;
-		public readonly bool Inverse;
-		public readonly string[] CompareValues;
-		
-		public readonly string[] FieldsToCheckMultiple;
-		public readonly bool[] InverseMultiple;
-		public readonly string[] CompareValuesMultiple;
+		public readonly ConditionalData Data;
 
 		/// <param name="fieldToCheck">String name of field to check value</param>
 		/// <param name="inverse">Inverse check result</param>
 		/// <param name="compareValues">On which values field will be shown in inspector</param>
 		public ConditionalFieldAttribute(string fieldToCheck, bool inverse = false, params object[] compareValues)
-			=> (FieldToCheck, Inverse, CompareValues) = 
-				(fieldToCheck, inverse, compareValues.Select(c => c.ToString().ToUpper()).ToArray());
+			=> Data = new ConditionalData(fieldToCheck, inverse, compareValues);
 
-		public ConditionalFieldAttribute(string[] fieldToCheck, bool[] inverse = null, params object[] compare) =>
-			(FieldsToCheckMultiple, InverseMultiple, CompareValuesMultiple) =
-			(fieldToCheck, inverse, compare.Select(c => c.ToString().ToUpper()).ToArray());
-		
-		public ConditionalFieldAttribute(params string[] fieldToCheck) => FieldsToCheckMultiple = fieldToCheck;
+		public ConditionalFieldAttribute(string[] fieldToCheck, bool[] inverse = null, params object[] compare)
+			=> Data = new ConditionalData(fieldToCheck, inverse, compare);
+
+		public ConditionalFieldAttribute(params string[] fieldToCheck) => Data = new ConditionalData(fieldToCheck);
+		public ConditionalFieldAttribute(bool useMethod, string method) => Data = new ConditionalData(useMethod, method);
 	}
 }
 
@@ -39,7 +33,6 @@ namespace MyBox
 namespace MyBox.Internal
 {
 	using UnityEditor;
-	using EditorTools;
 
 	[CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
 	public class ConditionalFieldAttributeDrawer : PropertyDrawer
@@ -63,7 +56,7 @@ namespace MyBox.Internal
 			if (!(attribute is ConditionalFieldAttribute conditional)) return 0;
 
 			Initialize(property);
-			_toShow = ConditionalFieldUtility.PropertyIsVisible(property, conditional);
+			_toShow = ConditionalUtility.IsPropertyConditionMatch(property, conditional.Data);
 
 			if (!_toShow) return 0;
 
@@ -149,7 +142,7 @@ namespace MyBox.Internal
 			{
 				if (fieldInfo == null) return;
 				//Get the second attribute flag
-				var secondAttribute = (PropertyAttribute) fieldInfo.GetCustomAttributes(typeof(PropertyAttribute), false)
+				var secondAttribute = (PropertyAttribute)fieldInfo.GetCustomAttributes(typeof(PropertyAttribute), false)
 					.FirstOrDefault(a => !(a is ConditionalFieldAttribute));
 				if (secondAttribute == null) return;
 				var genericAttributeType = secondAttribute.GetType();
@@ -165,7 +158,7 @@ namespace MyBox.Internal
 				//Create drawer for custom attribute
 				try
 				{
-					_customAttributeDrawer = (PropertyDrawer) Activator.CreateInstance(customAttributeDrawerType);
+					_customAttributeDrawer = (PropertyDrawer)Activator.CreateInstance(customAttributeDrawerType);
 					var attributeField = customAttributeDrawerType.GetField("m_Attribute", BindingFlags.Instance | BindingFlags.NonPublic);
 					if (attributeField != null) attributeField.SetValue(_customAttributeDrawer, secondAttribute);
 				}
@@ -202,7 +195,7 @@ namespace MyBox.Internal
 				//Create instances of each (including the arguments)
 				try
 				{
-					_customTypeDrawer = (PropertyDrawer) Activator.CreateInstance(fieldDrawerType);
+					_customTypeDrawer = (PropertyDrawer)Activator.CreateInstance(fieldDrawerType);
 				}
 				catch (Exception e)
 				{
@@ -227,164 +220,6 @@ namespace MyBox.Internal
 
 			WarningsPool.LogWarning(warning, property.serializedObject.targetObject);
 		}
-	}
-
-	public static class ConditionalFieldUtility
-	{
-		#region Property Is Visible
-
-		public static bool PropertyIsVisible(SerializedProperty property, ConditionalFieldAttribute conditional)
-		{
-			if (conditional.FieldToCheck.NotNullOrEmpty()) 
-				return PropertyIsVisible(
-					FindRelativeProperty(property, conditional.FieldToCheck),
-					conditional.Inverse, 
-					conditional.CompareValues);
-			
-			
-			for (var i = 0; i < conditional.FieldsToCheckMultiple.Length; i++)
-			{
-				var propertyToCheck = FindRelativeProperty(property, conditional.FieldsToCheckMultiple[i]);
-				bool withInverseValue = conditional.InverseMultiple != null && conditional.InverseMultiple.Length - 1 >= i;
-				bool withCompareValue = conditional.CompareValuesMultiple != null && conditional.CompareValuesMultiple.Length - 1 >= i;
-				var inverse = withInverseValue && conditional.InverseMultiple[i];
-				var compare = withCompareValue ? new [] {conditional.CompareValuesMultiple[i]} : null;
-				
-				if (!PropertyIsVisible(propertyToCheck, inverse, compare)) return false;
-			}
-			return true;
-		}
-		
-		public static bool PropertyIsVisible(SerializedProperty property, bool inverse, string[] compareAgainst)
-		{
-			if (property == null) return true;
-
-			string asString = property.AsStringValue().ToUpper();
-
-			if (compareAgainst != null && compareAgainst.Length > 0)
-			{
-				var matchAny = CompareAgainstValues(asString, compareAgainst, IsFlagsEnum());
-				if (inverse) matchAny = !matchAny;
-				return matchAny;
-			}
-
-			bool someValueAssigned = asString != "FALSE" && asString != "0" && asString != "NULL";
-			if (someValueAssigned) return !inverse;
-
-			return inverse;
-			
-			
-			bool IsFlagsEnum()
-			{
-				if (property.propertyType != SerializedPropertyType.Enum) return false;
-				var value = property.GetValue();
-				if (value == null) return false;
-				return value.GetType().GetCustomAttribute<FlagsAttribute>() != null;
-			}
-		}
-
-		
-		/// <summary>
-		/// True if the property value matches any of the values in '_compareValues'
-		/// </summary>
-		private static bool CompareAgainstValues(string propertyValueAsString, string[] compareAgainst, bool handleFlags)
-		{
-			if (!handleFlags) return ValueMatches(propertyValueAsString);
-			
-            if (propertyValueAsString == "-1") //Handle Everything
-                return true;
-            if (propertyValueAsString == "0") //Handle Nothing
-                return false;
-
-			var separateFlags = propertyValueAsString.Split(',');
-			foreach (var flag in separateFlags)
-			{
-				if (ValueMatches(flag.Trim())) return true;
-			}
-
-			return false;
-
-			
-			bool ValueMatches(string value)
-			{
-				foreach (var compare in compareAgainst) if (value == compare) return true;
-				return false;
-			}
-		}
-
-		#endregion
-
-
-		#region Find Relative Property
-
-		public static SerializedProperty FindRelativeProperty(SerializedProperty property, string propertyName)
-		{
-			if (property.depth == 0) return property.serializedObject.FindProperty(propertyName);
-
-			var path = property.propertyPath.Replace(".Array.data[", "[");
-			var elements = path.Split('.');
-
-			var nestedProperty = NestedPropertyOrigin(property, elements);
-
-			// if nested property is null = we hit an array property
-			if (nestedProperty == null)
-			{
-				var cleanPath = path.Substring(0, path.IndexOf('['));
-				var arrayProp = property.serializedObject.FindProperty(cleanPath);
-				var target = arrayProp.serializedObject.targetObject;
-
-				var who = "Property <color=brown>" + arrayProp.name + "</color> in object <color=brown>" + target.name + "</color> caused: ";
-				var warning = who + "Array fields is not supported by [ConditionalFieldAttribute]. Consider to use <color=blue>CollectionWrapper</color>";
-
-				WarningsPool.LogWarning(warning, target);
-
-				return null;
-			}
-
-			return nestedProperty.FindPropertyRelative(propertyName);
-		}
-
-		// For [Serialized] types with [Conditional] fields
-		private static SerializedProperty NestedPropertyOrigin(SerializedProperty property, string[] elements)
-		{
-			SerializedProperty parent = null;
-
-			for (int i = 0; i < elements.Length - 1; i++)
-			{
-				var element = elements[i];
-				int index = -1;
-				if (element.Contains("["))
-				{
-					index = Convert.ToInt32(element.Substring(element.IndexOf("[", StringComparison.Ordinal))
-						.Replace("[", "").Replace("]", ""));
-					element = element.Substring(0, element.IndexOf("[", StringComparison.Ordinal));
-				}
-
-				parent = i == 0
-					? property.serializedObject.FindProperty(element)
-					: parent != null
-						? parent.FindPropertyRelative(element)
-						: null;
-
-				if (index >= 0 && parent != null) parent = parent.GetArrayElementAtIndex(index);
-			}
-
-			return parent;
-		}
-
-		#endregion
-
-		#region Behaviour Property Is Visible
-
-		public static bool BehaviourPropertyIsVisible(UnityEngine.Object obj, string propertyName, ConditionalFieldAttribute appliedAttribute)
-		{
-			var so = new SerializedObject(obj);
-			var property = so.FindProperty(propertyName);
-
-			return PropertyIsVisible(property, appliedAttribute);
-		}
-
-		#endregion
 	}
 }
 #endif
