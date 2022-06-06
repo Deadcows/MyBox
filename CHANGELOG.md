@@ -30,12 +30,18 @@ All notable changes to this package will be documented in this file.
 
 ---
 
+	public enum Test {C, D, E}
+	public bool A;
+	public bool B;
+	public Test T;
+
 	[ConditionalField(nameof(A))]  public string IsA;
 	[ConditionalField(nameof(B), true)]  public string NotB;
 	[ConditionalField(nameof(A), nameof(B))]  public string AandB;
 	[ConditionalField(new []{nameof(A), nameof(B)}, new []{true})]   public string NotAandB;
 	[ConditionalField(new []{nameof(A), nameof(B)}, new []{false, true})]  public string AnotB;
 	[ConditionalField(new []{nameof(A), nameof(B)}, new []{true, true})]  public string NotAandNotB;
+	[ConditionalField(new[] { nameof(T), nameof(A), nameof(B) }, new[] { false, true, true }, Test.C )]  public string NotAandNotBButC;
 
 ---
 
@@ -52,6 +58,7 @@ All notable changes to this package will be documented in this file.
 - Extensions: RectTransform.GetAnchorDelta to get parent-relative size of the RectTransform. Thanks to @tonygiang!
 - Extensions: Vector.Pow to raise each component of the source Vector to the specified power. Thanks to @tonygiang!
 - Extensions: Vector.ScaleBy immutably returns the result of the source vector multiplied with another vector. Thanks to @tonygiang!
+- Fix: AutoProperty will also be triggered before playmode. If scene is not saved before playmode, field will have actual values
 - Fix: FPSCounter now works correctly if EditorOnly is toggled. Thanks to @TheWalruzz!
 - Fix: IPrepareFeature now works with prefab instances
 - Fix: AnimationStateReference now working with AnimatorOverrideControllers

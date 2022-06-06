@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace MyBox
 {
@@ -22,8 +21,8 @@ namespace MyBox
 	public class AutoPropertyAttribute : PropertyAttribute
 	{
 		public readonly AutoPropertyMode Mode;
-		public string PredicateMethodName = null;
-		public Type PredicateMethodTarget = null;
+		public readonly string PredicateMethodName;
+		public readonly Type PredicateMethodTarget;
 
 		public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children,
 			string predicateMethodName = null,
@@ -117,6 +116,7 @@ namespace MyBox.Internal
 		{
 			// this event is for GameObjects in the project.
 			MyEditorEvents.OnSave += CheckAssets;
+			MyEditorEvents.BeforePlaymode += CheckAssets;
 			// this event is for prefabs saved in edit mode.
 			PrefabStage.prefabSaved += CheckComponentsInPrefab;
 			PrefabStage.prefabStageOpened += stage => CheckComponentsInPrefab(stage.prefabContentsRoot);
