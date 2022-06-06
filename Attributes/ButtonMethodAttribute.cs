@@ -68,25 +68,31 @@ namespace MyBox.Internal
 		public void OnBeforeInspectorGUI()
 		{
 			if (TargetMethods == null) return;
-
+			
+			bool anyDrawn = false;
 			foreach (var method in TargetMethods)
 			{
 				if (method.order != ButtonMethodDrawOrder.BeforeInspector) continue;
-				
+				anyDrawn = true;
 				if (GUILayout.Button(method.Name)) InvokeMethod(_target, method.Method);
 			}
 			
-			EditorGUILayout.Space();
+			if (anyDrawn) EditorGUILayout.Space();
 		}
 
 		public void OnAfterInspectorGUI()
 		{
 			if (TargetMethods == null) return;
-			EditorGUILayout.Space();
+			bool anyDrawn = false;
 
 			foreach (var method in TargetMethods)
 			{
 				if (method.order != ButtonMethodDrawOrder.AfterInspector) continue;
+				if (!anyDrawn)
+				{
+					EditorGUILayout.Space();
+					anyDrawn = true;
+				}
 				
 				if (GUILayout.Button(method.Name)) InvokeMethod(_target, method.Method);
 			}
