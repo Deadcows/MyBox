@@ -5,6 +5,7 @@
 // ----------------------------------------------------------------------------
 
 using System;
+using MyBox.Internal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -14,11 +15,21 @@ namespace MyBox
 	public class ButtonMethodAttribute : PropertyAttribute
 	{
 		public readonly ButtonMethodDrawOrder DrawOrder;
+		public readonly ConditionalData Condition;
+		
+		public ButtonMethodAttribute(ButtonMethodDrawOrder drawOrder = ButtonMethodDrawOrder.AfterInspector) => DrawOrder = drawOrder;
 
-		public ButtonMethodAttribute(ButtonMethodDrawOrder drawOrder = ButtonMethodDrawOrder.AfterInspector)
-		{
-			DrawOrder = drawOrder;
-		}
+		public ButtonMethodAttribute(ButtonMethodDrawOrder drawOrder, string fieldToCheck, bool inverse = false, params object[] compareValues)
+			=> (DrawOrder, Condition) = (drawOrder, new ConditionalData(fieldToCheck, inverse, compareValues));
+
+		public ButtonMethodAttribute(ButtonMethodDrawOrder drawOrder, string[] fieldToCheck, bool[] inverse = null, params object[] compare)
+			=> (DrawOrder, Condition) = (drawOrder, new ConditionalData(fieldToCheck, inverse, compare));
+
+		public ButtonMethodAttribute(ButtonMethodDrawOrder drawOrder, params string[] fieldToCheck) 
+			=> (DrawOrder, Condition) = (drawOrder, new ConditionalData(fieldToCheck));
+		
+		public ButtonMethodAttribute(ButtonMethodDrawOrder drawOrder, bool useMethod, string method, bool inverse = false) 
+			=> (DrawOrder, Condition) = (drawOrder, new ConditionalData(useMethod, method, inverse));
 	}
 
 	public enum ButtonMethodDrawOrder
@@ -38,7 +49,7 @@ namespace MyBox.Internal
 	
 	public class ButtonMethodHandler
 	{
-		public readonly List<(MethodInfo Method, string Name, ButtonMethodDrawOrder order)> TargetMethods;
+		public readonly List<(MethodInfo Method, string Name, ButtonMethodDrawOrder Order, ConditionalData Condition)> TargetMethods;
 		public int Amount => TargetMethods?.Count ?? 0;
 		
 		private readonly Object _target;
@@ -59,8 +70,8 @@ namespace MyBox.Internal
 				if (IsValidMember(method, member))
 				{
 					var attribute = (ButtonMethodAttribute)Attribute.GetCustomAttribute(method, typeof(ButtonMethodAttribute));
-					if (TargetMethods == null) TargetMethods = new List<(MethodInfo, string, ButtonMethodDrawOrder)>();
-					TargetMethods.Add((method, method.Name.SplitCamelCase(), attribute.DrawOrder));
+					if (TargetMethods == null) TargetMethods = new List<(MethodInfo, string, ButtonMethodDrawOrder, ConditionalData)>();
+					TargetMethods.Add((method, method.Name.SplitCamelCase(), attribute.DrawOrder, attribute.Condition));
 				}
 			}
 		}
@@ -72,7 +83,9 @@ namespace MyBox.Internal
 			bool anyDrawn = false;
 			foreach (var method in TargetMethods)
 			{
-				if (method.order != ButtonMethodDrawOrder.BeforeInspector) continue;
+				if (method.Order != ButtonMethodDrawOrder.BeforeInspector) continue;
+				if (method.Condition != null && !ConditionalUtility.IsConditionMatch(_target, method.Condition)) return;
+				
 				anyDrawn = true;
 				if (GUILayout.Button(method.Name)) InvokeMethod(_target, method.Method);
 			}
@@ -87,7 +100,9 @@ namespace MyBox.Internal
 
 			foreach (var method in TargetMethods)
 			{
-				if (method.order != ButtonMethodDrawOrder.AfterInspector) continue;
+				if (method.Order != ButtonMethodDrawOrder.AfterInspector) continue;
+				if (method.Condition != null && !ConditionalUtility.IsConditionMatch(_target, method.Condition)) return;
+				
 				if (!anyDrawn)
 				{
 					EditorGUILayout.Space();

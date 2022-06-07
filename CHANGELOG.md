@@ -22,7 +22,6 @@ All notable changes to this package will be documented in this file.
 - TODO Docs - Added: Ability to disable performant features of MyBox in MyBox Window
 - TODO Docs - Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector3 types
 - TODO Docs - Added: Ability to fold DisplayInspector
-- Changed: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
 - TODO Docs - AutoProperty now allows to specify predicate method to filter out the lookup. Thanks to @tonygiang for the addition!
 - Changed: AutoProperty and MustBeAssigned attributes now work fine with ScriptableObjects! Thanks to @tonygiang for the addition!
 - TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings
@@ -45,6 +44,23 @@ All notable changes to this package will be documented in this file.
 
 ---
 
+- TODO Docs: - Added: ButtonMethod now might be conditional, just like ConditionalField!
+
+---
+	[MustBeAssigned] public Transform ChildTransform;
+
+	[ButtonMethod(ButtonMethodDrawOrder.BeforeInspector, nameof(TargetStack), true), UsedImplicitly]
+	private void CreateChild()
+	{
+		var choldGO = new GameObject(name + " Child Object");
+		choldGO.transform.SetParent(transform);
+		choldGO.transform.localPosition = Vector3.zero;
+		ChildTransform = choldGO.transform;
+	}
+
+---
+
+- Added: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
 - TODO Docs - Added: ConditionalField - ability to use method call to dynamically check condition
 
 ---
@@ -52,6 +68,13 @@ All notable changes to this package will be documented in this file.
 	public int Value;
 	[ConditionalField(true, nameof(Predicate))] public string ValueIsEven;
 	private bool Predicate() => Value % 2 == 0;
+
+	// Example with inverse
+	public int Age;
+	[ConditionalField(true, nameof(IsChild))]
+	public bool HomeworkIsDone;
+	[ConditionalField(true, nameof(IsChild), true)]
+	public bool JobTaskIsDone;
 
 ---
 

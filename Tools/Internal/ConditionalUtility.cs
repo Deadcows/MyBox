@@ -1,6 +1,5 @@
 ﻿#if UNITY_EDITOR
 using System;
-using System.Linq;
 using System.Reflection;
 using MyBox.EditorTools;
 using UnityEditor;
@@ -9,67 +8,57 @@ namespace MyBox.Internal
 {
 	public static class ConditionalUtility
 	{
-		public static bool IsBehaviourConditionMatch(UnityEngine.Object obj, string propertyName, ConditionalData conditional)
+		public static bool IsConditionMatch(UnityEngine.Object obj, ConditionalData condition)
+		{
+			var so = new SerializedObject(obj);
+
+			foreach (var fieldCondition in condition)
+			{
+				bool passed = IsConditionMatch(
+					so.FindProperty(fieldCondition.Field),
+					fieldCondition.Inverse,
+					fieldCondition.CompareAgainst);
+				if (!passed) return false;
+			}
+			
+			return IsMethodConditionMatch(obj, condition);
+		}
+		
+		public static bool IsBehaviourConditionMatch(UnityEngine.Object obj, string propertyName, ConditionalData condition)
 		{
 			var so = new SerializedObject(obj);
 			var property = so.FindProperty(propertyName);
 
-			return IsPropertyConditionMatch(property, conditional);
+			return IsPropertyConditionMatch(property, condition);
 		}
-		
+
 		public static bool IsPropertyConditionMatch(SerializedProperty property, ConditionalData conditional)
 		{
-			if (conditional.FieldToCheck.NotNullOrEmpty())
+			foreach (var fieldCondition in conditional)
 			{
-				return IsConditionMatch(
-					FindRelativeProperty(property, conditional.FieldToCheck),
-					conditional.Inverse,
-					conditional.CompareValues);
+				bool passed = IsConditionMatch(
+					FindRelativeProperty(property, fieldCondition.Field),
+					fieldCondition.Inverse,
+					fieldCondition.CompareAgainst);
+				if (!passed) return false;
 			}
 
-			if (conditional.FieldsToCheckMultiple.NotNullOrEmpty())
-			{
-				for (var i = 0; i < conditional.FieldsToCheckMultiple.Length; i++)
-				{
-					var propertyToCheck = FindRelativeProperty(property, conditional.FieldsToCheckMultiple[i]);
-					bool withInverseValue = conditional.InverseMultiple != null && conditional.InverseMultiple.Length - 1 >= i;
-					bool withCompareValue = conditional.CompareValuesMultiple != null && conditional.CompareValuesMultiple.Length - 1 >= i;
-					var inverse = withInverseValue && conditional.InverseMultiple[i];
-					var compare = withCompareValue ? new[] { conditional.CompareValuesMultiple[i] } : null;
-
-					if (!IsConditionMatch(propertyToCheck, inverse, compare)) return false;
-				}
-			}
-			
-			if (conditional.PredicateMethod.NotNullOrEmpty())
-			{
-				var parent = property.GetParent();
-				
-				if (conditional.EditorCachePredicateMethod == null)
-				{
-					var parentType = parent.GetType();
-					var bindings = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-					var method = parentType.GetMethods(bindings).SingleOrDefault(m => m.Name == conditional.PredicateMethod);
-
-					if (method == null || method.ReturnType != typeof(bool))
-					{
-						var warning = "Property <color=brown>" + property.propertyPath + "</color>";
-						warning += " on behaviour <color=brown>" + property.serializedObject.targetObject.name + "</color>";
-						warning += $" trying to invoke method {conditional.PredicateMethod} which is missing or with not a bool return type";
-
-						WarningsPool.LogWarning(warning, property.serializedObject.targetObject);
-						conditional.PredicateMethod = null;
-					}
-					else conditional.EditorCachePredicateMethod = method;
-				}
-				
-				if (conditional.EditorCachePredicateMethod != null) 
-					return (bool)conditional.EditorCachePredicateMethod.Invoke(parent, null);
-			}
-
-			return true;
+			return IsMethodConditionMatch(property.GetParent(), conditional);
 		}
 
+		
+		private static bool IsMethodConditionMatch(object owner, ConditionalData condition)
+		{
+			if (!condition.WithMethodCondition) return true;
+			
+			var predicateMethod = condition.GetMethodCondition(owner);
+			if (predicateMethod == null) return true;
+			
+			bool match = (bool)predicateMethod.Invoke(owner, null);
+			if (condition.Inverse) match = !match;
+			return match;
+		}
+		
 		private static bool IsConditionMatch(SerializedProperty property, bool inverse, string[] compareAgainst)
 		{
 			if (property == null) return true;
