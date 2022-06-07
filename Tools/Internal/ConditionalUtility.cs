@@ -8,56 +8,49 @@ namespace MyBox.Internal
 {
 	public static class ConditionalUtility
 	{
-		public static bool IsConditionMatch(UnityEngine.Object obj, ConditionalData condition)
+		public static bool IsConditionMatch(UnityEngine.Object owner, ConditionalData condition)
 		{
-			var so = new SerializedObject(obj);
+			if (!condition.IsSet) return true;
 
+			var so = new SerializedObject(owner);
 			foreach (var fieldCondition in condition)
 			{
-				bool passed = IsConditionMatch(
-					so.FindProperty(fieldCondition.Field),
-					fieldCondition.Inverse,
-					fieldCondition.CompareAgainst);
+				var property = so.FindProperty(fieldCondition.Field);
+				if (property == null) LogFieldNotFound(so.targetObject, fieldCondition.Field);
+				
+				bool passed = IsConditionMatch(property, fieldCondition.Inverse, fieldCondition.CompareAgainst);
 				if (!passed) return false;
 			}
 			
-			return IsMethodConditionMatch(obj, condition);
-		}
-		
-		public static bool IsBehaviourConditionMatch(UnityEngine.Object obj, string propertyName, ConditionalData condition)
-		{
-			var so = new SerializedObject(obj);
-			var property = so.FindProperty(propertyName);
-
-			return IsPropertyConditionMatch(property, condition);
+			return condition.IsMethodConditionMatch(owner);
 		}
 
-		public static bool IsPropertyConditionMatch(SerializedProperty property, ConditionalData conditional)
+		public static bool IsPropertyConditionMatch(SerializedProperty property, ConditionalData condition)
 		{
-			foreach (var fieldCondition in conditional)
+			if (!condition.IsSet) return true;
+			
+			foreach (var fieldCondition in condition)
 			{
-				bool passed = IsConditionMatch(
-					FindRelativeProperty(property, fieldCondition.Field),
-					fieldCondition.Inverse,
-					fieldCondition.CompareAgainst);
+				var relativeProperty = FindRelativeProperty(property, fieldCondition.Field);
+				if (relativeProperty == null) LogFieldNotFound(property, fieldCondition.Field);
+				
+				bool passed = IsConditionMatch(relativeProperty, fieldCondition.Inverse, fieldCondition.CompareAgainst);
 				if (!passed) return false;
 			}
 
-			return IsMethodConditionMatch(property.GetParent(), conditional);
+			return condition.IsMethodConditionMatch(property.GetParent());
 		}
-
 		
-		private static bool IsMethodConditionMatch(object owner, ConditionalData condition)
-		{
-			if (!condition.WithMethodCondition) return true;
-			
-			var predicateMethod = condition.GetMethodCondition(owner);
-			if (predicateMethod == null) return true;
-			
-			bool match = (bool)predicateMethod.Invoke(owner, null);
-			if (condition.Inverse) match = !match;
-			return match;
-		}
+		private static void LogFieldNotFound(SerializedProperty property, string field) => WarningsPool.LogWarning(property,
+			$"Conditional Attribute is trying to check field {field} which is not present",
+			property.serializedObject.targetObject);
+		private static void LogFieldNotFound(UnityEngine.Object owner, string field) => WarningsPool.LogWarning(owner,
+			$"Conditional Attribute is trying to check field {field} which is not present",
+			owner);
+		public static void LogMethodNotFound(UnityEngine.Object owner, string method) => WarningsPool.LogWarning(owner,
+			$"Conditional Attribute is trying to invoke method {method} " +
+			"which is missing or not with a bool return type",
+			owner);
 		
 		private static bool IsConditionMatch(SerializedProperty property, bool inverse, string[] compareAgainst)
 		{
@@ -137,10 +130,8 @@ namespace MyBox.Internal
 				var arrayProp = property.serializedObject.FindProperty(cleanPath);
 				var target = arrayProp.serializedObject.targetObject;
 
-				var who = "Property <color=brown>" + arrayProp.name + "</color> in object <color=brown>" + target.name + "</color> caused: ";
-				var warning = who + "Array fields is not supported by [ConditionalFieldAttribute]. Consider to use <color=blue>CollectionWrapper</color>";
-
-				WarningsPool.LogWarning(warning, target);
+				var warning = "Array fields is not supported by [ConditionalFieldAttribute]. Consider to use <color=blue>CollectionWrapper</color>";
+				WarningsPool.LogWarning(arrayProp, warning, target);
 
 				return null;
 			}

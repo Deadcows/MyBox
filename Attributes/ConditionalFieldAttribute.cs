@@ -13,6 +13,7 @@ namespace MyBox
 	[AttributeUsage(AttributeTargets.Field)]
 	public class ConditionalFieldAttribute : PropertyAttribute
 	{
+		public bool IsSet => Data != null && Data.IsSet;
 		public readonly ConditionalData Data;
 
 		/// <param name="fieldToCheck">String name of field to check value</param>

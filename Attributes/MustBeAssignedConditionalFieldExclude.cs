@@ -22,12 +22,11 @@ namespace MyBox.Internal
 			if (!field.IsDefined(ConditionalType, false)) return false;
 
 			// Get a specific attribute of this field
-			var conditionalFieldAttribute = field.GetCustomAttributes(ConditionalType, false)
+			var conditional = field.GetCustomAttributes(ConditionalType, false)
 				.Select(a => a as ConditionalFieldAttribute)
 				.SingleOrDefault();
 
-			return conditionalFieldAttribute != null &&
-			       !ConditionalUtility.IsBehaviourConditionMatch(obj, field.Name, conditionalFieldAttribute.Data);
+			return conditional != null && !ConditionalUtility.IsConditionMatch(obj, conditional.Data);
 		}
 	}
 }

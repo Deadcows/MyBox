@@ -31,6 +31,16 @@ namespace MyBox
 			return true;
 		}
 
+		#if UNITY_EDITOR
+		public static bool LogWarning(Object owner, string message, Object target = null)
+			=> LogWarning($"<color=brown>{owner.name}</color> caused: " + message, target);
+
+		public static bool LogWarning(UnityEditor.SerializedProperty property, string message, Object target = null)
+			=> LogWarning($"Property <color=brown>{property.name}</color> " +
+			              $"in object <color=brown>{property.serializedObject.targetObject.name}</color> caused: " + message, target);
+		#endif
+		
+
 		public static bool LogError(string message, Object target = null)
 		{
 			if (Pool.Contains(message)) return false;
