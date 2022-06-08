@@ -4,7 +4,6 @@ namespace MyBox
 {
     public class ReadOnlyAttribute : ConditionalFieldAttribute
     {
-        public ReadOnlyAttribute() : base("") { }
     }
 }
 

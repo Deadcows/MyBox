@@ -15,6 +15,8 @@ namespace MyBox.Internal
 			var so = new SerializedObject(owner);
 			foreach (var fieldCondition in condition)
 			{
+				if (fieldCondition.Field.IsNullOrEmpty()) continue;
+				
 				var property = so.FindProperty(fieldCondition.Field);
 				if (property == null) LogFieldNotFound(so.targetObject, fieldCondition.Field);
 				
