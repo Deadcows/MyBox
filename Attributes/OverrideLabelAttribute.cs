@@ -18,10 +18,23 @@ namespace MyBox.Internal
 	[CustomPropertyDrawer(typeof(OverrideLabelAttribute))]
 	public class OverrideLabelDrawer : PropertyDrawer
 	{
+		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+		{
+			var customDrawer = CustomDrawerUtility.GetPropertyDrawerForProperty(property, fieldInfo, attribute);
+			if (customDrawer != null) return customDrawer.GetPropertyHeight(property, label);
+			
+			return EditorGUI.GetPropertyHeight(property, label);
+		}
+
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
+			if (property.isArray) WarningsPool.LogCollectionsNotSupportedWarning(property, nameof(OverrideLabelAttribute));
+			
 			label.text = ((OverrideLabelAttribute)attribute).NewLabel;
-			EditorGUI.PropertyField(position, property, label);
+
+			var customDrawer = CustomDrawerUtility.GetPropertyDrawerForProperty(property, fieldInfo, attribute);
+			if (customDrawer != null) customDrawer.OnGUI(position, property, label);
+			else EditorGUI.PropertyField(position, property, label, true);
 		}
 	}
 }

@@ -42,13 +42,13 @@ namespace MyBox.Internal
 		}
 		
 		private static void LogFieldNotFound(SerializedProperty property, string field) => WarningsPool.LogWarning(property,
-			$"Conditional Attribute is trying to check field {field} which is not present",
+			$"Conditional Attribute is trying to check field {field.Colored(Colors.brown)} which is not present",
 			property.serializedObject.targetObject);
 		private static void LogFieldNotFound(UnityEngine.Object owner, string field) => WarningsPool.LogWarning(owner,
-			$"Conditional Attribute is trying to check field {field} which is not present",
+			$"Conditional Attribute is trying to check field {field.Colored(Colors.brown)} which is not present",
 			owner);
 		public static void LogMethodNotFound(UnityEngine.Object owner, string method) => WarningsPool.LogWarning(owner,
-			$"Conditional Attribute is trying to invoke method {method} " +
+			$"Conditional Attribute is trying to invoke method {method.Colored(Colors.brown)} " +
 			"which is missing or not with a bool return type",
 			owner);
 		
@@ -128,10 +128,7 @@ namespace MyBox.Internal
 			{
 				var cleanPath = path.Substring(0, path.IndexOf('['));
 				var arrayProp = property.serializedObject.FindProperty(cleanPath);
-				var target = arrayProp.serializedObject.targetObject;
-
-				var warning = "Array fields is not supported by [ConditionalFieldAttribute]. Consider to use <color=blue>CollectionWrapper</color>";
-				WarningsPool.LogWarning(arrayProp, warning, target);
+				WarningsPool.LogCollectionsNotSupportedWarning(arrayProp, nameof(ConditionalFieldAttribute));
 
 				return null;
 			}

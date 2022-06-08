@@ -44,9 +44,9 @@ namespace MyBox.Internal
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
-			if (!(attribute is ConditionalFieldAttribute conditional)) return 0;
+			if (!(attribute is ConditionalFieldAttribute conditional)) return EditorGUI.GetPropertyHeight(property);
 			
-			Initialize(property);
+			CachePropertyDrawer(property);
 			_toShow = ConditionalUtility.IsPropertyConditionMatch(property, conditional.Data);
 			if (!_toShow) return 0;
 
@@ -81,8 +81,10 @@ namespace MyBox.Internal
 			}
 		}
 		
-		
-		private void Initialize(SerializedProperty property)
+		/// <summary>
+		/// Try to find and cache any PropertyDrawer or PropertyAttribute on the field
+		/// </summary>
+		private void CachePropertyDrawer(SerializedProperty property)
 		{
 			if (_initialized) return;
 			_initialized = true;
