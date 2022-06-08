@@ -121,6 +121,13 @@ namespace MyBox.EditorTools
 		}
 
 		/// <summary>
+		/// Combination of Owner Type and Property Path hashes
+		/// </summary>
+		public static int GetUniquePropertyId(this SerializedProperty property) 
+			=> property.serializedObject.targetObject.GetType().GetHashCode() 
+			   + property.propertyPath.GetHashCode();
+		
+		/// <summary>
 		/// Property path for collection without ".Array.data[x]" in it
 		/// </summary>
 		public static string GetFixedPropertyPath(this SerializedProperty property) => property.propertyPath.Replace(".Array.data[", "[");
@@ -231,53 +238,54 @@ namespace MyBox.EditorTools
 				}
 				else
 				{
-					obj = GetValue(obj, element);
+					obj = GetFieldValue(obj, element);
 				}
 			}
 
 			return obj;
-		}
+			
+			
+			object GetValueAt(object source, string name, int index)
+			{
+				var enumerable = GetFieldValue(source, name) as IEnumerable;
+				if (enumerable == null) return null;
 
-		private static object GetValue(object source, string name)
-		{
-			if (source == null)
+				var enm = enumerable.GetEnumerator();
+				while (index-- >= 0)
+					enm.MoveNext();
+				return enm.Current;
+			}
+			
+			object GetFieldValue(object source, string name)
+			{
+				if (source == null)
+					return null;
+
+				foreach (var type in GetHierarchyTypes(source.GetType()))
+				{
+					var f = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+					if (f != null)
+						return f.GetValue(source);
+
+					var p = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+					if (p != null)
+						return p.GetValue(source, null);
+				}
+
 				return null;
-
-			foreach (var type in GetHierarchyTypes(source.GetType()))
-			{
-				var f = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-				if (f != null)
-					return f.GetValue(source);
-
-				var p = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-				if (p != null)
-					return p.GetValue(source, null);
-			}
-
-			return null;
-		}
-
-		private static IEnumerable<Type> GetHierarchyTypes(Type sourceType)
-		{
-			yield return sourceType;
-			while (sourceType.BaseType != null)
-			{
-				yield return sourceType.BaseType;
-				sourceType = sourceType.BaseType;
+			
+			
+				IEnumerable<Type> GetHierarchyTypes(Type sourceType)
+				{
+					yield return sourceType;
+					while (sourceType.BaseType != null)
+					{
+						yield return sourceType.BaseType;
+						sourceType = sourceType.BaseType;
+					}
+				}
 			}
 		}
-
-		private static object GetValueAt(object source, string name, int index)
-		{
-			var enumerable = GetValue(source, name) as IEnumerable;
-			if (enumerable == null) return null;
-
-			var enm = enumerable.GetEnumerator();
-			while (index-- >= 0)
-				enm.MoveNext();
-			return enm.Current;
-		}
-
 		#endregion
 	}
 }
