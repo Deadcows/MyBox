@@ -41,7 +41,8 @@ namespace MyBox.EditorTools
 			Handles.DrawLine(position, position + left * headLength);
 		}
 
-
+#if UNITY_AI_ENABLED
+        
 		/// <summary>
 		/// Draw arrowed gizmo in scene view to visualize path
 		/// </summary>
@@ -56,6 +57,8 @@ namespace MyBox.EditorTools
 				DrawDirectionalLine(cornerA, cornerB, size, size);
 			}
 		}
+        
+#endif
 
 		/// <summary>
 		/// Draw flying path of height prom pointA to pointB
