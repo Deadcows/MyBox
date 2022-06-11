@@ -34,14 +34,21 @@ namespace MyBox
 
 		public bool IncludeChildColliders;
 
-
+#if UNITY_AI_ENABLED
 		private NavMeshObstacle _navMeshObstacle;
+#endif
+
+#if UNITY_PHYSICS2D_ENABLED
 		private List<EdgeCollider2D> _edgeColliders2D;
 		private List<BoxCollider2D> _boxColliders2D;
 		private List<CircleCollider2D> _circleColliders2D;
+#endif
+        
+#if UNITY_PHYSICS_ENABLED
 		private List<BoxCollider> _boxColliders;
 		private List<SphereCollider> _sphereColliders;
 		private List<MeshCollider> _meshColliders;
+#endif
 
 		private readonly HashSet<Transform> _withColliders = new HashSet<Transform>();
 
@@ -72,16 +79,16 @@ namespace MyBox
 
 			_withColliders.Clear();
 
-			if (_edgeColliders2D != null) _edgeColliders2D.Clear();
-			if (_boxColliders2D != null) _boxColliders2D.Clear();
-			if (_circleColliders2D != null) _circleColliders2D.Clear();
-			if (_boxColliders != null) _boxColliders.Clear();
-			if (_sphereColliders != null) _sphereColliders.Clear();
-			if (_meshColliders != null) _meshColliders.Clear();
+#if UNITY_AI_ENABLED
+            _navMeshObstacle = gameObject.GetComponent<NavMeshObstacle>();
+#endif
+            
+#if UNITY_PHYSICS2D_ENABLED
+            if (_edgeColliders2D != null) _edgeColliders2D.Clear();
+            if (_boxColliders2D != null) _boxColliders2D.Clear();
+            if (_circleColliders2D != null) _circleColliders2D.Clear();
 
-			_navMeshObstacle = gameObject.GetComponent<NavMeshObstacle>();
 			Collider2D[] colliders2d = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider2D>() : gameObject.GetComponents<Collider2D>();
-			Collider[] colliders = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider>() : gameObject.GetComponents<Collider>();
 
 			for (var i = 0; i < colliders2d.Length; i++)
 			{
@@ -113,7 +120,15 @@ namespace MyBox
 					_withColliders.Add(circle2d.transform);
 				}
 			}
-
+#endif
+            
+#if UNITY_PHYSICS_ENABLED
+            if (_boxColliders != null) _boxColliders.Clear();
+            if (_sphereColliders != null) _sphereColliders.Clear();
+            if (_meshColliders != null) _meshColliders.Clear();
+            
+            Collider[] colliders = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider>() : gameObject.GetComponents<Collider>();
+            
 			for (var i = 0; i < colliders.Length; i++)
 			{
 				var c = colliders[i];
@@ -143,6 +158,7 @@ namespace MyBox
 					_withColliders.Add(mesh.transform);
 				}
 			}
+#endif
 		}
 
 		#endregion
@@ -150,6 +166,8 @@ namespace MyBox
 
 		#region Drawers
 
+#if UNITY_PHYSICS2D_ENABLED
+        
 		private void DrawEdgeCollider2D(EdgeCollider2D coll)
 		{
 			var target = coll.transform;
@@ -186,15 +204,7 @@ namespace MyBox
 			Gizmos.matrix = Matrix4x4.identity;
 		}
 
-		private void DrawBoxCollider(BoxCollider coll)
-		{
-			var target = coll.transform;
-			Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
-			DrawColliderGizmo(coll.center, coll.size);
-			Gizmos.matrix = Matrix4x4.identity;
-		}
-
-		private void DrawCircleCollider2D(CircleCollider2D coll)
+        private void DrawCircleCollider2D(CircleCollider2D coll)
 		{
 			var target = coll.transform;
 			var offset = coll.offset;
@@ -202,7 +212,19 @@ namespace MyBox
 			DrawColliderGizmo(target.position + new Vector3(offset.x, offset.y, 0.0f), coll.radius * Mathf.Max(scale.x, scale.y));
 		}
 
-		private void DrawSphereCollider(SphereCollider coll)
+#endif
+        
+#if UNITY_PHYSICS_ENABLED
+
+        private void DrawBoxCollider(BoxCollider coll)
+        {
+            var target = coll.transform;
+            Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
+            DrawColliderGizmo(coll.center, coll.size);
+            Gizmos.matrix = Matrix4x4.identity;
+        }
+
+        private void DrawSphereCollider(SphereCollider coll)
 		{
 			var target = coll.transform;
 			var scale = target.lossyScale;
@@ -226,6 +248,10 @@ namespace MyBox
 				Gizmos.DrawMesh(coll.sharedMesh, target.position, target.rotation, target.localScale * 1.01f);
 			}
 		}
+        
+#endif
+
+#if UNITY_AI_ENABLED
 
 		private void DrawNavMeshObstacle(NavMeshObstacle obstacle)
 		{
@@ -245,6 +271,8 @@ namespace MyBox
 				DrawColliderGizmo(target.position + new Vector3(center.x, center.y, 0.0f), obstacle.radius * max);
 			}
 		}
+        
+#endif
 
 
 		private void DrawColliders()
@@ -259,9 +287,12 @@ namespace MyBox
 			}
 
 			if (!DrawWire && !DrawFill) return;
-			
-			if (_navMeshObstacle != null) DrawNavMeshObstacle(_navMeshObstacle);
 
+#if UNITY_AI_ENABLED
+			if (_navMeshObstacle != null) DrawNavMeshObstacle(_navMeshObstacle);
+#endif
+            
+#if UNITY_PHYSICS2D_ENABLED
 			if (_edgeColliders2D != null)
 			{
 				foreach (var edge in _edgeColliders2D)
@@ -288,7 +319,9 @@ namespace MyBox
 					DrawCircleCollider2D(circle);
 				}
 			}
-
+#endif
+            
+#if UNITY_PHYSICS_ENABLED
 			if (_boxColliders != null)
 			{
 				foreach (var box in _boxColliders)
@@ -315,6 +348,7 @@ namespace MyBox
 					DrawMeshCollider(mesh);
 				}
 			}
+#endif
 		}
 
 
@@ -566,14 +600,26 @@ namespace MyBox
 
 			private int CollidersCount()
 			{
+                int result = 0;
+                
 				if (_includeChilds.boolValue)
-				{
-					return _target.gameObject.GetComponentsInChildren<Collider>().Length +
-					       _target.gameObject.GetComponentsInChildren<Collider2D>().Length;
+                {
+#if UNITY_PHYSICS_ENABLED
+                    result += _target.gameObject.GetComponentsInChildren<Collider>().Length;
+#endif
+#if UNITY_PHYSICS2D_ENABLED
+                    result += _target.gameObject.GetComponentsInChildren<Collider2D>().Length;
+#endif
+					return result;
 				}
-
-				return _target.gameObject.GetComponents<Collider>().Length +
-				       _target.gameObject.GetComponents<Collider2D>().Length;
+                
+#if UNITY_PHYSICS_ENABLED
+                result += _target.gameObject.GetComponents<Collider>().Length;
+#endif
+#if UNITY_PHYSICS2D_ENABLED
+                    result += _target.gameObject.GetComponents<Collider2D>().Length;
+#endif
+                return result;
 			}
 		}
 	}
