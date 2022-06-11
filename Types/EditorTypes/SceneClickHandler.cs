@@ -79,14 +79,19 @@ namespace MyBox.EditorTools
 		private readonly Action<Vector3> _onClick;
 
 		private bool _enabled;
-		private bool _useMask;
-		private LayerMask _mask;
+        
+#pragma warning disable 414
+        private bool _useMask;
+        private LayerMask _mask;
+#pragma warning restore 414
+        
 
 
 		private void OnSceneGUI(SceneView sceneview)
 		{
 			if (!Enabled) return;
-
+            
+#if UNITY_PHYSICS_ENABLED
 			var ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 			RaycastHit hit;
 			if (_useMask ? Physics.Raycast(ray, out hit, _mask.value) : Physics.Raycast(ray, out hit))
@@ -99,6 +104,7 @@ namespace MyBox.EditorTools
 				if (Handles.Button(Vector3.zero, SceneView.currentDrawingSceneView.rotation, 30, 5000, Handles.RectangleHandleCap))
 					HandleClick(hit.point);
 			}
+#endif
 
 			if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape) HandleEscape();
 		}
