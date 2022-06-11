@@ -160,6 +160,7 @@ namespace MyBox
 			}
 		}
 
+#if UNITY_PHYSICS_ENABLED
 
 		/// <summary>
 		/// Swap Rigidbody IsKinematic and DetectCollisions
@@ -172,6 +173,7 @@ namespace MyBox
 			body.detectCollisions = state;
 		}
 
+#endif
 
 		/// <summary>
 		/// Find all Components of specified interface
@@ -216,6 +218,8 @@ namespace MyBox
 			if (components == null || components.Length == 0) return null;
 			return components.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
 		}
+        
+#if UNITY_PHYSICS2D_ENABLED
 
 		/// <summary>
 		/// Get hits with unique owner Instance ID
@@ -226,7 +230,7 @@ namespace MyBox
 			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
 		}
 
-		/// <summary>
+        /// <summary>
 		/// Get colliders with unique owner Instance ID
 		/// </summary>
 		public static Collider2D[] OneHitPerInstance(this Collider2D[] hits)
@@ -243,6 +247,8 @@ namespace MyBox
 			if (hits == null || hits.Length == 0) return null;
 			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToList();
 		}
+        
+#endif
 
 		#endregion
 	}
