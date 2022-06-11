@@ -4,6 +4,8 @@ namespace MyBox
 {
 	public static class MyPhysics
 	{
+#if UNITY_PHYSICS_ENABLED
+        
 		/// <summary>
 		/// Sets the state of constraints for the source Rigidbody.
 		/// </summary>
@@ -14,7 +16,11 @@ namespace MyBox
 			source.constraints = source.constraints.BitwiseToggle(constraints, state);
 			return source;
 		}
+        
+#endif
 
+#if UNITY_PHYSICS2D_ENABLED
+        
 		/// <summary>
 		/// Sets the state of constraints for the source Rigidbody2D.
 		/// </summary>
@@ -25,5 +31,7 @@ namespace MyBox
 			source.constraints = source.constraints.BitwiseToggle(constraints, state);
 			return source;
 		}
+        
+#endif
 	}
 }
