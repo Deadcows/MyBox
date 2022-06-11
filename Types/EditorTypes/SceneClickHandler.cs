@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+#if UNITY_PHYSICS_ENABLED
 using System;
 using UnityEngine;
 using UnityEditor;
@@ -51,7 +52,7 @@ namespace MyBox.EditorTools
 		private void FocusSceneView()
 		{
 			if (SceneView.sceneViews.Count == 0) return;
-			((SceneView) SceneView.sceneViews[0]).Focus();
+			((SceneView)SceneView.sceneViews[0]).Focus();
 		}
 
 		/// <summary>
@@ -122,4 +123,5 @@ namespace MyBox.EditorTools
 		}
 	}
 }
+#endif
 #endif

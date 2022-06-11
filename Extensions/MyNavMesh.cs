@@ -4,6 +4,8 @@ using UnityEngine.AI;
 
 namespace MyBox
 {
+#if UNITY_AI_ENABLED
+    
 	public static class MyNavMesh
 	{
 		/// <summary>
@@ -90,4 +92,6 @@ namespace MyBox
 			}
 		}
 	}
+    
+#endif
 }

@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace MyBox
 {
+#if UNITY_PHYSICS2D_ENABLED
+    
 	[RequireComponent(typeof(PolygonCollider2D))]
 	[RequireComponent(typeof(MeshFilter))]
 	[RequireComponent(typeof(MeshRenderer))]
@@ -174,4 +176,6 @@ namespace MyBox
 
 		#endregion
 	}
+    
+#endif
 }

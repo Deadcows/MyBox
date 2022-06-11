@@ -34,14 +34,21 @@ namespace MyBox
 
 		public bool IncludeChildColliders;
 
-
+#if UNITY_AI_ENABLED
 		private NavMeshObstacle _navMeshObstacle;
+#endif
+
+#if UNITY_PHYSICS2D_ENABLED
 		private List<EdgeCollider2D> _edgeColliders2D;
 		private List<BoxCollider2D> _boxColliders2D;
 		private List<CircleCollider2D> _circleColliders2D;
+#endif
+
+#if UNITY_PHYSICS_ENABLED
 		private List<BoxCollider> _boxColliders;
 		private List<SphereCollider> _sphereColliders;
 		private List<MeshCollider> _meshColliders;
+#endif
 
 		private readonly HashSet<Transform> _withColliders = new HashSet<Transform>();
 
@@ -72,16 +79,16 @@ namespace MyBox
 
 			_withColliders.Clear();
 
+#if UNITY_AI_ENABLED
+			_navMeshObstacle = gameObject.GetComponent<NavMeshObstacle>();
+#endif
+
+#if UNITY_PHYSICS2D_ENABLED
 			if (_edgeColliders2D != null) _edgeColliders2D.Clear();
 			if (_boxColliders2D != null) _boxColliders2D.Clear();
 			if (_circleColliders2D != null) _circleColliders2D.Clear();
-			if (_boxColliders != null) _boxColliders.Clear();
-			if (_sphereColliders != null) _sphereColliders.Clear();
-			if (_meshColliders != null) _meshColliders.Clear();
 
-			_navMeshObstacle = gameObject.GetComponent<NavMeshObstacle>();
 			Collider2D[] colliders2d = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider2D>() : gameObject.GetComponents<Collider2D>();
-			Collider[] colliders = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider>() : gameObject.GetComponents<Collider>();
 
 			for (var i = 0; i < colliders2d.Length; i++)
 			{
@@ -113,6 +120,14 @@ namespace MyBox
 					_withColliders.Add(circle2d.transform);
 				}
 			}
+#endif
+
+#if UNITY_PHYSICS_ENABLED
+			if (_boxColliders != null) _boxColliders.Clear();
+			if (_sphereColliders != null) _sphereColliders.Clear();
+			if (_meshColliders != null) _meshColliders.Clear();
+
+			Collider[] colliders = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider>() : gameObject.GetComponents<Collider>();
 
 			for (var i = 0; i < colliders.Length; i++)
 			{
@@ -143,12 +158,15 @@ namespace MyBox
 					_withColliders.Add(mesh.transform);
 				}
 			}
+#endif
 		}
 
 		#endregion
 
 
 		#region Drawers
+
+#if UNITY_PHYSICS2D_ENABLED
 
 		private void DrawEdgeCollider2D(EdgeCollider2D coll)
 		{
@@ -186,20 +204,24 @@ namespace MyBox
 			Gizmos.matrix = Matrix4x4.identity;
 		}
 
-		private void DrawBoxCollider(BoxCollider coll)
-		{
-			var target = coll.transform;
-			Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
-			DrawColliderGizmo(coll.center, coll.size);
-			Gizmos.matrix = Matrix4x4.identity;
-		}
-
 		private void DrawCircleCollider2D(CircleCollider2D coll)
 		{
 			var target = coll.transform;
 			var offset = coll.offset;
 			var scale = target.lossyScale;
 			DrawColliderGizmo(target.position + new Vector3(offset.x, offset.y, 0.0f), coll.radius * Mathf.Max(scale.x, scale.y));
+		}
+
+#endif
+
+#if UNITY_PHYSICS_ENABLED
+
+		private void DrawBoxCollider(BoxCollider coll)
+		{
+			var target = coll.transform;
+			Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
+			DrawColliderGizmo(coll.center, coll.size);
+			Gizmos.matrix = Matrix4x4.identity;
 		}
 
 		private void DrawSphereCollider(SphereCollider coll)
@@ -214,12 +236,13 @@ namespace MyBox
 		private void DrawMeshCollider(MeshCollider coll)
 		{
 			var target = coll.transform;
-			
+
 			if (DrawWire)
 			{
 				Gizmos.color = _wireGizmoColor;
 				Gizmos.DrawWireMesh(coll.sharedMesh, target.position, target.rotation, target.localScale * 1.01f);
 			}
+
 			if (DrawFill)
 			{
 				Gizmos.color = _fillGizmoColor;
@@ -227,10 +250,14 @@ namespace MyBox
 			}
 		}
 
+#endif
+
+#if UNITY_AI_ENABLED
+
 		private void DrawNavMeshObstacle(NavMeshObstacle obstacle)
 		{
 			var target = obstacle.transform;
-			
+
 			if (obstacle.shape == NavMeshObstacleShape.Box)
 			{
 				Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
@@ -246,6 +273,8 @@ namespace MyBox
 			}
 		}
 
+#endif
+
 
 		private void DrawColliders()
 		{
@@ -259,9 +288,12 @@ namespace MyBox
 			}
 
 			if (!DrawWire && !DrawFill) return;
-			
-			if (_navMeshObstacle != null) DrawNavMeshObstacle(_navMeshObstacle);
 
+#if UNITY_AI_ENABLED
+			if (_navMeshObstacle != null) DrawNavMeshObstacle(_navMeshObstacle);
+#endif
+
+#if UNITY_PHYSICS2D_ENABLED
 			if (_edgeColliders2D != null)
 			{
 				foreach (var edge in _edgeColliders2D)
@@ -288,7 +320,9 @@ namespace MyBox
 					DrawCircleCollider2D(circle);
 				}
 			}
+#endif
 
+#if UNITY_PHYSICS_ENABLED
 			if (_boxColliders != null)
 			{
 				foreach (var box in _boxColliders)
@@ -306,7 +340,7 @@ namespace MyBox
 					DrawSphereCollider(sphere);
 				}
 			}
-			
+
 			if (_meshColliders != null)
 			{
 				foreach (var mesh in _meshColliders)
@@ -315,6 +349,7 @@ namespace MyBox
 					DrawMeshCollider(mesh);
 				}
 			}
+#endif
 		}
 
 
@@ -447,135 +482,147 @@ namespace MyBox
 
 #if UNITY_EDITOR
 
-	namespace MyBox.Internal
+namespace MyBox.Internal
+{
+	[CustomEditor(typeof(ColliderGizmo)), CanEditMultipleObjects]
+	public class ColliderGizmoEditor : Editor
 	{
-		[CustomEditor(typeof(ColliderGizmo)), CanEditMultipleObjects]
-		public class ColliderGizmoEditor : Editor
+		private SerializedProperty _enabledProperty;
+		private SerializedProperty _alphaProperty;
+		private SerializedProperty _drawWireProperty;
+		private SerializedProperty _wireColorProperty;
+		private SerializedProperty _drawFillProperty;
+		private SerializedProperty _fillColorProperty;
+		private SerializedProperty _drawCenterProperty;
+		private SerializedProperty _centerColorProperty;
+		private SerializedProperty _centerRadiusProperty;
+
+		private SerializedProperty _includeChilds;
+
+		private ColliderGizmo _target;
+
+		private int _collidersCount;
+
+		private void OnEnable()
 		{
-			private SerializedProperty _enabledProperty;
-			private SerializedProperty _alphaProperty;
-			private SerializedProperty _drawWireProperty;
-			private SerializedProperty _wireColorProperty;
-			private SerializedProperty _drawFillProperty;
-			private SerializedProperty _fillColorProperty;
-			private SerializedProperty _drawCenterProperty;
-			private SerializedProperty _centerColorProperty;
-			private SerializedProperty _centerRadiusProperty;
+			_target = target as ColliderGizmo;
 
-			private SerializedProperty _includeChilds;
+			_enabledProperty = serializedObject.FindProperty("m_Enabled");
+			_alphaProperty = serializedObject.FindProperty("Alpha");
 
-			private ColliderGizmo _target;
+			_drawWireProperty = serializedObject.FindProperty("DrawWire");
+			_wireColorProperty = serializedObject.FindProperty("WireColor");
 
-			private int _collidersCount;
+			_drawFillProperty = serializedObject.FindProperty("DrawFill");
+			_fillColorProperty = serializedObject.FindProperty("FillColor");
 
-			private void OnEnable()
+			_drawCenterProperty = serializedObject.FindProperty("DrawCenter");
+			_centerColorProperty = serializedObject.FindProperty("CenterColor");
+			_centerRadiusProperty = serializedObject.FindProperty("CenterMarkerRadius");
+
+			_includeChilds = serializedObject.FindProperty("IncludeChildColliders");
+
+			_collidersCount = CollidersCount();
+		}
+
+
+		public override void OnInspectorGUI()
+		{
+			Undo.RecordObject(_target, "CG_State");
+
+			EditorGUILayout.PropertyField(_enabledProperty);
+
+			EditorGUI.BeginChangeCheck();
+			_target.Preset = (ColliderGizmo.Presets)EditorGUILayout.EnumPopup("Color Preset", _target.Preset);
+			if (EditorGUI.EndChangeCheck())
 			{
-				_target = target as ColliderGizmo;
-
-				_enabledProperty = serializedObject.FindProperty("m_Enabled");
-				_alphaProperty = serializedObject.FindProperty("Alpha");
-
-				_drawWireProperty = serializedObject.FindProperty("DrawWire");
-				_wireColorProperty = serializedObject.FindProperty("WireColor");
-
-				_drawFillProperty = serializedObject.FindProperty("DrawFill");
-				_fillColorProperty = serializedObject.FindProperty("FillColor");
-
-				_drawCenterProperty = serializedObject.FindProperty("DrawCenter");
-				_centerColorProperty = serializedObject.FindProperty("CenterColor");
-				_centerRadiusProperty = serializedObject.FindProperty("CenterMarkerRadius");
-
-				_includeChilds = serializedObject.FindProperty("IncludeChildColliders");
-
-				_collidersCount = CollidersCount();
-			}
-
-
-			public override void OnInspectorGUI()
-			{
-				Undo.RecordObject(_target, "CG_State");
-
-				EditorGUILayout.PropertyField(_enabledProperty);
-
-				EditorGUI.BeginChangeCheck();
-				_target.Preset = (ColliderGizmo.Presets) EditorGUILayout.EnumPopup("Color Preset", _target.Preset);
-				if (EditorGUI.EndChangeCheck())
+				foreach (var singleTarget in targets)
 				{
-					foreach (var singleTarget in targets)
-					{
-						var gizmo = (ColliderGizmo) singleTarget;
-						gizmo.ChangePreset(_target.Preset);
-						EditorUtility.SetDirty(gizmo);
-					}
-				}
-
-				_alphaProperty.floatValue = EditorGUILayout.Slider("Overall Transparency", _alphaProperty.floatValue, 0, 1);
-
-
-				EditorGUI.BeginChangeCheck();
-				using (new EditorGUILayout.HorizontalScope())
-				{
-					EditorGUILayout.PropertyField(_drawWireProperty);
-					if (_drawWireProperty.boolValue) EditorGUILayout.PropertyField(_wireColorProperty, new GUIContent(""));
-				}
-
-				using (new EditorGUILayout.HorizontalScope())
-				{
-					EditorGUILayout.PropertyField(_drawFillProperty);
-					if (_drawFillProperty.boolValue) EditorGUILayout.PropertyField(_fillColorProperty, new GUIContent(""));
-				}
-
-				using (new EditorGUILayout.HorizontalScope())
-				{
-					EditorGUILayout.PropertyField(_drawCenterProperty);
-					if (_drawCenterProperty.boolValue)
-					{
-						EditorGUILayout.PropertyField(_centerColorProperty, GUIContent.none);
-						EditorGUILayout.PropertyField(_centerRadiusProperty);
-					}
-				}
-
-
-				if (EditorGUI.EndChangeCheck())
-				{
-					var presetProp = serializedObject.FindProperty("Preset");
-					var customWireColor = serializedObject.FindProperty("CustomWireColor");
-					var customFillColor = serializedObject.FindProperty("CustomFillColor");
-					var customCenterColor = serializedObject.FindProperty("CustomCenterColor");
-
-					presetProp.enumValueIndex = (int) ColliderGizmo.Presets.Custom;
-					customWireColor.colorValue = _wireColorProperty.colorValue;
-					customFillColor.colorValue = _fillColorProperty.colorValue;
-					customCenterColor.colorValue = _centerColorProperty.colorValue;
-				}
-
-				EditorGUILayout.PropertyField(_includeChilds);
-
-				int collidersCountCheck = CollidersCount();
-				bool collidersCountChanged = collidersCountCheck != _collidersCount;
-				_collidersCount = collidersCountCheck;
-
-				if (GUI.changed || collidersCountChanged)
-				{
-					serializedObject.ApplyModifiedProperties();
-					EditorUtility.SetDirty(_target);
-
-					_target.Refresh();
+					var gizmo = (ColliderGizmo)singleTarget;
+					gizmo.ChangePreset(_target.Preset);
+					EditorUtility.SetDirty(gizmo);
 				}
 			}
 
-			private int CollidersCount()
-			{
-				if (_includeChilds.boolValue)
-				{
-					return _target.gameObject.GetComponentsInChildren<Collider>().Length +
-					       _target.gameObject.GetComponentsInChildren<Collider2D>().Length;
-				}
+			_alphaProperty.floatValue = EditorGUILayout.Slider("Overall Transparency", _alphaProperty.floatValue, 0, 1);
 
-				return _target.gameObject.GetComponents<Collider>().Length +
-				       _target.gameObject.GetComponents<Collider2D>().Length;
+
+			EditorGUI.BeginChangeCheck();
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				EditorGUILayout.PropertyField(_drawWireProperty);
+				if (_drawWireProperty.boolValue) EditorGUILayout.PropertyField(_wireColorProperty, new GUIContent(""));
+			}
+
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				EditorGUILayout.PropertyField(_drawFillProperty);
+				if (_drawFillProperty.boolValue) EditorGUILayout.PropertyField(_fillColorProperty, new GUIContent(""));
+			}
+
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				EditorGUILayout.PropertyField(_drawCenterProperty);
+				if (_drawCenterProperty.boolValue)
+				{
+					EditorGUILayout.PropertyField(_centerColorProperty, GUIContent.none);
+					EditorGUILayout.PropertyField(_centerRadiusProperty);
+				}
+			}
+
+
+			if (EditorGUI.EndChangeCheck())
+			{
+				var presetProp = serializedObject.FindProperty("Preset");
+				var customWireColor = serializedObject.FindProperty("CustomWireColor");
+				var customFillColor = serializedObject.FindProperty("CustomFillColor");
+				var customCenterColor = serializedObject.FindProperty("CustomCenterColor");
+
+				presetProp.enumValueIndex = (int)ColliderGizmo.Presets.Custom;
+				customWireColor.colorValue = _wireColorProperty.colorValue;
+				customFillColor.colorValue = _fillColorProperty.colorValue;
+				customCenterColor.colorValue = _centerColorProperty.colorValue;
+			}
+
+			EditorGUILayout.PropertyField(_includeChilds);
+
+			int collidersCountCheck = CollidersCount();
+			bool collidersCountChanged = collidersCountCheck != _collidersCount;
+			_collidersCount = collidersCountCheck;
+
+			if (GUI.changed || collidersCountChanged)
+			{
+				serializedObject.ApplyModifiedProperties();
+				EditorUtility.SetDirty(_target);
+
+				_target.Refresh();
 			}
 		}
+
+		private int CollidersCount()
+		{
+			int result = 0;
+
+			if (_includeChilds.boolValue)
+			{
+#if UNITY_PHYSICS_ENABLED
+				result += _target.gameObject.GetComponentsInChildren<Collider>().Length;
+#endif
+#if UNITY_PHYSICS2D_ENABLED
+				result += _target.gameObject.GetComponentsInChildren<Collider2D>().Length;
+#endif
+				return result;
+			}
+
+#if UNITY_PHYSICS_ENABLED
+			result += _target.gameObject.GetComponents<Collider>().Length;
+#endif
+#if UNITY_PHYSICS2D_ENABLED
+			result += _target.gameObject.GetComponents<Collider2D>().Length;
+#endif
+			return result;
+		}
 	}
+}
 
 #endif
