@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+#if UNITY_PHYSICS_ENABLED
 using System;
 using UnityEngine;
 using UnityEditor;
@@ -51,7 +52,7 @@ namespace MyBox.EditorTools
 		private void FocusSceneView()
 		{
 			if (SceneView.sceneViews.Count == 0) return;
-			((SceneView) SceneView.sceneViews[0]).Focus();
+			((SceneView)SceneView.sceneViews[0]).Focus();
 		}
 
 		/// <summary>
@@ -79,19 +80,14 @@ namespace MyBox.EditorTools
 		private readonly Action<Vector3> _onClick;
 
 		private bool _enabled;
-        
-#pragma warning disable 414
-        private bool _useMask;
-        private LayerMask _mask;
-#pragma warning restore 414
-        
+		private bool _useMask;
+		private LayerMask _mask;
 
 
 		private void OnSceneGUI(SceneView sceneview)
 		{
 			if (!Enabled) return;
-            
-#if UNITY_PHYSICS_ENABLED
+
 			var ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 			RaycastHit hit;
 			if (_useMask ? Physics.Raycast(ray, out hit, _mask.value) : Physics.Raycast(ray, out hit))
@@ -104,7 +100,6 @@ namespace MyBox.EditorTools
 				if (Handles.Button(Vector3.zero, SceneView.currentDrawingSceneView.rotation, 30, 5000, Handles.RectangleHandleCap))
 					HandleClick(hit.point);
 			}
-#endif
 
 			if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape) HandleEscape();
 		}
@@ -128,4 +123,5 @@ namespace MyBox.EditorTools
 		}
 	}
 }
+#endif
 #endif
