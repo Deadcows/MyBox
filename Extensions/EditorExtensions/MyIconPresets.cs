@@ -1,45 +1,25 @@
+#if UNITY_IMAGECONVERSION_ENABLED
 #if UNITY_EDITOR
 using UnityEngine;
 
 namespace MyBox.EditorTools
 {
-	public class MyIconPresets
+	public static class MyIconPresets
 	{
-		public static Texture2D IconReload16
-		{
-			get { return ImageStringConverter.ImageFromString(IconReload, 16, 16); }
-		}
+		public static Texture2D IconReload16 => ImageStringConverter.ImageFromString(IconReload, 16, 16);
 
-		public static Texture2D IconReload32
-		{
-			get { return ImageStringConverter.ImageFromString(IconReload, 32, 32); }
-		}
+		public static Texture2D IconReload32 => ImageStringConverter.ImageFromString(IconReload, 32, 32);
 
-		public static Texture2D IconReload64
-		{
-			get { return ImageStringConverter.ImageFromString(IconReload, 64, 64); }
-		}
+		public static Texture2D IconReload64 => ImageStringConverter.ImageFromString(IconReload, 64, 64);
 
-		public static Texture2D IconEye16
-		{
-			get { return ImageStringConverter.ImageFromString(IconEye, 16, 16); }
-		}
+		public static Texture2D IconEye16 => ImageStringConverter.ImageFromString(IconEye, 16, 16);
 
 
-		public static Texture2D IconEye32
-		{
-			get { return ImageStringConverter.ImageFromString(IconEye, 32, 32); }
-		}
+		public static Texture2D IconEye32 => ImageStringConverter.ImageFromString(IconEye, 32, 32);
 
-		public static Texture2D IconEyeCrossed16
-		{
-			get { return ImageStringConverter.ImageFromString(IconEyeCrossed, 16, 16); }
-		}
+		public static Texture2D IconEyeCrossed16 => ImageStringConverter.ImageFromString(IconEyeCrossed, 16, 16);
 
-		public static Texture2D IconEyeCrossed32
-		{
-			get { return ImageStringConverter.ImageFromString(IconEyeCrossed, 32, 32); }
-		}
+		public static Texture2D IconEyeCrossed32 => ImageStringConverter.ImageFromString(IconEyeCrossed, 32, 32);
 
 
 		private const string IconReload =
@@ -52,4 +32,5 @@ namespace MyBox.EditorTools
 			"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAilBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATAggvAAAALXRSTlMABPkXHfHWyeremYBvMvTPd1lIQAy0r6SRhV5MIffBuytoOjYnEOPDtpSKRBNc009oAAABPklEQVQ4y7WS13LDIBBFF9R7r46KS1xz///3IgEztpUMbz5PK+2eiwTQ5/jemdp+eR/8b02fpRxXzQDrY7gPTcDBRdyzP9ox9KtxrPxw54Cn237ku3ihKjftCQC3my4Ng8YVE/Nr+J0DTm/Ih3DAOQF4x0hhOEBSiPIr60MLbkFFsigGyZceeCplHyvDfnVTDs8UvgdL6iT7SGR2YcEzFsuBFakoSLg6haOFC6MOPCdJBkVGkpwjoOA50G8HdkBKbER8/H+JQ4xJfaTMiCwIbsqPYf+shemBB2wJSKR/Y+KXO8A21EZdljovG6CZs8yUug2MwpfTHHABRy1uhjZE6pO5wsK5boOgrT0s1Cd642HhBbed6Z2TjSGM9m09TXW7j2iL6QB+qbnjDXA1NHc0j9ez13Cwk4J0lNGJ0cf4BX2sKFr3AYx/AAAAAElFTkSuQmCC";
 	}
 }
+#endif
 #endif

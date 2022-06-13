@@ -1,3 +1,4 @@
+#if UNITY_IMAGECONVERSION_ENABLED
 using System;
 using UnityEngine;
 
@@ -17,3 +18,4 @@ namespace MyBox
 		}
 	}
 }
+#endif

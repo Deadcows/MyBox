@@ -1,3 +1,4 @@
+#if UNITY_IMAGECONVERSION_ENABLED
 #if UNITY_EDITOR
 using System;
 using System.IO;
@@ -69,4 +70,5 @@ namespace MyBox.Internal
 		}
 	}
 }
+#endif
 #endif

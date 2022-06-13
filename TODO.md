@@ -2,6 +2,8 @@
 
 * #### PlayerPrefsType inspector accessibility
 
+* ### Formalize dependencies like UNITY_PHYSICS_ENABLED, also make com.unity.ugui conditional? 
+
 * #### Ability to see all objects with Commentary component on scene
 
 * #### Add: SingleScriptableObject. No more messy Create/ with CreateAssetMenuAttribute for settings SO's

@@ -1,5 +1,6 @@
 {
     "name": "MyBox",
+    "rootNamespace": "",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -23,6 +24,11 @@
             "name": "com.unity.modules.physics",
             "expression": "",
             "define": "UNITY_PHYSICS_ENABLED"
+        },
+        {
+            "name": "com.unity.modules.imageconversion",
+            "expression": "",
+            "define": "UNITY_IMAGECONVERSION_ENABLED"
         }
     ],
     "noEngineReferences": false
