@@ -216,6 +216,22 @@ namespace MyBox.EditorTools
 			return Attribute.IsDefined(fieldInfo, typeof(T));
 		}
 
+		/// <summary>
+		/// Repaint inspector window where this property is displayed
+		/// </summary>
+		public static void Repaint(this SerializedProperty property)
+		{
+			foreach (var item in ActiveEditorTracker.sharedTracker.activeEditors)
+			{
+				if (item.serializedObject == property.serializedObject)
+				{
+					item.Repaint();
+					return;
+				}
+			}
+		}
+		
+
 		#region SerializedProperty Get Parent
 
 		// Found here http://answers.unity.com/answers/425602/view.html

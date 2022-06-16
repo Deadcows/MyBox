@@ -93,7 +93,8 @@ All notable changes to this package will be documented in this file.
 - Extensions: RectTransform.GetAnchorDelta to get parent-relative size of the RectTransform. Thanks to @tonygiang!
 - Extensions: Vector.Pow to raise each component of the source Vector to the specified power. Thanks to @tonygiang!
 - Extensions: Vector.ScaleBy immutably returns the result of the source vector multiplied with another vector. Thanks to @tonygiang!
-- Extensions: SerializedProperty.GetUniquePropertyId to get unique Id per Object+Field combination
+- Extensions: SerializedProperty.GetUniquePropertyId() to get unique Id per Object+Field combination
+- Extensions: SerializedProperty.Repaint() to repaint inspector window where property is displayed
 - Fix: MyBox is not strictly dependant on Physics, Physics2D, ImageConversion and AI modules, thanks to @r1noff!
 - Fix: AutoProperty will also be triggered before playmode. If scene is not saved before playmode, field will have actual values
 - Fix: FPSCounter now works correctly if EditorOnly is toggled. Thanks to @TheWalruzz!
