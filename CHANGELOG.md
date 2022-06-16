@@ -23,6 +23,7 @@ All notable changes to this package will be documented in this file.
 - TODO Docs - Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector3 types
 - TODO Docs - Added: Ability to fold DisplayInspector
 - TODO Docs - Added: SceneReference now also have UnloadSceneAsync() and SetActive() methods
+- TODO Docs - Added: MyGUI.SearchablePopup to show popup list with ability to filter displayed content
 - TODO Docs - AutoProperty now allows to specify predicate method to filter out the lookup. Thanks to @tonygiang for the addition!
 - Changed: AutoProperty and MustBeAssigned attributes now work fine with ScriptableObjects! Thanks to @tonygiang for the addition!
 - TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings

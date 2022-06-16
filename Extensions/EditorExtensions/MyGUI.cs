@@ -56,7 +56,7 @@ namespace MyBox.EditorTools
 
 		#endregion
 
-		
+
 		#region Editor Icons
 
 		public static class EditorIcons
@@ -64,34 +64,34 @@ namespace MyBox.EditorTools
 			public static GUIContent Plus => EditorGUIUtility.IconContent("Toolbar Plus");
 			public static GUIContent Minus => EditorGUIUtility.IconContent("Toolbar Minus");
 			public static GUIContent Refresh => EditorGUIUtility.IconContent("Refresh");
-			
+
 			public static GUIContent ConsoleInfo => EditorGUIUtility.IconContent("console.infoicon.sml");
 			public static GUIContent ConsoleWarning => EditorGUIUtility.IconContent("console.warnicon.sml");
 			public static GUIContent ConsoleError => EditorGUIUtility.IconContent("console.erroricon.sml");
-			
+
 			public static GUIContent Check => EditorGUIUtility.IconContent("FilterSelectedOnly");
 			public static GUIContent Cross => EditorGUIUtility.IconContent("d_winbtn_win_close");
-			
+
 			public static GUIContent Dropdown => EditorGUIUtility.IconContent("icon dropdown");
-			
+
 			public static GUIContent EyeOn => EditorGUIUtility.IconContent("d_VisibilityOn");
 			public static GUIContent EyeOff => EditorGUIUtility.IconContent("d_VisibilityOff");
 			public static GUIContent Zoom => EditorGUIUtility.IconContent("d_ViewToolZoom");
-			
+
 			public static GUIContent Help => EditorGUIUtility.IconContent("_Help");
 			public static GUIContent Favourite => EditorGUIUtility.IconContent("Favorite");
 			public static GUIContent Label => EditorGUIUtility.IconContent("FilterByLabel");
-			
+
 			public static GUIContent Settings => EditorGUIUtility.IconContent("d_Settings");
 			public static GUIContent SettingsPopup => EditorGUIUtility.IconContent("_Popup");
 			public static GUIContent SettingsMixer => EditorGUIUtility.IconContent("Audio Mixer");
-			
+
 			public static GUIContent Circle => EditorGUIUtility.IconContent("TestNormal");
 			public static GUIContent CircleYellow => EditorGUIUtility.IconContent("TestInconclusive");
 			public static GUIContent CircleDotted => EditorGUIUtility.IconContent("TestIgnored");
 			public static GUIContent CircleRed => EditorGUIUtility.IconContent("TestFailed");
 		}
-		
+
 		#endregion
 
 
@@ -150,21 +150,22 @@ namespace MyBox.EditorTools
 
 		private static GUIStyle _borderlessToolbarButton;
 
-		
+
 		/// <summary>
 		/// Style for a toggle button
 		/// </summary>
 		public static GUIStyle ButtonToggledStyle(bool toggled)
 		{
 			if (!toggled) return EditorStyles.miniButton;
-			
+
 			if (_buttonToggledStyle != null) return _buttonToggledStyle;
 			_buttonToggledStyle = new GUIStyle(EditorStyles.miniButton);
 			_buttonToggledStyle.normal.background = _buttonToggledStyle.active.background;
 			return _buttonToggledStyle;
 		}
+
 		private static GUIStyle _buttonToggledStyle;
-		
+
 
 		/// <summary>
 		/// MiniButtonLeft/Middle/Right style based on array index
@@ -179,7 +180,6 @@ namespace MyBox.EditorTools
 			if (index == collection.Length - 1) return EditorStyles.miniButtonRight;
 			return EditorStyles.miniButtonMid;
 		}
-
 
 		#endregion
 
@@ -568,6 +568,8 @@ namespace MyBox.EditorTools
 		#endregion
 
 
+		#region EnumToolbar - Toolbar buttons out of Enum
+
 		/// <summary>
 		/// Creates a toolbar that is filled in from an Enum. Useful for setting tool modes.
 		/// </summary>
@@ -595,8 +597,39 @@ namespace MyBox.EditorTools
 			}
 
 			selectedIndex = GUILayout.Toolbar(selectedIndex, toolbar);
-			return (Enum) values.GetValue(selectedIndex);
+			return (Enum)values.GetValue(selectedIndex);
 		}
+
+		#endregion
+
+
+		#region SearchablePopup
+
+		/// <summary>
+		/// A popup window that displays a list of options and may use a search string to filter the displayed content
+		/// </summary>
+		/// <param name="activatorRect">Rectangle of the button that triggered the popup</param>
+		/// <param name="options">List of strings to choose from</param>
+		/// <param name="current">Index of the currently selected string</param>
+		/// <param name="onSelectionMade">Callback to trigger when a choice is made</param>
+		public static void SearchablePopup(Rect activatorRect, string[] options, int current, Action<int> onSelectionMade)
+		{
+			Internal.SearchablePopup.Show(activatorRect, options, current, onSelectionMade);
+		}
+		
+		/// <summary>
+		/// A popup window that displays a list of options and may use a search string to filter the displayed content
+		/// </summary>
+		/// <param name="options">List of strings to choose from</param>
+		/// <param name="current">Index of the currently selected string</param>
+		/// <param name="onSelectionMade">Callback to trigger when a choice is made</param>
+		public static void SearchablePopup(string[] options, int current, Action<int> onSelectionMade)
+		{
+			var position = new Rect(Event.current.mousePosition, Vector2.zero);
+			Internal.SearchablePopup.Show(position, options, current, onSelectionMade);
+		}
+
+		#endregion
 
 
 		/// <summary>
@@ -634,6 +667,8 @@ namespace MyBox.EditorTools
 			return newArray;
 		}
 
+
+#if UNITY_IMAGECONVERSION_ENABLED
 		/// <summary>
 		/// Display Eye/Crossed Eye button
 		/// </summary>
@@ -647,6 +682,7 @@ namespace MyBox.EditorTools
 
 		private static GUIContent _eyeOpenContent;
 		private static GUIContent _eyeClosedContent;
+#endif
 	}
 }
 #endif
