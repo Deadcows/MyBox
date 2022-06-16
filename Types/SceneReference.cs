@@ -41,11 +41,33 @@ namespace MyBox
 
 		[SerializeField] private bool sceneEnabled;
 
-		public bool IsAssigned
+		public bool IsAssigned => !string.IsNullOrEmpty(SceneName);
+
+
+		public void LoadScene(LoadSceneMode mode = LoadSceneMode.Single)
 		{
-			get { return !string.IsNullOrEmpty(SceneName); }
+			ValidateScene();
+			SceneManager.LoadScene(SceneName, mode);
+		}
+		
+		public AsyncOperation LoadSceneAsync(LoadSceneMode mode = LoadSceneMode.Single)
+		{
+			ValidateScene();
+			return SceneManager.LoadSceneAsync(SceneName, mode);
 		}
 
+		public AsyncOperation UnloadSceneAsync()
+		{
+			ValidateScene();
+			return SceneManager.UnloadSceneAsync(SceneName);
+		}
+
+		public bool SetActive()
+		{
+			return SceneManager.SetActiveScene(SceneManager.GetSceneByName(SceneName));
+		} 
+
+		
 		private void ValidateScene()
 		{
 			if (string.IsNullOrEmpty(SceneName))
@@ -57,19 +79,7 @@ namespace MyBox
 			if (!sceneEnabled)
 				throw new SceneLoadException("Scene " + SceneName + " is not enabled in the build settings");
 		}
-
-		public void LoadScene(LoadSceneMode mode = LoadSceneMode.Single)
-		{
-			ValidateScene();
-			SceneManager.LoadScene(SceneName, mode);
-		}
-
-		public AsyncOperation LoadSceneAsync(LoadSceneMode mode = LoadSceneMode.Single)
-		{
-			ValidateScene();
-			return SceneManager.LoadSceneAsync(SceneName, mode);
-		}
-
+		
 		public void OnBeforeSerialize()
 		{
 #if UNITY_EDITOR
@@ -77,22 +87,9 @@ namespace MyBox
 			{
 				string sceneAssetPath = UnityEditor.AssetDatabase.GetAssetPath(Scene);
 				string sceneAssetGUID = UnityEditor.AssetDatabase.AssetPathToGUID(sceneAssetPath);
-
-				UnityEditor.EditorBuildSettingsScene[] scenes =
-					UnityEditor.EditorBuildSettings.scenes;
-
-				sceneIndex = -1;
-				for (int i = 0; i < scenes.Length; i++)
-				{
-					if (scenes[i].guid.ToString() == sceneAssetGUID)
-					{
-						sceneIndex = i;
-						sceneEnabled = scenes[i].enabled;
-						if (scenes[i].enabled)
-							SceneName = Scene.name;
-						break;
-					}
-				}
+				
+				var sceneInBuild = Internal.SceneReferenceUtils.GetSceneInBuildState(sceneAssetGUID);
+				if (sceneInBuild.Enabled) SceneName = Scene.name;
 			}
 			else
 			{
@@ -114,6 +111,21 @@ namespace MyBox.Internal
 	using System;
 	using UnityEditor;
 	using UnityEngine;
+
+	public static class SceneReferenceUtils
+	{
+		public static (bool Present, bool Enabled, int Index) GetSceneInBuildState(string sceneGuid)
+		{
+			EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
+
+			for (int i = 0; i < scenes.Length; i++)
+			{
+				if (scenes[i].guid.ToString() == sceneGuid) return (true, scenes[i].enabled, i);
+			}
+
+			return (false, false, -1);
+		}
+	}
 
 	/// <summary>
 	/// Editor for a scene reference that can display error prompts and offer
@@ -210,23 +222,14 @@ namespace MyBox.Internal
 		{
 			if (sceneAsset != null)
 			{
-				EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
-
-				sceneIndex.intValue = -1;
-				for (int i = 0; i < scenes.Length; i++)
+				var sceneInBuild = SceneReferenceUtils.GetSceneInBuildState(sceneAssetGUID);
+				
+				sceneIndex.intValue = sceneInBuild.Index;
+				if (sceneInBuild.Present)
 				{
-					if (scenes[i].guid.ToString() == sceneAssetGUID)
-					{
-						sceneIndex.intValue = i;
-						sceneEnabled.boolValue = scenes[i].enabled;
-						if (scenes[i].enabled)
-						{
-							if (sceneName.stringValue != sceneAsset.name)
-								sceneName.stringValue = sceneAsset.name;
-						}
-
-						break;
-					}
+					sceneEnabled.boolValue = sceneInBuild.Enabled;
+					if (sceneInBuild.Enabled && sceneName.stringValue != sceneAsset.name)
+						sceneName.stringValue = sceneAsset.name;
 				}
 			}
 			else
@@ -243,14 +246,12 @@ namespace MyBox.Internal
 		/// <param name="message">Message to display.</param>
 		private void DisplaySceneErrorPrompt(string message)
 		{
-			EditorBuildSettingsScene[] scenes =
-				EditorBuildSettings.scenes;
-
 			int choice = EditorUtility.DisplayDialogComplex("Scene Not In Build",
 				message, "Yes", "No", "Open Build Settings");
 
 			if (choice == 0)
 			{
+				var scenes = EditorBuildSettings.scenes;
 				int newCount = sceneIndex.intValue < 0 ? scenes.Length + 1 : scenes.Length;
 				EditorBuildSettingsScene[] newScenes =
 					new EditorBuildSettingsScene[newCount];
@@ -329,30 +330,16 @@ namespace MyBox.Internal
 		{
 			if (sceneAsset != null)
 			{
-				EditorBuildSettingsScene[] scenes =
-					EditorBuildSettings.scenes;
-
-				sceneIndex.intValue = -1;
-				for (int i = 0; i < scenes.Length; i++)
+				var buildScene = SceneReferenceUtils.GetSceneInBuildState(sceneAssetGUID);
+				
+				sceneIndex.intValue = buildScene.Index;
+				if (buildScene.Enabled)
 				{
-					if (scenes[i].guid.ToString() == sceneAssetGUID)
-					{
-						sceneIndex.intValue = i;
-						if (scenes[i].enabled)
-						{
-							if (sceneName.stringValue != sceneAsset.name)
-								sceneName.stringValue = sceneAsset.name;
-							return;
-						}
-
-						break;
-					}
+					if (sceneName.stringValue != sceneAsset.name)
+						sceneName.stringValue = sceneAsset.name;
 				}
 
-				if (sceneIndex.intValue >= 0)
-					DisplaySceneErrorPrompt(ERROR_SCENE_DISABLED);
-				else
-					DisplaySceneErrorPrompt(ERROR_SCENE_MISSING);
+				DisplaySceneErrorPrompt(!buildScene.Present ? ERROR_SCENE_MISSING : ERROR_SCENE_DISABLED);
 			}
 			else
 			{
