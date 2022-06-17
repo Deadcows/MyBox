@@ -236,17 +236,28 @@ namespace MyBox
 
 		public static Vector3 ClampY(this Vector3 vector, float min, float max)
 		{
-			return vector.SetY(Mathf.Clamp(vector.x, min, max));
+			return vector.SetY(Mathf.Clamp(vector.y, min, max));
 		}
 
 		public static Vector2 ClampY(this Vector2 vector, float min, float max)
 		{
-			return vector.SetY(Mathf.Clamp(vector.x, min, max));
+			return vector.SetY(Mathf.Clamp(vector.y, min, max));
 		}
 
 		public static void ClampY(this Transform transform, float min, float max)
 		{
-			transform.SetY(Mathf.Clamp(transform.position.x, min, max));
+			transform.SetY(Mathf.Clamp(transform.position.y, min, max));
+		}
+
+		
+		public static Vector3 ClampZ(this Vector3 vector, float min, float max)
+		{
+			return vector.SetZ(Mathf.Clamp(vector.z, min, max));
+		}
+
+		public static void ClampZ(this Transform transform, float min, float max)
+		{
+			transform.SetZ(Mathf.Clamp(transform.position.z, min, max));
 		}
 
 		#endregion

@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MyBox
 {
@@ -9,12 +11,7 @@ namespace MyBox
 		/// <summary>
 		/// Swap two elements in array
 		/// </summary>
-		public static void Swap<T>(this T[] array, int a, int b)
-		{
-			T x = array[a];
-			array[a] = array[b];
-			array[b] = x;
-		}
+		public static void Swap<T>(this T[] array, int a, int b) => (array[a], array[b]) = (array[b], array[a]);
 
 		public static bool IsWorldPointInViewport(this Camera camera, Vector3 point)
 		{
@@ -85,8 +82,7 @@ namespace MyBox
 		/// Sets a layer to the source GameObject and all of its children in the
 		/// hierarchy.
 		/// </summary>
-		public static GameObject SetLayerRecursively(this GameObject source,
-			int layer)
+		public static GameObject SetLayerRecursively(this GameObject source, int layer)
 		{
 			var allTransforms = source.GetComponentsInChildren<Transform>(true);
 			foreach (var tf in allTransforms) tf.gameObject.layer = layer;
@@ -101,64 +97,59 @@ namespace MyBox
 			return gameObject.AddComponent<T>();
 		}
 
-		public static T GetOrAddComponent<T>(this Component component) where T : Component
-		{
-			var toGet = component.gameObject.GetComponent<T>();
-			if (toGet != null) return toGet;
-			return component.gameObject.AddComponent<T>();
-		}
+		public static T GetOrAddComponent<T>(this Component component) where T : Component 
+			=> GetOrAddComponent<T>(component.gameObject);
+		
 
-		public static bool HasComponent<T>(this GameObject gameObject)
-		{
-			return gameObject.GetComponent<T>() != null;
-		}
+		public static bool HasComponent<T>(this GameObject gameObject) => gameObject.GetComponent<T>() != null;
+		public static bool HasComponent<T>(this Component component) => component.GetComponent<T>() != null;
 
+		
+		/// <summary>
+		/// Recursively get childs that match specific predicate
+		/// </summary>
+		public static List<Transform> GetChildsWhere(this Transform transform, Predicate<Transform> match)
+		{
+			List<Transform> list = new List<Transform>();
+			RecursiveCheck(transform);
+			return list;
+
+			void RecursiveCheck(Transform parent)
+			{
+				foreach (Transform t in parent)
+				{
+					RecursiveCheck(t);
+
+					if (match.Invoke(t)) list.Add(t);
+				}
+			}
+		}
 
 
 		/// <summary>
 		/// Get all components of specified Layer in childs
 		/// </summary>
 		public static List<Transform> GetObjectsOfLayerInChilds(this GameObject gameObject, int layer)
-		{
-			List<Transform> list = new List<Transform>();
-			CheckChildsOfLayer(gameObject.transform, layer, list);
-			return list;
-		}
+			=> GetChildsWhere(gameObject.transform, t => t.gameObject.layer == layer);
+
 
 		/// <summary>
 		/// Get all components of specified Layer in childs
 		/// </summary>
 		public static List<Transform> GetObjectsOfLayerInChilds(this GameObject gameObject, string layer)
-		{
-			return gameObject.GetObjectsOfLayerInChilds(LayerMask.NameToLayer(layer));
-		}
+			=> gameObject.GetObjectsOfLayerInChilds(LayerMask.NameToLayer(layer));
 
 		/// <summary>
 		/// Get all components of specified Layer in childs
 		/// </summary>
 		public static List<Transform> GetObjectsOfLayerInChilds(this Component component, string layer)
-		{
-			return component.GetObjectsOfLayerInChilds(LayerMask.NameToLayer(layer));
-		}
+			=> component.GetObjectsOfLayerInChilds(LayerMask.NameToLayer(layer));
 
 		/// <summary>
 		/// Get all components of specified Layer in childs
 		/// </summary>
-		public static List<Transform> GetObjectsOfLayerInChilds(this Component component, int layer)
-		{
-			return component.gameObject.GetObjectsOfLayerInChilds(layer);
-		}
-
-		private static void CheckChildsOfLayer(Transform transform, int layer, List<Transform> childsCache)
-		{
-			foreach (Transform t in transform)
-			{
-				CheckChildsOfLayer(t, layer, childsCache);
-
-				if (t.gameObject.layer != layer) continue;
-				childsCache.Add(t);
-			}
-		}
+		public static List<Transform> GetObjectsOfLayerInChilds(this Component component, int layer) 
+			=> component.gameObject.GetObjectsOfLayerInChilds(layer);
 
 #if UNITY_PHYSICS_ENABLED
 
@@ -218,7 +209,7 @@ namespace MyBox
 			if (components == null || components.Length == 0) return null;
 			return components.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
 		}
-        
+
 #if UNITY_PHYSICS2D_ENABLED
 
 		/// <summary>
@@ -230,7 +221,7 @@ namespace MyBox
 			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
 		}
 
-        /// <summary>
+		/// <summary>
 		/// Get colliders with unique owner Instance ID
 		/// </summary>
 		public static Collider2D[] OneHitPerInstance(this Collider2D[] hits)
@@ -247,7 +238,7 @@ namespace MyBox
 			if (hits == null || hits.Length == 0) return null;
 			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToList();
 		}
-        
+
 #endif
 
 		#endregion
