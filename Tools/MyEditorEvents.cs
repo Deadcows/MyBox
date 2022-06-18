@@ -1,11 +1,9 @@
 #if UNITY_EDITOR
 using System;
-using MyBox.Internal;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEngine;
 using UnityEditor.Build.Reporting;
-using Object = UnityEngine.Object;
 
 namespace MyBox.EditorTools
 {
@@ -74,13 +72,12 @@ namespace MyBox.EditorTools
 				_skipFrameOnEditorStart = true;
 				return;
 			}
-
-			EditorApplication.update -= CheckOnceOnEditorStart;
-			var startupAssetInstance = Object.FindObjectOfType<MyBoxStartupAsset>();
-			if (startupAssetInstance != null) return;
-
-			ScriptableObject.CreateInstance<MyBoxStartupAsset>();
-			OnEditorStarts?.Invoke();
+			
+			if (!SessionState.GetBool("EditorInitiated", false))
+			{
+				SessionState.SetBool("EditorInitiated", true);
+				OnEditorStarts?.Invoke();
+			}
 		}
 
 		private static bool _skipFrameOnEditorStart;

@@ -98,6 +98,7 @@ All notable changes to this package will be documented in this file.
 - Extensions: SerializedProperty.GetUniquePropertyId() to get unique Id per Object+Field combination
 - Extensions: SerializedProperty.Repaint() to repaint inspector window where property is displayed
 - Fix: Extensions Vector/Transform.ClampY() bugfix
+- Fix: MyEditorEvents.OnEditorStarts event works properly now
 - Fix: MyBox is not strictly dependant on Physics, Physics2D, ImageConversion and AI modules, thanks to @r1noff!
 - Fix: AutoProperty will also be triggered before playmode. If scene is not saved before playmode, field will have actual values
 - Fix: FPSCounter now works correctly if EditorOnly is toggled. Thanks to @TheWalruzz!
