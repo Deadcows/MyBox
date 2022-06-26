@@ -108,6 +108,7 @@ All notable changes to this package will be documented in this file.
 - Fix: ButtonMethods offsets in the inspector fixed
 - Fix: OverrideLabelAttribute now might be used on fields with custom drawers and on custom types
 - Fix: Unity 2021.2+ compatibility (UnityEditor.Experimental.SceneManagement namespace became UnityEditor.SceneManagement). Thanks to @I_Jemin!
+- Fix: Occasional ReflectionTypeLoadException was fixed when ConditionalField is used
 - TODO Docs - Fix: DisplayInspector now will show warning if used on property of the wrong type
 - TODO Docs - Fix: FoldoutAttribute visual improvements
 

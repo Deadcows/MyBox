@@ -84,6 +84,17 @@ namespace MyBox.Internal
 			return null;
 		}
 
+		private static Type[] GetTypesSafe(Assembly assembly)
+		{
+			try
+			{
+				return assembly.GetTypes();
+			}
+			catch (ReflectionTypeLoadException e)
+			{
+				return e.Types;
+			}
+		}
 		
 		private static void CacheDrawersInAssembly()
 		{
@@ -91,8 +102,8 @@ namespace MyBox.Internal
 			
 			var propertyDrawerType = typeof(PropertyDrawer);
 			var allDrawerTypesInDomain = AppDomain.CurrentDomain.GetAssemblies()
-				.SelectMany(x => x.GetTypes())
-				.Where(t => propertyDrawerType.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+				.SelectMany(GetTypesSafe)
+				.Where(t => t != null && propertyDrawerType.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
 			foreach (var drawerType in allDrawerTypesInDomain)
 			{
