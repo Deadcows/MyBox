@@ -9,8 +9,6 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public class MyBoxWindow : EditorWindow
 	{
-		public static bool AutoUpdateCheckIsEnabled = true;
-
 		private static MyBoxVersion _installedVersion;
 		private static MyBoxVersion _latestVersion;
 
@@ -24,7 +22,7 @@ namespace MyBox.Internal
 
 		static MyBoxWindow()
 		{
-			if (AutoUpdateCheckIsEnabled) MyEditorEvents.OnEditorStarts += CheckForUpdates;
+			if (MyBoxSettings.CheckForUpdates) MyEditorEvents.OnEditorStarts += CheckForUpdates;
 		}
 
 		private static void CheckForUpdates()
@@ -82,8 +80,8 @@ namespace MyBox.Internal
 				_buttonStyle.hover.textColor = MyGUI.Colors.Blue;
 			}
 
-			var buttonWidth = 120;
-			var buttonHeight = 30;
+			var buttonWidth = GUILayout.Width(120);
+			var buttonHeight = GUILayout.Height(30);
 			var leftOffset = 20;
 
 
@@ -102,16 +100,16 @@ namespace MyBox.Internal
 			{
 				GUILayout.FlexibleSpace();
 
-				if (GUILayout.Button("  Github Page ↗", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
+				if (GUILayout.Button("  Github Page ↗", _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox");
 
-				if (GUILayout.Button("  Attributes ↗", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
+				if (GUILayout.Button("  Attributes ↗", _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Attributes");
 
-				if (GUILayout.Button("  Extensions ↗", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
+				if (GUILayout.Button("  Extensions ↗", _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/tree/master/Extensions");
 
-				if (GUILayout.Button("  Tools, Features ↗", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
+				if (GUILayout.Button("  Tools, Features ↗", _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Tools-and-Features");
 
 				GUILayout.FlexibleSpace();
@@ -199,7 +197,7 @@ namespace MyBox.Internal
 
 				GUI.enabled = _updateRequest == null || _updateRequest.IsCompleted;
 				var updateOrInstall = MyBoxUtilities.InstalledViaUPM ? "Update" : "Install";
-				if (GUILayout.Button(updateOrInstall + " UPM version", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
+				if (GUILayout.Button(updateOrInstall + " UPM version", _buttonStyle, buttonWidth, buttonHeight))
 				{
 					if (MyBoxUtilities.InstalledViaUPM) AddPackage();
 					else
@@ -218,13 +216,13 @@ namespace MyBox.Internal
 
 				GUI.enabled = true;
 
-				if (GUILayout.Button("  How to Update ↗", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
+				if (GUILayout.Button("  How to Update ↗", _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Installation");
 
-				if (GUILayout.Button("  Releases ↗", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
+				if (GUILayout.Button("  Releases ↗", _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/releases");
 
-				if (GUILayout.Button("  Changelog ↗", _buttonStyle, GUILayout.Width(buttonWidth), GUILayout.Height(buttonHeight)))
+				if (GUILayout.Button("  Changelog ↗", _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/blob/master/CHANGELOG.md");
 
 				GUILayout.FlexibleSpace();

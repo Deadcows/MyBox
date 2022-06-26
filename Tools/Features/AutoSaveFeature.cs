@@ -8,9 +8,6 @@ namespace MyBox.Internal
 	[InitializeOnLoad]
 	public class AutoSaveFeature
 	{
-		public static bool IsEnabled = false;
-
-
 		static AutoSaveFeature()
 		{
 			EditorApplication.playModeStateChanged += AutoSaveWhenPlaymodeStarts;
@@ -18,7 +15,7 @@ namespace MyBox.Internal
 
 		private static void AutoSaveWhenPlaymodeStarts(PlayModeStateChange obj)
 		{
-			if (!IsEnabled) return;
+			if (!MyBoxSettings.AutoSaveEnabled) return;
 
 			if (EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isPlaying)
 			{

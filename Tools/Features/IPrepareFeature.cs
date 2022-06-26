@@ -20,12 +20,11 @@ namespace MyBox.EditorTools
 	using UnityEditor;
 	using UnityEditor.SceneManagement;
 	using UnityEngine.SceneManagement;
+	using MyBox.Internal;
 
 	[InitializeOnLoad]
 	public class IPrepareFeature
 	{
-		public static bool IsEnabled = true;
-
 		public static Action OnPrepareBefore;
 		public static Action OnPrepare;
 		public static Action OnPrepareAfter;
@@ -41,7 +40,7 @@ namespace MyBox.EditorTools
 			OnPrepare?.Invoke();
 			OnPrepareAfter?.Invoke();
 			
-			if (IsEnabled) RunIPrepare();
+			if (MyBoxSettings.PrepareOnPlaymode) RunIPrepare();
 		}
 		
 		/// <summary>

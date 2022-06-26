@@ -11,12 +11,9 @@ namespace MyBox.Internal
 {
 	public class CleanEmptyDirectoriesFeature : UnityEditor.AssetModificationProcessor
 	{
-		public static bool IsEnabled = false;
-
-		
 		public static string[] OnWillSaveAssets(string[] paths)
 		{
-			if (!IsEnabled) return paths;
+			if (!MyBoxSettings.CleanEmptyDirectoriesFeature) return paths;
 			
 			// Sometimes somehow SaveAssets caused with null path;
 			// Prefab creation enforces SaveAsset and this may cause unwanted dir cleanup;

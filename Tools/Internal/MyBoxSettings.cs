@@ -97,19 +97,23 @@ namespace MyBox.Internal
 			catch
 			{
 				data = new MyBoxSettingsData();
-				// Try parse old settings file
-				var fileContents = File.ReadAllLines(Path);
-				foreach (var content in fileContents)
-				{
-					var value = content.Split(':');
-					if (value[0].Contains("_autoSaveEnabled")) data.AutoSaveEnabled = int.Parse(value[1]) == 1;
-					if (value[0].Contains("_cleanEmptyDirectoriesFeature")) data.CleanEmptyDirectoriesFeature = int.Parse(value[1]) == 1;
-					if (value[0].Contains("_prepareOnPlaymode")) data.PrepareOnPlaymode = int.Parse(value[1]) == 1;
-					if (value[0].Contains("_checkForUpdates")) data.CheckForUpdates = int.Parse(value[1]) == 1;
-				}
+				TryConvertOndSettingsToNew(data);
 				SaveData(data);
 			} 
 			return data;
+		}
+		
+		private static void TryConvertOndSettingsToNew(MyBoxSettingsData data)
+		{
+			var fileContents = File.ReadAllLines(Path);
+			foreach (var content in fileContents)
+			{
+				var value = content.Split(':');
+				if (value[0].Contains("_autoSaveEnabled")) data.AutoSaveEnabled = int.Parse(value[1]) == 1;
+				if (value[0].Contains("_cleanEmptyDirectoriesFeature")) data.CleanEmptyDirectoriesFeature = int.Parse(value[1]) == 1;
+				if (value[0].Contains("_prepareOnPlaymode")) data.PrepareOnPlaymode = int.Parse(value[1]) == 1;
+				if (value[0].Contains("_checkForUpdates")) data.CheckForUpdates = int.Parse(value[1]) == 1;
+			}
 		}
 		
 		private static void SaveData(MyBoxSettingsData data)
