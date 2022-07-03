@@ -15,9 +15,8 @@ namespace MyBox
         { }
 
         public ReadOnlyAttribute(params string[] fieldToCheck) : base(fieldToCheck)
-        {
-
-        }
+        { }
+        
         public ReadOnlyAttribute(bool useMethod, string method, bool inverse = false) : base(useMethod, method, inverse)
         { }
     }
