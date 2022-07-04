@@ -9,21 +9,17 @@ namespace MyBox
 		/// <summary>
 		/// Convert to a different type.
 		/// </summary>
-		public static R Cast<R>(this IConvertible source) =>
-			(R)Convert.ChangeType(source, typeof(R));
+		public static T Cast<T>(this IConvertible source) => (T)Convert.ChangeType(source, typeof(T));
 
 		/// <summary>
 		/// Check if this is a particular type.
 		/// </summary>
-		public static bool Is<R>(this object source) => source is R;
+		public static bool Is<T>(this object source) => source is T;
 
 		/// <summary>
 		/// Cast to a different type, exception-safe.
 		/// </summary>
-		public static R As<R>(this object source) where R : class
-		{
-			return source as R;
-		}
+		public static T As<T>(this object source) where T : class => source as T;
 
 		/// <summary>
 		/// Take an object and pass it as an argument to a void function.
@@ -37,13 +33,12 @@ namespace MyBox
 		/// <summary>
 		/// Take an object, pass it as an argument to a function, return the result.
 		/// </summary>
-		public static R Pipe<T, R>(this T argument, Func<T, R> function) =>
-			function(argument);
+		public static TResult Pipe<T, TResult>(this T argument, Func<T, TResult> function) => function(argument);
 
 		/// <summary>
 		/// Take an object, pass it as an argument to a function, return the object.
 		/// </summary>
-		public static T PipeKeep<T, R>(this T argument, Func<T, R> function)
+		public static T PipeKeep<T, TResult>(this T argument, Func<T, TResult> function)
 		{
 			function(argument);
 			return argument;
@@ -54,115 +49,74 @@ namespace MyBox
 		/// </summary>
 		public static UnityEvent Once(this UnityEvent source, UnityAction action)
 		{
-			UnityAction wrapperAction = null;
-			wrapperAction = () =>
+			source.AddListener(WrapperAction);
+			return source;
+
+			void WrapperAction()
 			{
-				source.RemoveListener(wrapperAction);
+				source.RemoveListener(WrapperAction);
 				action();
-			};
-			source.AddListener(wrapperAction);
-			return source;
+			}
 		}
 
 		/// <summary>
 		/// Adds a listener that executes only once to the UnityEvent.
 		/// </summary>
-		public static UnityEvent<T> Once<T>(this UnityEvent<T> source,
-			UnityAction<T> action)
+		public static UnityEvent<T> Once<T>(this UnityEvent<T> source, UnityAction<T> action)
 		{
-			UnityAction<T> wrapperAction = null;
-			wrapperAction = p =>
+			source.AddListener(WrapperAction);
+			return source;
+			
+			void WrapperAction(T p)
 			{
-				source.RemoveListener(wrapperAction);
+				source.RemoveListener(WrapperAction);
 				action(p);
-			};
-			source.AddListener(wrapperAction);
-			return source;
+			}
 		}
 
 		/// <summary>
 		/// Adds a listener that executes only once to the UnityEvent.
 		/// </summary>
-		public static UnityEvent<T0, T1> Once<T0, T1>(
-			this UnityEvent<T0, T1> source,
-			UnityAction<T0, T1> action)
+		public static UnityEvent<T0, T1> Once<T0, T1>(this UnityEvent<T0, T1> source, UnityAction<T0, T1> action)
 		{
-			UnityAction<T0, T1> wrapperAction = null;
-			wrapperAction = (p0, p1) =>
+			source.AddListener(WrapperAction);
+			return source;
+			
+			void WrapperAction(T0 p0, T1 p1)
 			{
-				source.RemoveListener(wrapperAction);
+				source.RemoveListener(WrapperAction);
 				action(p0, p1);
-			};
-			source.AddListener(wrapperAction);
-			return source;
+			}
 		}
 
 		/// <summary>
 		/// Adds a listener that executes only once to the UnityEvent.
 		/// </summary>
-		public static UnityEvent<T0, T1, T2> Once<T0, T1, T2>(
-			this UnityEvent<T0, T1, T2> source,
-			UnityAction<T0, T1, T2> action)
+		public static UnityEvent<T0, T1, T2> Once<T0, T1, T2>(this UnityEvent<T0, T1, T2> source, UnityAction<T0, T1, T2> action)
 		{
-			UnityAction<T0, T1, T2> wrapperAction = null;
-			wrapperAction = (p0, p1, p2) =>
+			source.AddListener(WrapperAction);
+			return source;
+			
+			void WrapperAction(T0 p0, T1 p1, T2 p2)
 			{
-				source.RemoveListener(wrapperAction);
+				source.RemoveListener(WrapperAction);
 				action(p0, p1, p2);
-			};
-			source.AddListener(wrapperAction);
-			return source;
+			}
 		}
 
 		/// <summary>
 		/// Adds a listener that executes only once to the UnityEvent.
 		/// </summary>
-		public static UnityEvent<T0, T1, T2, T3> Once<T0, T1, T2, T3>(
-			this UnityEvent<T0, T1, T2, T3> source,
-			UnityAction<T0, T1, T2, T3> action)
+		public static UnityEvent<T0, T1, T2, T3> Once<T0, T1, T2, T3>(this UnityEvent<T0, T1, T2, T3> source, UnityAction<T0, T1, T2, T3> action)
 		{
-			UnityAction<T0, T1, T2, T3> wrapperAction = null;
-			wrapperAction = (p0, p1, p2, p3) =>
-			{
-				source.RemoveListener(wrapperAction);
-				action(p0, p1, p2, p3);
-			};
-			source.AddListener(wrapperAction);
+			source.AddListener(WrapperAction);
 			return source;
+			
+			void WrapperAction(T0 p0, T1 p1, T2 p2, T3 p3)
+			{
+				source.RemoveListener(WrapperAction);
+				action(p0, p1, p2, p3);
+			}
 		}
-
-#if UNITY_PHYSICS_ENABLED
-        
-		/// <summary>
-		/// Sets the state of the source enum, chosen by the 1-bits in the specified
-		/// bit mask.
-		/// </summary>
-		public static RigidbodyConstraints BitwiseToggle(
-			this RigidbodyConstraints source,
-			RigidbodyConstraints bitMask,
-			bool state)
-		{
-			if (state) return source | bitMask;
-			else return source & ~bitMask;
-		}
-        
-#endif
-        
-#if UNITY_PHYSICS2D_ENABLED
-        
-		/// <summary>
-		/// Sets the state of the source enum, chosen by the 1-bits in the specified
-		/// bit mask.
-		/// </summary>
-		public static RigidbodyConstraints2D BitwiseToggle(
-			this RigidbodyConstraints2D source,
-			RigidbodyConstraints2D bitMask,
-			bool state)
-		{
-			if (state) return source | bitMask;
-			else return source & ~bitMask;
-		}
-        
-#endif
 	}
 }

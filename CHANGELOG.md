@@ -84,17 +84,20 @@ All notable changes to this package will be documented in this file.
 - Extensions: IList.SwapInPlace(a, b) swaps two elements in collection. Thanks to @tonygiang!
 - Extensions: IList.Shuffle() shuffles elements in collection using the Knuth algorithm. Thanks to @tonygiang!
 - Extensions: IList.ExclusiveSample() returns collection of random elements. Thanks to @tonygiang!
-- Extensions: Rigidbody.ToggleConstraints extension. Thanks to @tonygiang!
-- Extensions: Transform.SetLossyScale. Thanks to @tonygiang!
+- Extensions: Rigidbody.ToggleConstraints() extension. Thanks to @tonygiang!
+- Extensions: Transform.SetLossyScale(). Thanks to @tonygiang!
 - Extensions: Transform.GetChildsWhere(PredicateFunc) allows to recursively get all the childs matching predicate
-- Extensions: Camera.WorldPointOffsetByDepth to keep point position on screen but with specified distance from camera. Thanks to @tonygiang!
-- Extensions: Component/GameObject.SetLayerRecursively. Thanks to @tonygiang!
-- Extensions: RectTransform.ShiftAnchor to offset anchor. Thanks to @tonygiang!
-- Extensions: RectTransform.GetAnchorCenter to get mid point between anchorMin and anchorMax. Thanks to @tonygiang!
-- Extensions: RectTransform.GetAnchorDelta to get parent-relative size of the RectTransform. Thanks to @tonygiang!
-- Extensions: Vector.Pow to raise each component of the source Vector to the specified power. Thanks to @tonygiang!
-- Extensions: Vector.ScaleBy immutably returns the result of the source vector multiplied with another vector. Thanks to @tonygiang!
-- Extensions: Vector3/Transform.ClampZ() 
+- Extensions: Camera.WorldPointOffsetByDepth() to keep point position on screen but with specified distance from camera. Thanks to @tonygiang!
+- Extensions: Component/GameObject.SetLayerRecursively(). Thanks to @tonygiang!
+- Extensions: RectTransform.SetWidth() and SetHeight()
+- Extensions: RectTransform.ShiftAnchor() to offset anchor. Thanks to @tonygiang!
+- Extensions: RectTransform.GetAnchorCenter() to get mid point between anchorMin and anchorMax. Thanks to @tonygiang!
+- Extensions: RectTransform.GetAnchorDelta() to get parent-relative size of the RectTransform. Thanks to @tonygiang!
+- Extensions: Vector.Pow() to raise each component of the source Vector to the specified power. Thanks to @tonygiang!
+- Extensions: Vector.ScaleBy() immutably returns the result of the source vector multiplied with another vector. Thanks to @tonygiang!
+- Extensions: Vector/Transform - ClampZ(), InvertX/Y/Z(), Offset etc
+- Extensions: float.Clamp(), float.Round() and float.RoundToInt()
+- Extensions: string.IsNullOrEmpty() and string.NotNullOrEmpty()
 - Extensions: SerializedProperty.GetUniquePropertyId() to get unique Id per Object+Field combination
 - Extensions: SerializedProperty.Repaint() to repaint inspector window where property is displayed
 - Fix: Extensions Vector/Transform.ClampY() bugfix

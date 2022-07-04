@@ -32,7 +32,13 @@ namespace MyBox
 			return camera.ScreenToWorldPoint(screenPoint.SetZ(distanceFromCamera),
 				eye);
 		}
-
+		
+		
+		/// <summary>
+		/// Set position to Vector3.zero
+		/// </summary>
+		public static void ResetPosition(this Transform transform) => transform.position = Vector3.zero;
+		
 
 		/// <summary>
 		/// Sets the lossy scale of the source Transform.

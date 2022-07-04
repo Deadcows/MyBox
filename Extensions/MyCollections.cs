@@ -2,11 +2,45 @@
 using UnityEngine;
 using System.Linq;
 using System;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace MyBox
 {
 	public static class MyCollections
 	{
+		
+		#region InsertAt and RemoveAt
+		
+		/// <summary>
+		/// Returns new array with inserted empty element at index
+		/// </summary>
+		public static T[] InsertAt<T>(this T[] array, int index)
+		{
+			if (index < 0)
+			{
+				Debug.LogError("Index is less than zero. Array is not modified");
+				return array;
+			}
+
+			if (index > array.Length)
+			{
+				Debug.LogError("Index exceeds array length. Array is not modified");
+				return array;
+			}
+
+			T[] newArray = new T[array.Length + 1];
+			int index1 = 0;
+			for (int index2 = 0; index2 < newArray.Length; ++index2)
+			{
+				if (index2 == index) continue;
+
+				newArray[index2] = array[index1];
+				++index1;
+			}
+
+			return newArray;
+		}
+		
 		/// <summary>
 		/// Returns new array without element at index
 		/// </summary>
@@ -37,61 +71,31 @@ namespace MyBox
 			return newArray;
 		}
 
+		#endregion
+
+		
+		#region GetRandom
+		
 		/// <summary>
-		/// Returns new array with inserted empty element at index
+		/// Returns random element from collection
 		/// </summary>
-		public static T[] InsertAt<T>(this T[] array, int index)
-		{
-			if (index < 0)
-			{
-				Debug.LogError("Index is less than zero. Array is not modified");
-				return array;
-			}
-
-			if (index > array.Length)
-			{
-				Debug.LogError("Index exceeds array length. Array is not modified");
-				return array;
-			}
-
-			T[] newArray = new T[array.Length + 1];
-			int index1 = 0;
-			for (int index2 = 0; index2 < newArray.Length; ++index2)
-			{
-				if (index2 == index) continue;
-
-				newArray[index2] = array[index1];
-				++index1;
-			}
-
-			return newArray;
-		}
-
+		public static T GetRandom<T>(this T[] collection) => collection[UnityEngine.Random.Range(0, collection.Length)];
 
 		/// <summary>
 		/// Returns random element from collection
 		/// </summary>
-		public static T GetRandom<T>(this T[] collection)
-		{
-			return collection[UnityEngine.Random.Range(0, collection.Length)];
-		}
+		public static T GetRandom<T>(this IList<T> collection) => collection[UnityEngine.Random.Range(0, collection.Count)];
 
 		/// <summary>
 		/// Returns random element from collection
 		/// </summary>
-		public static T GetRandom<T>(this IList<T> collection)
-		{
-			return collection[UnityEngine.Random.Range(0, collection.Count)];
-		}
+		// ReSharper disable PossibleMultipleEnumeration
+		public static T GetRandom<T>(this IEnumerable<T> collection) => collection.ElementAt(UnityEngine.Random.Range(0, collection.Count()));
+		// ReSharper restore PossibleMultipleEnumeration
 
-		/// <summary>
-		/// Returns random element from collection
-		/// </summary>
-		public static T GetRandom<T>(this IEnumerable<T> collection)
-		{
-			return collection.ElementAt(UnityEngine.Random.Range(0, collection.Count()));
-		}
-
+		#endregion
+		
+		
 		#region IsNullOrEmpty and NotNullOrEmpty
 		
 		/// <summary>
@@ -221,10 +225,18 @@ namespace MyBox
 		/// key does not already exist. Returns the new value, or the existing
 		/// value if the key exists.
 		/// </summary>
-		public static TValue GetOrAdd<TKey, TValue>(
-			this IDictionary<TKey, TValue> source,
-			TKey key,
-			TValue value)
+		public static TValue GetOrAddDefault<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key) where TValue : new()
+		{
+			if (!source.ContainsKey(key)) source[key] = new TValue();
+			return source[key];
+		}
+		/// <summary>
+		/// Adds a key/value pair to the IDictionary&lt;TKey,TValue&gt; if the
+		/// key does not already exist. Returns the new value, or the existing
+		/// value if the key exists.
+		/// </summary>
+		public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> source, 
+			TKey key, TValue value)
 		{
 			if (!source.ContainsKey(key)) source[key] = value;
 			return source[key];
@@ -235,10 +247,20 @@ namespace MyBox
 		/// the specified function if the key does not already exist. Returns
 		/// the new value, or the existing value if the key exists.
 		/// </summary>
-		public static TValue GetOrAdd<TKey, TValue>(
-			this IDictionary<TKey, TValue> source,
-			TKey key,
-			System.Func<TKey, TValue> valueFactory)
+		public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> source, 
+			TKey key, Func<TValue> valueFactory)
+		{
+			if (!source.ContainsKey(key)) source[key] = valueFactory();
+			return source[key];
+		}
+		
+		/// <summary>
+		/// Adds a key/value pair to the IDictionary&lt;TKey,TValue&gt; by using
+		/// the specified function if the key does not already exist. Returns
+		/// the new value, or the existing value if the key exists.
+		/// </summary>
+		public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> source, 
+			TKey key, Func<TKey, TValue> valueFactory)
 		{
 			if (!source.ContainsKey(key)) source[key] = valueFactory(key);
 			return source[key];
@@ -249,14 +271,10 @@ namespace MyBox
 		/// the specified function and an argument if the key does not already
 		/// exist, or returns the existing value if the key exists.
 		/// </summary>
-		public static TValue GetOrAdd<TKey, TValue, TArg>(
-			this IDictionary<TKey, TValue> source,
-			TKey key,
-			System.Func<TKey, TArg, TValue> valueFactory,
-			TArg factoryArgument)
+		public static TValue GetOrAdd<TKey, TValue, TArg>(this IDictionary<TKey, TValue> source, 
+			TKey key, Func<TKey, TArg, TValue> valueFactory, TArg factoryArgument)
 		{
-			if (!source.ContainsKey(key))
-				source[key] = valueFactory(key, factoryArgument);
+			if (!source.ContainsKey(key)) source[key] = valueFactory(key, factoryArgument);
 			return source[key];
 		}
 
@@ -378,8 +396,7 @@ namespace MyBox
 		/// <summary>
 		/// Returns random index from collection with weighted probabilities.
 		/// </summary>
-		public static int GetWeightedRandomIndex<T>(this IEnumerable<T> source,
-			Func<T, double> weightSelector)
+		public static int GetWeightedRandomIndex<T>(this IEnumerable<T> source, Func<T, double> weightSelector)
 		{
 			var weights = source.Select(weightSelector).Select(w => w < 0 ? 0 : w);
 			var weightStages = weights.Select((w, i) => weights.Take(i + 1).Sum());
@@ -390,24 +407,21 @@ namespace MyBox
 		/// <summary>
 		/// Returns random element from collection with weighted probabilities.
 		/// </summary>
-		public static T GetWeightedRandom<T>(this IList<T> source,
-			Func<T, double> weightSelector) =>
-			source[source.GetWeightedRandomIndex(weightSelector)];
+		public static T GetWeightedRandom<T>(this IList<T> source, Func<T, double> weightSelector) 
+			=> source[source.GetWeightedRandomIndex(weightSelector)];
 
 		/// <summary>
 		/// Returns random element from collection with weighted probabilities.
 		/// </summary>
-		public static T GetWeightedRandom<T>(this IEnumerable<T> source,
-			Func<T, double> weightSelector) =>
-			source.ElementAt(source.GetWeightedRandomIndex(weightSelector));
+		public static T GetWeightedRandom<T>(this IEnumerable<T> source, Func<T, double> weightSelector) 
+			=> source.ElementAt(source.GetWeightedRandomIndex(weightSelector));
 		
 
 		/// <summary>
 		/// Fills a collection with values generated using a factory function that
 		/// passes along their index numbers.
 		/// </summary>
-		public static IList<T> FillBy<T>(this IList<T> source,
-			Func<int, T> valueFactory)
+		public static IList<T> FillBy<T>(this IList<T> source, Func<int, T> valueFactory)
 		{
 			for (int i = 0; i < source.Count; ++i) source[i] = valueFactory(i);
 			return source;
@@ -417,8 +431,7 @@ namespace MyBox
 		/// Fills an array with values generated using a factory function that
 		/// passes along their index numbers.
 		/// </summary>
-		public static T[] FillBy<T>(this T[] source,
-			Func<int, T> valueFactory)
+		public static T[] FillBy<T>(this T[] source, Func<int, T> valueFactory)
 		{
 			for (int i = 0; i < source.Length; ++i) source[i] = valueFactory(i);
 			return source;
@@ -428,8 +441,7 @@ namespace MyBox
 		/// Randomly samples a non-repeating number of elements from the source
 		/// collection.
 		/// </summary>
-		public static T[] ExclusiveSample<T>(this IList<T> source,
-			int sampleNumber)
+		public static T[] ExclusiveSample<T>(this IList<T> source, int sampleNumber)
 		{
 			if (sampleNumber > source.Count)
 				throw new ArgumentOutOfRangeException("Cannot sample more elements than what the source collection contains");
@@ -448,13 +460,9 @@ namespace MyBox
 		/// <summary>
 		/// Swaps 2 elements at the specified index positions in place.
 		/// </summary>
-		public static IList<T> SwapInPlace<T>(this IList<T> source,
-			int index1,
-			int index2)
+		public static IList<T> SwapInPlace<T>(this IList<T> source, int index1, int index2)
 		{
-			var e1 = source[index1];
-			source[index1] = source[index2];
-			source[index2] = e1;
+			(source[index1], source[index2]) = (source[index2], source[index1]);
 			return source;
 		}
 
