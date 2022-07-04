@@ -13,29 +13,39 @@ namespace MyBox.Internal
 
         public static string Session { get; private set; }
         public static string Version { get; private set; }
+        
+        public static bool LogToConsole { get; set; }
 
+        public const string DefaultFilename = "customLog.txt";
+        public const string DefaultTimeFormat = "MM-dd_HH-mm-ss";
 
         private const int MaxMessageLength = 4000;
 
         static MyLogger()
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, args) => LogException(args.ExceptionObject as Exception);
-            Application.logMessageReceived += (condition, trace, type) => Log($"Console Log ({type}): {condition}{Environment.NewLine}{trace}");
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) 
+                => LogException(args.ExceptionObject as Exception);
+            Application.logMessageReceived += (condition, trace, type) 
+                => Log($"Console Log ({type}): {condition}{Environment.NewLine}{trace}", false, false);
         }
 
-        public static void InitializeSession(string version = null, string filename = "customLog.txt", string timeFormat = "MM-dd_HH-mm-ss")
+        public static void InitializeSession(
+            string version = null, string filename = DefaultFilename, 
+            string timeFormat = DefaultTimeFormat, bool logToConsole = false)
         {
             Session = Guid.NewGuid().ToString();
             Version = version ?? string.Empty;
 
             LogFile = filename;
             TimeFormat = timeFormat;
-            
+
+            LogToConsole = logToConsole;
             Log("Initialized. " + version);
         } 
         
-        public static void Log(string text, bool withStackTrace = false)
+        public static void Log(string text, bool withStackTrace = false, bool logToConsole = true)
         {
+            if (LogToConsole && logToConsole) Debug.Log("Logger: ".Colored(Colors.brown) + text);
             if (Application.isEditor) return;
             if (Disabled) return;
 
@@ -70,9 +80,7 @@ namespace MyBox.Internal
         }
 
 
-        private static void LogException(Exception ex)
-        {
-            Log("Exception:" + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
-        }
+        private static void LogException(Exception ex) 
+            => Log("Exception:" + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace, false, false);
     }
 }
