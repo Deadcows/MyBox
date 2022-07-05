@@ -1,23 +1,18 @@
 ﻿#if UNITY_EDITOR
 using UnityEditor;
-using UnityEngine;
 
 namespace MyBox.Internal
 {
 	[CustomEditor(typeof(GuidComponent))]
 	public class GuidComponentDrawer : Editor
 	{
-		private GuidComponent guidComp;
+		private GuidComponent _guid;
 
 		public override void OnInspectorGUI()
 		{
-			if (guidComp == null)
-			{
-				guidComp = (GuidComponent) target;
-			}
-
-			// Draw label
-			EditorGUILayout.LabelField("Guid:", guidComp.GetGuid().ToString());
+			if (_guid == null) _guid = (GuidComponent) target;
+			
+			using (new EditorGUI.DisabledScope(true)) EditorGUILayout.TextField("Guid:", _guid.GetGuid().ToString());
 		}
 	}
 }

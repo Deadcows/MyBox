@@ -21,34 +21,29 @@ namespace MyBox
 		{
 			get
 			{
-				if (guid == Guid.Empty && serializedGuid != null && serializedGuid.Length == 16)
-					guid = new Guid(serializedGuid);
-				return guid;
+				if (_guid == Guid.Empty && serializedGuid != null && serializedGuid.Length == 16)
+					_guid = new Guid(serializedGuid);
+				return _guid;
 			}
 		}
 		
-		public string GuidString
-		{
-			get { return Guid.ToString(); }
-		}
+		public string GuidString => Guid.ToString();
+		
 
 		// System guid we use for comparison and generation
-		Guid guid = Guid.Empty;
+		Guid _guid = Guid.Empty;
 
 		// Unity's serialization system doesn't know about System.Guid, so we convert to a byte array
 		// Fun fact, we tried using strings at first, but that allocated memory and was twice as slow
 		[SerializeField] private byte[] serializedGuid;
 
 
-		public bool IsGuidAssigned()
-		{
-			return guid != System.Guid.Empty;
-		}
+		public bool IsGuidAssigned() => _guid != Guid.Empty;
 
 
 		// When de-serializing or creating this component, we want to either restore our serialized GUID
 		// or create a new one.
-		void CreateGuid()
+		private void CreateGuid()
 		{
 			// if our serialized data is invalid, then we are a new object and need a new GUID
 			if (serializedGuid == null || serializedGuid.Length != 16)
@@ -62,8 +57,8 @@ namespace MyBox
 
 				Undo.RecordObject(this, "Added GUID");
 #endif
-				guid = System.Guid.NewGuid();
-				serializedGuid = guid.ToByteArray();
+				_guid = System.Guid.NewGuid();
+				serializedGuid = _guid.ToByteArray();
 
 #if UNITY_EDITOR
 				// If we are creating a new GUID for a prefab instance of a prefab, but we have somehow lost our prefab connection
@@ -74,20 +69,20 @@ namespace MyBox
 				}
 #endif
 			}
-			else if (guid == System.Guid.Empty)
+			else if (_guid == System.Guid.Empty)
 			{
 				// otherwise, we should set our system guid to our serialized guid
-				guid = new System.Guid(serializedGuid);
+				_guid = new System.Guid(serializedGuid);
 			}
 
 			// register with the GUID Manager so that other components can access this
-			if (guid != System.Guid.Empty)
+			if (_guid != System.Guid.Empty)
 			{
 				if (!GuidManager.Add(this))
 				{
 					// if registration fails, we probably have a duplicate or invalid GUID, get us a new one.
 					serializedGuid = null;
-					guid = System.Guid.Empty;
+					_guid = System.Guid.Empty;
 					CreateGuid();
 				}
 			}
@@ -134,14 +129,14 @@ namespace MyBox
 			if (IsAssetOnDisk())
 			{
 				serializedGuid = null;
-				guid = System.Guid.Empty;
+				_guid = System.Guid.Empty;
 			}
 			else
 #endif
 			{
-				if (guid != System.Guid.Empty)
+				if (_guid != System.Guid.Empty)
 				{
-					serializedGuid = guid.ToByteArray();
+					serializedGuid = _guid.ToByteArray();
 				}
 			}
 		}
@@ -151,7 +146,7 @@ namespace MyBox
 		{
 			if (serializedGuid != null && serializedGuid.Length == 16)
 			{
-				guid = new System.Guid(serializedGuid);
+				_guid = new System.Guid(serializedGuid);
 			}
 		}
 
@@ -168,7 +163,7 @@ namespace MyBox
 			if (IsAssetOnDisk())
 			{
 				serializedGuid = null;
-				guid = System.Guid.Empty;
+				_guid = System.Guid.Empty;
 			}
 			else
 #endif
@@ -180,18 +175,18 @@ namespace MyBox
 		// Never return an invalid GUID
 		public System.Guid GetGuid()
 		{
-			if (guid == System.Guid.Empty && serializedGuid != null && serializedGuid.Length == 16)
+			if (_guid == System.Guid.Empty && serializedGuid != null && serializedGuid.Length == 16)
 			{
-				guid = new System.Guid(serializedGuid);
+				_guid = new System.Guid(serializedGuid);
 			}
 
-			return guid;
+			return _guid;
 		}
 
 		// let the manager know we are gone, so other objects no longer find this
 		public void OnDestroy()
 		{
-			GuidManager.Remove(guid);
+			GuidManager.Remove(_guid);
 		}
 	}
 }
