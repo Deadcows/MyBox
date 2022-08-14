@@ -159,7 +159,7 @@ namespace MyBox
 
 		public static Vector2 ToVector2(this Vector2Int vector) => new Vector2(vector.x, vector.y);
 
-		public static Vector3 ToVector3(this Vector3Int vector) => new Vector3(vector.x, vector.y);
+		public static Vector3 ToVector3(this Vector3Int vector) => new Vector3(vector.x, vector.y, vector.z);
 
 
 		public static Vector2Int ToVector2Int(this Vector2 vector) 
