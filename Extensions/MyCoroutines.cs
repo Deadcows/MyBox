@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using MyBox.Internal;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MyBox
 {
@@ -27,49 +29,46 @@ namespace MyBox
 		/// <summary>
 		/// StartCoroutine without MonoBehaviour
 		/// </summary>
-		public static Coroutine StartCoroutine(this IEnumerator coroutine)
-		{
-			return CoroutineOwner.StartCoroutine(coroutine);
-		}
+		public static Coroutine StartCoroutine(this IEnumerator coroutine) 
+			=> CoroutineOwner.StartCoroutine(coroutine);
 
 		/// <summary>
 		/// Start next coroutine after this one
 		/// </summary>
-		public static Coroutine StartNext(this Coroutine coroutine, IEnumerator nextCoroutine)
-		{
-			return StartCoroutine(StartNextCoroutine(coroutine, nextCoroutine));
-		}
+		public static Coroutine StartNext(this Coroutine coroutine, IEnumerator nextCoroutine) 
+			=> StartCoroutine(StartNextCoroutine(coroutine, nextCoroutine));
+
+		public static Coroutine OnComplete(this Coroutine coroutine, Action onComplete)
+			=> StartCoroutine(OnCompleteCoroutine(coroutine, onComplete));
 		
 		/// <summary>
 		/// Stop coroutine started with MyCoroutines.StartCoroutine
 		/// </summary>
-		public static void StopCoroutine(Coroutine coroutine)
-		{
-			CoroutineOwner.StopCoroutine(coroutine);
-		}
+		public static void StopCoroutine(Coroutine coroutine) => CoroutineOwner.StopCoroutine(coroutine);
 
 		/// <summary>
 		/// Stop all coroutines started with MyCoroutines.StartCoroutine
 		/// </summary>
-		public static void StopAllCoroutines()
-		{
-			CoroutineOwner.StopAllCoroutines();
-		}
+		public static void StopAllCoroutines() => CoroutineOwner.StopAllCoroutines();
 
 		/// <summary>
 		/// CoroutineGroup allows to start bunch coroutines in one group
 		/// and check the amount of running coroutines (or if there is any of them)
 		/// </summary>
-		public static CoroutineGroup CreateGroup(MonoBehaviour owner = null)
-		{
-			return new CoroutineGroup(owner != null ? owner : CoroutineOwner);
-		}
+		public static CoroutineGroup CreateGroup(MonoBehaviour owner = null) 
+			=> new CoroutineGroup(owner != null ? owner : CoroutineOwner);
 		
 		
 		private static IEnumerator StartNextCoroutine(Coroutine coroutine, IEnumerator nextCoroutine)
 		{
 			yield return coroutine;
 			yield return StartCoroutine(nextCoroutine);
+		}
+
+		private static IEnumerator OnCompleteCoroutine(Coroutine coroutine, Action onComplete)
+		{
+			yield return coroutine;
+			onComplete?.Invoke();
 		}
 	}
 }

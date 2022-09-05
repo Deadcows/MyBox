@@ -80,6 +80,8 @@ All notable changes to this package will be documented in this file.
 
 ---
 
+
+- TODO Docs - Extensions: Coroutine.OnComplete(Action);
 - Extensions: collection.FillBy(index => { }) allows to use factory method to fill up the collection. Thanks to @tonygiang!
 - Extensions: IList.SwapInPlace(a, b) swaps two elements in collection. Thanks to @tonygiang!
 - Extensions: IList.Shuffle() shuffles elements in collection using the Knuth algorithm. Thanks to @tonygiang!
