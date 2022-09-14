@@ -10,9 +10,14 @@ namespace MyBox.EditorTools
 	{
 		public bool IsExpanded
 		{
-			get { return _property.isExpanded; }
-			set { _property.isExpanded = value; }
+			get => _property.isExpanded;
+			set => _property.isExpanded = value;
 		}
+		
+		public float Height => _property.isExpanded ? _list.GetHeight() : EditorGUIUtility.singleLineHeight + 12;
+		
+		public SerializedProperty Property => _property;
+		public ReorderableList ReorderableList => _list;
 
 		public void Draw()
 		{
@@ -32,15 +37,7 @@ namespace MyBox.EditorTools
 			DrawHeader(rect);
 		}
 
-		public float Height
-		{
-			get { return _property.isExpanded ? _list.GetHeight() : EditorGUIUtility.singleLineHeight + 12; }
-		}
 
-		public SerializedProperty Property
-		{
-			get { return _property; }
-		}
 
 		public Action<SerializedProperty, Rect, int> CustomDrawer;
 
