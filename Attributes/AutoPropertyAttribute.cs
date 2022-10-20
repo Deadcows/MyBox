@@ -94,21 +94,21 @@ namespace MyBox.Internal
 			{
 				[AutoPropertyMode.Children] = (property, pred) => property.Context
 					.As<Component>()
-					?.GetComponentsInChildren(property.Field.FieldType.GetElementType(), true)
+					?.GetComponentsInChildren(property.Field.FieldType.GetElementType() ?? property.Field.FieldType, true)
 					.Where(pred).ToArray(),
 				[AutoPropertyMode.Parent] = (property, pred) => property.Context.As<Component>()
-					?.GetComponentsInParent(property.Field.FieldType.GetElementType(), true)
+					?.GetComponentsInParent(property.Field.FieldType.GetElementType() ?? property.Field.FieldType, true)
 					.Where(pred).ToArray(),
 				[AutoPropertyMode.Scene] = (property, pred) => MyEditor
 					.GetAllComponentsInSceneOf(property.Context,
-						property.Field.FieldType.GetElementType())
+						property.Field.FieldType.GetElementType() ?? property.Field.FieldType)
 					.Where(pred).ToArray(),
 				[AutoPropertyMode.Asset] = (property, pred) => Resources
-					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
+					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType() ?? property.Field.FieldType)
 					.Where(AssetDatabase.Contains)
 					.Where(pred).ToArray(),
 				[AutoPropertyMode.Any] = (property, pred) => Resources
-					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType())
+					.FindObjectsOfTypeAll(property.Field.FieldType.GetElementType() ?? property.Field.FieldType)
 					.Where(pred).ToArray()
 			};
 
