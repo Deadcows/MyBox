@@ -48,7 +48,7 @@ namespace MyBox.Internal
 			
 			CachePropertyDrawer(property);
 			_toShow = ConditionalUtility.IsPropertyConditionMatch(property, conditional.Data);
-			if (!_toShow) return 0;
+			if (!_toShow) return -2;
 
 			if (_customPropertyDrawer != null) return _customPropertyDrawer.GetPropertyHeight(property, label);
 			return EditorGUI.GetPropertyHeight(property);
