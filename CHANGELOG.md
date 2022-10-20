@@ -102,6 +102,7 @@ All notable changes to this package will be documented in this file.
 - Extensions: string.IsNullOrEmpty() and string.NotNullOrEmpty()
 - Extensions: SerializedProperty.GetUniquePropertyId() to get unique Id per Object+Field combination
 - Extensions: SerializedProperty.Repaint() to repaint inspector window where property is displayed
+- Fix: AutoPropertyAttribute NullReferenceException fix. Thanks to @TheWalruzz for the fix
 - Fix: Extensions Vector/Transform.ClampY() bugfix
 - Fix: MyEditorEvents.OnEditorStarts event works properly now
 - Fix: MyBox is not strictly dependant on Physics, Physics2D, ImageConversion and AI modules, thanks to @r1noff!
