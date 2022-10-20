@@ -5,7 +5,8 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MyDelayedActions.DelayedAction methods now start themselves automatically
 - Breaking Changes: MinMaxFloat.RandomInRangeInclusive was redundant, removed
 - Breaking Changes: Extension IList.GetRandomCollection is removed, replaced with IList.ExclusiveSample
-- Breaking Changes: Removed bunch of methods from MyPhysics class 
+- Breaking Changes: Removed bunch of methods from MyPhysics class
+- Added: Toggle Inspector Debug hotkey - Alt+D by default
 - TODO Docs - Added: SearchableEnumDrawer type for fast creation of Searchable Enums instead of SearchableEnumAttribute usage
 
 ---

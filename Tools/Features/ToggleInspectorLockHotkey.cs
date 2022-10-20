@@ -1,10 +1,10 @@
-﻿// ---------------------------------------------------------------------------- 
+﻿#if UNITY_EDITOR
+// ---------------------------------------------------------------------------- 
 // Author: Abomb
 // https://forum.unity.com/threads/shortcut-key-for-lock-inspector.95815/#post-1056603
 // Date:   09/10/2012
 // ----------------------------------------------------------------------------
 
-#if UNITY_EDITOR
 using System;
 using System.Reflection;
 using UnityEditor;
@@ -13,9 +13,9 @@ using Object = UnityEngine.Object;
 
 namespace MyBox.Internal
 {
-	public static class ToggleLockHotkey
+	public static class ToggleInspectorLockHotkey
 	{
-		[MenuItem("Tools/MyBox/Toggle Lock &q")]
+		[MenuItem("Tools/MyBox/Toggle Console Lock &q")]
 		static void ToggleInspectorLock()
 		{
 			Type inspectorWindowType = Assembly.GetAssembly(typeof(Editor)).GetType("UnityEditor.InspectorWindow");
