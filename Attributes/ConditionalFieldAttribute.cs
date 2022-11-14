@@ -6,9 +6,9 @@ using MyBox.Internal;
 namespace MyBox
 {
 	/// <summary>
-	/// Conditionally Show/Hide field in inspector, based on some other field value
+	/// Conditionally Show/Hide field in inspector, based on some other field or property value
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 	public class ConditionalFieldAttribute : PropertyAttribute
 	{
 		public bool IsSet => Data != null && Data.IsSet;
