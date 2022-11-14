@@ -134,9 +134,12 @@ namespace MyBox.Internal
 
 		private bool IsFolded(SerializedProperty property)
 		{
-			_foldout ??= new EditorPrefsBool("DisplayInspectorFoldout" +
+			if(_foldout == null)
+			{
+				_foldout = new EditorPrefsBool("DisplayInspectorFoldout" +
 			                                 property.GetParent().GetType().Name +
 			                                 property.propertyPath);
+			}
 			return _foldout.Value;
 		}
 		
