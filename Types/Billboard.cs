@@ -11,7 +11,6 @@ namespace MyBox
 			_camera = null;
 		}
 
-
 		public Transform FacedObject;
 
 		private Transform ActiveFacedObject
