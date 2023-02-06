@@ -45,7 +45,8 @@ namespace MyBox.Internal
         
         public static void Log(string text, bool withStackTrace = false, bool logToConsole = true)
         {
-            if (LogToConsole && logToConsole) Debug.Log("Logger: ".Colored(Colors.brown) + text);
+            if (Application.isEditor && LogToConsole && logToConsole) 
+                Debug.Log("Logger: ".Colored(Colors.brown) + text);
             if (Application.isEditor) return;
             if (Disabled) return;
 
