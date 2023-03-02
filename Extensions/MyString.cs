@@ -9,6 +9,18 @@ namespace MyBox
 	{
 		public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
 		public static bool NotNullOrEmpty(this string str) => !string.IsNullOrEmpty(str);
+
+		public static string RemoveStart(this string str, string remove)
+		{
+			int index = str.IndexOf(remove, StringComparison.Ordinal);
+			return index < 0 ? str : str.Remove(index, remove.Length);
+		}
+		
+		public static string RemoveEnd(this string str, string remove)
+		{
+			if (!str.EndsWith(remove)) return str;
+			return str.Remove(str.LastIndexOf(remove, StringComparison.Ordinal));
+		}
 		
 		/// <summary>
 		/// "Camel case string" => "CamelCaseString" 
