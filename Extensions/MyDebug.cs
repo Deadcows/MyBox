@@ -14,10 +14,15 @@ namespace MyBox
 
 		private static StringBuilder _stringBuilder;
 
-		public static void LogArray<T>(T[] toLog)
+		private static void PrepareStringBuilder()
 		{
 			if (_stringBuilder == null) _stringBuilder = new StringBuilder();
-			else _stringBuilder.Length = 0;
+			else  _stringBuilder.Clear();
+		}
+
+		public static void LogArray<T>(T[] toLog)
+		{
+			PrepareStringBuilder();
 
 			_stringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(toLog.Length).Append(")\n");
 			for (var i = 0; i < toLog.Length; i++)
@@ -30,8 +35,7 @@ namespace MyBox
 
 		public static void LogArray<T>(IList<T> toLog)
 		{
-			if (_stringBuilder == null) _stringBuilder = new StringBuilder();
-			else _stringBuilder.Length = 0;
+			PrepareStringBuilder();
 
 			var count = toLog.Count;
 			_stringBuilder.Append("Log Array: ").Append(typeof(T).Name).Append(" (").Append(count).Append(")\n");
@@ -51,7 +55,7 @@ namespace MyBox
 			Debug.Log("<color=#" + ColorUtility.ToHtmlStringRGB(color) + ">████████████</color> = " + color);
 		}
 
-		#region Debug Bounds 
+		#region Debug Bounds
 
 		/// <summary>
 		/// Draw bounds of Mesh
@@ -119,7 +123,7 @@ namespace MyBox
 #if UNITY_EDITOR
 			var view = SceneView.currentDrawingSceneView;
 			if (view == null) return;
-			
+
 			var defaultColor = GUI.color;
 
 			Handles.BeginGUI();
