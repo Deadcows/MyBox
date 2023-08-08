@@ -6,6 +6,7 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: MinMaxFloat.RandomInRangeInclusive was redundant, removed
 - Breaking Changes: Extension IList.GetRandomCollection is removed, replaced with IList.ExclusiveSample
 - Breaking Changes: Removed bunch of methods from MyPhysics class
+- Breaking Changes: Billboard component now uses Camera.main instead of FindObjectOfType<Camera>(). Thanks to @adamgryu for this change!
 - Added: Toggle Inspector Debug hotkey - Alt+D by default
 - TODO Docs - Added: SearchableEnumDrawer type for fast creation of Searchable Enums instead of SearchableEnumAttribute usage
 
@@ -63,6 +64,7 @@ All notable changes to this package will be documented in this file.
 
 ---
 
+- TODO Docs - Added: RangeVectorAttribute, works with Vector2/3 or Vector2/3Int. Thanks to @WhaleTee!
 - Added: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
 - TODO Docs - Added: ConditionalField - ability to use method call to dynamically check condition
 
@@ -117,6 +119,8 @@ All notable changes to this package will be documented in this file.
 - Fix: Unity 2021.2+ compatibility (UnityEditor.Experimental.SceneManagement namespace became UnityEditor.SceneManagement). Thanks to @I_Jemin!
 - Fix: Occasional ReflectionTypeLoadException was fixed when ConditionalField is used
 - Fix: Vector3Int.ToVector3 z field wasn't copied. Thanks to @Quriz for this fix!
+- Fix: MyDebug.LogArray optimization. Thanks to @jcs090218 for this!
+- Fix: Indent issue with Optional type in nested inspectors fixed. Thanks to @r3dskjn for the fix!
 - TODO Docs - Fix: DisplayInspector now will show warning if used on property of the wrong type
 - TODO Docs - Fix: FoldoutAttribute visual improvements
 

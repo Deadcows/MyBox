@@ -37,7 +37,7 @@ namespace MyBox.Internal
 		/// <summary>
 		/// Overriding occurs just like OnGUI. Once per group, attribute with higher priority first
 		/// </summary>
-		/// <returns>Null if not overrided</returns>
+		/// <returns>Null if not overriden</returns>
 		public virtual float? OverrideHeight()
 		{
 			return null;
