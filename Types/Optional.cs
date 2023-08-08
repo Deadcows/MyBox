@@ -79,6 +79,7 @@ namespace MyBox.Internal
 		{
 			EditorGUI.BeginProperty(position, label, property);
 			position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+			var indentLevelBackup = EditorGUI.indentLevel; // Backup indent before fix
 			EditorGUI.indentLevel = 0; // PropertyDrawer Indent fix for nested inspectors
 
 			var value = property.FindPropertyRelative("Value");
@@ -94,7 +95,8 @@ namespace MyBox.Internal
 			position.x += checkWidth + spaceWidth;
 			position.width = valWidth;
 			if (isSet.boolValue) EditorGUI.PropertyField(position, value, GUIContent.none);
-			EditorGUI.EndProperty();
+			EditorGUI.EndProperty();			
+			EditorGUI.indentLevel = indentLevelBackup; // restore indent backup
 		}
 	}
 }
