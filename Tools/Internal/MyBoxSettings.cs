@@ -67,10 +67,10 @@ namespace MyBox.Internal
 		private class MyBoxSettingsData
 		{
 			// ReSharper disable MemberHidesStaticFromOuterClass
-			public bool AutoSaveEnabled = true;
+			public bool AutoSaveEnabled;
 			public bool CleanEmptyDirectoriesFeature;
-			public bool PrepareOnPlaymode = true;
-			public bool EnableSOCheck = true;
+			public bool PrepareOnPlaymode;
+			public bool EnableSOCheck;
 			public bool CheckForUpdates = true;
 			// ReSharper restore MemberHidesStaticFromOuterClass
 		}
