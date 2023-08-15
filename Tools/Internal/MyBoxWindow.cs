@@ -134,7 +134,7 @@ namespace MyBox.Internal
 					using (new EditorGUILayout.HorizontalScope())
 					{
 						var label = new GUIContent("AutoSave on Play: ", "Save changes in opened scenes before Playmode. " +
-						                                                 "\nUnity crasher from time to time you know...");
+						                                                 "\nUnity crashes from time to time, you know...");
 						EditorGUILayout.Space(leftOffset);
 						MyBoxSettings.AutoSaveEnabled = EditorGUILayout.Toggle(label, MyBoxSettings.AutoSaveEnabled);
 						GUILayout.FlexibleSpace();
@@ -329,10 +329,6 @@ namespace MyBox.Internal
 
 			content = new GUIContent(MyGUI.EditorIcons.Check);
 			content.tooltip = "MyGUI.EditorIcons.Check";
-			EditorGUILayout.LabelField(content, GUILayout.Width(width));
-
-			content = new GUIContent(MyGUI.EditorIcons.Cross);
-			content.tooltip = "MyGUI.EditorIcons.Cross";
 			EditorGUILayout.LabelField(content, GUILayout.Width(width));
 
 			content = new GUIContent(MyGUI.EditorIcons.Dropdown);

@@ -8,6 +8,7 @@ using UnityEditor;
 
 namespace MyBox.Internal
 {
+	//TODO: Make it prettier and add to Docs
 	public class SerializedPropertyViewer : EditorWindow
 	{
 		private const string MenuItem = "Show Serialized Properties";

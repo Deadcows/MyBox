@@ -2,27 +2,18 @@
 All notable changes to this package will be documented in this file.
 
 ## [Unreleased]
-- Breaking Changes: MyDelayedActions.DelayedAction methods now start themselves automatically
-- Breaking Changes: MinMaxFloat.RandomInRangeInclusive was redundant, removed
-- Breaking Changes: Extension IList.GetRandomCollection is removed, replaced with IList.ExclusiveSample
-- Breaking Changes: Removed bunch of methods from MyPhysics class
-- Breaking Changes: Billboard component now uses Camera.main instead of FindObjectOfType<Camera>(). Thanks to @adamgryu for this change!
+- Now it is possible to toggle some features that may lead to performance issues in editor in MyBox Window
+- AutoSave on Play, Clean Empty Folders, Prepare on Playmode and SO processing of [AutoProperty] and [MustBeAssigned] now disabled by default. Check MyBox Window for details
+- Breaking Change: MyDelayedActions.DelayedAction methods now start themselves automatically
+- Breaking Change: MinMaxFloat.RandomInRangeInclusive was redundant, removed
+- Breaking Change: Extension IList.GetRandomCollection is removed, replaced with IList.ExclusiveSample
+- Breaking Change: Removed bunch of methods from MyPhysics class
+- Breaking Change: Billboard component now uses Camera.main instead of FindObjectOfType<Camera>(). Thanks to @adamgryu for this change!
+- Breaking Change: MyGUI.EditorIcons.Cross icon removed as it is not included in Unity 2022+
 - Added: Toggle Inspector Debug hotkey - Alt+D by default
-- TODO Docs - Added: SearchableEnumDrawer type for fast creation of Searchable Enums instead of SearchableEnumAttribute usage
+- Added: SearchableEnumDrawer type for fast creation of Searchable Enums instead of SearchableEnumAttribute usage
 
----
-
-	public enum TestEnum {A, B, C, D}
-	
-	#if UNITY_EDITOR
-	[UnityEditor.CustomPropertyDrawer(typeof(TestEnum))] 
-	public class TestEnumDrawer : MyBox.EditorTools.SearchableEnumDrawer {}
-	#endif
-
----
-
-- TODO Docs - Added: Ability to disable performant features of MyBox in MyBox Window
-- TODO Docs - Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector3 types
+- TODO Docs - Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector/VectorInt types
 - TODO Docs - Added: Ability to fold DisplayInspector
 - TODO Docs - Added: SceneReference now also have UnloadSceneAsync() and SetActive() methods
 - TODO Docs - Added: MyGUI.SearchablePopup to show popup list with ability to filter displayed content

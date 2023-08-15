@@ -6,6 +6,9 @@ namespace MyBox.Internal
 {
     public static class MyLogger
     {
+        //TODO: How to get logs on Mac?
+        //TODO: Find better ways for logging?
+        
         private static string LogFile = "customLog.txt";
         private static string TimeFormat = "MM-dd_HH-mm-ss";
 
