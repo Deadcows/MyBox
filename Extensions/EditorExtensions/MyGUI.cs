@@ -70,7 +70,6 @@ namespace MyBox.EditorTools
 			public static GUIContent ConsoleError => EditorGUIUtility.IconContent("console.erroricon.sml");
 
 			public static GUIContent Check => EditorGUIUtility.IconContent("FilterSelectedOnly");
-			public static GUIContent Cross => EditorGUIUtility.IconContent("d_winbtn_win_close");
 
 			public static GUIContent Dropdown => EditorGUIUtility.IconContent("icon dropdown");
 
