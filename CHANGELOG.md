@@ -12,70 +12,23 @@ All notable changes to this package will be documented in this file.
 - Breaking Change: MyGUI.EditorIcons.Cross icon removed as it is not included in Unity 2022+
 - Added: Toggle Inspector Debug hotkey - Alt+D by default
 - Added: SearchableEnumDrawer type for fast creation of Searchable Enums instead of SearchableEnumAttribute usage
-
-- TODO Docs - Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector/VectorInt types
-- TODO Docs - Added: Ability to fold DisplayInspector
-- TODO Docs - Added: SceneReference now also have UnloadSceneAsync() and SetActive() methods
-- TODO Docs - Added: MyGUI.SearchablePopup to show popup list with ability to filter displayed content
-- TODO Docs - AutoProperty now allows to specify predicate method to filter out the lookup. Thanks to @tonygiang for the addition!
-- Changed: AutoProperty and MustBeAssigned attributes now work fine with ScriptableObjects! Thanks to @tonygiang for the addition!
-- TODO Docs - Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings
-- TODO Docs - Added: ConditionalField - multiple conditions per attribute
-
----
-
-	public enum Test {C, D, E}
-	public bool A;
-	public bool B;
-	public Test T;
-
-	[ConditionalField(nameof(A))]  public string IsA;
-	[ConditionalField(nameof(B), true)]  public string NotB;
-	[ConditionalField(nameof(A), nameof(B))]  public string AandB;
-	[ConditionalField(new []{nameof(A), nameof(B)}, new []{true})]   public string NotAandB;
-	[ConditionalField(new []{nameof(A), nameof(B)}, new []{false, true})]  public string AnotB;
-	[ConditionalField(new []{nameof(A), nameof(B)}, new []{true, true})]  public string NotAandNotB;
-	[ConditionalField(new[] { nameof(T), nameof(A), nameof(B) }, new[] { false, true, true }, Test.C )]  public string NotAandNotBButC;
-
----
-
-- TODO Docs: - Added: ButtonMethod now might be conditional, just like ConditionalField!
-
----
-	[MustBeAssigned] public Transform ChildTransform;
-
-	[ButtonMethod(ButtonMethodDrawOrder.BeforeInspector, nameof(TargetStack), true), UsedImplicitly]
-	private void CreateChild()
-	{
-		var choldGO = new GameObject(name + " Child Object");
-		choldGO.transform.SetParent(transform);
-		choldGO.transform.localPosition = Vector3.zero;
-		ChildTransform = choldGO.transform;
-	}
-
----
+- Added: PlayerPrefs and EditorPrefs Bool/Float/Int/String/Vector/VectorInt types
+- Added: Ability to fold DisplayInspector
+- Added: SceneReference now also have UnloadSceneAsync() and SetActive() methods
+- Added: MyGUI.SearchablePopup to show popup list with ability to filter displayed content
+- Added: AutoProperty now allows to specify predicate method to filter out the lookup. Thanks to @tonygiang for the addition!
+- Added: AutoProperty and MustBeAssigned support of ScriptableObjects! Thanks to @tonygiang for the addition!
+- Added: ConditionalField - multiple conditions per attribute
+- Added: ConditionalField - ability to use method call to dynamically check condition
+- Added: ButtonMethod now might be conditional, just like ConditionalField!
+- Added: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
 
 - TODO Docs - Added: RangeVectorAttribute, works with Vector2/3 or Vector2/3Int. Thanks to @WhaleTee!
-- Added: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
-- TODO Docs - Added: ConditionalField - ability to use method call to dynamically check condition
-
----
-
-	public int Value;
-	[ConditionalField(true, nameof(Predicate))] public string ValueIsEven;
-	private bool Predicate() => Value % 2 == 0;
-
-	// Example with inverse
-	public int Age;
-	[ConditionalField(true, nameof(IsChild))]
-	public bool HomeworkIsDone;
-	[ConditionalField(true, nameof(IsChild), true)]
-	public bool JobTaskIsDone;
-
----
 
 
-- TODO Docs - Extensions: Coroutine.OnComplete(Action);
+- Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings
+
+- Extensions: Coroutine.OnComplete(Action);
 - Extensions: collection.FillBy(index => { }) allows to use factory method to fill up the collection. Thanks to @tonygiang!
 - Extensions: IList.SwapInPlace(a, b) swaps two elements in collection. Thanks to @tonygiang!
 - Extensions: IList.Shuffle() shuffles elements in collection using the Knuth algorithm. Thanks to @tonygiang!
@@ -112,8 +65,8 @@ All notable changes to this package will be documented in this file.
 - Fix: Vector3Int.ToVector3 z field wasn't copied. Thanks to @Quriz for this fix!
 - Fix: MyDebug.LogArray optimization. Thanks to @jcs090218 for this!
 - Fix: Indent issue with Optional type in nested inspectors fixed. Thanks to @r3dskjn for the fix!
-- TODO Docs - Fix: DisplayInspector now will show warning if used on property of the wrong type
-- TODO Docs - Fix: FoldoutAttribute visual improvements
+- Fix: DisplayInspector now will show warning if used on property of the wrong type
+- Fix: FoldoutAttribute visual improvements
 
 ## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
