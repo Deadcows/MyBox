@@ -15,7 +15,7 @@ namespace MyBox.Internal
 {
 	public static class ToggleInspectorLockHotkey
 	{
-		[MenuItem("Tools/MyBox/Toggle Console Lock &q")]
+		[MenuItem("Tools/MyBox/Toggle Inspector Lock &q")]
 		static void ToggleInspectorLock()
 		{
 			Type inspectorWindowType = Assembly.GetAssembly(typeof(Editor)).GetType("UnityEditor.InspectorWindow");
