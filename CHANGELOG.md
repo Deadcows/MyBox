@@ -23,6 +23,7 @@ All notable changes to this package will be documented in this file.
 - Added: ButtonMethod now might be conditional, just like ConditionalField!
 - Added: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
 
+- TODO Docs - Added: DefinedValuesAttribute now much more flexible, with ability to use method returning the collection of required values
 - TODO Docs - Added: RangeVectorAttribute, works with Vector2/3 or Vector2/3Int. Thanks to @WhaleTee!
 
 
