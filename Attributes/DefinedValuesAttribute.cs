@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using MyBox.EditorTools;
 using UnityEngine;
 
 //TODO: Support for method returning (Str, Obj)[] collection for custom display values
@@ -37,6 +36,7 @@ namespace MyBox
 namespace MyBox.Internal
 {
 	using UnityEditor;
+	using EditorTools;
 
 	[CustomPropertyDrawer(typeof(DefinedValuesAttribute))]
 	public class DefinedValuesAttributeDrawer : PropertyDrawer
