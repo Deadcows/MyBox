@@ -7,14 +7,12 @@ namespace MyBox.Internal
 {
 	public class AssetPresetPreprocessor : AssetPostprocessor
 	{
-		private static AssetsPresetPreprocessBase _preprocessBase;
-		private static bool _preprocessBaseChecked;
-
 		private void OnPreprocessAsset()
 		{
-			if (!PreloadBase()) return;
+			InitializePreprocessBase();
+			if (AssetsPresetPreprocessBase.Instance == null) return;
 
-			foreach (var preset in _preprocessBase.Presets)
+			foreach (var preset in AssetsPresetPreprocessBase.Instance.Presets)
 			{
 				if (preset.Preset == null) continue;
 				if (!preset.Sample(assetPath)) continue;
@@ -26,19 +24,22 @@ namespace MyBox.Internal
 			}
 		}
 
-		private bool PreloadBase()
+		private void InitializePreprocessBase()
 		{
-			if (_preprocessBaseChecked) return _preprocessBase != null;
-			if (_preprocessBase == null)
-			{
-				_preprocessBase = MyScriptableObject.LoadAssetsFromResources<AssetsPresetPreprocessBase>().FirstOrDefault();
-				if (_preprocessBase == null) _preprocessBase = MyScriptableObject.LoadAssets<AssetsPresetPreprocessBase>().SingleOrDefault();
-				
-				_preprocessBaseChecked = true;
-			}
+			if (_preprocessBaseChecked) return;
+			_preprocessBaseChecked = true;
+			if (AssetsPresetPreprocessBase.Instance != null) return;
 
-			return _preprocessBase != null;
+			AssetsPresetPreprocessBase.Instance = 
+				MyScriptableObject.LoadAssetsFromResources<AssetsPresetPreprocessBase>().FirstOrDefault();
+            
+			if (AssetsPresetPreprocessBase.Instance != null) return;
+			
+			AssetsPresetPreprocessBase.Instance = 
+				MyScriptableObject.LoadAssets<AssetsPresetPreprocessBase>().SingleOrDefault();
 		}
+
+		private static bool _preprocessBaseChecked;
 	}
 }
 #endif

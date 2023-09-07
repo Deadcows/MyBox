@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.IO;
+using UnityEditor;
 using UnityEditor.Presets;
 using UnityEngine;
 
@@ -8,9 +9,13 @@ namespace MyBox.Internal
 {
 	public class AssetsPresetPreprocessBase : ScriptableObject
 	{
+		public static AssetsPresetPreprocessBase Instance { get; set; }
+
 		public ConditionalPreset[] Presets;
 
-		public string[] ExcludeProperties = {"SpriteBorder", "Pivot", "Alignment"};
+		public string[] ExcludeProperties = { "SpriteBorder", "Pivot", "Alignment" };
+
+		private void Awake() => Instance = this;
 	}
 
 	[Serializable]
@@ -20,7 +25,7 @@ namespace MyBox.Internal
 		public string TypeOf;
 		public string Prefix;
 		public string Postfix;
-		
+
 		public Preset Preset;
 
 		public string[] PropertiesToApply;
@@ -31,18 +36,18 @@ namespace MyBox.Internal
 			var typeSet = !string.IsNullOrEmpty(TypeOf);
 			var prefixSet = !string.IsNullOrEmpty(Prefix);
 			var postfixSet = !string.IsNullOrEmpty(Postfix);
-			
+
 			if (pathSet && !path.Contains(PathContains)) return false;
-			
+
 			var extension = Path.GetExtension(path);
 			var filename = Path.GetFileNameWithoutExtension(path);
 			if (extension == null || filename == null) return false;
-			
+
 			if (typeSet && !extension.Contains(TypeOf)) return false;
-			
+
 			if (prefixSet && !filename.StartsWith(Prefix)) return false;
 			if (postfixSet && !filename.EndsWith(Postfix)) return false;
-			
+
 			return true;
 		}
 	}

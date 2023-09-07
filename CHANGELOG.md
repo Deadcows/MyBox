@@ -68,6 +68,7 @@ All notable changes to this package will be documented in this file.
 - Fix: Indent issue with Optional type in nested inspectors fixed. Thanks to @r3dskjn for the fix!
 - Fix: DisplayInspector now will show warning if used on property of the wrong type
 - Fix: FoldoutAttribute visual improvements
+- Fix: AssetPresetPreprocessor were not working right after PreprocessorBase creation
 
 ## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable
