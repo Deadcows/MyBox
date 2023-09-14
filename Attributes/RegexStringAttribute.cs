@@ -107,11 +107,11 @@ namespace MyBox.Internal
 					if (mode == RegexStringMode.Match || mode == RegexStringMode.WarningIfNotMatch) tooltip += "match expression";
 					else tooltip += "remove expression";
 					tooltip += $"\n[{regex.Regex}]";
-
-					position.x += position.width + 2;
-					position.width = 18;
 					var tooltipContent = new GUIContent(MyGUI.EditorIcons.Help);
 					tooltipContent.tooltip = tooltip;
+
+					float indentFix = EditorGUI.indentLevel * 15;
+					position.x += position.width + 2 - indentFix;
 					EditorGUI.LabelField(position, tooltipContent, EditorStyles.label);
 				}
 			}
