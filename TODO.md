@@ -1,3 +1,7 @@
+* #### Add: Editor Window to set-up automatic conditional addition of ColliderGizmo
+  * Tag/Layer/MonoBehaviour based differences
+  * Toggle to force preset settings (disable edits per instance)
+
 * #### Add: MyDictionary, visible in inspector!!1
 
 * #### PlayerPrefsType inspector accessibility

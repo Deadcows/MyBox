@@ -59,11 +59,12 @@ namespace MyBox.Internal
 				var valuesFromMethod = GetValuesFromMethod();
 				if (valuesFromMethod.NotNullOrEmpty()) values = valuesFromMethod;
 			}
-			
-			if (values.IsNullOrEmpty()) return;
+
+			var firstValue = values.FirstOrDefault(v => v != null);
+			if (firstValue == null) return;
 
 			_objects = values;
-			_valueType = values.First(v => v != null).GetType();
+			_valueType = firstValue.GetType();
 			_values = values.Select(v => v?.ToString() ?? "NULL").ToArray();
 
 			
