@@ -2,10 +2,11 @@
 using UnityEngine;
 using System.Linq;
 using System;
-// ReSharper disable MemberCanBePrivate.Global
+using JetBrains.Annotations;
 
 namespace MyBox
 {
+	[PublicAPI]
 	public static class MyCollections
 	{
 		
@@ -281,7 +282,7 @@ namespace MyBox
 		/// <summary>
 		/// Performs an action on each element of a collection.
 		/// </summary>
-		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, System.Action<T> action)
+		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T> action)
 		{
 			foreach (T element in source) action(element);
 			return source;
@@ -300,8 +301,7 @@ namespace MyBox
 		/// Performs an action on each element of a collection with its index
 		/// passed along.
 		/// </summary>
-		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source,
-			System.Action<T, int> action)
+		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
 		{
 			int index = 0;
 			foreach (T element in source) { action(element, index); ++index; }
@@ -312,8 +312,7 @@ namespace MyBox
 		/// Performs an action on each element of a collection with its index
 		/// passed along.
 		/// </summary>
-		public static IEnumerable<T> ForEach<T, R>(this IEnumerable<T> source,
-			Func<T, int, R> func)
+		public static IEnumerable<T> ForEach<T, R>(this IEnumerable<T> source, Func<T, int, R> func)
 		{
 			int index = 0;
 			foreach (T element in source) { func(element, index); ++index; }
@@ -323,8 +322,7 @@ namespace MyBox
 		/// <summary>
 		/// Find the element of a collection that has the highest selected value.
 		/// </summary>
-		public static T MaxBy<T, S>(this IEnumerable<T> source, Func<T, S> selector)
-			where S : IComparable<S>
+		public static T MaxBy<T, S>(this IEnumerable<T> source, Func<T, S> selector) where S : IComparable<S>
 		{
 			if (source.IsNullOrEmpty())
 			{
@@ -337,8 +335,7 @@ namespace MyBox
 		/// <summary>
 		/// Find the element of a collection that has the lowest selected value.
 		/// </summary>
-		public static T MinBy<T, S>(this IEnumerable<T> source, Func<T, S> selector)
-			where S : IComparable<S>
+		public static T MinBy<T, S>(this IEnumerable<T> source, Func<T, S> selector) where S : IComparable<S>
 		{
 			if (source.IsNullOrEmpty())
 			{
