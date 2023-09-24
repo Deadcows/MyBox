@@ -23,14 +23,17 @@ namespace MyBox
 		public readonly AutoPropertyMode Mode;
 		public readonly string PredicateMethodName;
 		public readonly Type PredicateMethodTarget;
+  		public readonly bool AllowEmpty;
 
 		public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children,
 			string predicateMethodName = null,
-			Type predicateMethodTarget = null)
+			Type predicateMethodTarget = null,
+   			bool allowEmpty = false)
 		{
 			Mode = mode;
 			PredicateMethodTarget = predicateMethodTarget;
 			PredicateMethodName = predicateMethodName;
+   			AllowEmpty = allowEmpty;
 		}
 	}
 
@@ -155,7 +158,7 @@ namespace MyBox.Internal
 
 			if (property.Field.FieldType.IsArray)
 			{
-				if (matchedObjects != null && matchedObjects.Length > 0)
+				if (matchedObjects != null && (matchedObjects.Length > 0 || apAttribute.AllowEmpty))
 				{
 					var serializedObject = new SerializedObject(property.Context);
 					var serializedProperty = serializedObject.FindProperty(property.Field.Name);
@@ -167,7 +170,7 @@ namespace MyBox.Internal
 			else
 			{
 				var obj = matchedObjects.FirstOrDefault();
-				if (obj != null)
+				if (obj != null || apAttribute.AllowEmpty)
 				{
 					var serializedObject = new SerializedObject(property.Context);
 					var serializedProperty = serializedObject.FindProperty(property.Field.Name);
