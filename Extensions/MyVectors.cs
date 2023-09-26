@@ -86,6 +86,8 @@ namespace MyBox
 		public static Vector2 OffsetXY(this Vector2 vector, float x, float y) => new Vector2(vector.x + x, vector.y + y);
 		
 		public static void OffsetXY(this Transform transform, float x, float y) => transform.position = transform.position.OffsetXY(x, y);
+		
+		public static void OffsetXY(this Transform transform, Vector2 offset) => transform.position = transform.position.OffsetXY(offset);
 
 		// Offset XZ
 
@@ -94,6 +96,8 @@ namespace MyBox
 		public static Vector3 OffsetXZ(this Vector3 vector, Vector2 offset) => vector.OffsetXZ(offset.x, offset.y);
 
 		public static void OffsetXZ(this Transform transform, float x, float z) => transform.position = transform.position.OffsetXZ(x, z);
+		
+		public static void OffsetXZ(this Transform transform, Vector2 offset) => transform.position = transform.position.OffsetXZ(offset);
 
 
 		public static Vector3 OffsetYZ(this Vector3 vector, float y, float z) => new Vector3(vector.x, vector.y + y, vector.z + z);
@@ -101,6 +105,8 @@ namespace MyBox
 		public static Vector3 OffsetYZ(this Vector3 vector, Vector2 offset) => vector.OffsetYZ(offset.x, offset.y);
 
 		public static void OffsetYZ(this Transform transform, float y, float z) => transform.position = transform.position.OffsetYZ(y, z);
+		
+		public static void OffsetYZ(this Transform transform, Vector2 offset) => transform.position = transform.position.OffsetYZ(offset);
 
 		#endregion
 
