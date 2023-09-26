@@ -142,7 +142,7 @@ namespace MyBox.Internal
 			if (apAttribute == null) return;
 			Func<Object, bool> predicateMethod = apAttribute.PredicateMethodTarget == null ?
 				apAttribute.PredicateMethodName == null ?
-				_ => true :
+				(Func<Object, bool>)(_ => true) :
 				(Func<Object, bool>)Delegate.CreateDelegate(typeof(Func<Object, bool>),
 					property.Context,
 					apAttribute.PredicateMethodName) :
