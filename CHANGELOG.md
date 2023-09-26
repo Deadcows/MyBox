@@ -8,7 +8,7 @@ All notable changes to this package will be documented in this file.
 - Breaking Changes: Removed bunch of methods from MyPhysics class
 - Breaking Changes: Billboard component now uses Camera.main instead of FindObjectOfType<Camera>(). Thanks to @adamgryu for this change!
 - Added: Toggle Inspector Debug hotkey - Alt+D by default
-- TODO Docs - Added: SearchableEnumDrawer type for fast creation of Searchable Enums instead of SearchableEnumAttribute usage
+- Added: SearchableEnumDrawer type for fast creation of Searchable Enums instead of SearchableEnumAttribute usage
 
 ---
 
