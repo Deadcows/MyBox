@@ -6,7 +6,6 @@ namespace MyBox
 	[PublicAPI]
 	public static class MyUnityEventExtensions
 	{
-		
 		/// <summary>
 		/// Adds a listener that executes only once to the UnityEvent.
 		/// </summary>
