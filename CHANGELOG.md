@@ -22,13 +22,11 @@ All notable changes to this package will be documented in this file.
 - Added: ConditionalField - ability to use method call to dynamically check condition
 - Added: ButtonMethod now might be conditional, just like ConditionalField!
 - Added: ReadOnlyAttribute now might be conditional, just like ConditionalField. Thanks to @CrizGames!
-
-- TODO Docs - Added: DefinedValuesAttribute now much more flexible, with ability to use method returning the collection of required values
-- TODO Docs - Added: RangeVectorAttribute, works with Vector2/3 or Vector2/3Int. Thanks to @WhaleTee!
-
-- TODO Docs - Changed: AutoPropertyAttribute allowEmpty setting, to disable error logging. Thanks to @YogurtTheHorse! 
+- Added: DefinedValuesAttribute now allows to show custom labels instead of values in a popup
+- Added: DefinedValuesAttribute now allows to use method returning the collection of required values
+- Added: RangeVectorAttribute, works with Vector2/3 or Vector2/3Int. Thanks to @WhaleTee!
+- Added: AutoPropertyAttribute allowEmpty setting, to disable error logging. Thanks to @YogurtTheHorse! 
 - Changed: SceneAttribute is now rendered as popup list of scenes from Editor Build Settings
-
 - Extensions: Coroutine.OnComplete(Action);
 - Extensions: collection.FillBy(index => { }) allows to use factory method to fill up the collection. Thanks to @tonygiang!
 - Extensions: IList.SwapInPlace(a, b) swaps two elements in collection. Thanks to @tonygiang!
@@ -69,6 +67,7 @@ All notable changes to this package will be documented in this file.
 - Fix: DisplayInspector now will show warning if used on property of the wrong type
 - Fix: FoldoutAttribute visual improvements
 - Fix: AssetPresetPreprocessor were not working right after PreprocessorBase creation
+- Fix: MySerializedProperty.GetFieldInfo now also searching the field in the base types
 
 ## [1.7.0] - 2021-06-09
 - Breaking Changes: MyCollections.AsEnumerable renamed to SingleToEnumerable

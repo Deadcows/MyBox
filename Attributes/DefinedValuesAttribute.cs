@@ -19,12 +19,28 @@ namespace MyBox
 	public class DefinedValuesAttribute : PropertyAttribute
 	{
 		public readonly object[] ValuesArray;
+		public readonly string[] LabelsArray;
 		public readonly string UseMethod;
 
 		public DefinedValuesAttribute(params object[] definedValues)
 		{
 			ValuesArray = definedValues;
 		}
+		
+		public DefinedValuesAttribute(bool withLabels, params object[] definedValues)
+		{
+			var actualLength = definedValues.Length / 2;
+			ValuesArray = new object[actualLength];
+			LabelsArray = new string[actualLength];
+			int actualIndex = 0;
+			for (var i = 0; i < definedValues.Length; i++)
+			{
+				ValuesArray[actualIndex] = definedValues[i];
+				LabelsArray[actualIndex] = definedValues[++i].ToString();
+				actualIndex++;
+			}
+		}
+		
 		public DefinedValuesAttribute(string method)
 		{
 			UseMethod = method;
@@ -42,7 +58,7 @@ namespace MyBox.Internal
 	public class DefinedValuesAttributeDrawer : PropertyDrawer
 	{
 		private object[] _objects;
-		private string[] _values;
+		private string[] _labels;
 		private Type _valueType;
 		private bool _initialized;
 
@@ -52,6 +68,7 @@ namespace MyBox.Internal
 			_initialized = true;
 			
 			var values = defaultValuesAttribute.ValuesArray;
+			var labels = defaultValuesAttribute.LabelsArray;
 			var methodName = defaultValuesAttribute.UseMethod;
 
 			if (methodName.NotNullOrEmpty())
@@ -65,7 +82,9 @@ namespace MyBox.Internal
 
 			_objects = values;
 			_valueType = firstValue.GetType();
-			_values = values.Select(v => v?.ToString() ?? "NULL").ToArray();
+			
+			if (labels != null && labels.Length == values.Length) _labels = labels;
+			else _labels = values.Select(v => v?.ToString() ?? "NULL").ToArray();
 
 			
 			object[] GetValuesFromMethod()
@@ -91,29 +110,33 @@ namespace MyBox.Internal
 		{
 			Initialize(property.serializedObject.targetObject, (DefinedValuesAttribute)attribute);
 			
-			if (_values.IsNullOrEmpty() || _valueType != fieldInfo.FieldType)
+			if (_labels.IsNullOrEmpty() || _valueType != fieldInfo.FieldType)
 			{
 				EditorGUI.PropertyField(position, property, label);
 				return;
 			}
 			
+			bool isBool = _valueType == typeof(bool);
 			bool isString = _valueType == typeof(string);
 			bool isInt = _valueType == typeof(int);
 			bool isFloat = _valueType == typeof(float);
 
 			EditorGUI.BeginChangeCheck();
-			var newIndex = EditorGUI.Popup(position, label.text, GetSelectedIndex(), _values);
+			EditorGUI.BeginProperty(position, label, property);
+			var newIndex = EditorGUI.Popup(position, label.text, GetSelectedIndex(), _labels);
+			EditorGUI.EndProperty();
 			if (EditorGUI.EndChangeCheck()) ApplyNewValue(newIndex);
 
 
 			int GetSelectedIndex()
 			{
 				object value = null;
-				for (var i = 0; i < _values.Length; i++)
+				for (var i = 0; i < _objects.Length; i++)
 				{
-					if (isString && property.stringValue == _values[i]) return i;
-					if (isInt && property.intValue == Convert.ToInt32(_values[i])) return i;
-					if (isFloat && Mathf.Approximately(property.floatValue, Convert.ToSingle(_values[i]))) return i;
+					if (isBool && property.boolValue == Convert.ToBoolean(_objects[i])) return i;
+					if (isString && property.stringValue == Convert.ToString(_objects[i])) return i;
+					if (isInt && property.intValue == Convert.ToInt32(_objects[i])) return i;
+					if (isFloat && Mathf.Approximately(property.floatValue, Convert.ToSingle(_objects[i]))) return i;
 
 					if (value == null) value = property.GetValue();
 					if (value == _objects[i]) return i;
@@ -122,14 +145,16 @@ namespace MyBox.Internal
 				return 0;
 			}
 
-			void ApplyNewValue(int newValue)
+			void ApplyNewValue(int newValueIndex)
 			{
-				if (isString) property.stringValue = _values[newValue];
-				else if (isInt) property.intValue = Convert.ToInt32(_values[newValue]);
-				else if (isFloat) property.floatValue = Convert.ToSingle(_values[newValue]);
+				var newValue = _objects[newValueIndex];
+				if (isBool) property.boolValue = Convert.ToBoolean(newValue);
+				else if (isString) property.stringValue = Convert.ToString(newValue);
+				else if (isInt) property.intValue = Convert.ToInt32(newValue);
+				else if (isFloat) property.floatValue = Convert.ToSingle(newValue);
 				else
 				{
-					property.SetValue(_objects[newValue]);
+					property.SetValue(newValue);
 					EditorUtility.SetDirty(property.serializedObject.targetObject);
 				}
 				
