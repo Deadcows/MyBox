@@ -140,7 +140,16 @@ namespace MyBox.EditorTools
 		{
 			var targetObject = property.serializedObject.targetObject;
 			var targetType = targetObject.GetType();
-			return targetType.GetField(property.propertyPath);
+			
+			FieldInfo fieldInfo = null;
+			while (targetType != null)
+			{
+				fieldInfo = targetType.GetField(property.propertyPath);
+				if (fieldInfo != null) break;
+				targetType = targetType.BaseType; 
+			}
+			
+			return fieldInfo;
 		}
 
 		/// <summary>
