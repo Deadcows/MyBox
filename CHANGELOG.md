@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this package will be documented in this file.
 
+## [Unreleased]
+- Added: SceneClickHandler support of Physics2d and Plane
+
 ## [1.8.0] - 2023-10-09
 - Now it is possible to toggle some features that may lead to performance issues in editor in MyBox Window
 - AutoSave on Play, Clean Empty Folders, Prepare on Playmode and SO processing of [AutoProperty] and [MustBeAssigned] now disabled by default. Check MyBox Window for details
