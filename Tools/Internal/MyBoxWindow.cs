@@ -35,7 +35,7 @@ namespace MyBox.Internal
 				if (!_installedVersion.VersionsMatch(_latestVersion))
 				{
 					var versions = "Installed version: " + _installedVersion.AsSting + ". Latest version: " + _latestVersion.AsSting;
-					var message = "It's time to update MyBox :)! Use \"Tools/MyBox/Update MyBox\". " + versions;
+					var message = "It's time to update MyBox :)! Use \"Tools/MyBox/MyBox Window\" for more info. " + versions;
 					WarningsPool.Log(message);
 				}
 			});

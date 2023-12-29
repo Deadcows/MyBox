@@ -33,14 +33,14 @@ namespace MyBox
 
 		#if UNITY_EDITOR
 		public static bool LogWarning(Object owner, string message, Object target = null)
-			=> LogWarning($"<color=brown>{owner.name}</color> caused: " + message, target);
+			=> LogWarning($"<color=#7B3F00>{owner.name}</color> caused: " + message, target);
 
 		public static bool LogWarning(UnityEditor.SerializedProperty property, string message, Object target = null)
-			=> LogWarning($"Property <color=brown>{property.name}</color> " +
+			=> LogWarning($"Property <color=#7B3F00>{property.name}</color> " +
 			              $"in Object <color=brown>{property.serializedObject.targetObject.name}</color> caused: " + message, target);
 
 		public static bool LogCollectionsNotSupportedWarning(UnityEditor.SerializedProperty property, string nameOfType)
-			=> LogWarning(property, $"Array fields are not supported by <color=brown>[{nameOfType}]</color>. " +
+			=> LogWarning(property, $"Array fields are not supported by <color=#7B3F00>[{nameOfType}]</color>. " +
 			                        "Consider to use <color=blue>CollectionWrapper</color>", property.serializedObject.targetObject);
 		#endif
 		
