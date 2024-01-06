@@ -136,6 +136,22 @@ namespace MyBox
 			return Mathf.Lerp(minMax.Min, minMax.Max, value);
 		}
 		
+		/// <summary>
+		/// Determines where a value lies between two points
+		/// </summary>
+		public static float InverseLerp(this MinMaxInt minMax, float value)
+		{
+			return Mathf.InverseLerp(minMax.Min, minMax.Max, value);
+		}
+		
+		/// <summary>
+		/// Determines where a value lies between two points
+		/// </summary>
+		public static float InverseLerp(this MinMaxFloat minMax, float value)
+		{
+			return Mathf.InverseLerp(minMax.Min, minMax.Max, value);
+		}
+		
 		#endregion
 		
 		#region LerpUnclamped
