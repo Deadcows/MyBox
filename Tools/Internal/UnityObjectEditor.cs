@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+﻿#if UNITY_EDITOR && !MYBOX_DISABLE_INSPECTOR_OVERRIDE
 namespace MyBox.Internal
 {
     using UnityEditor;

@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using MyBox.EditorTools;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
@@ -14,8 +15,12 @@ namespace MyBox.Internal
 
 		private static EditorWindow _windowInstance;
 
+		private const string UrlSymbol = "\u279a"; 
 		private GUIStyle _titleStyle;
 		private GUIStyle _buttonStyle;
+		private GUIStyle _sponsorButtonStyle;
+		private GUIContent _externalDocIcon;
+		private GUIStyle _externalDocStyle;
 
 		private AddRequest _updateRequest;
 
@@ -35,7 +40,7 @@ namespace MyBox.Internal
 				if (!_installedVersion.VersionsMatch(_latestVersion))
 				{
 					var versions = "Installed version: " + _installedVersion.AsSting + ". Latest version: " + _latestVersion.AsSting;
-					var message = "It's time to update MyBox :)! Use \"Tools/MyBox/Update MyBox\". " + versions;
+					var message = "It's time to update MyBox :)! Use \"Tools/MyBox/MyBox Window\" for more info. " + versions;
 					WarningsPool.Log(message);
 				}
 			});
@@ -63,53 +68,75 @@ namespace MyBox.Internal
 			});
 		}
 
-
-		private void OnGUI()
+		private void InitializeStyles()
 		{
 			if (_titleStyle == null)
 			{
 				_titleStyle = new GUIStyle(EditorStyles.boldLabel);
 				_titleStyle.fontSize = 42;
-				_titleStyle.fontStyle = FontStyle.BoldAndItalic;
+				_titleStyle.fontStyle = FontStyle.Bold;
 				_titleStyle.alignment = TextAnchor.MiddleCenter;
 			}
 
 			if (_buttonStyle == null)
 			{
 				_buttonStyle = new GUIStyle(MyGUI.HelpBoxStyle);
-				_buttonStyle.hover.textColor = MyGUI.Colors.Blue;
+				_buttonStyle.normal.textColor = GUI.skin.textField.normal.textColor;
+				_buttonStyle.hover.textColor = EditorGUIUtility.isProSkin ? Color.white : MyGUI.Colors.Gray;
 			}
+
+			if (_sponsorButtonStyle == null)
+			{
+				_sponsorButtonStyle = new GUIStyle(_buttonStyle);
+				_sponsorButtonStyle.normal.textColor = EditorStyles.centeredGreyMiniLabel.normal.textColor;
+				_sponsorButtonStyle.fontSize *= 2;
+				_sponsorButtonStyle.fontStyle = FontStyle.Bold;
+			}
+
+			if (_externalDocIcon == null)
+			{
+				_externalDocIcon = new GUIContent(MyGUI.EditorIcons.Help);
+				_externalDocIcon.tooltip = "Open external documentation " + UrlSymbol;
+			}
+
+			if (_externalDocStyle == null)
+			{
+				_externalDocStyle = new GUIStyle(EditorStyles.iconButton);
+				_externalDocStyle.margin = new RectOffset(0, 0, 3, 0);
+			}
+		}
+
+		private bool GuiEnabledGlobal => !EditorApplication.isCompiling;
+
+		private void OnGUI()
+		{
+			GUI.enabled = GuiEnabledGlobal;
+			wantsMouseMove = true;
+			
+			InitializeStyles();
 
 			var buttonWidth = GUILayout.Width(120);
 			var buttonHeight = GUILayout.Height(30);
-			var leftOffset = 20;
 
-
-			wantsMouseMove = true;
 			if (Event.current.type == EventType.MouseMove) Repaint();
 
-
-			//buttonStyle.hover.background = buttonStyle.active.background.WithSolidColor(Color.red);
-
 			EditorGUILayout.Space();
-
-
 			EditorGUILayout.LabelField("MyBox", _titleStyle, GUILayout.Height(60));
 
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.FlexibleSpace();
 
-				if (GUILayout.Button("  Github Page ↗", _buttonStyle, buttonWidth, buttonHeight))
+				if (GUILayout.Button("  Github Page " + UrlSymbol, _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox");
 
-				if (GUILayout.Button("  Attributes ↗", _buttonStyle, buttonWidth, buttonHeight))
+				if (GUILayout.Button("  Attributes " + UrlSymbol, _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Attributes");
 
-				if (GUILayout.Button("  Extensions ↗", _buttonStyle, buttonWidth, buttonHeight))
+				if (GUILayout.Button("  Extensions " + UrlSymbol, _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/tree/master/Extensions");
 
-				if (GUILayout.Button("  Tools, Features ↗", _buttonStyle, buttonWidth, buttonHeight))
+				if (GUILayout.Button("  Tools, Features " + UrlSymbol, _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Tools-and-Features");
 
 				GUILayout.FlexibleSpace();
@@ -122,20 +149,51 @@ namespace MyBox.Internal
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.FlexibleSpace();
+				EditorGUILayout.Space(40);
+				
 				using (new EditorGUILayout.VerticalScope())
 				{
 					using (new EditorGUILayout.HorizontalScope())
 					{
-						EditorGUILayout.Space(leftOffset);
 						MyBoxSettings.CheckForUpdates = EditorGUILayout.Toggle("Check for Updates: ", MyBoxSettings.CheckForUpdates);
 						GUILayout.FlexibleSpace();
 					}
+					
+					using (new EditorGUILayout.HorizontalScope())
+					{
+						var label = new GUIContent("Inspector override: ", "Custom UnityObject inspector enables [ButtonMethod] and [Foldout] attributes to work. " +
+						                                                 "Disable to support some other libraries that override UnityObject inspector, " +
+						                                                 " like NaughtyAttributes or OdinInspector");
+						bool drawerOverrideEnabled = true;
+#if MYBOX_DISABLE_INSPECTOR_OVERRIDE
+						drawerOverrideEnabled = false;
+#endif		
+						
+						EditorGUI.BeginChangeCheck();
+						drawerOverrideEnabled = EditorGUILayout.Toggle(label, drawerOverrideEnabled);
+						if (EditorGUI.EndChangeCheck() && 
+						    EditorUtility.DisplayDialog("Toggle \"MYBOX_DISABLE_INSPECTOR_OVERRIDE\" define symbol", 
+							    "This change will cause recompilation, continue?", "Ok", "Cancel"))
+						{
+							if (drawerOverrideEnabled)
+							{
+								Debug.LogWarning("Add");
+								MyDefinesUtility.RemoveDefine("MYBOX_DISABLE_INSPECTOR_OVERRIDE");
+							}
+							else
+							{
+								Debug.LogWarning("rem");
+								MyDefinesUtility.AddDefine("MYBOX_DISABLE_INSPECTOR_OVERRIDE");
+							}
+						}
 
+						GUILayout.FlexibleSpace();
+					}
+					
 					using (new EditorGUILayout.HorizontalScope())
 					{
 						var label = new GUIContent("AutoSave on Play: ", "Save changes in opened scenes before Playmode. " +
 						                                                 "\nUnity crashes from time to time, you know...");
-						EditorGUILayout.Space(leftOffset);
 						MyBoxSettings.AutoSaveEnabled = EditorGUILayout.Toggle(label, MyBoxSettings.AutoSaveEnabled);
 						GUILayout.FlexibleSpace();
 					}
@@ -144,13 +202,12 @@ namespace MyBox.Internal
 					{
 						var label = new GUIContent("Clean Empty Folders: ", "Delete empty folders in project on Save. " +
 						                                                    "\nIt handles VCS issue with .meta files for empty folders");
-						EditorGUILayout.Space(leftOffset);
 						MyBoxSettings.CleanEmptyDirectoriesFeature = EditorGUILayout.Toggle(label, MyBoxSettings.CleanEmptyDirectoriesFeature);
 						GUILayout.FlexibleSpace();
 					}
 				}
 
-				EditorGUILayout.Space(80);
+				EditorGUILayout.Space(40);
 				using (new EditorGUILayout.VerticalScope())
 				{
 					EditorGUILayout.LabelField("Performance settings", EditorStyles.miniLabel);
@@ -160,7 +217,7 @@ namespace MyBox.Internal
 						var label = new GUIContent("Prepare on Playmode: ", "Allows to use IPrepare interface with Prepare() method called automatically." +
 						                                                    "\nSlightly increases project Save time.");
 						MyBoxSettings.PrepareOnPlaymode = EditorGUILayout.Toggle(label, MyBoxSettings.PrepareOnPlaymode);
-						if (GUILayout.Button(MyGUI.EditorIcons.Help, EditorStyles.label, GUILayout.Height(18)))
+						if (GUILayout.Button(_externalDocIcon, _externalDocStyle, GUILayout.Height(18)))
 							Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Tools-and-Features#iprepare");
 						GUILayout.FlexibleSpace();
 					}
@@ -195,7 +252,7 @@ namespace MyBox.Internal
 			{
 				GUILayout.FlexibleSpace();
 
-				GUI.enabled = _updateRequest == null || _updateRequest.IsCompleted;
+				GUI.enabled = GuiEnabledGlobal && (_updateRequest == null || _updateRequest.IsCompleted);
 				var updateOrInstall = MyBoxUtilities.InstalledViaUPM ? "Update" : "Install";
 				if (GUILayout.Button(updateOrInstall + " UPM version", _buttonStyle, buttonWidth, buttonHeight))
 				{
@@ -214,15 +271,15 @@ namespace MyBox.Internal
 					}
 				}
 
-				GUI.enabled = true;
+				GUI.enabled = GuiEnabledGlobal;
 
-				if (GUILayout.Button("  How to Update ↗", _buttonStyle, buttonWidth, buttonHeight))
+				if (GUILayout.Button("  How to Update " + UrlSymbol, _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/wiki/Installation");
 
-				if (GUILayout.Button("  Releases ↗", _buttonStyle, buttonWidth, buttonHeight))
+				if (GUILayout.Button("  Releases " + UrlSymbol, _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/releases");
 
-				if (GUILayout.Button("  Changelog ↗", _buttonStyle, buttonWidth, buttonHeight))
+				if (GUILayout.Button("  Changelog " + UrlSymbol, _buttonStyle, buttonWidth, buttonHeight))
 					Application.OpenURL("https://github.com/Deadcows/MyBox/blob/master/CHANGELOG.md");
 
 				GUILayout.FlexibleSpace();
@@ -257,14 +314,11 @@ namespace MyBox.Internal
 				GUILayout.FlexibleSpace();
 			}
 
-			EditorGUILayout.Space(40);
+			EditorGUILayout.Space(26);
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.FlexibleSpace();
-				var sponsorButtonStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
-				sponsorButtonStyle.fontSize *= 2;
-				sponsorButtonStyle.fontStyle = FontStyle.Italic;
-				if (GUILayout.Button("buy me a coffee :)", sponsorButtonStyle, GUILayout.Height(32)))
+				if (GUILayout.Button("buy me a coffee :)", _sponsorButtonStyle,GUILayout.Width(260), GUILayout.Height(42)))
 					Application.OpenURL("https://www.buymeacoffee.com/andrewrumak");
 				GUILayout.FlexibleSpace();
 			}
@@ -302,7 +356,7 @@ namespace MyBox.Internal
 
 		private void DrawIcons()
 		{
-			int width = 24;
+			int width = 22;
 			var content = new GUIContent(MyGUI.EditorIcons.Plus);
 			content.tooltip = "MyGUI.EditorIcons.Plus";
 			EditorGUILayout.LabelField(content, GUILayout.Width(width));

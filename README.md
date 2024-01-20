@@ -4,8 +4,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/Deadcows/MyBox/blob/master/LICENSE.md)
 <a href="https://www.buymeacoffee.com/andrewrumak" target="_blank"><img src="https://user-images.githubusercontent.com/969858/114297171-ca615080-9ab7-11eb-8010-0ae8762ff1f1.png" /></a>
 <br>
-Ask anything in <a href="https://discord.gg/RsN5kFSVeV" target="_blank">Discord</a>
-
 
 
 MyBox is a set of tools, features and extensions for Unity.<br />
