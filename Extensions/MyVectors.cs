@@ -27,6 +27,8 @@ namespace MyBox
 		// Set Z
 
 		public static Vector3 SetZ(this Vector3 vector, float z) => new Vector3(vector.x, vector.y, z);
+		
+		public static Vector3 WithZ(this Vector2 vector, float z) => new Vector3(vector.x, vector.y, z);
 
 		public static void SetZ(this Transform transform, float z) => transform.position = transform.position.SetZ(z);
 
