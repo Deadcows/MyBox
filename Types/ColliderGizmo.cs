@@ -4,7 +4,6 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.AI;
-
 #endif
 
 namespace MyBox

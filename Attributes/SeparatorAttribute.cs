@@ -40,7 +40,8 @@ namespace MyBox.Internal
 			{
 				position.height = 1;
 				position.y += 14;
-				GUI.Box(position, string.Empty);
+				
+				DrawLine(position);
 			}
 			else
 			{
@@ -48,9 +49,15 @@ namespace MyBox.Internal
 				float separatorWidth = (position.width - textSize.x) / 2 - 5;
 				position.y += 19;
 
-				GUI.Box(new Rect(position.xMin, position.yMin, separatorWidth, 1), string.Empty);
+				GUI.Box(new Rect(position.xMin, position.yMin, separatorWidth, 1), GUIContent.none);
 				GUI.Label(new Rect(position.xMin + separatorWidth + 5, position.yMin - 10, textSize.x, 20), title);
-				GUI.Box(new Rect(position.xMin + separatorWidth + 10 + textSize.x, position.yMin, separatorWidth, 1), "");
+				GUI.Box(new Rect(position.xMin + separatorWidth + 10 + textSize.x, position.yMin, separatorWidth, 1), GUIContent.none);
+			}
+
+			void DrawLine(Rect drawPosition)
+			{
+				if (Event.current.type != EventType.Repaint) return;
+				GUI.skin.box.Draw(drawPosition, GUIContent.none, false, false, false, false);
 			}
 		}
 	}
