@@ -7,6 +7,7 @@ All notable changes to this package will be documented in this file.
 - [TODO DOCS] Added: MyDefinesUtility simplifies handling of PlayerSettings.Set(Get)ScriptingDefineSymbols
 - [TODO DOCS] Added: MyEditorAudio tool to play AudioClip in Editor
 - [TODO DOCS] Added: MyComponentUtility.MoveComponentInspectorToTop/ToBottom(Component component) utility methods
+- [TODO DOCS] Added: Contextual Menu Items to "Move Component To Top/To Bottom" in inspector
 
 ## [1.8.0] - 2023-10-09
 - Now it is possible to toggle some features that may lead to performance issues in editor in MyBox Window
