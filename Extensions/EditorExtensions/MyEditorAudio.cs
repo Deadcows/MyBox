@@ -10,11 +10,20 @@ namespace MyBox.EditorTools
 		//TODO: Is it ok to always force _objectToPlayAlong?
 		//TODO: It is possible to play several clips at a time, should I do it?
 
+#if UNITY_2023_2_OR_NEWER
 		public static void Play(AudioResource clip, float volume = 1)
+#else
+		public static void Play(AudioClip clip, float volume = 1)
+#endif
 		{
 			if (_previewSource == null) _previewSource = CreatePreviewAudioSource();
 
+#if UNITY_2023_2_OR_NEWER
 			_previewSource.resource = clip;
+#else
+			_previewSource.clip = clip;
+#endif
+			
 			_previewSource.volume = volume;
 			_previewSource.Play();
 
