@@ -61,13 +61,15 @@ namespace MyBox.Internal
 				// Draw foldout only if Script line drawn and there is content to hide (ref assigned)
 				if (property.objectReferenceValue != null)
 				{
-					// Workaround to make label clickable, accurately aligned and property field click is not triggering foldout
-					var foldRect = new Rect(position);
+    					// Workaround to make label clickable, accurately aligned and property field click is not triggering foldout
+					var foldRect =  new Rect(position);
 					foldRect.width = EditorGUIUtility.labelWidth;
-					_foldout.Value = EditorGUI.Foldout(foldRect, _foldout.Value, new GUIContent(""), true, StyleFramework.FoldoutHeader);
-					EditorGUI.PropertyField(position, property, label);
+					_foldout.Value = EditorGUI.Foldout(foldRect, _foldout.Value, label, true);
+					var fieldRect = new Rect(position);
+					fieldRect.x += EditorGUIUtility.labelWidth;
+					EditorGUI.PropertyField(fieldRect, property, GUIContent.none);
 					if (GUI.changed) property.serializedObject.ApplyModifiedProperties();
-					
+
 					if (!_foldout.Value) return;
 				}
 				else
