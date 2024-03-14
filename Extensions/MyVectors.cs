@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
-// ReSharper disable MemberCanBePrivate.Global
 
 namespace MyBox
 {
+	[PublicAPI]
 	public static class MyVectors
 	{
 		#region Set X/Y/Z
@@ -35,20 +36,26 @@ namespace MyBox
 		// Set XY
 
 		public static Vector3 SetXY(this Vector3 vector, float x, float y) => new Vector3(x, y, vector.z);
+		public static Vector3 SetXY(this Vector3 vector, Vector2 xy) => new Vector3(xy.x, xy.y, vector.z);
 
 		public static void SetXY(this Transform transform, float x, float y) => transform.position = transform.position.SetXY(x, y);
+		public static void SetXY(this Transform transform, Vector2 xy) => transform.position = transform.position.SetXY(xy);
 
 		// Set XZ
 
 		public static Vector3 SetXZ(this Vector3 vector, float x, float z) => new Vector3(x, vector.y, z);
-
+		public static Vector3 SetXZ(this Vector3 vector, Vector2 xz) => new Vector3(xz.x, vector.y, xz.y);
+		
 		public static void SetXZ(this Transform transform, float x, float z) => transform.position = transform.position.SetXZ(x, z);
+		public static void SetXZ(this Transform transform, Vector2 xz) => transform.position = transform.position.SetXZ(xz);
 
 		// Set YZ
 
 		public static Vector3 SetYZ(this Vector3 vector, float y, float z) => new Vector3(vector.x, y, z);
+		public static Vector3 SetYZ(this Vector3 vector, Vector2 yz) => new Vector3(vector.x, yz.x, yz.y);
 
 		public static void SetYZ(this Transform transform, float y, float z) => transform.position = transform.position.SetYZ(y, z);
+		public static void SetYZ(this Transform transform, Vector2 yz) => transform.position = transform.position.SetYZ(yz);
 		
 		#endregion
 
