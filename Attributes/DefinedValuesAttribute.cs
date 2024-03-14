@@ -75,6 +75,12 @@ namespace MyBox.Internal
 			{
 				var valuesFromMethod = GetValuesFromMethod();
 				if (valuesFromMethod.NotNullOrEmpty()) values = valuesFromMethod;
+				else
+				{
+					WarningsPool.LogWarning(
+						"DefinedValuesAttribute caused: Method " + methodName + " not found or returned null", target);
+					return;
+				}
 			}
 
 			var firstValue = values.FirstOrDefault(v => v != null);
