@@ -62,10 +62,12 @@ namespace MyBox.Internal
 		private Type _valueType;
 		private bool _initialized;
 
-		private void Initialize(UnityEngine.Object target, DefinedValuesAttribute defaultValuesAttribute)
+		private void Initialize(SerializedProperty targetProperty, DefinedValuesAttribute defaultValuesAttribute)
 		{
 			if (_initialized) return;
 			_initialized = true;
+			
+			var targetObject = targetProperty.serializedObject.targetObject;
 			
 			var values = defaultValuesAttribute.ValuesArray;
 			var labels = defaultValuesAttribute.LabelsArray;
@@ -78,7 +80,7 @@ namespace MyBox.Internal
 				else
 				{
 					WarningsPool.LogWarning(
-						"DefinedValuesAttribute caused: Method " + methodName + " not found or returned null", target);
+						"DefinedValuesAttribute caused: Method " + methodName + " not found or returned null", targetObject);
 					return;
 				}
 			}
@@ -95,14 +97,17 @@ namespace MyBox.Internal
 			
 			object[] GetValuesFromMethod()
 			{
-				var type = target.GetType();
+				var methodOwner = targetProperty.GetParent();
+				if (methodOwner == null) methodOwner = targetObject;
+				var type = methodOwner.GetType();
 				var bindings = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-				var method = type.GetMethods(bindings).SingleOrDefault(m => m.Name == methodName);
+				var methodsOnType = type.GetMethods(bindings);
+				var method = methodsOnType.SingleOrDefault(m => m.Name == methodName);
 				if (method == null) return null;
 
 				try
 				{
-					var result = method.Invoke(target, null);
+					var result = method.Invoke(methodOwner, null);
 					return result as object[];
 				}
 				catch
@@ -110,11 +115,13 @@ namespace MyBox.Internal
 					return null;
 				}
 			}
+			
+			
 		}
 		
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			Initialize(property.serializedObject.targetObject, (DefinedValuesAttribute)attribute);
+			Initialize(property, (DefinedValuesAttribute)attribute);
 			
 			if (_labels.IsNullOrEmpty() || _valueType != fieldInfo.FieldType)
 			{
