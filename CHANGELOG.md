@@ -4,7 +4,12 @@ All notable changes to this package will be documented in this file.
 ## [Unreleased]
 - Ability to disable custom UnityObject inspector for better compatibility with other libraries, in MyBox Window settings
 - Added: SceneClickHandler support of Physics2d and Plane
-- Added: MyDefinesUtility simplifies handling of PlayerSettings.Set(Get)ScriptingDefineSymbols
+- [TODO DOCS] Added: MyDefinesUtility simplifies handling of PlayerSettings.Set(Get)ScriptingDefineSymbols
+- [TODO DOCS] Added: MyEditorAudio tool to play AudioClip in Editor
+- [TODO DOCS] Added: MyComponentUtility.MoveComponentInspectorToTop/ToBottom(Component component) utility methods
+- [TODO DOCS] Added: Contextual Menu Items to "Move Component To Top/To Bottom" in inspector
+- [TODO DOCS] Added: TopmostComponentAttribute to move on top in inspector automatically when it added
+- Fixed: DefinedValuesAttribute now properly works within serialized types
 
 ## [1.8.0] - 2023-10-09
 - Now it is possible to toggle some features that may lead to performance issues in editor in MyBox Window

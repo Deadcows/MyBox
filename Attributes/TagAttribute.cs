@@ -6,10 +6,6 @@
 
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace MyBox
 {
 	public class TagAttribute : PropertyAttribute
@@ -20,6 +16,8 @@ namespace MyBox
 #if UNITY_EDITOR
 namespace MyBox.Internal
 {
+	using UnityEditor;
+	
 	[CustomPropertyDrawer(typeof(TagAttribute))]
 	public class TagAttributeDrawer : PropertyDrawer
 	{

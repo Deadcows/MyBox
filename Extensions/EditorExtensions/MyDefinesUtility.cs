@@ -7,7 +7,6 @@ namespace MyBox.EditorTools
 	using System.Reflection;
 	using JetBrains.Annotations;
 	using UnityEditor;
-	using UnityEngine;
 
 	/// <summary>
 	/// Basically a copy-paste of Unity.VisualScripting.DefineUtility.

@@ -5,12 +5,10 @@ public class FPSCounter : MonoBehaviour
 {
 	public bool EditorOnly;
 	
-	[Separator]
 	[SerializeField] private float _updateInterval = 1f;
 	[SerializeField] private int _targetFrameRate = 30;
 	
 #pragma warning disable 0649
-	[Separator]
 	[SerializeField] private Anchor _anchor;
 	[SerializeField] private int _xOffset;
 	[SerializeField] private int _yOffset;

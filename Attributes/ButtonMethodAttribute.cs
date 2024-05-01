@@ -5,13 +5,15 @@
 // ----------------------------------------------------------------------------
 
 using System;
+using JetBrains.Annotations;
 using MyBox.Internal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace MyBox
 {
-	[AttributeUsage(AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Method)] 
+	[MeansImplicitUse]
 	public class ButtonMethodAttribute : PropertyAttribute
 	{
 		public readonly ButtonMethodDrawOrder DrawOrder;

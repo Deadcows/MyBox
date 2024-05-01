@@ -1,10 +1,12 @@
 ﻿#if UNITY_EDITOR
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace MyBox.EditorTools
 {
+	[PublicAPI]
 	public static class MyHandles
 	{
 		/// <summary>

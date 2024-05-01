@@ -4,7 +4,6 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.AI;
-
 #endif
 
 namespace MyBox
@@ -41,6 +40,7 @@ namespace MyBox
 #if UNITY_PHYSICS2D_ENABLED
 		private List<EdgeCollider2D> _edgeColliders2D;
 		private List<BoxCollider2D> _boxColliders2D;
+		private List<CapsuleCollider2D> _capsuleColliders2D;
 		private List<CircleCollider2D> _circleColliders2D;
 #endif
 
@@ -84,9 +84,10 @@ namespace MyBox
 #endif
 
 #if UNITY_PHYSICS2D_ENABLED
-			if (_edgeColliders2D != null) _edgeColliders2D.Clear();
-			if (_boxColliders2D != null) _boxColliders2D.Clear();
-			if (_circleColliders2D != null) _circleColliders2D.Clear();
+			_edgeColliders2D?.Clear();
+			_boxColliders2D?.Clear();
+			_capsuleColliders2D?.Clear();
+			_circleColliders2D?.Clear();
 
 			Collider2D[] colliders2d = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider2D>() : gameObject.GetComponents<Collider2D>();
 
@@ -97,7 +98,7 @@ namespace MyBox
 				var box2d = c as BoxCollider2D;
 				if (box2d != null)
 				{
-					if (_boxColliders2D == null) _boxColliders2D = new List<BoxCollider2D>();
+					_boxColliders2D ??= new List<BoxCollider2D>();
 					_boxColliders2D.Add(box2d);
 					_withColliders.Add(box2d.transform);
 					continue;
@@ -106,16 +107,25 @@ namespace MyBox
 				var edge = c as EdgeCollider2D;
 				if (edge != null)
 				{
-					if (_edgeColliders2D == null) _edgeColliders2D = new List<EdgeCollider2D>();
+					_edgeColliders2D ??= new List<EdgeCollider2D>();
 					_edgeColliders2D.Add(edge);
 					_withColliders.Add(edge.transform);
+					continue;
+				}
+
+				var capsule = c as CapsuleCollider2D;
+				if (capsule != null)
+				{
+					_capsuleColliders2D ??= new List<CapsuleCollider2D>();
+					_capsuleColliders2D.Add(capsule);
+					_withColliders.Add(capsule.transform);
 					continue;
 				}
 
 				var circle2d = c as CircleCollider2D;
 				if (circle2d != null)
 				{
-					if (_circleColliders2D == null) _circleColliders2D = new List<CircleCollider2D>();
+					_circleColliders2D ??= new List<CircleCollider2D>();
 					_circleColliders2D.Add(circle2d);
 					_withColliders.Add(circle2d.transform);
 				}
@@ -123,9 +133,9 @@ namespace MyBox
 #endif
 
 #if UNITY_PHYSICS_ENABLED
-			if (_boxColliders != null) _boxColliders.Clear();
-			if (_sphereColliders != null) _sphereColliders.Clear();
-			if (_meshColliders != null) _meshColliders.Clear();
+			_boxColliders?.Clear();
+			_sphereColliders?.Clear();
+			_meshColliders?.Clear();
 
 			Collider[] colliders = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider>() : gameObject.GetComponents<Collider>();
 
@@ -136,7 +146,7 @@ namespace MyBox
 				var box = c as BoxCollider;
 				if (box != null)
 				{
-					if (_boxColliders == null) _boxColliders = new List<BoxCollider>();
+					_boxColliders ??= new List<BoxCollider>();
 					_boxColliders.Add(box);
 					_withColliders.Add(box.transform);
 					continue;
@@ -145,7 +155,7 @@ namespace MyBox
 				var sphere = c as SphereCollider;
 				if (sphere != null)
 				{
-					if (_sphereColliders == null) _sphereColliders = new List<SphereCollider>();
+					_sphereColliders ??= new List<SphereCollider>();
 					_sphereColliders.Add(sphere);
 					_withColliders.Add(sphere.transform);
 				}
@@ -153,7 +163,7 @@ namespace MyBox
 				var mesh = c as MeshCollider;
 				if (mesh != null)
 				{
-					if (_meshColliders == null) _meshColliders = new List<MeshCollider>();
+					_meshColliders ??= new List<MeshCollider>();
 					_meshColliders.Add(mesh);
 					_withColliders.Add(mesh.transform);
 				}
@@ -197,6 +207,14 @@ namespace MyBox
 		}
 
 		private void DrawBoxCollider2D(BoxCollider2D coll)
+		{
+			var target = coll.transform;
+			Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
+			DrawColliderGizmo(coll.offset, coll.size);
+			Gizmos.matrix = Matrix4x4.identity;
+		}
+		
+		private void DrawCapsuleCollider2D(CapsuleCollider2D coll)
 		{
 			var target = coll.transform;
 			Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
@@ -309,6 +327,15 @@ namespace MyBox
 				{
 					if (box == null) continue;
 					DrawBoxCollider2D(box);
+				}
+			}
+			
+			if (_capsuleColliders2D != null)
+			{
+				foreach (var capsule in _capsuleColliders2D)
+				{
+					if (capsule == null) continue;
+					DrawCapsuleCollider2D(capsule);
 				}
 			}
 
