@@ -205,11 +205,22 @@ namespace MyBox.EditorTools
 			foreach (var o in objects)
 			{
 				if (o == null) continue;
-				var fields = o.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-				foreach (var field in fields)
+				var objectType = o.GetType();
+				
+				while (objectType != null)
 				{
-					if (!field.IsDefined(desiredAttribute, false)) continue;
-					result.Add(new ObjectField(field, o));
+					var fields = objectType.GetFields(
+						BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+					);
+					
+					foreach (var field in fields)
+					{
+						if (!field.IsDefined(desiredAttribute, false)) continue;
+
+						result.Add(new ObjectField(field, o));
+					}
+
+					objectType = objectType.BaseType;
 				}
 			}
 
