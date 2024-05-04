@@ -23,10 +23,10 @@ namespace MyBox
 		public readonly AutoPropertyMode Mode;
 		public readonly string PredicateMethodName;
 		public readonly Type PredicateMethodTarget;
-  		public readonly bool AllowEmpty;
-	    public readonly bool Editable;
+  		public readonly bool AllowEmpty; 
+		public readonly bool Editable;
 
-	    public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children,
+		public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children,
 			string predicateMethodName = null,
 			Type predicateMethodTarget = null,
    			bool allowEmpty = false,
