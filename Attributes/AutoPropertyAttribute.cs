@@ -23,17 +23,20 @@ namespace MyBox
 		public readonly AutoPropertyMode Mode;
 		public readonly string PredicateMethodName;
 		public readonly Type PredicateMethodTarget;
-  		public readonly bool AllowEmpty;
+  		public readonly bool AllowEmpty; 
+		public readonly bool Editable;
 
 		public AutoPropertyAttribute(AutoPropertyMode mode = AutoPropertyMode.Children,
 			string predicateMethodName = null,
 			Type predicateMethodTarget = null,
-   			bool allowEmpty = false)
+   			bool allowEmpty = false,
+			bool editable = false)
 		{
 			Mode = mode;
 			PredicateMethodTarget = predicateMethodTarget;
 			PredicateMethodName = predicateMethodName;
    			AllowEmpty = allowEmpty;
+		    Editable = editable;
 		}
 	}
 
@@ -82,7 +85,7 @@ namespace MyBox.Internal
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			GUI.enabled = false;
+			GUI.enabled = attribute.As<AutoPropertyAttribute>()?.Editable ?? false;
 			EditorGUI.PropertyField(position, property, label);
 			GUI.enabled = true;
 		}
@@ -169,11 +172,14 @@ namespace MyBox.Internal
 			}
 			else
 			{
+				var serializedObject = new SerializedObject(property.Context);
+				var serializedProperty = serializedObject.FindProperty(property.Field.Name);
 				var obj = matchedObjects.FirstOrDefault();
+				
+				if (serializedProperty.objectReferenceValue && apAttribute.Editable) return;
+				
 				if (obj != null || apAttribute.AllowEmpty)
 				{
-					var serializedObject = new SerializedObject(property.Context);
-					var serializedProperty = serializedObject.FindProperty(property.Field.Name);
 					serializedProperty.objectReferenceValue = obj;
 					serializedObject.ApplyModifiedProperties();
 					return;
