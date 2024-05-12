@@ -75,9 +75,14 @@ namespace MyBox.Internal
 			// Of all property drawers in the assembly we need to find one that affects target type
 			// or one of the base types of target type
 			var checkType = drawerTarget;
+			if (checkType.IsGenericType)
+			{
+				checkType = checkType.GetGenericTypeDefinition();
+			}
+
 			while (checkType != null)
 			{
-				if (PropertyDrawersInAssembly.TryGetValue(drawerTarget, out var drawer)) return drawer;
+				if (PropertyDrawersInAssembly.TryGetValue(checkType, out var drawer)) return drawer;
 				checkType = checkType.BaseType;
 			}
 
