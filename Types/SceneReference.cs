@@ -338,8 +338,7 @@ namespace MyBox.Internal
 					if (sceneName.stringValue != sceneAsset.name)
 						sceneName.stringValue = sceneAsset.name;
 				}
-
-				DisplaySceneErrorPrompt(!buildScene.Present ? ERROR_SCENE_MISSING : ERROR_SCENE_DISABLED);
+				else DisplaySceneErrorPrompt(!buildScene.Present ? ERROR_SCENE_MISSING : ERROR_SCENE_DISABLED);
 			}
 			else
 			{

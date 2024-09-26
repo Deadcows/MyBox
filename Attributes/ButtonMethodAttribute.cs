@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 namespace MyBox
 {
 	[AttributeUsage(AttributeTargets.Method)] 
-	[MeansImplicitUse]
+	[PublicAPI]
 	public class ButtonMethodAttribute : PropertyAttribute
 	{
 		public readonly ButtonMethodDrawOrder DrawOrder;

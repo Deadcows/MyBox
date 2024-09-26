@@ -1,10 +1,9 @@
 using System;
+using JetBrains.Annotations;
 using UnityEngine;
-
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEditor.Experimental.SceneManagement;
 #endif
 
 namespace MyBox
@@ -14,7 +13,7 @@ namespace MyBox
 	/// It can be used to reference a specific instance of an object no matter where it is.
 	/// This can also be used for other systems, such as Save/Load game
 	/// </summary>
-	[ExecuteInEditMode, DisallowMultipleComponent]
+	[ExecuteInEditMode, DisallowMultipleComponent, PublicAPI]
 	public class GuidComponent : MonoBehaviour, ISerializationCallbackReceiver
 	{
 		public Guid Guid
@@ -28,17 +27,15 @@ namespace MyBox
 		}
 		
 		public string GuidString => Guid.ToString();
+		public bool IsGuidAssigned() => _guid != Guid.Empty;
 		
-
-		// System guid we use for comparison and generation
-		Guid _guid = Guid.Empty;
-
+		
 		// Unity's serialization system doesn't know about System.Guid, so we convert to a byte array
 		// Fun fact, we tried using strings at first, but that allocated memory and was twice as slow
 		[SerializeField] private byte[] serializedGuid;
 
-
-		public bool IsGuidAssigned() => _guid != Guid.Empty;
+		// System guid we use for comparison and generation
+		private Guid _guid = Guid.Empty;
 
 
 		// When de-serializing or creating this component, we want to either restore our serialized GUID
@@ -50,14 +47,11 @@ namespace MyBox
 			{
 #if UNITY_EDITOR
 				// if in editor, make sure we aren't a prefab of some kind
-				if (IsAssetOnDisk())
-				{
-					return;
-				}
+				if (IsAssetOnDisk()) return;
 
 				Undo.RecordObject(this, "Added GUID");
 #endif
-				_guid = System.Guid.NewGuid();
+				_guid = Guid.NewGuid();
 				serializedGuid = _guid.ToByteArray();
 
 #if UNITY_EDITOR
@@ -69,20 +63,20 @@ namespace MyBox
 				}
 #endif
 			}
-			else if (_guid == System.Guid.Empty)
+			else if (_guid == Guid.Empty)
 			{
 				// otherwise, we should set our system guid to our serialized guid
-				_guid = new System.Guid(serializedGuid);
+				_guid = new Guid(serializedGuid);
 			}
 
 			// register with the GUID Manager so that other components can access this
-			if (_guid != System.Guid.Empty)
+			if (_guid != Guid.Empty)
 			{
 				if (!GuidManager.Add(this))
 				{
 					// if registration fails, we probably have a duplicate or invalid GUID, get us a new one.
 					serializedGuid = null;
-					_guid = System.Guid.Empty;
+					_guid = Guid.Empty;
 					CreateGuid();
 				}
 			}
@@ -96,18 +90,16 @@ namespace MyBox
 				// if the game object is stored on disk, it is a prefab of some kind, despite not returning true for IsPartOfPrefabAsset =/
 				return true;
 			}
-			else
+
+			// If the GameObject is not persistent let's determine which stage we are in first because getting Prefab info depends on it
+			var mainStage = StageUtility.GetMainStageHandle();
+			var currentStage = StageUtility.GetStageHandle(gameObject);
+			if (currentStage != mainStage)
 			{
-				// If the GameObject is not persistent let's determine which stage we are in first because getting Prefab info depends on it
-				var mainStage = StageUtility.GetMainStageHandle();
-				var currentStage = StageUtility.GetStageHandle(gameObject);
-				if (currentStage != mainStage)
+				var prefabStage = PrefabStageUtility.GetPrefabStage(gameObject);
+				if (prefabStage != null)
 				{
-					var prefabStage = PrefabStageUtility.GetPrefabStage(gameObject);
-					if (prefabStage != null)
-					{
-						return true;
-					}
+					return true;
 				}
 			}
 
@@ -129,12 +121,12 @@ namespace MyBox
 			if (IsAssetOnDisk())
 			{
 				serializedGuid = null;
-				_guid = System.Guid.Empty;
+				_guid = Guid.Empty;
 			}
 			else
 #endif
 			{
-				if (_guid != System.Guid.Empty)
+				if (_guid != Guid.Empty)
 				{
 					serializedGuid = _guid.ToByteArray();
 				}
@@ -146,16 +138,16 @@ namespace MyBox
 		{
 			if (serializedGuid != null && serializedGuid.Length == 16)
 			{
-				_guid = new System.Guid(serializedGuid);
+				_guid = new Guid(serializedGuid);
 			}
 		}
 
-		void Awake()
+		private void Awake()
 		{
 			CreateGuid();
 		}
 
-		void OnValidate()
+		private void OnValidate()
 		{
 #if UNITY_EDITOR
 			// similar to on Serialize, but gets called on Copying a Component or Applying a Prefab
@@ -163,7 +155,7 @@ namespace MyBox
 			if (IsAssetOnDisk())
 			{
 				serializedGuid = null;
-				_guid = System.Guid.Empty;
+				_guid = Guid.Empty;
 			}
 			else
 #endif
@@ -173,11 +165,11 @@ namespace MyBox
 		}
 
 		// Never return an invalid GUID
-		public System.Guid GetGuid()
+		public Guid GetGuid()
 		{
-			if (_guid == System.Guid.Empty && serializedGuid != null && serializedGuid.Length == 16)
+			if (_guid == Guid.Empty && serializedGuid != null && serializedGuid.Length == 16)
 			{
-				_guid = new System.Guid(serializedGuid);
+				_guid = new Guid(serializedGuid);
 			}
 
 			return _guid;

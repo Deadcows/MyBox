@@ -10,11 +10,11 @@ namespace MyBox
 	{
 		[MustBeAssigned] public RectTransform CopySizeFrom;
 
-		[Separator("CopyWidth/Height, Set optional offset")]
+		[Header("CopyWidth/Height, Set optional offset")]
 		public OptionalInt CopyWidth = OptionalInt.WithValue(0);
 		public OptionalInt CopyHeight = OptionalInt.WithValue(0);
 
-		[Separator("Optional Min/Max Width/Height")]
+		[Header("Optional Min/Max Width/Height")]
 		public OptionalMinMax MinMaxWidth;
 		public OptionalMinMax MinMaxHeight;
 

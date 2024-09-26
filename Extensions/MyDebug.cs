@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -8,6 +9,7 @@ using UnityEditor;
 
 namespace MyBox
 {
+	[PublicAPI]
 	public static class MyDebug
 	{
 		#region Log Array
@@ -160,13 +162,13 @@ namespace MyBox
 		/// <summary>
 		/// Draw XYZ dimensional RGB cross
 		/// </summary>
-		public static void DrawDimensionalCross(Vector3 position, float size)
+		public static void DrawDimensionalCross(Vector3 position, float size, float duration = 0)
 		{
 #if UNITY_EDITOR
 			var halfSize = size / 2;
-			Debug.DrawLine(position.OffsetY(-halfSize), position.OffsetY(halfSize), Color.green, .2f);
-			Debug.DrawLine(position.OffsetX(-halfSize), position.OffsetX(halfSize), Color.red, .2f);
-			Debug.DrawLine(position.OffsetZ(-halfSize), position.OffsetZ(halfSize), Color.blue, .2f);
+			Debug.DrawLine(position.OffsetY(-halfSize), position.OffsetY(halfSize), Color.green, duration);
+			Debug.DrawLine(position.OffsetX(-halfSize), position.OffsetX(halfSize), Color.red, duration);
+			Debug.DrawLine(position.OffsetZ(-halfSize), position.OffsetZ(halfSize), Color.blue, duration);
 #endif
 		}
 	}
