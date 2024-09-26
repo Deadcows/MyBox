@@ -1,14 +1,16 @@
 #if UNITY_EDITOR
 using System;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEngine;
 using UnityEditor.Build.Reporting;
+using UnityEngine.SceneManagement;
 
 namespace MyBox.EditorTools
 {
-	[InitializeOnLoad]
-	public class MyEditorEvents : UnityEditor.AssetModificationProcessor, IPreprocessBuildWithReport
+	[InitializeOnLoad, PublicAPI]
+	public class MyEditorEvents : AssetModificationProcessor, IPreprocessBuildWithReport
 	{
 		/// <summary>
 		/// Occurs on Scenes/Assets Save
@@ -30,13 +32,19 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static event Action OnEditorStarts;
 
+		/// <summary>
+		/// Called with a KeyCode of the input during edit-time
+		/// </summary>
 		public static event Action<Event> OnEditorInput;
 
 
 		static MyEditorEvents()
 		{
-			EditorApplication.update += CheckOnceOnEditorStart;
+			// DelayCall is used to ensure that all [InitializeOnLoad] subscribers are initialized before the events are called 
+			EditorApplication.delayCall += () => EditorApplication.update += CheckOnceOnEditorStart;
 			EditorApplication.update += CheckOnceOnPlaymode;
+
+			
 			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 			RegisterRawInputHandler();
 
@@ -67,20 +75,16 @@ namespace MyBox.EditorTools
 
 		private static void CheckOnceOnEditorStart()
 		{
-			if (!_skipFrameOnEditorStart)
-			{
-				_skipFrameOnEditorStart = true;
-				return;
-			}
+			const string flag = "EditorInitiated";
 			
-			if (!SessionState.GetBool("EditorInitiated", false))
+			if (!SessionState.GetBool(flag, false))
 			{
-				SessionState.SetBool("EditorInitiated", true);
+				SessionState.SetBool(flag, true);
 				OnEditorStarts?.Invoke();
 			}
+			
+			EditorApplication.update -= CheckOnceOnEditorStart;
 		}
-
-		private static bool _skipFrameOnEditorStart;
 
 
 		/// <summary>
