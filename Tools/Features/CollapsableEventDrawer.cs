@@ -5,7 +5,8 @@
 // https://github.com/ByronMayne
 // ----------------------------------------------------------------------------
 
-#if UNITY_EDITOR
+// TODO: For some reason Odin is not drawing contents of the UnityEvent from time to time. Discard the drawer for now
+#if UNITY_EDITOR && !MYBOX_DISABLE_UNITYEVENT_OVERRIDE && !ODIN_INSPECTOR
 namespace MyBox.Internal
 {
 	using System.Collections.Generic;

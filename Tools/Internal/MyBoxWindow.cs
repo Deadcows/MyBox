@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using MyBox.EditorTools;
 using UnityEditor;
-using UnityEditor.Build;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
@@ -21,6 +20,7 @@ namespace MyBox.Internal
 		private GUIStyle _sponsorButtonStyle;
 		private GUIContent _externalDocIcon;
 		private GUIStyle _externalDocStyle;
+		private Texture2D _odinLogo;
 
 		private AddRequest _updateRequest;
 
@@ -149,7 +149,7 @@ namespace MyBox.Internal
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.FlexibleSpace();
-				EditorGUILayout.Space(40);
+				EditorGUILayout.Space(50);
 				
 				using (new EditorGUILayout.VerticalScope())
 				{
@@ -161,32 +161,13 @@ namespace MyBox.Internal
 					
 					using (new EditorGUILayout.HorizontalScope())
 					{
-						var label = new GUIContent("Inspector override: ", "Custom UnityObject inspector enables [ButtonMethod] and [Foldout] attributes to work. " +
-						                                                 "Disable to support some other libraries that override UnityObject inspector, " +
-						                                                 " like NaughtyAttributes or OdinInspector");
-						bool drawerOverrideEnabled = true;
-#if MYBOX_DISABLE_INSPECTOR_OVERRIDE
-						drawerOverrideEnabled = false;
-#endif		
-						
-						EditorGUI.BeginChangeCheck();
-						drawerOverrideEnabled = EditorGUILayout.Toggle(label, drawerOverrideEnabled);
-						if (EditorGUI.EndChangeCheck() && 
-						    EditorUtility.DisplayDialog("Toggle \"MYBOX_DISABLE_INSPECTOR_OVERRIDE\" define symbol", 
-							    "This change will cause recompilation, continue?", "Ok", "Cancel"))
-						{
-							if (drawerOverrideEnabled)
-							{
-								Debug.LogWarning("Add");
-								MyDefinesUtility.RemoveDefine("MYBOX_DISABLE_INSPECTOR_OVERRIDE");
-							}
-							else
-							{
-								Debug.LogWarning("rem");
-								MyDefinesUtility.AddDefine("MYBOX_DISABLE_INSPECTOR_OVERRIDE");
-							}
-						}
-
+						DrawInspectorOverrideSetting();
+						GUILayout.FlexibleSpace();
+					}
+					
+					using (new EditorGUILayout.HorizontalScope())
+					{
+						DrawUnityEventOverrideSetting();
 						GUILayout.FlexibleSpace();
 					}
 					
@@ -207,7 +188,7 @@ namespace MyBox.Internal
 					}
 				}
 
-				EditorGUILayout.Space(40);
+				EditorGUILayout.Space(30);
 				using (new EditorGUILayout.VerticalScope())
 				{
 					EditorGUILayout.LabelField("Performance settings", EditorStyles.miniLabel);
@@ -296,21 +277,11 @@ namespace MyBox.Internal
 			}
 
 			EditorGUILayout.Space();
-			EditorGUILayout.LabelField("MyGUI.EditorIcons References + with black color tint", new GUIStyle(EditorStyles.centeredGreyMiniLabel));
+			EditorGUILayout.LabelField("MyGUI.EditorIcons References", new GUIStyle(EditorStyles.centeredGreyMiniLabel));
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.FlexibleSpace();
 				DrawIcons();
-				GUILayout.FlexibleSpace();
-			}
-
-			using (new EditorGUILayout.HorizontalScope())
-			{
-				GUILayout.FlexibleSpace();
-				var c = GUI.contentColor;
-				GUI.contentColor = Color.black;
-				DrawIcons();
-				GUI.contentColor = c;
 				GUILayout.FlexibleSpace();
 			}
 
@@ -321,6 +292,81 @@ namespace MyBox.Internal
 				if (GUILayout.Button("buy me a coffee :)", _sponsorButtonStyle,GUILayout.Width(260), GUILayout.Height(42)))
 					Application.OpenURL("https://www.buymeacoffee.com/andrewrumak");
 				GUILayout.FlexibleSpace();
+			}
+		}
+		
+		private void DrawInspectorOverrideSetting()
+		{
+			const string define = "MYBOX_DISABLE_INSPECTOR_OVERRIDE";
+			var label = new GUIContent("Inspector override: ", 
+				"Custom UnityObject inspector enables [ButtonMethod] and [Foldout] attributes to work. " +
+			         "Disable to support some other libraries that override UnityObject inspector, " +
+						" like NaughtyAttributes or OdinInspector");
+			
+			// ReSharper disable once RedundantAssignment
+			bool overrideEnabled = true;
+#if MYBOX_DISABLE_INSPECTOR_OVERRIDE || ODIN_INSPECTOR
+			overrideEnabled = false;
+#endif
+#if ODIN_INSPECTOR
+			bool wasEnabled = GUI.enabled;
+			GUI.enabled = false;
+#endif						
+						
+			EditorGUI.BeginChangeCheck();
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalse
+			overrideEnabled = EditorGUILayout.Toggle(label, overrideEnabled);
+#if ODIN_INSPECTOR
+			GUI.enabled = wasEnabled;
+			if (_odinLogo == null) _odinLogo = ImageStringConverter.ImageFromString(IconOdin, 32, 32);
+			var odinContext = new GUIContent(_odinLogo, "Odin Inspector is detected. " +
+			                                            "MyBox will disable some of its features to prevent conflicts");
+			EditorGUILayout.LabelField(odinContext, GUILayout.Width(32));
+#endif
+						
+			if (EditorGUI.EndChangeCheck() && 
+			    EditorUtility.DisplayDialog("Toggle \"" + define + "\" define symbol", 
+				    "This change will cause recompilation, continue?", "Ok", "Cancel"))
+			{
+				if (overrideEnabled) MyDefinesUtility.RemoveDefine(define);
+				else MyDefinesUtility.AddDefine(define);
+			}
+		}
+		
+		private void DrawUnityEventOverrideSetting()
+		{
+			const string define = "MYBOX_DISABLE_UNITYEVENT_OVERRIDE";
+			var label = new GUIContent("UnityEvent Override: ", 
+				"Custom UnityEvent inspector allows UnityEvent to be smaller and collapsable. " +
+				"It is optional, so you could use your own UnityEventDrawer.");
+			
+			// ReSharper disable once RedundantAssignment
+			bool overrideEnabled = true;
+#if MYBOX_DISABLE_UNITYEVENT_OVERRIDE || ODIN_INSPECTOR
+			overrideEnabled = false;
+#endif
+#if ODIN_INSPECTOR
+			bool wasEnabled = GUI.enabled;
+			GUI.enabled = false;
+#endif						
+
+			EditorGUI.BeginChangeCheck();
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalse
+			overrideEnabled = EditorGUILayout.Toggle(label, overrideEnabled);
+#if ODIN_INSPECTOR
+			GUI.enabled = wasEnabled;
+			if (_odinLogo == null) _odinLogo = ImageStringConverter.ImageFromString(IconOdin, 32, 32);
+			var odinContext = new GUIContent(_odinLogo, "Odin Inspector is detected. " +
+			                                            "CollapsableEventDrawer not works well with Odin, so it is disabled");
+			EditorGUILayout.LabelField(odinContext, GUILayout.Width(32));
+#endif
+						
+			if (EditorGUI.EndChangeCheck() && 
+			    EditorUtility.DisplayDialog("Toggle \"" + define + "\" define symbol", 
+				    "This change will cause recompilation, continue?", "Ok", "Cancel"))
+			{
+				if (overrideEnabled) MyDefinesUtility.RemoveDefine(define);
+				else MyDefinesUtility.AddDefine(define);
 			}
 		}
 
@@ -441,6 +487,10 @@ namespace MyBox.Internal
 			content.tooltip = "MyGUI.EditorIcons.CircleRed";
 			EditorGUILayout.LabelField(content, GUILayout.Width(width));
 		}
+		
+		
+		private const string IconOdin =
+			"iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAk1BMVEUAAADyYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj7yYj65msSDAAAAMHRSTlMArmbTSmE0JBK1XT8YBurn4sqiKfbuinp1RJqGWFAN+tnFqYBrOtW8lJEe8s7BLnHosY0IAAACRUlEQVRYw+3W23aCMBAF0BFEKKKiIOD9hlqt2vn/r2swlZnoMglvfeh+6tG1Kjm5EPj3l5URT9GsB81MMOcxxxCaGWJ6pnROMQ6giQIRpxSnImbQQDRGoU3jqXTA3ggrLo2ncgRrbZQKGR2UPLB1QSn1qxQMUIqX1g0+tKr4WcdPsOKvsDYB2CPpWDZIXDmFgn2PC+R2olHGAaPeAbn0rDzRwLwec5Sox2CMaN9jssIncyh57ILeBz5bVyuRbGwbJDPYW/fYW1P9MT4kMMXd4JHGEbw3Y93l7O/bDLI6Tm0aTH3+NHPx3TKmHi0azGUffBc5dRzCGyGt4F6Vt6xH4VjHb2ODE9pVtIs6aOiRahpV8RSyHo/qvh7BC/4DX+d7PMiThXoMBvSI2gbL31jQTpSnuqfrMVS/DOVQqccTCJs6FsCpj9et40ie7/Rxlw9Tlak/dXoM9Rv7dwNssc9fe9zzJUDxAiAis6SpXgB3pZU+EQ0P2QoKEv8u6QjLjB+XxEMmBIft/l6MXIrUo9Ig2fIzrEvlvEh9/vKleiMYsaYSfG9La5DJ2Vz1A/hAjTY1yKsZstMrRJ2DnKJS/ac5Pz/XqLW7N9hX3gLRF+1hOuI0Pc5bSFY+W/2ZaMNkGMF+sWg/zDvqOdbdec4vL/Sk0HNIWfjw5KCcAM3tWBuKufshXQrQuFEbCSgSu1sGFTq+utxh07e5ZYSoY347LmPUMd8yMtQx3zL2aGJ4O15Rz3TL8LCBEl4k2MjtdQrdlr2t68C/P+QHQ7UkQZLgKFoAAAAASUVORK5CYII=";
 	}
 }
 #endif
