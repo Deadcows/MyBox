@@ -240,6 +240,7 @@ namespace MyBox.EditorTools
 			}
 		}
 		
+		public static void ApplyModifiedProperties(this SerializedProperty property) => property.serializedObject.ApplyModifiedProperties();
 
 		#region SerializedProperty Get Parent
 
@@ -276,6 +277,7 @@ namespace MyBox.EditorTools
 				if (enumerable == null) return null;
 
 				var enm = enumerable.GetEnumerator();
+				
 				while (index-- >= 0)
 					enm.MoveNext();
 				return enm.Current;
