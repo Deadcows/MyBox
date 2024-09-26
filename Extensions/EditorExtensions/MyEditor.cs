@@ -9,9 +9,11 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using Object = UnityEngine.Object;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace MyBox.EditorTools
 {
+	[PublicAPI]
 	public static class MyEditor
 	{
 		#region Hierarchy Management
@@ -133,18 +135,40 @@ namespace MyBox.EditorTools
 
 		#region Set Editor Icon
 
+		public enum EditorIconColor
+		{
+			Gray = 0,
+			Blue = 1,
+			Teal = 2,
+			Green = 3,
+			Yellow = 4,
+			Orange = 5,
+			Red = 6,
+			Purple = 7
+		}
+		
 		/// <summary>
 		/// Set Editor Icon (the one that appear in SceneView)
 		/// </summary>
-		public static void SetEditorIcon(this GameObject gameObject, bool textIcon, int iconIndex)
+		public static void SetEditorIcon(this GameObject gameObject, bool textIcon, int iconIndex) 
+			=> SetEditorIcon(gameObject, textIcon, (EditorIconColor)iconIndex);
+		
+		/// <summary>
+		/// Set Editor Icon (the one that appear in SceneView)
+		/// </summary>
+		public static void SetEditorIcon(this GameObject gameObject, bool textIcon, EditorIconColor color)
 		{
 			GUIContent[] icons = textIcon ? GetTextures("sv_label_", string.Empty, 0, 8) : GetTextures("sv_icon_dot", "_pix16_gizmo", 0, 16);
-
+			var iconIndex = (int)color;
+#if UNITY_2021_3_OR_NEWER
+			EditorGUIUtility.SetIconForObject(gameObject, (Texture2D)icons[iconIndex].image);
+#else
 			var egu = typeof(EditorGUIUtility);
 			var flags = BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.NonPublic;
 			var args = new object[] { gameObject, icons[iconIndex].image };
 			var setIconMethod = egu.GetMethod("SetIconForObject", flags, null, new[] { typeof(Object), typeof(Texture2D) }, null);
 			if (setIconMethod != null) setIconMethod.Invoke(null, args);
+#endif
 		}
 
 		private static GUIContent[] GetTextures(string baseName, string postFix, int startIndex, int count)
@@ -345,6 +369,9 @@ namespace MyBox.EditorTools
 			.FindAssets($"t:{typeName}")
 			.ForEach(p => AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(p), typeof(UnityEngine.Object)));
 
+		/// <summary>
+		/// Copy the specified text, just like with Ctrl+C
+		/// </summary>
 		public static void CopyToClipboard(string text)
 		{
 			TextEditor te = new TextEditor();
