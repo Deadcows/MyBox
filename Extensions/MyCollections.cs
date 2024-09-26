@@ -12,6 +12,25 @@ namespace MyBox
 		
 		#region InsertAt and RemoveAt
 		
+		public static T[] InsertAt<T>(this T[] array, int index, T item)
+		{
+			if (index < 0)
+			{
+				Debug.LogError("Index is less than zero. Array is not modified");
+				return array;
+			}
+
+			if (index > array.Length)
+			{
+				Debug.LogError("Index exceeds array length. Array is not modified");
+				return array;
+			}
+
+			var newArray = array.InsertAt(index);
+			newArray[index] = item;
+			return newArray;
+		}
+		
 		/// <summary>
 		/// Returns new array with inserted empty element at index
 		/// </summary>
