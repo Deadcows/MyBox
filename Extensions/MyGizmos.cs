@@ -15,5 +15,17 @@ namespace MyBox
 			Gizmos.DrawRay(from + direction, left * headLength);
 #endif
 		}
+
+#if UNITY_PHYSICS2D_ENABLED
+		public static void DrawBoxCollider2D(BoxCollider2D collider, bool fill = true)
+		{
+			var target = collider.transform;
+			
+			Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
+			if (fill) Gizmos.DrawCube(collider.offset, collider.size);
+			else Gizmos.DrawWireCube(collider.offset, collider.size);
+			Gizmos.matrix = Matrix4x4.identity;
+		}
+#endif
 	}
 }
