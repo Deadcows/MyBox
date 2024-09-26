@@ -2,43 +2,126 @@ using System;
 using MyBox.Internal;
 using UnityEngine;
 
+#region Optional premade types
 
 namespace MyBox
 {
 	[Serializable]
 	public class OptionalFloat : Optional<float>
 	{
-		public static OptionalFloat WithValue(float value)
+		public OptionalFloat(float value, bool enabledByDefault = false)
 		{
-			return new OptionalFloat {IsSet = true, Value = value};
+			IsSet = enabledByDefault;
+			Value = value;
 		}
+
+		public static OptionalFloat WithValue(float value) => new(value, true);
 	}
 
 	[Serializable]
 	public class OptionalInt : Optional<int>
 	{
-		public static OptionalInt WithValue(int value)
+		public OptionalInt(int value, bool enabledByDefault = false)
 		{
-			return new OptionalInt {IsSet = true, Value = value};
+			IsSet = enabledByDefault;
+			Value = value;
 		}
+
+		public static OptionalInt WithValue(int value) => new(value, true);
+	}
+
+	[Serializable]
+	public class OptionalBool : Optional<bool>
+	{
+		public OptionalBool(bool value, bool enabledByDefault = false)
+		{
+			IsSet = enabledByDefault;
+			Value = value;
+		}
+
+		public static OptionalBool WithValue(bool value) => new(value, true);
+	}
+
+	[Serializable]
+	public class OptionalVector2 : Optional<Vector2>
+	{
+		public OptionalVector2(Vector2 value, bool enabledByDefault = false)
+		{
+			IsSet = enabledByDefault;
+			Value = value;
+		}
+
+		public static OptionalVector2 WithValue(Vector2 value) => new(value, true);
+	}
+
+	[Serializable]
+	public class OptionalVector3 : Optional<Vector3>
+	{
+		public OptionalVector3(Vector3 value, bool enabledByDefault = false)
+		{
+			IsSet = enabledByDefault;
+			Value = value;
+		}
+
+		public static OptionalVector3 WithValue(Vector3 value) => new(value, true);
+	}
+
+	[Serializable]
+	public class OptionalVector2Int : Optional<Vector2Int>
+	{
+		public OptionalVector2Int(Vector2Int value, bool enabledByDefault = false)
+		{
+			IsSet = enabledByDefault;
+			Value = value;
+		}
+
+		public static OptionalVector2Int WithValue(Vector2Int value) => new(value, true);
+	}
+
+	[Serializable]
+	public class OptionalVector3Int : Optional<Vector3Int>
+	{
+		public OptionalVector3Int(Vector3Int value, bool enabledByDefault = false)
+		{
+			IsSet = enabledByDefault;
+			Value = value;
+		}
+
+		public static OptionalVector3Int WithValue(Vector3Int value) => new(value, true);
 	}
 
 	[Serializable]
 	public class OptionalString : Optional<string>
 	{
-		public static OptionalString WithValue(string value)
+		public OptionalString(string value, bool enabledByDefault = false)
 		{
-			return new OptionalString {IsSet = true, Value = value};
+			IsSet = enabledByDefault;
+			Value = value;
+		}
+
+		public static OptionalString WithValue(string value) => new(value, true);
+	}
+
+	[Serializable]
+	public class OptionalAnimationCurve : Optional<AnimationCurve>
+	{
+		public OptionalAnimationCurve(AnimationCurve value, bool enabledByDefault = false)
+		{
+			IsSet = enabledByDefault;
+			Value = value;
 		}
 	}
 
 	[Serializable]
 	public class OptionalKeyCode : Optional<KeyCode>
 	{
-		public static OptionalKeyCode WithValue(KeyCode value)
+		public OptionalKeyCode(KeyCode value, bool enabledByDefault = false)
 		{
-			return new OptionalKeyCode {IsSet = true, Value = value};
+			IsSet = enabledByDefault;
+			Value = value;
 		}
+
+		public static OptionalKeyCode WithValue(KeyCode value) => new(value, true);
 	}
 
 	[Serializable]
@@ -51,6 +134,8 @@ namespace MyBox
 	{
 	}
 }
+
+#endregion
 
 namespace MyBox.Internal
 {
@@ -71,7 +156,7 @@ namespace MyBox.Internal
 namespace MyBox.Internal
 {
 	using UnityEditor;
-	
+
 	[CustomPropertyDrawer(typeof(OptionalParent), true)]
 	public class OptionalTypePropertyDrawer : PropertyDrawer
 	{
@@ -95,7 +180,7 @@ namespace MyBox.Internal
 			position.x += checkWidth + spaceWidth;
 			position.width = valWidth;
 			if (isSet.boolValue) EditorGUI.PropertyField(position, value, GUIContent.none);
-			EditorGUI.EndProperty();			
+			EditorGUI.EndProperty();
 			EditorGUI.indentLevel = indentLevelBackup; // restore indent backup
 		}
 	}
