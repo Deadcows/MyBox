@@ -16,7 +16,7 @@ namespace MyBox
 		public static bool IsWorldPointInViewport(this Camera camera, Vector3 point)
 		{
 			var position = camera.WorldToViewportPoint(point);
-			return position.x > 0 && position.y > 0;
+			return position is { x: > 0, x: < 1, y: > 0, y: < 1 };
 		}
 
 		/// <summary>
