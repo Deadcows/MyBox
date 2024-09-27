@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System;
-// ReSharper disable MemberCanBePrivate.Global
+using JetBrains.Annotations;
 
 namespace MyBox
 {
+	[PublicAPI]
 	public static class MyMath
 	{
 		/// <summary>
@@ -38,6 +39,22 @@ namespace MyBox
 		/// Shortcut for Mathf.Approximately
 		/// </summary>
 		public static bool Approximately(this float value, float compare) => Mathf.Approximately(value, compare);
+		
+		/// <summary>
+		/// Maps a value from some range to the 0 to 1 range
+		/// </summary>
+		public static float RemapTo01(this float value, float min, float max) => (value - min) * 1f / (max - min);
+        
+		/// <summary>
+		/// Maps a value from some range to the 0 to 1 range
+		/// </summary>
+		public static float RemapTo01(this float value, MinMaxFloat minMax) => RemapTo01(value, minMax.Min, minMax.Max);
+
+		/// <summary>
+		/// Maps a value from one range to another
+		/// </summary>
+		public static float Remap(this float value, float leftMin, float leftMax, float rightMin, float rightMax) =>
+			rightMin + (value - leftMin) * (rightMax - rightMin) / (leftMax - leftMin);
 		
 		
 		/// <summary>
