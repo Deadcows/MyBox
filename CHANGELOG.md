@@ -9,16 +9,20 @@ All notable changes to this package will be documented in this file.
 - Added: MyGizmos.DrawBoxCollider2D
 - Added: MyLayer now have several handy functions and extensions to operate with LayerMasks
 - Added: A bunch of new Optional types (OptionalBool/Vector2(Int)/Vector3(Int)) and now with optionalValue parameters
+- Added: MyDebug.VisualizeNavMeshPath() to dynamically draw path segments with Debug.DrawLine
+- Extensions: object.GetPrivateProperty/GetPrivateField and SetPrivateField methods to access private fields via reflection
 - Extensions: SerializedProperty.ApplyModifiedProperties()
 - Extensions: Array.InsertAt(index, item)
-- Fixed: camera.IsWorldPointInViewport() extension method bugfix
+- Extensions: float.RemapTo01 and float.Remap to scale the value from one range to another
+- Extensions: Quaternion.SetEulerX/Y/Z/XY/XZ/YZ methods
 - Breaking Change: ActiveStateOnStart component is removed
+- Fixed: camera.IsWorldPointInViewport() extension method bugfix
+- Fixed: DefinedValuesAttribute now properly works within serialized types
 - [TODO DOCS] Added: MyDefinesUtility simplifies handling of PlayerSettings.Set(Get)ScriptingDefineSymbols
 - [TODO DOCS] Added: MyEditorAudio tool to play AudioClip in Editor
 - [TODO DOCS] Added: MyComponentUtility.MoveComponentInspectorToTop/ToBottom(Component component) utility methods
 - [TODO DOCS] Added: Contextual Menu Items to "Move Component To Top/To Bottom" in inspector
 - [TODO DOCS] Added: TopmostComponentAttribute to move on top in inspector automatically when it added
-- Fixed: DefinedValuesAttribute now properly works within serialized types
 
 ## [1.8.0] - 2023-10-09
 - Now it is possible to toggle some features that may lead to performance issues in editor in MyBox Window

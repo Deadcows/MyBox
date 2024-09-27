@@ -336,7 +336,7 @@ namespace MyBox.Internal
 		private void DrawUnityEventOverrideSetting()
 		{
 			const string define = "MYBOX_DISABLE_UNITYEVENT_OVERRIDE";
-			var label = new GUIContent("UnityEvent Override: ", 
+			var label = new GUIContent("UnityEvent override: ", 
 				"Custom UnityEvent inspector allows UnityEvent to be smaller and collapsable. " +
 				"It is optional, so you could use your own UnityEventDrawer.");
 			
