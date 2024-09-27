@@ -3,10 +3,6 @@ using System.Text;
 using JetBrains.Annotations;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace MyBox
 {
 	[PublicAPI]
@@ -123,18 +119,18 @@ namespace MyBox
 		public static void DrawString(string text, Vector3 worldPos, Color? colour = null)
 		{
 #if UNITY_EDITOR
-			var view = SceneView.currentDrawingSceneView;
+			var view = UnityEditor.SceneView.currentDrawingSceneView;
 			if (view == null) return;
 
 			var defaultColor = GUI.color;
 
-			Handles.BeginGUI();
+			UnityEditor.Handles.BeginGUI();
 			if (colour.HasValue) GUI.color = colour.Value;
 			Vector3 screenPos = view.camera.WorldToScreenPoint(worldPos);
 			Vector2 size = GUI.skin.label.CalcSize(new GUIContent(text));
 			GUI.Label(new Rect(screenPos.x - (size.x / 2), -screenPos.y + view.position.height + 4, size.x, size.y), text);
 
-			Handles.EndGUI();
+			UnityEditor.Handles.EndGUI();
 
 			GUI.color = defaultColor;
 #endif
@@ -171,5 +167,21 @@ namespace MyBox
 			Debug.DrawLine(position.OffsetZ(-halfSize), position.OffsetZ(halfSize), Color.blue, duration);
 #endif
 		}
+		
+#if UNITY_AI_ENABLED
+		/// <summary>
+		/// Draw segments of a path with Debug Lines
+		/// </summary>
+		public static void VisualizeNavMeshPath(UnityEngine.AI.NavMeshPath path)
+		{
+			var corners = path.corners;
+			for (var i = 1; i < corners.Length; i++)
+			{
+				var cornerA = corners[i - 1];
+				var cornerB = corners[i];
+				Debug.DrawLine(cornerA, cornerB);
+			}
+		}
+#endif
 	}
 }
