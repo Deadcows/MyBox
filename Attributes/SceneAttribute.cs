@@ -29,7 +29,7 @@ namespace MyBox.Internal
 	{
 		private SceneAttribute _attribute;
 		private string[] _scenesInBuild;
-		private int _index;
+		private string[] _scenesInBuildFormatted;
 
 		private void Initialize(string initialValue)
 		{
@@ -38,20 +38,34 @@ namespace MyBox.Internal
 			_attribute = (SceneAttribute)attribute;
 			
 			_scenesInBuild = new string[EditorBuildSettings.scenes.Length + 1];
-
-			_index = 0;
+			_scenesInBuildFormatted = new string[_scenesInBuild.Length];
+			
 			for (var i = 0; i < EditorBuildSettings.scenes.Length; i++)
 			{
-				var formatted = EditorBuildSettings.scenes[i].path.Split('/').Last().Replace(".unity", string.Empty);
-				if (initialValue == formatted) _index = i + 1;
-				formatted += $" [{i}]";
-				_scenesInBuild[i + 1] = formatted;
+				var scene = EditorBuildSettings.scenes[i].path.Split('/').Last().Replace(".unity", string.Empty);
+				var formattedScene = scene + $" [{i}]";
+				_scenesInBuild[i + 1] = scene;
+				_scenesInBuildFormatted[i + 1] = formattedScene;
 			}
 
 			var defaultValue = "NULL";
-			if (initialValue.NotNullOrEmpty() && _index == 0) defaultValue = "NOT FOUND: " + initialValue;
-			_scenesInBuild[0] = defaultValue;
+			if (initialValue.NotNullOrEmpty() && CurrentIndex(initialValue) == 0) 
+				defaultValue = "NOT FOUND: " + initialValue;
+			_scenesInBuildFormatted[0] = defaultValue;
 		}
+
+		private int CurrentIndex(string currentValue)
+		{
+			if (_scenesInBuild.Length <= 1 || currentValue.IsNullOrEmpty()) return 0;
+			
+			for (var i = 0; i < _scenesInBuild.Length; i++)
+			{
+				if (_scenesInBuild[i] == currentValue) return i;
+			}
+
+			return 0;
+		}
+		
 		
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -60,15 +74,14 @@ namespace MyBox.Internal
 				EditorGUI.LabelField(position, label.text, "Use [Scene] with strings.");
 				return;
 			}
-			
 			Initialize(property.stringValue);
+
 			
-			var newIndex = EditorGUI.Popup(position, label.text, _index, _scenesInBuild);
-			if (newIndex != _index)
+			var index = CurrentIndex(property.stringValue);
+			var newIndex = EditorGUI.Popup(position, label.text, index, _scenesInBuildFormatted);
+			if (newIndex != index)
 			{
-				_index = newIndex;
-				var value = _scenesInBuild[_index];
-				property.stringValue = newIndex == 0 ? string.Empty : value.Substring(0, value.IndexOf('[') - 1);
+				property.stringValue = newIndex == 0 ? string.Empty : _scenesInBuild[newIndex];
 				property.serializedObject.ApplyModifiedProperties();
 			}
 		}
