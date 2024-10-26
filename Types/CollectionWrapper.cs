@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MyBox.Internal;
 
 namespace MyBox
@@ -10,6 +11,14 @@ namespace MyBox
 	public class CollectionWrapper<T> : CollectionWrapperBase
 	{
 		public T[] Value;
+	}
+ 	/// <summary>
+	/// CollectionWrapper used to apply custom drawers to List fields
+	/// </summary>
+ 	[Serializable]
+	public class CollectionWrapperList<T> : CollectionWrapperBase
+	{
+		public List<T> Value = new List<t>();
 	}
 }
 
