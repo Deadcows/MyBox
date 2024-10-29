@@ -18,7 +18,7 @@ namespace MyBox
  	[Serializable]
 	public class CollectionWrapperList<T> : CollectionWrapperBase
 	{
-		public List<T> Value = new List<t>();
+		public List<T> Value = new List<T>();
 	}
 }
 
