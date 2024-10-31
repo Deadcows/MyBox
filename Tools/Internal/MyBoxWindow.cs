@@ -289,8 +289,8 @@ namespace MyBox.Internal
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				GUILayout.FlexibleSpace();
-				if (GUILayout.Button("buy me a coffee :)", _sponsorButtonStyle,GUILayout.Width(260), GUILayout.Height(42)))
-					Application.OpenURL("https://www.buymeacoffee.com/andrewrumak");
+				if (GUILayout.Button("support my work \u2665", _sponsorButtonStyle,GUILayout.Width(260), GUILayout.Height(42)))
+					Application.OpenURL("https://ko-fi.com/mybox");
 				GUILayout.FlexibleSpace();
 			}
 		}
