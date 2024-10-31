@@ -1,13 +1,8 @@
-# MyBox
+# MyBox – set of tools, features and extensions for Unity
 
-[![openupm](https://img.shields.io/npm/v/com.domybest.mybox?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.domybest.mybox/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/Deadcows/MyBox/blob/master/LICENSE.md)
-<a href="https://www.buymeacoffee.com/andrewrumak" target="_blank"><img src="https://user-images.githubusercontent.com/969858/114297171-ca615080-9ab7-11eb-8010-0ae8762ff1f1.png" /></a>
-<br>
+### [![openupm](https://img.shields.io/npm/v/com.domybest.mybox?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.domybest.mybox/) [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/Deadcows/MyBox/blob/master/LICENSE.md) <a href="https://ko-fi.com/mybox" target="_blank"><img src="https://storage.ko-fi.com/cdn/logomarkLogo.png" height=20 /><sup><sub> Support my work ❤️</sub></sup></a>
 
-
-MyBox is a set of tools, features and extensions for Unity.<br />
-It is MyBox. Now it's yours too :raised_hands:<br />
+It is MyBox of helpful things. Now it's yours too :raised_hands:<br />
 
 
 ## [Installation](https://github.com/Deadcows/MyBox/wiki/Installation)
