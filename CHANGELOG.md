@@ -4,6 +4,7 @@ All notable changes to this package will be documented in this file.
 ## [Unreleased]
 - Ability to disable custom UnityObject inspector for better compatibility with other libraries, in MyBox Window settings.
 - Now MyBox detects Odin Inspector and disables some of the features to prioritize Odin.
+- Added: MyEditorEvents.AfterPlaymode/OnPlaymodeGUI/OnBehaviourUpdate events
 - Added: MyEditor.SetEditorIcon with a better way to set color
 - Added: SceneClickHandler support of Physics2d and Plane
 - Added: MyGizmos.DrawBoxCollider2D

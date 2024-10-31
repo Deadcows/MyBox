@@ -383,22 +383,37 @@ namespace MyBox.EditorTools
 		#region Drop Area
 
 		/// <summary>
-		/// Drag-and-Drop Area to catch objects of specific type
+		/// Drag-and-Drop Area to catch assets of specific type
 		/// </summary>
 		/// <typeparam name="T">Asset type to catch</typeparam>
-		/// <param name="areaText">Label to display</param>
+		/// <param name="areaLabel">Label to display</param>
 		/// <param name="height">Height of the Drop Area</param>
 		/// <param name="allowExternal">Allow to drag external files and import as unity assets</param>
 		/// <param name="externalImportFolder">Path relative to Assets folder</param>
-		/// <returns>Received objects. Null if none received</returns>
-		public static T[] DropArea<T>(string areaText, float height, bool allowExternal = false,
+		/// <returns>Received assets. Null if none received</returns>
+		public static T[] DropArea<T>(string areaLabel, float height, bool allowExternal = false,
+			string externalImportFolder = null) where T : Object
+		{
+			Rect dropArea = GUILayoutUtility.GetRect(0.0f, height, GUILayout.ExpandWidth(true));
+			return DropArea<T>(dropArea, areaLabel, allowExternal, externalImportFolder);
+		}
+
+		/// <summary>
+		/// Drag-and-Drop Area to catch assets of specific type
+		/// </summary>
+		/// <typeparam name="T">Asset type to catch</typeparam>
+		/// <param name="dropArea"></param>
+		/// <param name="areaLabel">Label to display</param>
+		/// <param name="allowExternal">Allow to drag external files and import as unity assets</param>
+		/// <param name="externalImportFolder">Path relative to Assets folder</param>
+		/// <returns>Received assets. Null if none received</returns>
+		public static T[] DropArea<T>(Rect dropArea, string areaLabel, bool allowExternal = false,
 			string externalImportFolder = null) where T : Object
 		{
 			Event currentEvent = Event.current;
-			Rect dropArea = GUILayoutUtility.GetRect(0.0f, height, GUILayout.ExpandWidth(true));
 			var style = new GUIStyle(GUI.skin.box);
 			style.alignment = TextAnchor.MiddleCenter;
-			GUI.Box(dropArea, areaText, style);
+			GUI.Box(dropArea, areaLabel, style);
 
 			bool dragEvent = currentEvent.type == EventType.DragUpdated || currentEvent.type == EventType.DragPerform;
 			if (!dragEvent) return null;
