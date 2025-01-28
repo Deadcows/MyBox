@@ -16,6 +16,8 @@ namespace MyBox.EditorTools
 		public bool DefaultValue;
 		
 		public static EditorPrefsBool WithKey(string key, bool defaultValue = false) => new EditorPrefsBool(key, defaultValue);
+		
+		public void Toggle() => Value = !Value;
 
 		public EditorPrefsBool(string key, bool defaultValue = false)
 		{

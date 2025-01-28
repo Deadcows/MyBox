@@ -9,6 +9,9 @@ namespace MyBox.EditorTools
 	{
 		public string Key { get; protected set; }
 		
+		/// <summary>
+		/// Is this pref contains any value
+		/// </summary>
 		public bool IsSet => EditorPrefs.HasKey(Key);
 
 		public void Delete() => EditorPrefs.DeleteKey(Key);

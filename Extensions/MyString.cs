@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
@@ -92,7 +93,7 @@ namespace MyBox
 		/// <summary>
 		/// Surround string with "color" tag
 		/// </summary>
-		public static string Colored(this string message, Colors color) => $"<color={color}>{message}</color>";
+		public static string Colored(this string message, Colors color) => $"<color={ColorHash[color]}>{message}</color>";
 
 		/// <summary>
 		/// Surround string with "color" tag
@@ -123,8 +124,35 @@ namespace MyBox
 		/// Surround string with "i" tag
 		/// </summary>
 		public static string Italics(this string message) => $"<i>{message}</i>";
+		
+		
+		public static Dictionary<Colors, string> ColorHash = new Dictionary<Colors, string>
+		{
+			{Colors.aqua, "#00ffffff"},
+			{Colors.black, "#000000ff"},
+			{Colors.blue, "#0000ffff"},
+			{Colors.brown, "#a52a2aff"},
+			{Colors.cyan, "#00ffffff"},
+			{Colors.darkblue, "#0000a0ff"},
+			{Colors.fuchsia, "#ff00ffff"},
+			{Colors.green, "#008000ff"},
+			{Colors.grey, "#808080ff"},
+			{Colors.lightblue, "#add8e6ff"},
+			{Colors.lime, "#00ff00ff"},
+			{Colors.magenta, "#ff00ffff"},
+			{Colors.maroon, "#800000ff"},
+			{Colors.navy, "#000080ff"},
+			{Colors.olive, "#808000ff"},
+			{Colors.purple, "#800080ff"},
+			{Colors.red, "#ff0000ff"},
+			{Colors.silver, "#c0c0c0ff"},
+			{Colors.teal, "#008080ff"},
+			{Colors.white, "#ffffffff"},
+			{Colors.yellow, "#ffff00ff"}
+		};
 	}
 
+	
 	/// <summary>
 	/// Represents list of supported by Unity Console color names
 	/// </summary>

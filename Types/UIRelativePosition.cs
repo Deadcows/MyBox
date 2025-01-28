@@ -6,7 +6,7 @@ namespace MyBox
 	/// Pivot and Anchor of Target makes no difference.
 	/// Current Pivot and "Target Anchor" property used for positioning.
 	/// </summary>
-	[ExecuteInEditMode]
+	[ExecuteAlways]
 	public class UIRelativePosition : MonoBehaviour
 	{
 		[MustBeAssigned] public RectTransform Target;

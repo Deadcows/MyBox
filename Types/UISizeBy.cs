@@ -5,7 +5,7 @@ namespace MyBox
 	/// <summary>
 	/// Set size of RectTransform by some other RectTransform
 	/// </summary>
-	[ExecuteInEditMode]
+	[ExecuteAlways]
 	public class UISizeBy : MonoBehaviour
 	{
 		[MustBeAssigned] public RectTransform CopySizeFrom;
@@ -42,7 +42,7 @@ namespace MyBox
 			var toSize = _transform.sizeDelta;
 			var x = CopyWidth.IsSet ? _latestSize.x + CopyWidth.Value : toSize.x;
 			var y = CopyHeight.IsSet ? _latestSize.y + CopyHeight.Value : toSize.y;
-
+			
 			x = MinMaxWidth.GetFixed(x);
 			y = MinMaxHeight.GetFixed(y);
 
@@ -50,7 +50,11 @@ namespace MyBox
 		}
 
 #if UNITY_EDITOR
+		#if ODIN_INSPECTOR
+		[Sirenix.OdinInspector.Button]
+		#else
 		[ButtonMethod]
+		#endif
 		private void UpdateView()
 		{
 			_latestSize = Vector2.zero;

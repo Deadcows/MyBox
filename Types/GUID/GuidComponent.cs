@@ -26,12 +26,17 @@ namespace MyBox
 			}
 		}
 		
+#if ODIN_INSPECTOR
+		[Sirenix.OdinInspector.ShowInInspector, Sirenix.OdinInspector.LabelText("GUID")]
+#endif
 		public string GuidString => Guid.ToString();
 		public bool IsGuidAssigned() => _guid != Guid.Empty;
 		
 		
 		// Unity's serialization system doesn't know about System.Guid, so we convert to a byte array
 		// Fun fact, we tried using strings at first, but that allocated memory and was twice as slow
+
+		[HideInInspector]
 		[SerializeField] private byte[] serializedGuid;
 
 		// System guid we use for comparison and generation

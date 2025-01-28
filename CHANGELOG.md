@@ -15,10 +15,12 @@ All notable changes to this package will be documented in this file.
 - Extensions: SerializedProperty.ApplyModifiedProperties()
 - Extensions: Array.InsertAt(index, item)
 - Extensions: float.RemapTo01 and float.Remap to scale the value from one range to another
+- Extensions: float.Clamp01() and int.Clamp01()
 - Extensions: Quaternion.SetEulerX/Y/Z/XY/XZ/YZ methods
 - Breaking Change: ActiveStateOnStart component is removed
 - Fixed: camera.IsWorldPointInViewport() extension method bugfix
 - Fixed: DefinedValuesAttribute now properly works within serialized types
+- Fixed: string.Colored() extension method now properly works in newer Unity versions
 - [TODO DOCS] Added: MyDefinesUtility simplifies handling of PlayerSettings.Set(Get)ScriptingDefineSymbols
 - [TODO DOCS] Added: MyEditorAudio tool to play AudioClip in Editor
 - [TODO DOCS] Added: MyComponentUtility.MoveComponentInspectorToTop/ToBottom(Component component) utility methods

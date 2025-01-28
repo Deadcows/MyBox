@@ -13,7 +13,10 @@ namespace MyBox
 		public static void Swap<T>(ref T a, ref T b) => (a, b) = (b, a);
 		
 		public static float Clamp(this float value, float min, float max) => Mathf.Clamp(value, min, max);
+		public static float Clamp01(this float value) => Mathf.Clamp01(value);
+		
 		public static int Clamp(this int value, int min, int max) => Mathf.Clamp(value, min, max);
+		public static int Clamp01(this int value) => Mathf.Clamp(value, 0, 1);
 		
 		/// <summary>
 		/// Snap to grid of "round" size
