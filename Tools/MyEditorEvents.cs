@@ -49,6 +49,11 @@ namespace MyBox.EditorTools
 		/// The same as the OnGUI call from MonoBehavior in playmode
 		/// </summary>
 		public static event Action OnPlaymodeGUI;
+		
+		/// <summary>
+		/// The same as the OnGUI call from MonoBehavior with ExecuteInEditMode
+		/// </summary>
+		public static event Action OnGUI;
 
 		/// <summary>
 		/// The same as Update cal from MonoBehavior in playmode
@@ -63,12 +68,19 @@ namespace MyBox.EditorTools
 			EditorApplication.update += CheckOnceOnPlaymode;
 			EditorApplication.update += () =>
 			{
-				if (OnPlaymodeGUI != null) MyEditorEventsBehaviorHandler.InitializeInstance();
-				if (OnBehaviourUpdate != null) MyEditorEventsBehaviorHandler.InitializeInstance();
+				if (OnPlaymodeGUI != null || OnGUI != null || OnBehaviourUpdate != null) 
+					MyEditorEventsBehaviorHandler.InitializeInstance();
 			};
 
-			MyEditorEventsBehaviorHandler.OnGUIEvent += () => OnPlaymodeGUI?.Invoke();
-			MyEditorEventsBehaviorHandler.OnUpdate += () => OnBehaviourUpdate?.Invoke();
+			MyEditorEventsBehaviorHandler.OnGUIEvent += () =>
+			{
+				OnGUI?.Invoke();
+				if (Application.isPlaying) OnPlaymodeGUI?.Invoke();
+			};
+			MyEditorEventsBehaviorHandler.OnUpdate += () =>
+			{
+				if (Application.isPlaying) OnBehaviourUpdate?.Invoke();
+			};
 			
 			EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 			RegisterRawInputHandler();

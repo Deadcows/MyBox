@@ -3,10 +3,13 @@ using UnityEngine;
 
 namespace MyBox.Internal
 {
+	[ExecuteInEditMode]
 	public class MyEditorEventsBehaviorHandler : MonoBehaviour
 	{
 		public static void InitializeInstance()
 		{
+			if (_instance != null) return;
+			_instance = FindAnyObjectByType<MyEditorEventsBehaviorHandler>();
 			if (_instance != null) return;
 			
 			var handlerGameObject = new GameObject("MyEditorEventsBehaviorHandler");
@@ -21,7 +24,5 @@ namespace MyBox.Internal
 
 		private void OnGUI() => OnGUIEvent?.Invoke();
 		private void Update() => OnUpdate?.Invoke();
-		
-		private void OnDisable() => OnGUIEvent = null;
 	}
 }
