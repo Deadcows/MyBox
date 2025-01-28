@@ -205,14 +205,13 @@ namespace MyBox.EditorTools
 		/// <summary>
 		/// Draw Line within GUILayout
 		/// </summary>
-		public static void DrawLine(Color color, bool withSpace = false)
+		public static void DrawLine(Color? color = null, bool withSpace = false)
 		{
 			if (withSpace) EditorGUILayout.Space();
 
-			var defaultBackgroundColor = GUI.backgroundColor;
-			GUI.backgroundColor = color;
-			GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
-			GUI.backgroundColor = defaultBackgroundColor;
+			var rect = EditorGUILayout.GetControlRect(false, 1);
+			var lineColor = color ?? EditorStyles.label.normal.textColor.WithAlphaSetTo(0.3f);
+			EditorGUI.DrawRect(rect, lineColor);
 
 			if (withSpace) EditorGUILayout.Space();
 		}
