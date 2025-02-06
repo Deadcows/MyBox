@@ -514,7 +514,6 @@ namespace MyBox.Internal
 	[CustomEditor(typeof(ColliderGizmo)), CanEditMultipleObjects]
 	public class ColliderGizmoEditor : Editor
 	{
-		private SerializedProperty _enabledProperty;
 		private SerializedProperty _alphaProperty;
 		private SerializedProperty _drawWireProperty;
 		private SerializedProperty _wireColorProperty;
@@ -533,8 +532,7 @@ namespace MyBox.Internal
 		private void OnEnable()
 		{
 			_target = target as ColliderGizmo;
-
-			_enabledProperty = serializedObject.FindProperty("m_Enabled");
+			
 			_alphaProperty = serializedObject.FindProperty("Alpha");
 
 			_drawWireProperty = serializedObject.FindProperty("DrawWire");
@@ -556,8 +554,6 @@ namespace MyBox.Internal
 		public override void OnInspectorGUI()
 		{
 			Undo.RecordObject(_target, "CG_State");
-
-			EditorGUILayout.PropertyField(_enabledProperty);
 
 			EditorGUI.BeginChangeCheck();
 			_target.Preset = (ColliderGizmo.Presets)EditorGUILayout.EnumPopup("Color Preset", _target.Preset);

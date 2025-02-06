@@ -82,24 +82,21 @@ namespace MyBox.EditorTools
 		public bool UsePhysics2D { get; set; }
 
 
-		public void SetLayerMask(LayerMask mask)
-		{
-			_useMask = true;
-			_mask = mask;
-		}
+		public void SetLayerMask(LayerMask mask) => LayerMask = mask;
 
 		public void ToggleState() => Enabled = !Enabled;
 		
 		public Color HandleColor { get; set; } = Color.white;
-
 		public float HandleRadius { get; set; } = .3f;
+		
+		public float CastRadius { get; set; }
+
+		public LayerMask? LayerMask { get; set; }
 
 
 		private readonly Action<Vector3> _onClick;
 
 		private bool _enabled;
-		private bool _useMask;
-		private LayerMask _mask;
 		private bool _usePlane;
 		private Plane _plane;
 
@@ -121,9 +118,9 @@ namespace MyBox.EditorTools
 					    Handles.RectangleHandleCap))
 					HandleClick(point.Hit.Value);
 			}
-			
 
-			if (EscapeInput()) HandleEscape();
+
+			if (EscapeInput() && Cancellable) Enabled = false;
 			return;
 
 
@@ -131,8 +128,22 @@ namespace MyBox.EditorTools
 			{
 #if UNITY_PHYSICS_ENABLED
 				var ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-				if (_useMask ? Physics.Raycast(ray, out var hit, _mask.value) : Physics.Raycast(ray, out hit))
-					return (hit.point, hit.normal);
+
+				if (CastRadius > 0)
+				{
+					if (LayerMask != null ? 
+						    Physics.SphereCast(ray, CastRadius, out var hit, float.PositiveInfinity, LayerMask.Value.value) : 
+						    Physics.SphereCast(ray, CastRadius, out hit))
+						return (hit.point, hit.normal);
+				}
+				else
+				{
+					if (LayerMask != null ? 
+						    Physics.Raycast(ray, out var hit, LayerMask.Value.value) : 
+						    Physics.Raycast(ray, out hit))
+						return (hit.point, hit.normal);
+				}
+				
 #else
 				WarningsPool.LogWarning("SceneClickHandler caused: PHYSICS is not enabled. Use Physics2d or Plane mode instead");
 #endif		
@@ -143,8 +154,8 @@ namespace MyBox.EditorTools
 			{
 #if UNITY_PHYSICS2D_ENABLED
 				var ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-				var hit = _useMask
-					? Physics2D.Raycast(ray.origin, ray.direction, _mask.value)
+				var hit = LayerMask != null
+					? Physics2D.Raycast(ray.origin, ray.direction, LayerMask.Value.value)
 					: Physics2D.Raycast(ray.origin, ray.direction);
 				
 				if (hit.collider != null) return (hit.point, hit.normal);
@@ -163,24 +174,16 @@ namespace MyBox.EditorTools
 			}
 			
 			bool EscapeInput() => Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape;
-		}
+			
+			void HandleClick(Vector3 clickPoint)
+			{
+				if (SingleClickHandler) Enabled = false;
 
-		private void HandleClick(Vector3 point)
-		{
-			if (SingleClickHandler) Enabled = false;
+				_onClick?.Invoke(clickPoint);
 
-			_onClick(point);
-
-			Event.current.Use();
-			HandleUtility.Repaint();
-		}
-
-		private void HandleEscape()
-		{
-			if (!Cancellable) return;
-
-			Debug.LogWarning("Cancelled");
-			Enabled = false;
+				Event.current.Use();
+				HandleUtility.Repaint();
+			}
 		}
 	}
 }
