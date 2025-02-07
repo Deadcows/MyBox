@@ -619,6 +619,37 @@ namespace MyBox.EditorTools
 		#region SearchablePopup
 
 		/// <summary>
+		/// A popup that shows a window that displays a list of options and may use a search string to filter the displayed content
+		/// </summary>
+		/// <code>
+		///	// You need to use callback to receive the selected index. Example:
+		///	MyGUI.SearchablePopupField(
+		///		new GUIContent("Icon Type"), _selectedIconIndex, _iconsNames,
+		///		newIndex => _selectedIconIndex = newIndex);
+		/// </code>
+		/// <param name="options">List of strings to choose from</param>
+		/// <param name="label"></param>
+		/// <param name="selectedIndex">Index of the currently selected string</param>
+		/// <param name="onSelectionMade">Callback to trigger when a choice is made</param>
+		public static void SearchablePopupField(GUIContent label, int selectedIndex, string[] options, Action<int> onSelectionMade)
+		{
+			EditorGUI.BeginDisabledGroup(options.Length == 0);
+			EditorGUILayout.BeginHorizontal();
+
+			EditorGUILayout.LabelField(label, GUILayout.Width(EditorGUIUtility.labelWidth));
+
+			if (GUILayout.Button(new GUIContent(options.Length > 0 ? options[selectedIndex] : "None"), EditorStyles.popup))
+			{
+				SearchablePopup(options, selectedIndex, onSelectionMade);
+			}
+
+			EditorGUILayout.EndHorizontal();
+			EditorGUI.EndDisabledGroup();
+		}
+
+
+		
+		/// <summary>
 		/// A popup window that displays a list of options and may use a search string to filter the displayed content
 		/// </summary>
 		/// <param name="activatorRect">Rectangle of the button that triggered the popup</param>
