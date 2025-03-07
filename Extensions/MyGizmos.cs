@@ -16,6 +16,13 @@ namespace MyBox
 #endif
 		}
 
+		public static void DrawSegment(Vector3 from, Vector3 to, float capSize = 0.1f)
+		{
+			Gizmos.DrawLine(from, to);
+			Gizmos.DrawLine(from.OffsetY(-capSize), from.OffsetY(capSize));
+			Gizmos.DrawLine(to.OffsetY(-capSize), to.OffsetY(capSize));
+		}
+
 #if UNITY_PHYSICS2D_ENABLED
 		public static void DrawBoxCollider2D(BoxCollider2D collider, bool fill = true)
 		{
