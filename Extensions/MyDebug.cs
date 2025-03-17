@@ -172,14 +172,16 @@ namespace MyBox
 		/// <summary>
 		/// Draw segments of a path with Debug Lines
 		/// </summary>
-		public static void VisualizeNavMeshPath(UnityEngine.AI.NavMeshPath path)
+		public static void VisualizeNavMeshPath(UnityEngine.AI.NavMeshPath path, Color? color = null)
 		{
 			var corners = path.corners;
 			for (var i = 1; i < corners.Length; i++)
 			{
 				var cornerA = corners[i - 1];
 				var cornerB = corners[i];
-				Debug.DrawLine(cornerA, cornerB);
+				
+				if (color.HasValue) Debug.DrawLine(cornerA, cornerB, color.Value);
+				else Debug.DrawLine(cornerA, cornerB);
 			}
 		}
 #endif
