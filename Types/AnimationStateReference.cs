@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace MyBox
@@ -13,13 +14,12 @@ namespace MyBox
 
 		public Animator Animator => _linkedAnimator;
 
-#pragma warning disable 0649
 		[SerializeField] private string _stateName = string.Empty;
 		[SerializeField] private bool _assigned;
 		[SerializeField] private Animator _linkedAnimator;
-#pragma warning restore 0649
 	}
 
+	[PublicAPI]
 	public static class AnimationStateReferenceExtension
 	{
 		public static void Play(this Animator animator, AnimationStateReference state)
@@ -35,6 +35,7 @@ namespace MyBox
 		}
 	}
 }
+
 
 #if UNITY_EDITOR
 namespace MyBox.Internal
@@ -56,7 +57,6 @@ namespace MyBox.Internal
 			TryToAssignCurrentAnimator();
 			
 			
-
 			var baseWidth = position.width - 4;
 
 			var stateRect = position;
