@@ -86,7 +86,7 @@ namespace MyBox.Internal
 			foreach (var method in TargetMethods)
 			{
 				if (method.Order != ButtonMethodDrawOrder.BeforeInspector) continue;
-				if (method.Condition != null && !ConditionalUtility.IsConditionMatch(_target, method.Condition)) return;
+				if (method.Condition != null && !ConditionalUtility.IsConditionMatch(_target, method.Condition)) continue;
 				
 				anyDrawn = true;
 				if (GUILayout.Button(method.Name)) InvokeMethod(_target, method.Method);
@@ -103,7 +103,7 @@ namespace MyBox.Internal
 			foreach (var method in TargetMethods)
 			{
 				if (method.Order != ButtonMethodDrawOrder.AfterInspector) continue;
-				if (method.Condition != null && !ConditionalUtility.IsConditionMatch(_target, method.Condition)) return;
+				if (method.Condition != null && !ConditionalUtility.IsConditionMatch(_target, method.Condition)) continue;
 				
 				if (!anyDrawn)
 				{
