@@ -48,15 +48,10 @@ namespace MyBox.Internal
 			_selectedValueIndex = EditorGUI.Popup(position, label.text, _selectedValueIndex, _names);
 			if (EditorGUI.EndChangeCheck())
 			{
-				fieldInfo.SetValue(property.serializedObject.targetObject, _values[_selectedValueIndex]);
+				property.boxedValue = _values[_selectedValueIndex];
 				property.serializedObject.ApplyModifiedProperties();
 				EditorUtility.SetDirty(property.serializedObject.targetObject);
 			}
-		}
-
-		private object GetValue(SerializedProperty property)
-		{
-			return fieldInfo.GetValue(property.serializedObject.targetObject);
 		}
 		
 		private void Initialize(SerializedProperty property)
@@ -91,7 +86,7 @@ namespace MyBox.Internal
 				_values[i] = GetValue(i);
 			}
 
-			var currentValue = GetValue(property);
+			var currentValue = property.boxedValue;
 			if (currentValue != null)
 			{
 				for (var i = 0; i < _values.Length; i++)
@@ -108,10 +103,9 @@ namespace MyBox.Internal
 			{
 				_names = _names.InsertAt(0);
 				_values = _values.InsertAt(0);
-				var actualValue = GetValue(property);
-				var value = actualValue != null ? actualValue : "NULL";
+				var value = currentValue != null ? currentValue : "NULL";
 				_names[0] = "NOT FOUND: " + value;
-				_values[0] = actualValue;
+				_values[0] = currentValue;
 			}
 		}
 

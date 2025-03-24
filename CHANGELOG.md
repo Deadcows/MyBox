@@ -22,6 +22,7 @@ All notable changes to this package will be documented in this file.
 - Fixed: DefinedValuesAttribute now properly works within serialized types
 - Fixed: string.Colored() extension method now properly works in newer Unity versions
 - Fixed: ButtonMethod failed condition will prevent the other ButtonMethods from drawing
+- Fixed: ConstantsSelectionAttribute not working within serialized types
 - [TODO DOCS] Added: MyDefinesUtility simplifies handling of PlayerSettings.Set(Get)ScriptingDefineSymbols
 - [TODO DOCS] Added: MyEditorAudio tool to play AudioClip in Editor
 - [TODO DOCS] Added: MyComponentUtility.MoveComponentInspectorToTop/ToBottom(Component component) utility methods
