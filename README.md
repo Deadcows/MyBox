@@ -20,6 +20,7 @@ Tons of images in docs below :point_down:
 **[DisplayInspector](https://github.com/Deadcows/MyBox/wiki/Attributes#displayinspector)** — Display one inspector inside of another<br />
 **[Foldout](https://github.com/Deadcows/MyBox/wiki/Attributes#foldout)** — Group your fields in inspector<br />
 **[InitializationField](https://github.com/Deadcows/MyBox/wiki/Attributes#initializationfield)** — Field that is not editable in playmode<br />
+**[RealtimeField](https://github.com/Deadcows/MyBox/wiki/Attributes#realtimefield)** — Field that is not editable in edit mode<br />
 **[Tag, Layer, SpriteLayer](https://github.com/Deadcows/MyBox/wiki/Attributes#tag-layer-spritelayer)** — Dropdown with Tags, Layers or SpriteLayers<br />
 **[MinMaxRange, RangedFloat and RangedInt](https://github.com/Deadcows/MyBox/wiki/Attributes#minmaxrange-rangedfloat-and-rangedint)** — Ranged sliders<br />
 **[MaxValue, MinValue and PositiveValueOnly](https://github.com/Deadcows/MyBox/wiki/Attributes#maxvalue-minvalue-and-positivevalueonly)** — Validation for numbers and vectors<br />
