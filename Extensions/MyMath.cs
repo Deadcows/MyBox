@@ -18,18 +18,21 @@ namespace MyBox
 		public static int Clamp(this int value, int min, int max) => Mathf.Clamp(value, min, max);
 		public static int Clamp01(this int value) => Mathf.Clamp(value, 0, 1);
 		
+		public static float Abs(this float value) => Mathf.Abs(value);
+		public static int Abs(this int value) => Mathf.Abs(value);
+		
 		/// <summary>
-		/// Snap to grid of "round" size
+		/// Snap to a grid of "round" size
 		/// </summary>
 		public static float Snap(this float val, float round) => round * Mathf.Round(val / round);
 		
 		/// <summary>
-		/// Round float value to nearest whole number
+		/// Round float value to the nearest whole number
 		/// </summary>
 		public static float Round(this float val) => Mathf.Round(val);
 		
 		/// <summary>
-		/// Round float value to nearest integer
+		/// Round float value to the nearest integer
 		/// </summary>
 		public static int RoundToInt(this float val) => Mathf.RoundToInt(val);
 		
@@ -61,7 +64,7 @@ namespace MyBox
 		
 		
 		/// <summary>
-		/// Value is in [0, 1) range.
+		/// Value is in [0, 1) ranges.
 		/// </summary>
 		public static bool InRange01(this float value) => InRange(value, 0, 1);
 
@@ -82,7 +85,7 @@ namespace MyBox
 		public static bool InRange(this int value, RangedInt range) => value.InRange(range.Min, range.Max);
 
 		/// <summary>
-		/// Value is in [closedLeft, closedRight] range, max-inclusive.
+		/// Value is in the [closedLeft, closedRight] range, max-inclusive.
 		/// </summary>
 		public static bool InRangeInclusive<T>(this T value, T closedLeft, T closedRight) where T : IComparable =>
 			value.CompareTo(closedLeft) >= 0 && value.CompareTo(closedRight) <= 0;
