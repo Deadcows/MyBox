@@ -11,6 +11,7 @@ All notable changes to this package will be documented in this file.
 - Added: MyLayer now have several handy functions and extensions to operate with LayerMasks
 - Added: A bunch of new Optional types (OptionalBool/Vector2(Int)/Vector3(Int)) and now with optionalValue parameters
 - Added: MyDebug.VisualizeNavMeshPath() to dynamically draw path segments with Debug.DrawLine
+- Added: MustBeAssignedAttribute now allows disabling checks in Prefab mode
 - Extensions: object.GetPrivateProperty/GetPrivateField and SetPrivateField methods to access private fields via reflection
 - Extensions: SerializedProperty.ApplyModifiedProperties()
 - Extensions: Array.InsertAt(index, item)

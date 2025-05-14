@@ -5,11 +5,17 @@ using Object = UnityEngine.Object;
 namespace MyBox
 {
 	/// <summary>
-	/// Apply to MonoBehaviour field to assert that this field is assigned via inspector (not null, false, empty of zero) on playmode
+	/// Apply to the MonoBehaviour field to assert that this field is assigned via inspector (not null, false, empty of zero) on playmode
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field)]
 	public class MustBeAssignedAttribute : PropertyAttribute
 	{
+		public bool IgnorePrefabMode;
+
+		public MustBeAssignedAttribute(bool ignorePrefabMode = false)
+		{
+			IgnorePrefabMode = ignorePrefabMode;
+		}
 	}
 }
 
@@ -29,7 +35,7 @@ namespace MyBox.Internal
 	public class MustBeAssignedAttributeChecker
 	{
 		/// <summary>
-		/// A way to conditionally disable MustBeAssigned check
+		/// A way to conditionally disable the MustBeAssigned check
 		/// </summary>
 		public static Func<FieldInfo, Object, bool> ExcludeFieldFilter;
 
@@ -47,13 +53,13 @@ namespace MyBox.Internal
 			var behaviours = Object.FindObjectsOfType<MonoBehaviour>();
 			#endif
 			// ReSharper disable once CoVariantArrayConversion
-			AssertComponents(behaviours);
+			AssertComponents(behaviours, false);
 
 			if (MyBoxSettings.EnableSOCheck)
 			{
 				var scriptableObjects = MyScriptableObject.LoadAssets<ScriptableObject>();
 				// ReSharper disable once CoVariantArrayConversion
-				AssertComponents(scriptableObjects);
+				AssertComponents(scriptableObjects, false);
 			}
 		}
 
@@ -61,10 +67,10 @@ namespace MyBox.Internal
 		{
 			MonoBehaviour[] components = prefab.GetComponentsInChildren<MonoBehaviour>();
 			// ReSharper disable once CoVariantArrayConversion
-			AssertComponents(components);
+			AssertComponents(components, true);
 		}
 
-		private static void AssertComponents(Object[] objects)
+		private static void AssertComponents(Object[] objects, bool prefabMode)
 		{
 			var mustBeAssignedType = typeof(MustBeAssignedAttribute);
 			foreach (var obj in objects)
@@ -81,7 +87,7 @@ namespace MyBox.Internal
 					// Used by external systems to exclude specific fields.
 					// Specifically for ConditionalFieldAttribute
 					if (FieldIsExcluded(field, obj)) continue;
-
+					if (prefabMode && ((MustBeAssignedAttribute)field.GetCustomAttribute(mustBeAssignedType)).IgnorePrefabMode) continue;
 					AssertField(obj, typeOfScript, field);
 				}
 			}
