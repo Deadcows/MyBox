@@ -238,11 +238,18 @@ namespace MyBox.EditorTools
 		/// </summary>
 		public static void DrawColouredRect(Rect rect, Color color)
 		{
-			var defaultBackgroundColor = GUI.backgroundColor;
-			GUI.backgroundColor = color;
-			GUI.Box(rect, "");
-			GUI.backgroundColor = defaultBackgroundColor;
+			if (_colouredRectStyle == null)
+			{
+				_colouredRectStyle = new GUIStyle(GUI.skin.box);
+				_colouredRectStyle.normal.background = Texture2D.whiteTexture;
+			}
+			
+			var prevColor = GUI.color;
+			GUI.color = color;
+			GUI.Box(rect, GUIContent.none, _colouredRectStyle);
+			GUI.color = prevColor;
 		}
+		private static GUIStyle _colouredRectStyle;
 
 		/// <summary>
 		/// Draw background Line within GUILayout

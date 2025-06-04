@@ -20,6 +20,7 @@ All notable changes to this package will be documented in this file.
 - Extensions: Quaternion.SetEulerX/Y/Z/XY/XZ/YZ methods
 - Breaking Change: ActiveStateOnStart component is removed
 - Fixed: camera.IsWorldPointInViewport() extension method bugfix
+- Fixed: MyGUI.DrawColouredRect now properly works in dark mode (skin tint not mixed with the color)
 - Fixed: DefinedValuesAttribute now properly works within serialized types
 - Fixed: string.Colored() extension method now properly works in newer Unity versions
 - Fixed: ButtonMethod failed condition will prevent the other ButtonMethods from drawing
