@@ -123,6 +123,23 @@ namespace MyBox
 
 		public static OptionalKeyCode WithValue(KeyCode value) => new(value, true);
 	}
+	
+	[Serializable]
+	public class OptionalColor : Optional<Color>
+	{
+		public OptionalColor(Color value, bool enabledByDefault = false)
+		{
+			IsSet = enabledByDefault;
+			Value = value;
+		}
+		public OptionalColor(float r, float g, float b,float a = 1, bool enabledByDefault = false)
+		{
+			IsSet = enabledByDefault;
+			Value = new Color(r, g, b, a);
+		}
+
+		public static OptionalColor WithValue(Color value) => new(value, true);
+	}
 
 	[Serializable]
 	public class OptionalGameObject : Optional<GameObject>

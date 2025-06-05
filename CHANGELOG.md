@@ -5,11 +5,12 @@ All notable changes to this package will be documented in this file.
 - Ability to disable custom UnityObject inspector for better compatibility with other libraries, in MyBox Window settings.
 - Now MyBox detects Odin Inspector and disables some of the features to prioritize Odin.
 - Added: MyEditorEvents.AfterPlaymode/OnGUI/OnPlaymodeGUI/OnBehaviourUpdate events
+- Added: ColliderGizmo now allows to assign custom presets from serializable ColliderGizmoPreset
 - Added: MyEditor.SetEditorIcon with a better way to set color
 - Added: SceneClickHandler support of Physics2d and Plane
 - Added: MyGizmos.DrawBoxCollider2D
 - Added: MyLayer now have several handy functions and extensions to operate with LayerMasks
-- Added: A bunch of new Optional types (OptionalBool/Vector2(Int)/Vector3(Int)) and now with optionalValue parameters
+- Added: A bunch of new Optional types (OptionalBool/Vector2(Int)/Vector3(Int)/Color) and now with optionalValue parameters
 - Added: MyDebug.VisualizeNavMeshPath() to dynamically draw path segments with Debug.DrawLine
 - Added: MustBeAssignedAttribute now allows disabling checks in Prefab mode
 - Extensions: object.GetPrivateProperty/GetPrivateField and SetPrivateField methods to access private fields via reflection
