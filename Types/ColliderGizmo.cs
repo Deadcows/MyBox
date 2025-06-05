@@ -1,31 +1,34 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 #if UNITY_EDITOR
+using MyBox.Internal;
 using UnityEditor;
-using UnityEngine.AI;
 #endif
 
 namespace MyBox
 {
+	[ExecuteInEditMode]
 	public class ColliderGizmo : MonoBehaviour
 	{
 #if UNITY_EDITOR
 		public Presets Preset;
 
-		public Color CustomWireColor;
-		public Color CustomFillColor;
-		public Color CustomCenterColor;
-
+		[Range(0, 1)]
 		public float Alpha = 1.0f;
-		public Color WireColor = new Color(.6f, .6f, 1f, .5f);
-		public Color FillColor = new Color(.6f, .7f, 1f, .1f);
-		public Color CenterColor = new Color(.6f, .7f, 1f, .7f);
+		
+		//public OptionalColor WireColor2 = new(.6f, .6f, 1f, .5f, true);
+		public Color WireColor = new(.6f, .6f, 1f, .5f);
+		public Color FillColor = new(.6f, .7f, 1f, .1f);
+		public Color CenterColor = new(.6f, .7f, 1f, .7f);
 
 		public bool DrawFill = true;
 		public bool DrawWire = true;
 		public bool DrawCenter;
 
+		private Color CurrentWireColor => WireColor.WithAlphaSetTo(WireColor.a * Alpha);
+		private Color CurrentFillColor => FillColor.WithAlphaSetTo(FillColor.a * Alpha);
+		private Color CurrentCenterColor => CenterColor.WithAlphaSetTo(CenterColor.a * Alpha);
+		
 		/// <summary>
 		/// The radius of the center marker on your collider(s)
 		/// </summary>
@@ -33,380 +36,103 @@ namespace MyBox
 
 		public bool IncludeChildColliders;
 
-#if UNITY_AI_ENABLED
-		private NavMeshObstacle _navMeshObstacle;
-#endif
+		private readonly ColliderGizmo2dDrawer _drawer2d = new();
+		private readonly ColliderGizmo3dDrawer _drawer3d = new();
+		private readonly ColliderGizmoNavMeshDrawer _drawerNavMesh = new();
 
-#if UNITY_PHYSICS2D_ENABLED
-		private List<EdgeCollider2D> _edgeColliders2D;
-		private List<BoxCollider2D> _boxColliders2D;
-		private List<CapsuleCollider2D> _capsuleColliders2D;
-		private List<CircleCollider2D> _circleColliders2D;
-#endif
-
-#if UNITY_PHYSICS_ENABLED
-		private List<BoxCollider> _boxColliders;
-		private List<SphereCollider> _sphereColliders;
-		private List<MeshCollider> _meshColliders;
-#endif
-
-		private readonly HashSet<Transform> _withColliders = new HashSet<Transform>();
-
-		private Color _wireGizmoColor;
-		private Color _fillGizmoColor;
-		private Color _centerGizmoColor;
-
-		private bool _initialized;
-
+		
+		private void OnEnable() => Refresh();
 
 		private void OnDrawGizmos()
 		{
-			if (!enabled) return;
-			if (!_initialized) Refresh();
-
-			DrawColliders();
+			if (enabled) DrawColliders();
 		}
-
-		#region Refresh
 
 		public void Refresh()
 		{
-			_initialized = true;
-
-			_wireGizmoColor = new Color(WireColor.r, WireColor.g, WireColor.b, WireColor.a * Alpha);
-			_fillGizmoColor = new Color(FillColor.r, FillColor.g, FillColor.b, FillColor.a * Alpha);
-			_centerGizmoColor = new Color(CenterColor.r, CenterColor.g, CenterColor.b, CenterColor.a * Alpha);
-
-			_withColliders.Clear();
-
-#if UNITY_AI_ENABLED
-			_navMeshObstacle = gameObject.GetComponent<NavMeshObstacle>();
-#endif
-
-#if UNITY_PHYSICS2D_ENABLED
-			_edgeColliders2D?.Clear();
-			_boxColliders2D?.Clear();
-			_capsuleColliders2D?.Clear();
-			_circleColliders2D?.Clear();
-
-			Collider2D[] colliders2d = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider2D>() : gameObject.GetComponents<Collider2D>();
-
-			for (var i = 0; i < colliders2d.Length; i++)
-			{
-				var c = colliders2d[i];
-
-				var box2d = c as BoxCollider2D;
-				if (box2d != null)
-				{
-					_boxColliders2D ??= new List<BoxCollider2D>();
-					_boxColliders2D.Add(box2d);
-					_withColliders.Add(box2d.transform);
-					continue;
-				}
-
-				var edge = c as EdgeCollider2D;
-				if (edge != null)
-				{
-					_edgeColliders2D ??= new List<EdgeCollider2D>();
-					_edgeColliders2D.Add(edge);
-					_withColliders.Add(edge.transform);
-					continue;
-				}
-
-				var capsule = c as CapsuleCollider2D;
-				if (capsule != null)
-				{
-					_capsuleColliders2D ??= new List<CapsuleCollider2D>();
-					_capsuleColliders2D.Add(capsule);
-					_withColliders.Add(capsule.transform);
-					continue;
-				}
-
-				var circle2d = c as CircleCollider2D;
-				if (circle2d != null)
-				{
-					_circleColliders2D ??= new List<CircleCollider2D>();
-					_circleColliders2D.Add(circle2d);
-					_withColliders.Add(circle2d.transform);
-				}
-			}
-#endif
-
-#if UNITY_PHYSICS_ENABLED
-			_boxColliders?.Clear();
-			_sphereColliders?.Clear();
-			_meshColliders?.Clear();
-
-			Collider[] colliders = IncludeChildColliders ? gameObject.GetComponentsInChildren<Collider>() : gameObject.GetComponents<Collider>();
-
-			for (var i = 0; i < colliders.Length; i++)
-			{
-				var c = colliders[i];
-
-				var box = c as BoxCollider;
-				if (box != null)
-				{
-					_boxColliders ??= new List<BoxCollider>();
-					_boxColliders.Add(box);
-					_withColliders.Add(box.transform);
-					continue;
-				}
-
-				var sphere = c as SphereCollider;
-				if (sphere != null)
-				{
-					_sphereColliders ??= new List<SphereCollider>();
-					_sphereColliders.Add(sphere);
-					_withColliders.Add(sphere.transform);
-				}
-
-				var mesh = c as MeshCollider;
-				if (mesh != null)
-				{
-					_meshColliders ??= new List<MeshCollider>();
-					_meshColliders.Add(mesh);
-					_withColliders.Add(mesh.transform);
-				}
-			}
-#endif
+			_drawer2d.RefreshReferences(this);
+			_drawer3d.RefreshReferences(this);
+			_drawerNavMesh.RefreshReferences(this);
 		}
-
-		#endregion
 
 
 		#region Drawers
 
-#if UNITY_PHYSICS2D_ENABLED
-
-		private void DrawEdgeCollider2D(EdgeCollider2D coll)
-		{
-			var target = coll.transform;
-			var lossyScale = target.lossyScale;
-			var position = target.position;
-
-			Gizmos.color = WireColor;
-			Vector3 previous = Vector2.zero;
-			bool first = true;
-			for (int i = 0; i < coll.points.Length; i++)
-			{
-				var collPoint = coll.points[i];
-				Vector3 pos = new Vector3(collPoint.x * lossyScale.x, collPoint.y * lossyScale.y, 0);
-				Vector3 rotated = target.rotation * pos;
-
-				if (first) first = false;
-				else
-				{
-					Gizmos.color = _wireGizmoColor;
-					Gizmos.DrawLine(position + previous, position + rotated);
-				}
-
-				previous = rotated;
-
-				DrawColliderGizmo(target.position + rotated, .05f);
-			}
-		}
-
-		private void DrawBoxCollider2D(BoxCollider2D coll)
-		{
-			var target = coll.transform;
-			Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
-			DrawColliderGizmo(coll.offset, coll.size);
-			Gizmos.matrix = Matrix4x4.identity;
-		}
-		
-		private void DrawCapsuleCollider2D(CapsuleCollider2D coll)
-		{
-			var target = coll.transform;
-			Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
-			DrawColliderGizmo(coll.offset, coll.size);
-			Gizmos.matrix = Matrix4x4.identity;
-		}
-
-		private void DrawCircleCollider2D(CircleCollider2D coll)
-		{
-			var target = coll.transform;
-			var offset = coll.offset;
-			var scale = target.lossyScale;
-			DrawColliderGizmo(target.position + new Vector3(offset.x, offset.y, 0.0f), coll.radius * Mathf.Max(scale.x, scale.y));
-		}
-
-#endif
-
-#if UNITY_PHYSICS_ENABLED
-
-		private void DrawBoxCollider(BoxCollider coll)
-		{
-			var target = coll.transform;
-			Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
-			DrawColliderGizmo(coll.center, coll.size);
-			Gizmos.matrix = Matrix4x4.identity;
-		}
-
-		private void DrawSphereCollider(SphereCollider coll)
-		{
-			var target = coll.transform;
-			var scale = target.lossyScale;
-			var center = coll.center;
-			var max = Mathf.Max(scale.x, Mathf.Max(scale.y, scale.z)); // to not use Mathf.Max version with params[]
-			DrawColliderGizmo(target.position + new Vector3(center.x, center.y, 0.0f), coll.radius * max);
-		}
-
-		private void DrawMeshCollider(MeshCollider coll)
-		{
-			var target = coll.transform;
-
-			if (DrawWire)
-			{
-				Gizmos.color = _wireGizmoColor;
-				Gizmos.DrawWireMesh(coll.sharedMesh, target.position, target.rotation, target.localScale * 1.01f);
-			}
-
-			if (DrawFill)
-			{
-				Gizmos.color = _fillGizmoColor;
-				Gizmos.DrawMesh(coll.sharedMesh, target.position, target.rotation, target.localScale * 1.01f);
-			}
-		}
-
-#endif
-
-#if UNITY_AI_ENABLED
-
-		private void DrawNavMeshObstacle(NavMeshObstacle obstacle)
-		{
-			var target = obstacle.transform;
-
-			if (obstacle.shape == NavMeshObstacleShape.Box)
-			{
-				Gizmos.matrix = Matrix4x4.TRS(target.position, target.rotation, target.lossyScale);
-				DrawColliderGizmo(obstacle.center, obstacle.size);
-				Gizmos.matrix = Matrix4x4.identity;
-			}
-			else
-			{
-				var scale = target.lossyScale;
-				var center = obstacle.center;
-				var max = Mathf.Max(scale.x, Mathf.Max(scale.y, scale.z)); // to not use Mathf.Max version with params[]
-				DrawColliderGizmo(target.position + new Vector3(center.x, center.y, 0.0f), obstacle.radius * max);
-			}
-		}
-
-#endif
-
-
 		private void DrawColliders()
 		{
-			if (DrawCenter)
-			{
-				Gizmos.color = _centerGizmoColor;
-				foreach (var withCollider in _withColliders)
-				{
-					Gizmos.DrawSphere(withCollider.position, CenterMarkerRadius);
-				}
-			}
-
-			if (!DrawWire && !DrawFill) return;
-
-#if UNITY_AI_ENABLED
-			if (_navMeshObstacle != null) DrawNavMeshObstacle(_navMeshObstacle);
-#endif
-
-#if UNITY_PHYSICS2D_ENABLED
-			if (_edgeColliders2D != null)
-			{
-				foreach (var edge in _edgeColliders2D)
-				{
-					if (edge == null) continue;
-					DrawEdgeCollider2D(edge);
-				}
-			}
-
-			if (_boxColliders2D != null)
-			{
-				foreach (var box in _boxColliders2D)
-				{
-					if (box == null) continue;
-					DrawBoxCollider2D(box);
-				}
-			}
-			
-			if (_capsuleColliders2D != null)
-			{
-				foreach (var capsule in _capsuleColliders2D)
-				{
-					if (capsule == null) continue;
-					DrawCapsuleCollider2D(capsule);
-				}
-			}
-
-			if (_circleColliders2D != null)
-			{
-				foreach (var circle in _circleColliders2D)
-				{
-					if (circle == null) continue;
-					DrawCircleCollider2D(circle);
-				}
-			}
-#endif
-
-#if UNITY_PHYSICS_ENABLED
-			if (_boxColliders != null)
-			{
-				foreach (var box in _boxColliders)
-				{
-					if (box == null) continue;
-					DrawBoxCollider(box);
-				}
-			}
-
-			if (_sphereColliders != null)
-			{
-				foreach (var sphere in _sphereColliders)
-				{
-					if (sphere == null) continue;
-					DrawSphereCollider(sphere);
-				}
-			}
-
-			if (_meshColliders != null)
-			{
-				foreach (var mesh in _meshColliders)
-				{
-					if (mesh == null) continue;
-					DrawMeshCollider(mesh);
-				}
-			}
-#endif
+			_drawer2d.DrawGizmos(this);
+			_drawer3d.DrawGizmos(this);
+			_drawerNavMesh.DrawGizmos(this);
 		}
 
+		public void DrawWireLine(Vector3 from, Vector3 to)
+		{
+			if (!DrawWire) return;
 
-		private void DrawColliderGizmo(Vector3 position, Vector3 size)
+			Gizmos.color = CurrentWireColor;
+			Gizmos.DrawLine(from, to);
+		}
+		
+		public void DrawBox(Vector3 position, Vector3 size)
 		{
 			if (DrawWire)
 			{
-				Gizmos.color = _wireGizmoColor;
+				Gizmos.color = CurrentWireColor;
 				Gizmos.DrawWireCube(position, size);
 			}
 
 			if (DrawFill)
 			{
-				Gizmos.color = _fillGizmoColor;
+				Gizmos.color = CurrentFillColor;
 				Gizmos.DrawCube(position, size);
+			}
+			
+			if (DrawCenter)
+			{
+				Gizmos.color = CurrentCenterColor;
+				Gizmos.DrawSphere(position, CenterMarkerRadius);
 			}
 		}
 
-		private void DrawColliderGizmo(Vector3 position, float radius)
+		public void DrawSphere(Vector3 position, float radius)
 		{
 			if (DrawWire)
 			{
-				Gizmos.color = _wireGizmoColor;
+				Gizmos.color = CurrentWireColor;
 				Gizmos.DrawWireSphere(position, radius);
 			}
 
 			if (DrawFill)
 			{
-				Gizmos.color = _fillGizmoColor;
+				Gizmos.color = CurrentFillColor;
 				Gizmos.DrawSphere(position, radius);
+			}
+			
+			if (DrawCenter)
+			{
+				Gizmos.color = CurrentCenterColor;
+				Gizmos.DrawSphere(position, CenterMarkerRadius);
+			}
+		}
+		
+		public void DrawMesh(Mesh mesh, Vector3 position, Quaternion rotation, Vector3 scale)
+		{
+			if (DrawWire)
+			{
+				Gizmos.color = CurrentWireColor;
+				Gizmos.DrawWireMesh(mesh, position, rotation, scale);
+			}
+
+			if (DrawFill)
+			{
+				Gizmos.color = CurrentFillColor;
+				Gizmos.DrawMesh(mesh, position, rotation, scale);
+			}
+			
+			if (DrawCenter)
+			{
+				Gizmos.color = CurrentCenterColor;
+				Gizmos.DrawSphere(position, CenterMarkerRadius);
 			}
 		}
 
@@ -491,9 +217,6 @@ namespace MyBox
 
 
 				case Presets.Custom:
-					WireColor = CustomWireColor;
-					FillColor = CustomFillColor;
-					CenterColor = CustomCenterColor;
 					break;
 			}
 
@@ -502,6 +225,47 @@ namespace MyBox
 
 		#endregion
 
+		
+		[InitializeOnLoadMethod]
+		private static void RefreshOnComponentsChange()
+		{
+			ObjectFactory.componentWasAdded += OnComponentWasAdded;
+
+			void OnComponentWasAdded(Component component)
+			{
+				if (IsValidForGizmoComponent())
+				{
+					Debug.Log("was added valid: " + component.GetType().Name);
+					EditorApplication.delayCall += () =>
+					{
+						var gizmo = component.GetComponentInParent<ColliderGizmo>();
+						Debug.LogWarning("delay call: " + gizmo, gizmo);
+						if (gizmo) gizmo.Refresh();
+					};
+					
+					var gizmo = component.GetComponentInParent<ColliderGizmo>();
+					if (gizmo)
+					{
+						Debug.LogWarning("shoud work..");
+						gizmo.Refresh();
+					}
+				}
+			
+				bool IsValidForGizmoComponent()
+				{
+#if UNITY_PHYSICS_ENABLED
+					if (component is Collider) return true;
+#endif
+#if UNITY_PHYSICS2D_ENABLED
+					if (component is Collider2D) return true;
+#endif
+#if UNITY_AI_ENABLED
+					if (component is UnityEngine.AI.NavMeshObstacle) return true;
+#endif
+					return false;
+				}
+			}
+		}
 #endif
 	}
 }
@@ -527,33 +291,30 @@ namespace MyBox.Internal
 
 		private ColliderGizmo _target;
 
-		private int _collidersCount;
-
 		private void OnEnable()
 		{
 			_target = target as ColliderGizmo;
 			
-			_alphaProperty = serializedObject.FindProperty("Alpha");
+			_alphaProperty = serializedObject.FindProperty(nameof(ColliderGizmo.Alpha));
 
-			_drawWireProperty = serializedObject.FindProperty("DrawWire");
-			_wireColorProperty = serializedObject.FindProperty("WireColor");
+			_drawWireProperty = serializedObject.FindProperty(nameof(ColliderGizmo.DrawWire));
+			_wireColorProperty = serializedObject.FindProperty(nameof(ColliderGizmo.WireColor));
 
-			_drawFillProperty = serializedObject.FindProperty("DrawFill");
-			_fillColorProperty = serializedObject.FindProperty("FillColor");
+			_drawFillProperty = serializedObject.FindProperty(nameof(ColliderGizmo.DrawFill));
+			_fillColorProperty = serializedObject.FindProperty(nameof(ColliderGizmo.FillColor));
 
-			_drawCenterProperty = serializedObject.FindProperty("DrawCenter");
-			_centerColorProperty = serializedObject.FindProperty("CenterColor");
-			_centerRadiusProperty = serializedObject.FindProperty("CenterMarkerRadius");
+			_drawCenterProperty = serializedObject.FindProperty(nameof(ColliderGizmo.DrawCenter));
+			_centerColorProperty = serializedObject.FindProperty(nameof(ColliderGizmo.CenterColor));
+			_centerRadiusProperty = serializedObject.FindProperty(nameof(ColliderGizmo.CenterMarkerRadius));
 
-			_includeChilds = serializedObject.FindProperty("IncludeChildColliders");
-
-			_collidersCount = CollidersCount();
+			_includeChilds = serializedObject.FindProperty(nameof(ColliderGizmo.IncludeChildColliders));
 		}
 
+		
 
 		public override void OnInspectorGUI()
 		{
-			Undo.RecordObject(_target, "CG_State");
+			Undo.RecordObject(_target, "Collider Gizmo updated");
 
 			EditorGUI.BeginChangeCheck();
 			_target.Preset = (ColliderGizmo.Presets)EditorGUILayout.EnumPopup("Color Preset", _target.Preset);
@@ -561,14 +322,13 @@ namespace MyBox.Internal
 			{
 				foreach (var singleTarget in targets)
 				{
-					var gizmo = (ColliderGizmo)singleTarget;
-					gizmo.ChangePreset(_target.Preset);
-					EditorUtility.SetDirty(gizmo);
+					((ColliderGizmo)singleTarget).ChangePreset(_target.Preset);
 				}
+				serializedObject.ApplyModifiedProperties();
 			}
 
-			_alphaProperty.floatValue = EditorGUILayout.Slider("Overall Transparency", _alphaProperty.floatValue, 0, 1);
-
+			EditorGUILayout.PropertyField(_alphaProperty, new GUIContent("Overall Transparency"));
+			if (GUI.changed) serializedObject.ApplyModifiedProperties();
 
 			EditorGUI.BeginChangeCheck();
 			using (new EditorGUILayout.HorizontalScope())
@@ -597,55 +357,255 @@ namespace MyBox.Internal
 			if (EditorGUI.EndChangeCheck())
 			{
 				var presetProp = serializedObject.FindProperty("Preset");
-				var customWireColor = serializedObject.FindProperty("CustomWireColor");
-				var customFillColor = serializedObject.FindProperty("CustomFillColor");
-				var customCenterColor = serializedObject.FindProperty("CustomCenterColor");
-
 				presetProp.enumValueIndex = (int)ColliderGizmo.Presets.Custom;
-				customWireColor.colorValue = _wireColorProperty.colorValue;
-				customFillColor.colorValue = _fillColorProperty.colorValue;
-				customCenterColor.colorValue = _centerColorProperty.colorValue;
+				serializedObject.ApplyModifiedProperties();
 			}
 
+			EditorGUI.BeginChangeCheck();
 			EditorGUILayout.PropertyField(_includeChilds);
 
-			int collidersCountCheck = CollidersCount();
-			bool collidersCountChanged = collidersCountCheck != _collidersCount;
-			_collidersCount = collidersCountCheck;
+			if (GUI.changed) serializedObject.ApplyModifiedProperties();
 
-			if (GUI.changed || collidersCountChanged)
+			if (EditorGUI.EndChangeCheck())
 			{
+				foreach (var singleTarget in targets)
+				{
+					((ColliderGizmo)singleTarget).Refresh();
+				}
 				serializedObject.ApplyModifiedProperties();
-				EditorUtility.SetDirty(_target);
-
-				_target.Refresh();
 			}
-		}
-
-		private int CollidersCount()
-		{
-			int result = 0;
-
-			if (_includeChilds.boolValue)
-			{
-#if UNITY_PHYSICS_ENABLED
-				result += _target.gameObject.GetComponentsInChildren<Collider>().Length;
-#endif
-#if UNITY_PHYSICS2D_ENABLED
-				result += _target.gameObject.GetComponentsInChildren<Collider2D>().Length;
-#endif
-				return result;
-			}
-
-#if UNITY_PHYSICS_ENABLED
-			result += _target.gameObject.GetComponents<Collider>().Length;
-#endif
-#if UNITY_PHYSICS2D_ENABLED
-			result += _target.gameObject.GetComponents<Collider2D>().Length;
-#endif
-			return result;
 		}
 	}
 }
 
 #endif
+
+#region ColliderGizmo2dDrawer
+
+#if UNITY_EDITOR
+namespace MyBox.Internal
+{
+	using UnityEngine;
+	
+	public class ColliderGizmo2dDrawer
+	{
+#if UNITY_PHYSICS2D_ENABLED
+		private Collider2D[] _colliders;
+#endif
+
+		public void RefreshReferences(ColliderGizmo target)
+		{
+#if UNITY_PHYSICS2D_ENABLED
+			_colliders = target.IncludeChildColliders ? 
+				target.gameObject.GetComponentsInChildren<Collider2D>() : 
+				target.gameObject.GetComponents<Collider2D>();
+#endif
+		}
+
+		public void DrawGizmos(ColliderGizmo target)
+		{
+#if UNITY_PHYSICS2D_ENABLED
+			if (_colliders == null) return;
+			
+			foreach (var collider in _colliders)
+			{
+				if (!collider || !collider.enabled) continue;
+				
+				if (collider is BoxCollider2D box) DrawBoxCollider2D(target, box);
+				else if (collider is CircleCollider2D circle) DrawCircleCollider2D(target, circle);
+				else if (collider is CapsuleCollider2D capsule) DrawCapsuleCollider2D(target, capsule);
+				else if (collider is EdgeCollider2D edge) DrawEdgeCollider2D(target, edge);
+			}
+			
+			
+			void DrawBoxCollider2D(ColliderGizmo gizmo, BoxCollider2D coll)
+			{
+				var t = coll.transform;
+				Gizmos.matrix = Matrix4x4.TRS(t.position, t.rotation, t.lossyScale);
+				gizmo.DrawBox(coll.offset, coll.size);
+				Gizmos.matrix = Matrix4x4.identity;
+			}
+			
+			void DrawCircleCollider2D(ColliderGizmo gizmo, CircleCollider2D coll)
+			{
+				var t = coll.transform;
+				var offset = coll.offset;
+				var scale = t.lossyScale;
+				gizmo.DrawSphere(t.position + new Vector3(offset.x, offset.y, 0.0f), coll.radius * Mathf.Max(scale.x, scale.y));
+			}
+			
+			void DrawCapsuleCollider2D(ColliderGizmo gizmo, CapsuleCollider2D coll)
+			{
+				var t = coll.transform;
+				Gizmos.matrix = Matrix4x4.TRS(t.position, t.rotation, t.lossyScale);
+				gizmo.DrawBox(coll.offset, coll.size);
+				Gizmos.matrix = Matrix4x4.identity;
+			}
+			
+			void DrawEdgeCollider2D(ColliderGizmo gizmo, EdgeCollider2D coll)
+			{
+				var t = coll.transform;
+				var lossyScale = t.lossyScale;
+				var position = t.position;
+
+				Vector3 previous = Vector2.zero;
+				bool first = true;
+				for (int i = 0; i < coll.points.Length; i++)
+				{
+					var collPoint = coll.points[i];
+					Vector3 pos = new Vector3(collPoint.x * lossyScale.x, collPoint.y * lossyScale.y, 0);
+					Vector3 rotated = t.rotation * pos;
+
+					if (first) first = false;
+					else gizmo.DrawWireLine(position + previous, position + rotated);
+
+					previous = rotated;
+					gizmo.DrawSphere(t.position + rotated, .05f);
+				}
+			}
+#endif
+		}
+	}
+}
+#endif
+
+#endregion
+
+#region ColliderGizmo3dDrawer
+
+#if UNITY_EDITOR
+namespace MyBox.Internal
+{
+	using UnityEngine;
+	
+	public class ColliderGizmo3dDrawer
+	{
+#if UNITY_PHYSICS_ENABLED
+		private Collider[] _colliders;
+#endif
+		
+		public void RefreshReferences(ColliderGizmo target)
+		{
+#if UNITY_PHYSICS_ENABLED
+			_colliders = target.IncludeChildColliders ? 
+				target.gameObject.GetComponentsInChildren<Collider>() : 
+				target.gameObject.GetComponents<Collider>();
+#endif
+		}
+
+		public void DrawGizmos(ColliderGizmo target)
+		{
+#if UNITY_PHYSICS_ENABLED
+			if (_colliders == null) return;
+			
+			foreach (var collider in _colliders)
+			{
+				if (!collider || !collider.enabled) continue;
+				
+				if (collider is BoxCollider box) DrawBoxCollider(target, box);
+				else if (collider is SphereCollider sphere) DrawSphereCollider(target, sphere);
+				else if (collider is CapsuleCollider capsule) DrawCapsuleCollider(target, capsule);
+				else if (collider is MeshCollider mesh) DrawMeshCollider(target, mesh);
+			}
+			
+			
+			void DrawBoxCollider(ColliderGizmo gizmo, BoxCollider coll)
+			{
+				var t = coll.transform;
+				Gizmos.matrix = Matrix4x4.TRS(t.position, t.rotation, t.lossyScale);
+				gizmo.DrawBox(coll.center, coll.size);
+				Gizmos.matrix = Matrix4x4.identity;
+			}
+			
+			void DrawSphereCollider(ColliderGizmo gizmo, SphereCollider coll)
+			{
+				var t = coll.transform;
+				var scale = t.lossyScale;
+				var center = coll.center;
+				var max = Mathf.Max(scale.x, Mathf.Max(scale.y, scale.z)); // to not use Mathf.Max version with params[]
+				gizmo.DrawSphere(t.position + new Vector3(center.x, center.y, 0.0f), coll.radius * max);
+			}
+			
+			void DrawCapsuleCollider(ColliderGizmo gizmo, CapsuleCollider coll)
+			{
+				var t = coll.transform;
+				Gizmos.matrix = Matrix4x4.TRS(t.position, t.rotation, t.lossyScale);
+				
+				var diameter = coll.radius * 2f;
+				Vector3 size;
+
+				if (coll.direction == 0) size = new Vector3(coll.height, diameter, diameter); // x axis
+				else if (coll.direction == 1) size = new Vector3(diameter, coll.height, diameter); // y axis
+				else size = new Vector3(diameter, diameter, coll.height); // z axis
+
+				gizmo.DrawBox(coll.center, size);
+				Gizmos.matrix = Matrix4x4.identity;
+			}
+			
+			void DrawMeshCollider(ColliderGizmo gizmo, MeshCollider coll)
+			{
+				var t = coll.transform;
+				gizmo.DrawMesh(coll.sharedMesh, t.position, t.rotation, t.localScale * 1.01f);
+			}
+#endif
+		}
+	}
+}
+#endif
+
+#endregion
+
+#region ColliderGizmoNavMeshDrawer
+
+#if UNITY_EDITOR
+namespace MyBox.Internal
+{
+	using UnityEngine;
+	
+	public class ColliderGizmoNavMeshDrawer
+	{
+#if UNITY_AI_ENABLED
+		private UnityEngine.AI.NavMeshObstacle _navMeshObstacle;
+#endif
+		
+		public void RefreshReferences(ColliderGizmo target)
+		{
+#if UNITY_AI_ENABLED
+			_navMeshObstacle = target.IncludeChildColliders ? 
+				target.GetComponentInChildren<UnityEngine.AI.NavMeshObstacle>() :
+				target.GetComponent<UnityEngine.AI.NavMeshObstacle>();
+#endif
+		}
+
+		public void DrawGizmos(ColliderGizmo target)
+		{
+#if UNITY_AI_ENABLED
+			if (!_navMeshObstacle || !_navMeshObstacle.enabled) return;
+			
+			DrawNavMeshObstacle(target, _navMeshObstacle);
+			
+			
+			void DrawNavMeshObstacle(ColliderGizmo gizmo, UnityEngine.AI.NavMeshObstacle obstacle)
+			{
+				var t = obstacle.transform;
+				if (obstacle.shape == UnityEngine.AI.NavMeshObstacleShape.Box)
+				{
+					Gizmos.matrix = Matrix4x4.TRS(t.position, t.rotation, t.lossyScale);
+					gizmo.DrawBox(obstacle.center, obstacle.size);
+					Gizmos.matrix = Matrix4x4.identity;
+				}
+				else
+				{
+					var scale = t.lossyScale;
+					var center = obstacle.center;
+					var max = Mathf.Max(scale.x, Mathf.Max(scale.y, scale.z));
+					gizmo.DrawSphere(t.position + new Vector3(center.x, center.y, 0.0f), obstacle.radius * max);
+				}
+			}
+#endif
+		}
+	}
+}
+#endif
+
+#endregion
