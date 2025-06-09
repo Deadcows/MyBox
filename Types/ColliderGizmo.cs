@@ -275,20 +275,11 @@ namespace MyBox
 			{
 				if (IsValidForGizmoComponent())
 				{
-					Debug.Log("was added valid: " + component.GetType().Name);
 					EditorApplication.delayCall += () =>
 					{
 						var gizmo = component.GetComponentInParent<ColliderGizmo>();
-						Debug.LogWarning("delay call: " + gizmo, gizmo);
 						if (gizmo) gizmo.RefreshReferences();
 					};
-					
-					var gizmo = component.GetComponentInParent<ColliderGizmo>();
-					if (gizmo)
-					{
-						Debug.LogWarning("shoud work..");
-						gizmo.RefreshReferences();
-					}
 				}
 			
 				bool IsValidForGizmoComponent()
