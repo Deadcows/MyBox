@@ -10,6 +10,39 @@ namespace MyBox.EditorTools
 	public static class MyHandles
 	{
 		/// <summary>
+		/// Draw BoxCollider
+		/// </summary>
+		public static void DrawBox(BoxCollider box, Color color, float thickness = 1f)
+		{
+			if (box == null) return;
+			Handles.color = color;
+			Handles.matrix = Matrix4x4.TRS(box.transform.position, box.transform.rotation, box.transform.lossyScale);
+			Handles.DrawAAPolyLine(5, GetWireCubeVertices(box.center, box.size));
+			Handles.matrix = Matrix4x4.identity;
+			
+			Vector3[] GetWireCubeVertices(Vector3 center, Vector3 size)
+			{
+				var half = size * 0.5f;
+				var leftFarBottom = center + new Vector3(-half.x, -half.y, -half.z); 
+				var rightFarBottom = center + new Vector3(half.x, -half.y, -half.z);
+				var leftFarTop = center + new Vector3(-half.x, half.y, -half.z);
+				var rightFarTop = center + new Vector3(half.x, half.y, -half.z);
+				var leftNearBottom = center + new Vector3(-half.x, -half.y, half.z);
+				var rightNearBottom = center + new Vector3(half.x, -half.y, half.z);
+				var leftNearTop = center + new Vector3(-half.x, half.y, half.z);
+				var rightNearTop = center + new Vector3(half.x, half.y, half.z);
+				
+				return new[]
+				{
+					leftFarBottom, rightFarBottom, rightFarTop, leftFarTop, leftFarBottom,
+					leftNearBottom, rightNearBottom, rightNearTop, leftNearTop, leftNearBottom,
+					rightNearBottom, rightFarBottom, rightFarTop, rightNearTop, 
+					leftNearTop, leftFarTop
+				};
+			}
+		}
+		
+		/// <summary>
 		/// Draw line with arrows showing direction
 		/// </summary>
 		public static void DrawDirectionalLine(Vector3 fromPos, Vector3 toPos, float screenSpaceSize = 3, float arrowsDensity = .5f)
