@@ -50,8 +50,7 @@ namespace MyBox.Internal
 		{
 			var e = Event.current;
 			var mousePosition = e.mousePosition;
-			var isClick = e.button == 0 && e.isMouse;
-
+			var isClick = e.button == 0 && e.type == EventType.MouseDown;
 			bool firstEntry = true;
 			foreach (var entry in _commentary.Entries)
 			{
