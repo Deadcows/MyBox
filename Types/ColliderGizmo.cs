@@ -618,7 +618,7 @@ namespace MyBox.Internal
 			{
 				EditorGUILayout.PropertyField(_property.DrawWire, GUILayout.Width(checkWidth));
 				GUI.enabled = _property.DrawWire.boolValue;
-				EditorGUILayout.PropertyField(_property.WireColor, new GUIContent(""));
+				EditorGUILayout.PropertyField(_property.WireColor, GUIContent.none);
 				GUI.enabled = true;
 			}
 
@@ -626,7 +626,7 @@ namespace MyBox.Internal
 			{
 				EditorGUILayout.PropertyField(_property.DrawFill, GUILayout.Width(checkWidth));
 				GUI.enabled = _property.DrawFill.boolValue;
-				EditorGUILayout.PropertyField(_property.FillColor, new GUIContent(""));
+				EditorGUILayout.PropertyField(_property.FillColor, GUIContent.none);
 				GUI.enabled = true;
 			}
 
@@ -634,7 +634,7 @@ namespace MyBox.Internal
 			{
 				EditorGUILayout.PropertyField(_property.DrawCenter, GUILayout.Width(checkWidth));
 				GUI.enabled = _property.DrawCenter.boolValue;
-				EditorGUILayout.PropertyField(_property.CenterColor, new GUIContent(""));
+				EditorGUILayout.PropertyField(_property.CenterColor, GUIContent.none);
 				EditorGUILayout.Space(10);
 				EditorGUILayout.LabelField("Ø", GUILayout.Width(16));
 				EditorGUILayout.PropertyField(_property.CenterRadius, GUIContent.none, GUILayout.Width(30));
