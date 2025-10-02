@@ -67,6 +67,7 @@ namespace MyBox.Internal
 					_foldout.Value = EditorGUI.Foldout(foldRect, _foldout.Value, label, true);
 					var fieldRect = new Rect(position);
 					fieldRect.x += EditorGUIUtility.labelWidth;
+					fieldRect.width -= EditorGUIUtility.labelWidth;
 					EditorGUI.PropertyField(fieldRect, property, GUIContent.none);
 					if (GUI.changed) property.serializedObject.ApplyModifiedProperties();
 
