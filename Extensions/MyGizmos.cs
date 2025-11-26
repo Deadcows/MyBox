@@ -1,7 +1,9 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace MyBox
 {
+	[PublicAPI]
 	public static class MyGizmos
 	{
 		public static void DrawArrow(Vector3 from, Vector3 direction, float headLength = 0.25f, float headAngle = 20.0f)
@@ -16,6 +18,25 @@ namespace MyBox
 #endif
 		}
 
+		public static void DrawCircle(Vector3 point, Vector3 normal, float radius, int numSegments = 24)
+		{
+			var axisCandidate = (normal.x < normal.z) ? new Vector3(1f, 0f, 0f) : new Vector3(0f, 0f, 1f);
+			var tangent = Vector3.Cross(normal, axisCandidate).normalized;
+			var bitangent = Vector3.Cross(tangent, normal).normalized;
+
+			var previousPoint = point + (tangent * radius);
+			var angleStep = (Mathf.PI * 2f) / numSegments;
+			for (var i = 0; i < numSegments; i++)
+			{
+				var angle = (i == numSegments - 1) ? 0f : (i + 1) * angleStep;
+				var nextLocal = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * radius;
+				var nextPoint = point + (bitangent * nextLocal.x) + (tangent * nextLocal.z);
+
+				Gizmos.DrawLine(previousPoint, nextPoint);
+				previousPoint = nextPoint;
+			}
+		}
+		
 		public static void DrawSegment(Vector3 from, Vector3 to, float capSize = 0.1f)
 		{
 			Gizmos.DrawLine(from, to);
