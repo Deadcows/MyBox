@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -18,6 +19,11 @@ namespace MyBox.Internal
         public static string Version { get; private set; }
         
         public static bool LogToConsole { get; set; }
+        
+        /// <summary>
+        /// Filter out messages containing any of these strings
+        /// </summary>
+        public static List<string> Filters = new ();
 
         public const string DefaultFilename = "customLog.txt";
         public const string DefaultTimeFormat = "MM-dd_HH-mm-ss";
@@ -52,6 +58,12 @@ namespace MyBox.Internal
                 Debug.Log("Logger: ".Colored(Colors.brown) + text);
             if (Application.isEditor) return;
             if (Disabled) return;
+            
+            if (Filters != null)
+            {
+                foreach (var filter in Filters) 
+                    if (text.Contains(filter)) return;
+            }
 
             string path = Path.Combine(Application.dataPath, LogFile);
 
