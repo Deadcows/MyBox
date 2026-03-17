@@ -1,5 +1,4 @@
-﻿#if !ODIN_INSPECTOR
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MyBox
 {
@@ -72,5 +71,4 @@ namespace MyBox.Internal
         }
     }
 }
-#endif
 #endif
