@@ -45,13 +45,13 @@ namespace MyBox.Internal
 		{
 			public readonly int Depth;
 			public readonly string Info;
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
 			public readonly EntityId ObjectId;
 #else
 			public readonly int ObjectId;
 #endif
 
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
 			public PropertyData(int depth, string info, EntityId objectId)
 #else
 			public PropertyData(int depth, string info, int objectId)
@@ -118,7 +118,7 @@ namespace MyBox.Internal
 			foreach (PropertyData property in _propertiesData)
 			{
 				EditorGUI.indentLevel = property.Depth;
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
 				if (property.ObjectId.IsValid())
 #else
 				if (property.ObjectId > 0)
@@ -128,7 +128,7 @@ namespace MyBox.Internal
 				}
 
 				EditorGUILayout.SelectableLabel(property.Info, _richTextStyle, GUILayout.Height(20));
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
 				if (property.ObjectId.IsValid())
 #else
 				if (property.ObjectId > 0)
@@ -136,7 +136,7 @@ namespace MyBox.Internal
 				{
 					if (GUILayout.Button(">Ping>", GUILayout.Width(50)))
 					{
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
 						Selection.activeEntityId = property.ObjectId;
 #else
 						Selection.activeInstanceID = property.ObjectId;
@@ -216,7 +216,7 @@ namespace MyBox.Internal
 
 
 			bool isObject = property.propertyType == SerializedPropertyType.ObjectReference && property.objectReferenceValue != null;
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
 			EntityId propertyId = isObject ? property.objectReferenceEntityIdValue : EntityId.None;
 #else
 			int propertyId = isObject ? property.objectReferenceValue.GetInstanceID() : 0;
