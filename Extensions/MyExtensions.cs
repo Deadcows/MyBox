@@ -177,7 +177,11 @@ namespace MyBox
 		/// </summary>
 		public static T[] FindObjectsOfInterface<T>() where T : class
 		{
+#if UNITY_2022_2_OR_NEWER
+			var monoBehaviours = Object.FindObjectsByType<Transform>();
+#else
 			var monoBehaviours = Object.FindObjectsOfType<Transform>();
+#endif
 
 			return monoBehaviours.Select(behaviour => behaviour.GetComponent(typeof(T))).OfType<T>().ToArray();
 		}
@@ -187,7 +191,11 @@ namespace MyBox
 		/// </summary>
 		public static ComponentOfInterface<T>[] FindObjectsOfInterfaceAsComponents<T>() where T : class
 		{
+#if UNITY_2022_2_OR_NEWER
+			return Object.FindObjectsByType<Component>()
+#else
 			return Object.FindObjectsOfType<Component>()
+#endif
 				.Where(c => c is T)
 				.Select(c => new ComponentOfInterface<T>(c, c as T)).ToArray();
 		}

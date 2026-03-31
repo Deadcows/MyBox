@@ -9,7 +9,11 @@ namespace MyBox
 		{
 			get
 			{
+#if UNITY_2022_2_OR_NEWER
+				if (_instance == null) _instance = FindAnyObjectByType<T>();
+#else
 				if (_instance == null) _instance = FindObjectOfType<T>();
+#endif
 				if (_instance == null) Debug.LogError("Singleton of type : " + typeof(T).Name + " not found on scene");
 
 				return _instance;
