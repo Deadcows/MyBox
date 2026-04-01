@@ -299,6 +299,27 @@ namespace MyBox
 		}
 
 		/// <summary>
+		/// Creates a Bucket collection (Dictionary with List values) from a collection 
+		/// of values and a function that selects the key for each value.
+		/// </summary>
+		public static Dictionary<TKey, TArg> ConvertToBucket<TKey, TValue, TArg>( this IEnumerable<TValue> source, 
+		Func<TValue, TKey> GetKeyFromValue) where TArg : IList<TValue> {
+			
+			Dictionary<TKey, TArg> result = new Dictionary<TKey, TArg>(source.Count());
+			foreach(TValue value in source) {
+				TKey key = GetKeyFromValue(value);
+				if(result.TryGetValue(key, out TArg arg)) {
+					arg.Add(value);
+				} else {
+					TArg newArg = (TArg)Activator.CreateInstance(typeof(TArg));
+					newArg.Add(value);
+					result[key] = newArg;
+				}
+			}
+			return result;
+		}
+
+		/// <summary>
 		/// Performs an action on each element of a collection.
 		/// </summary>
 		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T> action)
