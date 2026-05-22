@@ -16,7 +16,7 @@ namespace MyBox.Internal
 		{
 			if (!EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isPlaying) return;
 			
-#if UNITY_2022_2_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
 			var components = Object.FindObjectsByType<Component>();
 #else
 			var components = Object.FindObjectsOfType<Component>();
