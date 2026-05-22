@@ -177,7 +177,11 @@ namespace MyBox
 		/// </summary>
 		public static T[] FindObjectsOfInterface<T>() where T : class
 		{
+#if UNITY_2022_2_OR_NEWER
+			var monoBehaviours = Object.FindObjectsByType<Transform>();
+#else
 			var monoBehaviours = Object.FindObjectsOfType<Transform>();
+#endif
 
 			return monoBehaviours.Select(behaviour => behaviour.GetComponent(typeof(T))).OfType<T>().ToArray();
 		}
@@ -187,7 +191,11 @@ namespace MyBox
 		/// </summary>
 		public static ComponentOfInterface<T>[] FindObjectsOfInterfaceAsComponents<T>() where T : class
 		{
+#if UNITY_2022_2_OR_NEWER
+			return Object.FindObjectsByType<Component>()
+#else
 			return Object.FindObjectsOfType<Component>()
+#endif
 				.Where(c => c is T)
 				.Select(c => new ComponentOfInterface<T>(c, c as T)).ToArray();
 		}
@@ -213,7 +221,11 @@ namespace MyBox
 		public static T[] OnePerInstance<T>(this T[] components) where T : Component
 		{
 			if (components == null || components.Length == 0) return null;
+#if UNITY_6000_4_OR_NEWER
+			return components.GroupBy(h => h.transform.GetEntityId()).Select(g => g.First()).ToArray();
+#else
 			return components.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
+#endif
 		}
 
 #if UNITY_PHYSICS2D_ENABLED
@@ -224,7 +236,11 @@ namespace MyBox
 		public static RaycastHit2D[] OneHitPerInstance(this RaycastHit2D[] hits)
 		{
 			if (hits == null || hits.Length == 0) return null;
+#if UNITY_6000_4_OR_NEWER
+			return hits.GroupBy(h => h.transform.GetEntityId()).Select(g => g.First()).ToArray();
+#else
 			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
+#endif
 		}
 
 		/// <summary>
@@ -233,7 +249,11 @@ namespace MyBox
 		public static Collider2D[] OneHitPerInstance(this Collider2D[] hits)
 		{
 			if (hits == null || hits.Length == 0) return null;
+#if UNITY_6000_4_OR_NEWER
+			return hits.GroupBy(h => h.transform.GetEntityId()).Select(g => g.First()).ToArray();
+#else
 			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToArray();
+#endif
 		}
 
 		/// <summary>
@@ -242,7 +262,11 @@ namespace MyBox
 		public static List<Collider2D> OneHitPerInstanceList(this Collider2D[] hits)
 		{
 			if (hits == null || hits.Length == 0) return null;
+#if UNITY_6000_4_OR_NEWER
+			return hits.GroupBy(h => h.transform.GetEntityId()).Select(g => g.First()).ToList();
+#else
 			return hits.GroupBy(h => h.transform.GetInstanceID()).Select(g => g.First()).ToList();
+#endif
 		}
 
 #endif

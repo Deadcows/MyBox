@@ -16,7 +16,11 @@ namespace MyBox.Internal
 		{
 			if (!EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isPlaying) return;
 			
+#if UNITY_2022_2_OR_NEWER
+			var components = Object.FindObjectsByType<Component>();
+#else
 			var components = Object.FindObjectsOfType<Component>();
+#endif
 			foreach (var component in components)
 			{
 				foreach (var attribute in component.GetType().GetCustomAttributes(true))

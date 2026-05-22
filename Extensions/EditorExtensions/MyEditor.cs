@@ -31,7 +31,11 @@ namespace MyBox.EditorTools
 			EditorApplication.ExecuteMenuItem("Window/General/Hierarchy");
 			var window = EditorWindow.focusedWindow;
 
+#if UNITY_6000_4_OR_NEWER
+			methodInfo.Invoke(window, new object[] { go.GetEntityId(), expand });
+#else
 			methodInfo.Invoke(window, new object[] { go.GetInstanceID(), expand });
+#endif
 		}
 
 		/// <summary>
